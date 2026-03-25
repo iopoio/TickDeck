@@ -658,18 +658,21 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
 
     # ── 파비콘 교차검증: CSS/로고 결정 primaryColor vs 파비콘 dominant ──
     # 파비콘은 <link rel="icon">으로 명시 지정 → 가장 신뢰할 수 있는 브랜드 색상 소스
-    # CSS가 뉴스위젯·파트너 색을 잡거나 로고 오탐지 시 파비콘이 교정
     _fav_dom = assets.get('favicon_dominant', '')
     if (
         _fav_dom
-        and final_color
-        and not _is_monochrome                                # 모노크롬 의도 존중
         and _color_vibrancy(_fav_dom) >= 0.25                 # 파비콘 색이 충분히 선명
-        and not _color_close(final_color, _fav_dom, threshold=80)  # 현재 primary와 충분히 다름
     ):
-        _p(f"  ⚠ 파비콘 교차검증: primaryColor({final_color})와 파비콘({_fav_dom}) 불일치 → 파비콘 우선")
-        final_color = _fav_dom
-        _reason = f'파비콘 교차검증 override ({_fav_dom})'
+        # 모노크롬 감지됐지만 파비콘에 선명한 색이 있으면 → 파비콘이 진짜 브랜드 컬러
+        if _is_monochrome:
+            _p(f"  ⚠ 모노크롬 사이트 + 파비콘 선명({_fav_dom}) → 파비콘을 primary로")
+            final_color = _fav_dom
+            _is_monochrome = False  # 모노크롬 해제 (브랜드 컬러 존재)
+            _reason = f'파비콘 교차검증 override (모노크롬→{_fav_dom})'
+        elif not _color_close(final_color, _fav_dom, threshold=80):
+            _p(f"  ⚠ 파비콘 교차검증: primaryColor({final_color})와 파비콘({_fav_dom}) 불일치 → 파비콘 우선")
+            final_color = _fav_dom
+            _reason = f'파비콘 교차검증 override ({_fav_dom})'
 
     # ── 스크린샷 교차검증: CSS 감지가 의심스러울 때 실제 렌더링 색상으로 보정 ──
     # 조건: 파비콘 교차검증이 작동하지 않았고, CSS 감지 결과가 WP 기본 팔레트일 가능성

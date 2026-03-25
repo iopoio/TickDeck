@@ -1839,7 +1839,7 @@
       team_credibility:         hasBg ? 'portfolio' : 'split',  // 팀 신뢰도 → 분할 or 풀배경
       curriculum_structure:     'numbered_process',  // 커리큘럼 구조 → 번호 체인
       how_it_works:             'numbered_process',  // 작동 방식 → 번호 체인
-      solution_overview:        hasBg ? 'split' : 'two_col_text', // 해결책 개요 → how_it_works 중복 방지
+      solution_overview:        hasBg ? 'split' : (n >= 3 ? 'two_col_text' : 'cards'), // 이미지 없으면 split 사용 안 함
       pain_analysis:            'numbered_process',  // Pain 진단 → 번호 프로세스
       market_challenge:         hasBg ? 'portfolio' : 'split',  // 시장 도전 → 이미지 유무로 분기
       proof_results:            hasBg ? 'portfolio' : 'cards',  // 성과 → 카드 (kpi_cards 조건 불충족 시)
