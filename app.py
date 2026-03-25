@@ -4,6 +4,7 @@ localhost:5000 에서 슬라이드 생성 UI 제공
 """
 import json
 import os
+import requests
 import subprocess
 import sys
 import tempfile
@@ -90,6 +91,86 @@ def login_required(f):
             return jsonify({'error': '로그인이 필요합니다'}), 401
         return f(*args, **kwargs)
     return decorated
+
+
+# ── Google OAuth 설정 ────────────────────────────────────────────────────────
+GOOGLE_CLIENT_ID     = os.environ.get('GOOGLE_CLIENT_ID', '')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
+GOOGLE_REDIRECT_URI  = os.environ.get('GOOGLE_REDIRECT_URI', 'https://tickdeck.site/api/auth/google/callback')
+
+GOOGLE_AUTH_URL  = 'https://accounts.google.com/o/oauth2/v2/auth'
+GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
+GOOGLE_USERINFO_URL = 'https://www.googleapis.com/oauth2/v2/userinfo'
+
+
+# ── Google OAuth 라우트 ──────────────────────────────────────────────────────
+@app.route("/api/auth/google")
+def auth_google():
+    """Google OAuth 시작 — 동의 화면으로 리다이렉트"""
+    import urllib.parse
+    params = {
+        'client_id': GOOGLE_CLIENT_ID,
+        'redirect_uri': GOOGLE_REDIRECT_URI,
+        'response_type': 'code',
+        'scope': 'email profile',
+        'access_type': 'offline',
+        'prompt': 'select_account',
+    }
+    url = GOOGLE_AUTH_URL + '?' + urllib.parse.urlencode(params)
+    from flask import redirect
+    return redirect(url)
+
+
+@app.route("/api/auth/google/callback")
+def auth_google_callback():
+    """Google OAuth 콜백 — 코드 교환 → 사용자 정보 → 로그인/가입"""
+    from flask import session, redirect
+    code = request.args.get('code')
+    if not code:
+        return redirect('/?error=google_auth_failed')
+
+    # 코드 → 토큰 교환
+    token_resp = requests.post(GOOGLE_TOKEN_URL, data={
+        'code': code,
+        'client_id': GOOGLE_CLIENT_ID,
+        'client_secret': GOOGLE_CLIENT_SECRET,
+        'redirect_uri': GOOGLE_REDIRECT_URI,
+        'grant_type': 'authorization_code',
+    }, timeout=10)
+
+    if token_resp.status_code != 200:
+        _log(f"[Google OAuth] 토큰 교환 실패: {token_resp.text}")
+        return redirect('/?error=google_token_failed')
+
+    access_token = token_resp.json().get('access_token')
+
+    # 토큰 → 사용자 정보
+    userinfo_resp = requests.get(GOOGLE_USERINFO_URL, headers={
+        'Authorization': f'Bearer {access_token}'
+    }, timeout=10)
+
+    if userinfo_resp.status_code != 200:
+        return redirect('/?error=google_userinfo_failed')
+
+    guser = userinfo_resp.json()
+    email = guser.get('email', '').lower()
+    name  = guser.get('name', '')
+
+    if not email:
+        return redirect('/?error=google_no_email')
+
+    # DB에서 사용자 조회 or 생성
+    user = get_user_by_email(email)
+    if not user:
+        # 신규 가입 — 비밀번호 없이 (Google 전용)
+        password_hash = generate_password_hash(os.urandom(32).hex())  # 랜덤 (직접 로그인 불가)
+        user_id = create_user(email, password_hash, name or None)
+    else:
+        user_id = user['id']
+        update_last_login(user_id)
+
+    session['user_id'] = user_id
+    return redirect('/')
 
 
 # ── 인증 API ─────────────────────────────────────────────────────────────────
