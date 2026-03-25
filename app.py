@@ -4,7 +4,9 @@ localhost:5000 에서 슬라이드 생성 UI 제공
 """
 import json
 import os
+import subprocess
 import sys
+import tempfile
 import threading
 import time
 import uuid
@@ -40,7 +42,7 @@ def _log(msg: str):
         except Exception:
             continue
 
-from flask import Flask, jsonify, make_response, render_template, request, Response, send_from_directory
+from flask import Flask, jsonify, make_response, render_template, request, Response, send_file, send_from_directory
 
 BASE_DIR = Path(__file__).parent
 sys.path.insert(0, str(BASE_DIR))
@@ -48,6 +50,9 @@ sys.path.insert(0, str(BASE_DIR))
 from web_to_slide.pipeline import run_pipeline
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
+app.jinja_env.auto_reload = True
 
 # job_id → { status, lines, result, error }
 JOBS: dict[str, dict] = {}
@@ -208,11 +213,50 @@ def serve_static(filename):
     return send_from_directory(static_dir, filename)
 
 
+@app.route("/api/convert-pdf", methods=["POST"])
+def convert_to_pdf():
+    """PPTX 파일을 받아서 LibreOffice로 PDF 변환 후 반환"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'PPTX 파일이 필요합니다'}), 400
+
+    pptx_file = request.files['file']
+    dl_name = request.form.get('filename', 'slides')
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        pptx_path = os.path.join(tmpdir, 'slides.pptx')
+        pptx_file.save(pptx_path)
+
+        try:
+            result = subprocess.run(
+                ['libreoffice', '--headless', '--convert-to', 'pdf',
+                 '--outdir', tmpdir, pptx_path],
+                capture_output=True, text=True, timeout=60
+            )
+        except FileNotFoundError:
+            return jsonify({'error': 'LibreOffice가 설치되어 있지 않습니다. PPTX를 먼저 다운로드해 주세요.'}), 500
+        except subprocess.TimeoutExpired:
+            return jsonify({'error': 'PDF 변환 시간이 초과되었습니다.'}), 500
+
+        if result.returncode != 0:
+            return jsonify({'error': 'PDF 변환 실패', 'detail': result.stderr}), 500
+
+        pdf_path = os.path.join(tmpdir, 'slides.pdf')
+        if not os.path.exists(pdf_path):
+            return jsonify({'error': 'PDF 파일이 생성되지 않았습니다.'}), 500
+
+        return send_file(
+            pdf_path,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=dl_name + '.pdf'
+        )
+
+
 if __name__ == "__main__":
     print("=" * 50)
-    print("  WebToSlide 서버 시작")
+    print("  TickDeck 서버 시작")
     print("  http://localhost:5000")
     print(f"  로그 파일: {_LOG_PATH}")
     print("=" * 50)
     _log("=== WebToSlide 서버 시작 ===")
-    app.run(debug=False, port=5000, threaded=True)
+    app.run(host='0.0.0.0', debug=False, port=5000, threaded=True)
