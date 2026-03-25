@@ -599,22 +599,60 @@
   </style>
 </head>
 <body>
-<div class="page">
+<div class="page" style="position:relative;">
+
+  <!-- ── 유저 바 (로그인 시 표시) ── -->
+  <div id="user-bar" style="display:none; align-items:center; gap:12px; position:absolute; top:20px; right:28px;">
+    <span id="user-tokens" style="font-size:13px; color:#5085C3; font-weight:500;">🎫 2개</span>
+    <span id="user-email" style="font-size:13px; color:#6B7685;"></span>
+    <button id="logout-btn" onclick="_doLogout()" style="font-size:12px; color:#94A3B8; background:none; border:none; cursor:pointer; text-decoration:underline;">로그아웃</button>
+  </div>
 
   <!-- ── 헤더 ── -->
   <header>
     <div class="badge">TickDeck</div>
-    <!-- BUILD: v10.62 · 2026-03-25 -->
-    <script>window.__APP_VERSION__='v10.62';window.__BUILD_DATE__='2026-03-25';window.__BUILD_TIME__='';console.debug(`[TickDeck] ${window.__APP_VERSION__} / ${window.__BUILD_DATE__}`);</script>
+    <script>window.__APP_VERSION__='v10.63';window.__BUILD_DATE__='2026-03-25';window.__BUILD_TIME__='';console.debug(`[TickDeck] ${window.__APP_VERSION__} / ${window.__BUILD_DATE__}`);</script>
     <h1>당신의 웹사이트를 PPT로</h1>
     <p>URL을 입력하면<br>AI가 자동으로 브랜드 맞춤형 프레젠테이션을 만듭니다.</p>
   </header>
 
-  <!-- ── 메인 카드 ── -->
-  <div class="card">
+  <!-- ── 인증 섹션 (비로그인 시 표시) ── -->
+  <div id="auth-section" class="card" style="display:none;">
+    <h3 id="auth-title" style="font-size:20px; font-weight:700; margin-bottom:20px; text-align:center; color:#111827;">로그인</h3>
+
+    <div id="name-field" class="field" style="display:none;">
+      <label>이름 또는 회사명 <span style="font-weight:400;color:#94A3B8">(선택)</span></label>
+      <input id="auth-name" type="text" placeholder="선택사항" autocomplete="name" />
+    </div>
+
+    <div class="field">
+      <label>이메일</label>
+      <input id="auth-email" type="email" placeholder="email@example.com" autocomplete="email" />
+    </div>
+
+    <div class="field">
+      <label>비밀번호</label>
+      <input id="auth-password" type="password" placeholder="6자 이상" autocomplete="current-password" />
+    </div>
+
+    <button id="auth-submit" class="btn btn-primary" onclick="_doAuth()">로그인</button>
+
+    <p id="auth-error" style="color:#DC2626; font-size:13px; text-align:center; margin-top:12px; display:none;"></p>
+
+    <p style="text-align:center; margin-top:16px; font-size:13px; color:#6B7685;">
+      <span id="auth-toggle-text">아직 계정이 없으신가요?</span>
+      <a href="#" id="auth-switch" onclick="_toggleAuthMode(event)" style="color:#5085C3; font-weight:500;">회원가입</a>
+    </p>
+  </div>
+
+  <!-- ── 메인 카드 (로그인 후 표시) ── -->
+  <div class="card" id="main-card" style="display:none;">
 
     <!-- Phase 1: 입력 폼 -->
     <div id="phase-form">
+      <div id="token-notice" style="display:none; text-align:center; padding:10px; margin-bottom:16px; background:#FEF2F2; border:1px solid #FECACA; border-radius:10px; color:#DC2626; font-size:13px;">
+        무료 토큰을 모두 사용했습니다. 추가 토큰은 준비 중입니다.
+      </div>
       <div class="field">
         <label>홈페이지 주소</label>
         <input id="inp-url" type="text" placeholder="example.com" autocomplete="off" />
@@ -776,6 +814,116 @@
   let currentJobId  = null;
   let eventSource   = null;
   let _slideData    = null;   // 완성된 JSON 결과 캐시
+  let _currentUser  = null;   // 현재 로그인 사용자
+  let _authMode     = 'login'; // 'login' or 'signup'
+
+  // ── 인증 UI ─────────────────────────────────────
+  async function _checkAuth() {
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (data.ok && data.user) {
+        _currentUser = data.user;
+        _showLoggedIn();
+      } else {
+        _showAuthForm();
+      }
+    } catch { _showAuthForm(); }
+  }
+
+  function _showLoggedIn() {
+    document.getElementById('auth-section').style.display = 'none';
+    document.getElementById('main-card').style.display = '';
+    const bar = document.getElementById('user-bar');
+    bar.style.display = 'flex';
+    document.getElementById('user-email').textContent = _currentUser.email;
+    document.getElementById('user-tokens').textContent = `🎫 ${_currentUser.tokens}개`;
+    _updateTokenUI(_currentUser.tokens);
+  }
+
+  function _showAuthForm() {
+    document.getElementById('auth-section').style.display = '';
+    document.getElementById('main-card').style.display = 'none';
+    document.getElementById('user-bar').style.display = 'none';
+  }
+
+  function _updateTokenUI(tokens) {
+    document.getElementById('user-tokens').textContent = `🎫 ${tokens}개`;
+    const btn = document.getElementById('btn-generate');
+    const notice = document.getElementById('token-notice');
+    if (tokens <= 0) {
+      btn.disabled = true;
+      btn.textContent = '토큰이 부족합니다';
+      btn.style.background = '#D1D5DB';
+      btn.style.cursor = 'not-allowed';
+      btn.style.boxShadow = 'none';
+      notice.style.display = 'block';
+    } else {
+      btn.disabled = false;
+      btn.textContent = '슬라이드 생성하기';
+      btn.style.background = '';
+      btn.style.cursor = '';
+      btn.style.boxShadow = '';
+      notice.style.display = 'none';
+    }
+  }
+
+  function _toggleAuthMode(e) {
+    e.preventDefault();
+    _authMode = _authMode === 'login' ? 'signup' : 'login';
+    document.getElementById('auth-title').textContent = _authMode === 'login' ? '로그인' : '회원가입';
+    document.getElementById('name-field').style.display = _authMode === 'signup' ? '' : 'none';
+    document.getElementById('auth-submit').textContent = _authMode === 'login' ? '로그인' : '회원가입';
+    document.getElementById('auth-toggle-text').textContent = _authMode === 'login' ? '아직 계정이 없으신가요? ' : '이미 계정이 있으신가요? ';
+    document.getElementById('auth-switch').textContent = _authMode === 'login' ? '회원가입' : '로그인';
+    document.getElementById('auth-error').style.display = 'none';
+  }
+
+  async function _doAuth() {
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const name = document.getElementById('auth-name').value.trim();
+    const errEl = document.getElementById('auth-error');
+    errEl.style.display = 'none';
+
+    const endpoint = _authMode === 'login' ? '/api/auth/login' : '/api/auth/signup';
+    const body = _authMode === 'login'
+      ? { email, password }
+      : { email, password, name };
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data.ok) {
+        _currentUser = data.user;
+        _showLoggedIn();
+      } else {
+        errEl.textContent = data.error || '오류가 발생했습니다';
+        errEl.style.display = 'block';
+      }
+    } catch {
+      errEl.textContent = '서버 연결에 실패했습니다';
+      errEl.style.display = 'block';
+    }
+  }
+
+  async function _doLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    _currentUser = null;
+    _showAuthForm();
+  }
+
+  // 페이지 로드 시 인증 확인
+  _checkAuth();
+
+  // 엔터키로 인증
+  document.getElementById('auth-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') _doAuth();
+  });
 
   // ── 단계 키워드 매핑 ──────────────────────────────
   const STEP_MAP = [
@@ -968,6 +1116,14 @@
   function showDone(meta, slideCount, jobId, label) {
     document.getElementById('done-company').textContent = label;
     showPhase('done');
+
+    // 토큰 갱신
+    fetch('/api/auth/me').then(r => r.json()).then(d => {
+      if (d.ok && d.user) {
+        _currentUser = d.user;
+        _updateTokenUI(d.user.tokens);
+      }
+    }).catch(() => {});
 
     // 메타 정보 표시
     const narrativeType = (meta || {}).narrative_type || '—';

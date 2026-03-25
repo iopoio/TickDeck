@@ -7,3 +7,4 @@ app_log.txt
 *.pdf
 .venv/
 node_modules/
+instance/

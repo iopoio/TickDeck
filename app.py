@@ -10,6 +10,13 @@ import tempfile
 import threading
 import time
 import uuid
+
+# .env 파일 로드 (SECRET_KEY, GEMINI_API_KEY 등)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # python-dotenv 없으면 os.environ만 사용
 from pathlib import Path
 
 # Windows cp949 환경에서 이모지·유니코드 출력 오류 방지
@@ -47,15 +54,122 @@ from flask import Flask, jsonify, make_response, render_template, request, Respo
 BASE_DIR = Path(__file__).parent
 sys.path.insert(0, str(BASE_DIR))
 
+import re as _re_mod
+from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from web_to_slide.pipeline import run_pipeline
+from web_to_slide.database import (
+    init_app as init_db_app, init_db,
+    create_user, get_user_by_email, get_user_by_id,
+    update_last_login, check_and_deduct_token, refund_token,
+    create_generation, complete_generation,
+)
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tickdeck-dev-secret-change-in-production')
 app.jinja_env.auto_reload = True
+
+# DB 초기화
+init_db_app(app)
+with app.app_context():
+    init_db()
 
 # job_id → { status, lines, result, error }
 JOBS: dict[str, dict] = {}
+
+
+# ── 인증 데코레이터 ──────────────────────────────────────────────────────────
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        from flask import session
+        if 'user_id' not in session:
+            return jsonify({'error': '로그인이 필요합니다'}), 401
+        return f(*args, **kwargs)
+    return decorated
+
+
+# ── 인증 API ─────────────────────────────────────────────────────────────────
+@app.route("/api/auth/signup", methods=["POST"])
+def auth_signup():
+    data = request.get_json(force=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    password = (data.get("password") or "")
+    name = (data.get("name") or "").strip()
+
+    # 이메일 형식 검증
+    if not email or not _re_mod.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
+        return jsonify({"error": "올바른 이메일 형식이 아닙니다"}), 400
+
+    # 비밀번호 최소 6자
+    if len(password) < 6:
+        return jsonify({"error": "비밀번호는 최소 6자 이상이어야 합니다"}), 400
+
+    # 이메일 중복 체크
+    if get_user_by_email(email):
+        return jsonify({"error": "이미 가입된 이메일입니다"}), 409
+
+    # 사용자 생성
+    password_hash = generate_password_hash(password)
+    user_id = create_user(email, password_hash, name or None)
+
+    # 자동 로그인
+    from flask import session
+    session['user_id'] = user_id
+
+    return jsonify({
+        "ok": True,
+        "user": {"email": email, "name": name, "tokens": 2}
+    })
+
+
+@app.route("/api/auth/login", methods=["POST"])
+def auth_login():
+    data = request.get_json(force=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    password = (data.get("password") or "")
+
+    user = get_user_by_email(email)
+    if not user or not check_password_hash(user['password_hash'], password):
+        return jsonify({"error": "이메일 또는 비밀번호가 올바르지 않습니다"}), 401
+
+    # 세션 저장 + 마지막 로그인 갱신
+    from flask import session
+    session['user_id'] = user['id']
+    update_last_login(user['id'])
+
+    return jsonify({
+        "ok": True,
+        "user": {"email": user['email'], "name": user['name'], "tokens": user['tokens']}
+    })
+
+
+@app.route("/api/auth/logout", methods=["POST"])
+def auth_logout():
+    from flask import session
+    session.pop('user_id', None)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/auth/me")
+def auth_me():
+    from flask import session
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"ok": False, "user": None})
+
+    user = get_user_by_id(user_id)
+    if not user:
+        session.pop('user_id', None)
+        return jsonify({"ok": False, "user": None})
+
+    return jsonify({
+        "ok": True,
+        "user": {"email": user['email'], "name": user['name'], "tokens": user['tokens']}
+    })
 
 
 # ── 파이프라인 실행 ─────────────────────────────────────────────────────────
@@ -80,12 +194,21 @@ def _run(job_id: str, url: str, company: str,
             except Exception:
                 pass
 
+    gen_id = job.get("gen_id")
+    user_id = job.get("user_id")
+
     try:
+        if gen_id:
+            with app.app_context():
+                complete_generation(gen_id, 'processing')
         result = run_pipeline(url, company or None, progress_fn=on_progress,
                               narrative_type=narrative_type, mood=mood, purpose=purpose,
                               brand_color=brand_color)
         job["result"] = result
         job["status"] = "done"
+        if gen_id:
+            with app.app_context():
+                complete_generation(gen_id, 'completed')
     except Exception as e:
         import traceback as _tb
         err_str = str(e)
@@ -101,11 +224,20 @@ def _run(job_id: str, url: str, company: str,
                                   brand_color=brand_color)
             job["result"] = result
             job["status"] = "done"
+            if gen_id:
+                with app.app_context():
+                    complete_generation(gen_id, 'completed')
         except Exception as e2:
             import traceback as _tb2
             _log("=== TRACEBACK2 ===\n" + _tb2.format_exc() + "=================")
             job["status"] = "error"
             job["error"] = str(e2)
+            # 실패 시 토큰 환불
+            if user_id and gen_id:
+                with app.app_context():
+                    refund_token(user_id, gen_id)
+                    complete_generation(gen_id, 'failed')
+                on_progress("  → 토큰 환불 완료")
 
 
 # ── 라우트 ──────────────────────────────────────────────────────────────────
@@ -118,7 +250,10 @@ def index():
 
 
 @app.route("/generate", methods=["POST"])
+@login_required
 def generate():
+    from flask import session
+    user_id = session['user_id']
     data    = request.get_json(force=True)
     url            = (data.get("url") or "").strip()
     company        = (data.get("company") or "").strip()
@@ -133,13 +268,31 @@ def generate():
     if not url.startswith("http"):
         url = "https://" + url
 
+    # 토큰 차감 (먼저 차감 → 실패 시 환불)
+    remaining = check_and_deduct_token(user_id)
+    if remaining is None:
+        return jsonify({"error": "토큰이 부족합니다. 토큰을 충전해 주세요."}), 403
+
+    # generation 기록
+    gen_id = create_generation(user_id, url, company or None, purpose)
+
+    # token_history 기록
+    from web_to_slide.database import get_db
+    db = get_db()
+    db.execute(
+        "INSERT INTO token_history (user_id, amount, reason, generation_id) VALUES (?, -1, 'generate', ?)",
+        (user_id, gen_id)
+    )
+    db.commit()
+
     job_id = str(uuid.uuid4())
-    JOBS[job_id] = {"status": "running", "lines": [], "result": None, "error": None}
+    JOBS[job_id] = {"status": "running", "lines": [], "result": None, "error": None,
+                    "user_id": user_id, "gen_id": gen_id}
 
     t = threading.Thread(target=_run, args=(job_id, url, company, narrative_type, mood, purpose, brand_color), daemon=True)
     t.start()
 
-    return jsonify({"job_id": job_id})
+    return jsonify({"job_id": job_id, "remaining_tokens": remaining})
 
 
 @app.route("/stream/<job_id>")
