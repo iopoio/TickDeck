@@ -542,7 +542,13 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
         slide_json['brand']['pageSubjectIconB64'] = assets.get('page_subject_icon_b64', '')
         slide_json['brand']['pageSubjectIconMime'] = assets.get('page_subject_icon_mime', 'png')
         fc = assets.get('footer_contact', {})
-        slide_json['brand']['nameKo']  = fc.get('nameKo', '')
+        # nameKo 검증: 회사명과 관련 없는 짧은 텍스트는 크롤링 노이즈
+        _nameKo = fc.get('nameKo', '')
+        _co_lower = (company_name or '').lower().replace('-', '').replace(' ', '')
+        # 3글자 이하 + 회사명에 포함 안 되면 노이즈
+        if _nameKo and len(_nameKo) <= 4 and _nameKo not in (company_name or ''):
+            _nameKo = ''
+        slide_json['brand']['nameKo']  = _nameKo
         slide_json['brand']['ceoName'] = fc.get('ceoName', '')
         if assets.get('logo_b64'):
             _p(f"  → 로고 b64 주입 완료 ({len(assets['logo_b64'])//1024}KB)")

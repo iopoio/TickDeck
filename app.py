@@ -127,7 +127,7 @@ def auth_google_callback():
     from flask import session, redirect
     code = request.args.get('code')
     if not code:
-        return redirect('/?error=google_auth_failed')
+        return redirect('/app?error=google_auth_failed')
 
     # 코드 → 토큰 교환
     token_resp = requests.post(GOOGLE_TOKEN_URL, data={
@@ -140,7 +140,7 @@ def auth_google_callback():
 
     if token_resp.status_code != 200:
         _log(f"[Google OAuth] 토큰 교환 실패: {token_resp.text}")
-        return redirect('/?error=google_token_failed')
+        return redirect('/app?error=google_token_failed')
 
     access_token = token_resp.json().get('access_token')
 
@@ -150,14 +150,14 @@ def auth_google_callback():
     }, timeout=10)
 
     if userinfo_resp.status_code != 200:
-        return redirect('/?error=google_userinfo_failed')
+        return redirect('/app?error=google_userinfo_failed')
 
     guser = userinfo_resp.json()
     email = guser.get('email', '').lower()
     name  = guser.get('name', '')
 
     if not email:
-        return redirect('/?error=google_no_email')
+        return redirect('/app?error=google_no_email')
 
     # DB에서 사용자 조회 or 생성
     user = get_user_by_email(email)
@@ -170,7 +170,7 @@ def auth_google_callback():
         update_last_login(user_id)
 
     session['user_id'] = user_id
-    return redirect('/')
+    return redirect('/app')
 
 
 # ── 인증 API ─────────────────────────────────────────────────────────────────
@@ -334,7 +334,14 @@ def _run(job_id: str, url: str, company: str,
 
 # ── 라우트 ──────────────────────────────────────────────────────────────────
 @app.route("/")
-def index():
+def landing():
+    """랜딩 페이지 (서비스 소개)"""
+    return render_template("landing.html")
+
+
+@app.route("/app")
+def app_page():
+    """앱 페이지 (슬라이드 생성)"""
     resp = make_response(render_template("index.html"))
     resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
     resp.headers["Pragma"] = "no-cache"
