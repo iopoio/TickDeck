@@ -2220,9 +2220,9 @@
           fontFace: F, fontSize: 12, color: C.textSecondary,
           valign: 'top', wrap: true, lineSpacingMultiple: 1.35 });
       } else {
-        // ── 수직 카드 (n=2/3/6): 아이콘박스 상단 중앙 + 제목 + 본문 ──
+        // ── 수직 카드 (n=2/3/6): 아이콘박스 카드 내부 상단 ──
         const bX = cx + (cardW - boxSize) / 2;
-        const bTopPad = N <= 3 ? 0.28 : 0.18;
+        const bTopPad = N <= 3 ? 0.36 : 0.24;  // 카드 안쪽으로 충분히 (겹침 방지)
         pm_addIconBox(s, C, fonts, bX, cy + bTopPad, boxSize, parsed.icon, i);
         const tY = cy + bTopPad + boxSize + 0.20;
         const titleFs = N <= 2 ? 16 : N === 3 ? 17 : 13;
@@ -4489,40 +4489,37 @@
             if (NT !== 'B') s.addShape('rect', { x: 0, y: 0, w: W, h: 0.05, fill: { color: _hiColor }, line: { type: 'none' } });
             s.addShape('rect', { x: 0, y: H - _cv.bottomH, w: W, h: _cv.bottomH, fill: { color: _hiColor }, line: { type: 'none' } });
           }
-          // ── 데코 원 + 워터마크 ──
-          s.addShape('ellipse', { x: W * 0.65, y: -H * 0.28, w: H * 1.10, h: H * 1.10,
+          // ── 데코 원 (우하단 — 공간 활용, 단일 원) ──
+          const _circD = H * 1.20;
+          s.addShape('ellipse', { x: W * 0.58, y: H * 0.15, w: _circD, h: _circD,
             fill: { color: C.primary, transparency: _cv.circTr }, line: { type: 'none' } });
-          // 워터마크: 6글자 이하만 표시 (긴 회사명은 어색 — 삼성전기 등)
-          if ((companyName || '').length <= 6) {
-            s.addText((companyName || '').toUpperCase(), {
-              x: W * 0.22, y: H * 0.42, w: W * 0.76, h: H * 0.58,
-              fontSize: 110, bold: true, color: C.primary, transparency: Math.max(_cv.wmarkTr, 95),
-              align: 'right', valign: 'bottom', fontFace: F, wrap: false });
-          }
-          // ── 회사명 레이블 ──
+          // ── 회사명 레이블 (상단) ──
           if (companyName) s.addText(companyName.toUpperCase(), {
-            x: W * 0.08, y: _cv.coY, w: W * 0.82, h: H * 0.09,
+            x: W * 0.08, y: _cv.coY, w: W * 0.50, h: H * 0.09,
             fontSize: _cv.coFs, color: _cv.coClr, charSpacing: _cv.coSp,
             align: 'left', valign: 'middle', fontFace: F });
-          // ── 구분선 ──
+          // ── 구분선 (길게) ──
           if (NT === 'D') {
             s.addShape('rect', { x: W * 0.08, y: H * 0.26, w: W * 0.84, h: 0.02, fill: { color: C.primary, transparency: 35 }, line: { type: 'none' } });
-            s.addShape('rect', { x: W * 0.08, y: H * 0.28, w: W * 0.38, h: 0.02, fill: { color: C2, transparency: 35 }, line: { type: 'none' } });
           } else {
-            s.addShape('rect', { x: W * 0.08, y: _cv.divSingleY, w: W * 0.48, h: 0.035, fill: { color: _hiColor }, line: { type: 'none' } });
+            s.addShape('rect', { x: W * 0.08, y: _cv.divSingleY, w: W * 0.60, h: 0.04, fill: { color: _hiColor }, line: { type: 'none' } });
           }
-          // ── 헤드라인 ──
+          // ── 헤드라인 (더 크게, 세로 중앙 정렬) ──
           const _hlLen = (hl || '').length;
-          const _baseFs = _hlLen > 28 ? 44 : _hlLen > 18 ? 52 : 62;
-          s.addText(hl, { x: W * 0.08, y: _cv.hlY, w: W * 0.80, h: H * 0.40,
+          const _baseFs = _hlLen > 28 ? 48 : _hlLen > 18 ? 56 : 66;
+          s.addText(hl, { x: W * 0.08, y: _cv.hlY, w: W * 0.52, h: H * 0.40,
             fontSize: _baseFs + _cv.hlFsAdj, bold: _cv.hlBold, color: 'FFFFFF', wrap: true,
             align: 'left', valign: 'top', lineSpacingMultiple: _cv.hlLSM, fontFace: _cv.hlFont || FD });
-          // ── accent 선 + sub ──
-          if (_cv.accentLine) s.addShape('rect', { x: W * 0.08, y: H * 0.70, w: W * 0.16, h: 0.025,
-            fill: { color: C.accentLight, transparency: 30 }, line: { type: 'none' } });
-          if (sub) s.addText(sub, { x: W * 0.08, y: H * 0.72, w: W * 0.76, h: H * 0.14,
-            fontSize: _cv.subFs, color: 'FFFFFF', align: 'left', valign: 'top', fontFace: F, wrap: true,
+          // ── sub + accent 구분선 ──
+          const _subY = _cv.hlY + H * 0.42;
+          if (_cv.accentLine) s.addShape('rect', { x: W * 0.08, y: _subY, w: W * 0.12, h: 0.03,
+            fill: { color: C.accentLight, transparency: 20 }, line: { type: 'none' } });
+          if (sub) s.addText(sub, { x: W * 0.08, y: _subY + 0.06, w: W * 0.52, h: H * 0.14,
+            fontSize: _cv.subFs, color: 'CCCCCC', align: 'left', valign: 'top', fontFace: F, wrap: true,
             lineSpacingMultiple: 1.3 });
+          // ── 하단 두꺼운 accent 바 (존재감) ──
+          s.addShape('rect', { x: 0, y: H - _cv.bottomH, w: W, h: _cv.bottomH,
+            fill: { color: _hiColor }, line: { type: 'none' } });
           // ── 로고 ──
           if (_cv.logo) {
             addLogo(..._cv.logo);
