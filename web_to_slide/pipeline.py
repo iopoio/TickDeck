@@ -517,12 +517,15 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
             slide['body'] = cleaned_body
         _p("  → [정제] 마크다운/서술형 제거 완료")
 
-        # 빈 body 슬라이드 제거 (cover/cta/contact 제외)
+        # 빈/허전한 body 슬라이드 제거 (cover/cta/contact 제외)
         _keep_empty = {'cover', 'cta_session', 'cta', 'contact', 'cta_contact', 'section_intro'}
+        def _has_meaningful_body(slide):
+            """body에 10자 이상인 의미 있는 항목이 1개 이상 있는지"""
+            return any(len(b.strip()) >= 10 for b in slide.get('body', []))
         slides_before = len(slide_json.get('slides', []))
         slide_json['slides'] = [
             s for s in slide_json.get('slides', [])
-            if s.get('type', '') in _keep_empty or len(s.get('body', [])) > 0
+            if s.get('type', '') in _keep_empty or _has_meaningful_body(s)
         ]
         _removed = slides_before - len(slide_json.get('slides', []))
         if _removed > 0:

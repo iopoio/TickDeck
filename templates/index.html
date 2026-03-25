@@ -2186,13 +2186,19 @@
                   : N === 4 ? Math.min(cardH * 0.52, 0.62)
                   : Math.min(cardW * 0.26, 0.54);
 
+    // 아이콘 일관성: 하나라도 아이콘 없으면 전부 번호로 통일
+    const _parsedItems = items.slice(0, cols * rows).map(it => parseIconItem(it));
+    const _allHaveIcons = _parsedItems.every(p => p.icon && ICON_SET[p.icon]);
+
     items.slice(0, cols * rows).forEach((item, i) => {
       const col = i % cols, row = Math.floor(i / cols);
       const cx = aX + col * (cardW + GAP);
       const cy = aY + cardOffsetY + row * (cardH + GAP);
 
       // 텍스트 파싱
-      const parsed = parseIconItem(item);
+      const parsed = _parsedItems[i];
+      // 혼용 방지: 전부 아이콘이 아니면 아이콘 무시
+      if (!_allHaveIcons) parsed.icon = null;
       const ci = parsed.text.indexOf(':');
       const _rawHead = ci > 0 && ci <= 25 ? parsed.text.slice(0, ci).trim()
                      : parsed.text.slice(0, Math.min(20, parsed.text.length));
@@ -4224,8 +4230,13 @@
       const op     = slide.overlay_opacity != null ? slide.overlay_opacity : 0.65;
       const overlayT = Math.round((1 - op) * 100);
       let layout  = getSlideLayout(slide, narrativeType, prevLayout, pptxLayoutCount);
-      // 이미지 없는 split → two_col_text 강제 전환 (워터마크만 보이는 문제 방지)
-      if (layout === 'split' && !bgB64) layout = 'two_col_text';
+      // 이미지 없는 split → 다양한 레이아웃으로 분산 (워터마크 방지 + 반복 방지)
+      if (layout === 'split' && !bgB64) {
+        const _bodyN = (slide.body || []).length;
+        if (_bodyN >= 4) layout = 'two_col_text';
+        else if (_bodyN >= 2) layout = 'cards';
+        else layout = 'cards';
+      }
       // section은 시각적 구분자 — 연속 방지 카운터에 영향 안 줌
       if (!['cover','cta','toc','section'].includes(layout)) {
         prevLayout = layout;
@@ -4504,17 +4515,17 @@
           } else {
             s.addShape('rect', { x: W * 0.08, y: _cv.divSingleY, w: W * 0.60, h: 0.04, fill: { color: _hiColor }, line: { type: 'none' } });
           }
-          // ── 헤드라인 (더 크게, 세로 중앙 정렬) ──
+          // ── 헤드라인 ──
           const _hlLen = (hl || '').length;
-          const _baseFs = _hlLen > 28 ? 48 : _hlLen > 18 ? 56 : 66;
-          s.addText(hl, { x: W * 0.08, y: _cv.hlY, w: W * 0.52, h: H * 0.40,
+          const _baseFs = _hlLen > 28 ? 44 : _hlLen > 18 ? 52 : 62;
+          s.addText(hl, { x: W * 0.08, y: _cv.hlY, w: W * 0.80, h: H * 0.40,
             fontSize: _baseFs + _cv.hlFsAdj, bold: _cv.hlBold, color: 'FFFFFF', wrap: true,
+            shrinkText: true,
             align: 'left', valign: 'top', lineSpacingMultiple: _cv.hlLSM, fontFace: _cv.hlFont || FD });
-          // ── sub + accent 구분선 ──
-          const _subY = _cv.hlY + H * 0.42;
-          if (_cv.accentLine) s.addShape('rect', { x: W * 0.08, y: _subY, w: W * 0.12, h: 0.03,
-            fill: { color: C.accentLight, transparency: 20 }, line: { type: 'none' } });
-          if (sub) s.addText(sub, { x: W * 0.08, y: _subY + 0.06, w: W * 0.52, h: H * 0.14,
+          // ── accent 선 + sub ──
+          if (_cv.accentLine) s.addShape('rect', { x: W * 0.08, y: H * 0.70, w: W * 0.16, h: 0.025,
+            fill: { color: C.accentLight, transparency: 30 }, line: { type: 'none' } });
+          if (sub) s.addText(sub, { x: W * 0.08, y: H * 0.72, w: W * 0.76, h: H * 0.14,
             fontSize: _cv.subFs, color: 'CCCCCC', align: 'left', valign: 'top', fontFace: F, wrap: true,
             lineSpacingMultiple: 1.3 });
           // ── 하단 두꺼운 accent 바 (존재감) ──
