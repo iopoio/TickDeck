@@ -64,7 +64,7 @@ from web_to_slide.database import (
     init_app as init_db_app, init_db,
     create_user, get_user_by_email, get_user_by_id,
     update_last_login, check_and_deduct_token, refund_token,
-    create_generation, complete_generation,
+    create_generation, complete_generation, add_tokens,
 )
 
 app = Flask(__name__)
@@ -233,6 +233,17 @@ def auth_logout():
     from flask import session
     session.pop('user_id', None)
     return jsonify({"ok": True})
+
+
+@app.route("/api/token/free-charge", methods=["POST"])
+@login_required
+def free_charge():
+    """무료 토큰 2개 충전 (테스트/이벤트용 — 나중에 설문 연동)"""
+    from flask import session
+    user_id = session['user_id']
+    add_tokens(user_id, 2, 'free_charge')
+    user = get_user_by_id(user_id)
+    return jsonify({"ok": True, "tokens": user['tokens']})
 
 
 @app.route("/api/auth/me")
