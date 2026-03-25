@@ -29,6 +29,7 @@ from .image_pipeline import (
 )
 from .quality import _score_slide, _improve_slide
 from .utils import _color_vibrancy, extract_dominant_color, _extract_svg_colors, _b64_mime
+from .scraper import _playwright_screenshot_color
 from .prompts import _PURPOSE_CONTEXT
 
 if HAS_PIL:
@@ -118,7 +119,7 @@ def _build_toc_slide(slides: list) -> dict | None:
 
 def run_pipeline(url: str, company_name: str = None, progress_fn=None,
                  narrative_type: str = None, mood: str = 'professional',
-                 purpose: str = 'brand') -> dict:
+                 purpose: str = 'brand', brand_color: str = '') -> dict:
     """
     AI 데이터 엔진 파이프라인: 크롤링 → Gemini JSON → 이미지 생성 → dict 반환
 
@@ -560,8 +561,14 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
     _reason = ''
     _explicit_primary = assets.get('explicit_primary', '')
 
+    # -4. 사용자 수동 지정 (UI에서 brand_color 입력) — 최최최우선
+    if brand_color and brand_color.startswith('#') and len(brand_color) == 7:
+        final_color = brand_color.upper()
+        _reason = f'사용자 수동 지정 ({brand_color})'
+        _p(f"  → 사용자 지정 브랜드 컬러: {brand_color}")
+
     # -3. --color-primary / --primary-color CSS 변수 최최우선 (vibrancy 무관 — 브랜드 의도 존중)
-    if _explicit_primary:
+    if not final_color and _explicit_primary:
         final_color = _explicit_primary
         _reason = f'CSS --color-primary 변수 ({_explicit_primary})'
 
@@ -663,6 +670,21 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
         _p(f"  ⚠ 파비콘 교차검증: primaryColor({final_color})와 파비콘({_fav_dom}) 불일치 → 파비콘 우선")
         final_color = _fav_dom
         _reason = f'파비콘 교차검증 override ({_fav_dom})'
+
+    # ── 스크린샷 교차검증: CSS 감지가 의심스러울 때 실제 렌더링 색상으로 보정 ──
+    # 조건: 파비콘 교차검증이 작동하지 않았고, CSS 감지 결과가 WP 기본 팔레트일 가능성
+    _wp_defaults = {'#F78DA7', '#CF2E2E', '#FF6900', '#FCB900', '#7BDCB5', '#00D084', '#8ED1FC', '#0693E3', '#ABB8C3'}
+    if (
+        final_color.upper() in _wp_defaults
+        and not _is_monochrome
+        and not brand_color  # 사용자 수동 지정이 없을 때만
+    ):
+        _p(f"  ⚠ CSS 감지 결과({final_color})가 WP 기본 팔레트 — 스크린샷 교차검증 시도")
+        _ss_color = _playwright_screenshot_color(url)
+        if _ss_color and _color_vibrancy(_ss_color) >= 0.20:
+            _p(f"  → 스크린샷 dominant color: {_ss_color} → primary 교체")
+            final_color = _ss_color
+            _reason = f'스크린샷 교차검증 override ({_ss_color})'
 
     # 두 번째 vibrant 색상 (포인트 악센트 — C2)
     # primary와 다른 첫 번째 vibrant 색 — 블랙리스트 없음, 단순 vibrancy 기준만
@@ -772,9 +794,13 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
     # ── 스토리라인 완전성 검증 — 누락 슬라이드 자동 복원 ─────────────────
     _p("[검증] 스토리라인 슬라이드 완전성 검사...")
     _actual_types = [s.get('type', '') for s in slides]
+    # CTA/contact 계열은 이미 하나라도 있으면 복원 불필요
+    _cta_types = {'cta_session', 'cta_contact', 'cta', 'contact'}
+    _has_cta = bool(_cta_types & set(_actual_types))
     _missing_items = [
         (idx, item) for idx, item in enumerate(storyline)
         if item.get('type', '') not in _actual_types
+        and not (_has_cta and item.get('type', '') in _cta_types)  # CTA 중복 복원 방지
     ]
     if _missing_items:
         _p(f"  ⚠ 누락 슬라이드 {len(_missing_items)}개 발견 — 원위치 복원")

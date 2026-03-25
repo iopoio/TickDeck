@@ -354,6 +354,31 @@ def _pw_dismiss_cookie(page) -> bool:
     return False
 
 
+def _playwright_screenshot_color(url: str, timeout: int = 25000) -> str:
+    """Playwright로 페이지 스크린샷 찍고 dominant color 추출 → '#RRGGBB' or ''"""
+    try:
+        from playwright.sync_api import sync_playwright
+        from .utils import extract_dominant_color
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            try:
+                page = _make_pw_page(browser)
+                page.goto(url, wait_until='domcontentloaded', timeout=timeout)
+                page.wait_for_timeout(4000)
+                _pw_dismiss_cookie(page)
+                page.wait_for_timeout(1000)
+                screenshot_bytes = page.screenshot(type='png')
+            finally:
+                browser.close()
+        color = extract_dominant_color(screenshot_bytes)
+        if color:
+            logger.info(f"  [Playwright Screenshot] dominant color: {color}")
+        return color
+    except Exception as e:
+        logger.warning(f"[Playwright Screenshot] 실패: {e}")
+        return ''
+
+
 def _fetch_with_playwright(url: str, wait: str = 'networkidle', timeout: int = 25000) -> str:
     """JS 렌더링 후 HTML 반환. 실패 시 빈 문자열."""
     try:

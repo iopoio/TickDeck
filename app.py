@@ -60,7 +60,8 @@ JOBS: dict[str, dict] = {}
 
 # ── 파이프라인 실행 ─────────────────────────────────────────────────────────
 def _run(job_id: str, url: str, company: str,
-         narrative_type: str = "auto", mood: str = "professional", purpose: str = "brand"):
+         narrative_type: str = "auto", mood: str = "professional", purpose: str = "brand",
+         brand_color: str = ""):
     job = JOBS[job_id]
 
     def on_progress(line: str):
@@ -81,7 +82,8 @@ def _run(job_id: str, url: str, company: str,
 
     try:
         result = run_pipeline(url, company or None, progress_fn=on_progress,
-                              narrative_type=narrative_type, mood=mood, purpose=purpose)
+                              narrative_type=narrative_type, mood=mood, purpose=purpose,
+                              brand_color=brand_color)
         job["result"] = result
         job["status"] = "done"
     except Exception as e:
@@ -90,13 +92,13 @@ def _run(job_id: str, url: str, company: str,
         for _tl in _tb.format_exc().splitlines():
             on_progress(f"  TB| {_tl}")
         on_progress(f"  ⚠ 오류 발생: {err_str}")
-        # 캐시가 원인일 수 있으므로 자동 삭제 후 재시도
         _slug = _re.sub(r'[^\w]', '', (company or url.split('//')[-1].split('/')[0].replace('.', '')).lower())[:20]
         _clear_cache(_slug)
         on_progress("  → 캐시 삭제 후 재시도 중...")
         try:
             result = run_pipeline(url, company or None, progress_fn=on_progress,
-                                  narrative_type=narrative_type, mood=mood, purpose=purpose)
+                                  narrative_type=narrative_type, mood=mood, purpose=purpose,
+                                  brand_color=brand_color)
             job["result"] = result
             job["status"] = "done"
         except Exception as e2:
@@ -123,6 +125,7 @@ def generate():
     narrative_type = (data.get("narrative_type") or "auto").strip()
     mood           = (data.get("mood") or "professional").strip()
     purpose        = (data.get("purpose") or "auto").strip()
+    brand_color    = (data.get("brand_color") or "").strip()
 
     if not url:
         return jsonify({"error": "URL을 입력하세요."}), 400
@@ -133,7 +136,7 @@ def generate():
     job_id = str(uuid.uuid4())
     JOBS[job_id] = {"status": "running", "lines": [], "result": None, "error": None}
 
-    t = threading.Thread(target=_run, args=(job_id, url, company, narrative_type, mood, purpose), daemon=True)
+    t = threading.Thread(target=_run, args=(job_id, url, company, narrative_type, mood, purpose, brand_color), daemon=True)
     t.start()
 
     return jsonify({"job_id": job_id})

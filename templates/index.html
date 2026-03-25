@@ -625,6 +625,14 @@
         <div class="hint">입력하지 않으면 도메인에서 자동 추출합니다.</div>
       </div>
       <div class="field">
+        <label>브랜드 컬러 <span style="font-weight:400;color:#94A3B8">(선택)</span></label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="inp-color" type="color" value="#5085C3" style="width:40px;height:36px;border:1px solid #D8E1EC;border-radius:8px;padding:2px;cursor:pointer;background:#F0F4F9;" />
+          <input id="inp-color-text" type="text" placeholder="자동 감지 (예: #6E4EEF)" style="flex:1;" maxlength="7" />
+        </div>
+        <div class="hint">비워두면 AI가 자동으로 감지합니다. 색상이 틀릴 경우 직접 지정하세요.</div>
+      </div>
+      <div class="field">
         <label>어떤 용도인가요?</label>
         <div class="purpose-pills">
           <button class="purpose-pill active" data-purpose="auto">✦ AI 추천</button>
@@ -849,9 +857,19 @@
     });
   });
 
+  // 컬러 picker ↔ 텍스트 동기화
+  document.getElementById('inp-color').addEventListener('input', e => {
+    document.getElementById('inp-color-text').value = e.target.value;
+  });
+  document.getElementById('inp-color-text').addEventListener('input', e => {
+    const v = e.target.value.trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById('inp-color').value = v;
+  });
+
   async function startGenerate() {
     const url     = document.getElementById('inp-url').value.trim();
     const company = document.getElementById('inp-company').value.trim();
+    const colorOverride = document.getElementById('inp-color-text').value.trim();
     const purpose = _selectedPurpose;
     const nt      = PURPOSE_NARRATIVE[purpose] || 'auto';
 
@@ -872,6 +890,7 @@
         narrative_type: nt,
         purpose,
         mood: 'professional',
+        brand_color: colorOverride || '',
       }),
     });
     const data = await res.json();
