@@ -1462,6 +1462,11 @@
     }
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+   * [Phase H-3] Canvas PDF 코드 비활성화 — 서버 LibreOffice 변환으로 대체
+   * PPTX → /api/convert-pdf → PDF (PPTX와 100% 동일한 결과)
+   * 롤백 필요 시 이 블록의 주석을 해제하면 됨
+   * ═══════════════════════════════════════════════════════════════
   function loadJsPDF() {
     if (window.jspdf) return Promise.resolve();
     return new Promise((resolve, reject) => {
@@ -3696,6 +3701,7 @@
     ctx.textAlign = prev;
     return Math.min(lines.length, 3);
   }
+  ═══════════════════════════════════════════════════════════════ */
 
   // getSlideLayout(slideOrType, nt, prevLayout, layoutCount)
   // - slideOrType: 슬라이드 객체 또는 타입 문자열
