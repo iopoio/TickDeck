@@ -491,14 +491,42 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
             if slide.get('subheadline'):
                 slide['subheadline'] = _strip_md(slide['subheadline'])
             cleaned_body = []
+            # 범용 노이즈 필터: 웹사이트 네비/위젯 잔류 텍스트 제거
+            _noise_re = re.compile(
+                r'^(웹와치|webwatch|바로가기|더보기|클릭하세요|자세히보기|'
+                r'로그인|회원가입|검색|메뉴|홈|home|login|sign.?up|'
+                r'개인정보|이용약관|쿠키|cookie|팝업|레이어|닫기|close|'
+                r'copyright|all rights|©)$',
+                re.IGNORECASE
+            )
             for b in slide.get('body', []):
                 b_clean = _strip_md(b)
-                b_clean = re.sub(r'^(\d+)\.(?=[^\s])', r'\1. ', b_clean)  # 1.데이터 → 1. 데이터
+                b_clean = re.sub(r'^(\d+)\.(?=[^\s])', r'\1. ', b_clean)
                 if b_clean.endswith('다.') or b_clean.endswith('요.'):
                     b_clean = b_clean[:-1]
+                # 3글자 미만 무의미 텍스트
+                if len(b_clean.strip()) < 3:
+                    continue
+                # 네비/위젯 잔류 텍스트 (단독 단어)
+                if _noise_re.match(b_clean.strip()):
+                    continue
+                # 네비 텍스트가 본문에 섞인 경우 (5글자 이하 + 의미 없음)
+                if len(b_clean.strip()) <= 5 and not re.search(r'[\d%:→·]', b_clean):
+                    continue
                 cleaned_body.append(b_clean)
             slide['body'] = cleaned_body
         _p("  → [정제] 마크다운/서술형 제거 완료")
+
+        # 빈 body 슬라이드 제거 (cover/cta/contact 제외)
+        _keep_empty = {'cover', 'cta_session', 'cta', 'contact', 'cta_contact', 'section_intro'}
+        slides_before = len(slide_json.get('slides', []))
+        slide_json['slides'] = [
+            s for s in slide_json.get('slides', [])
+            if s.get('type', '') in _keep_empty or len(s.get('body', [])) > 0
+        ]
+        _removed = slides_before - len(slide_json.get('slides', []))
+        if _removed > 0:
+            _p(f"  → 빈 슬라이드 {_removed}개 제거")
 
         # 로고 정보 주입
         slide_json['logoUrl'] = assets.get('logo_url', '')

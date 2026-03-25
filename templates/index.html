@@ -2793,10 +2793,10 @@
       const bdW = 0.58, bdH = 0.28;
       const bdY = ry + (rowH - bdH) / 2;
       s.addShape('roundRect', { x: rX, y: bdY, w: bdW, h: bdH,
-        fill: { color: C.accentLight }, line: { type: 'none' }, rectRadius: bdH / 2 });
+        fill: { color: C.primary }, line: { type: 'none' }, rectRadius: bdH / 2 });
       s.addText(String(idx + 1).padStart(2, '0'), {
         x: rX, y: bdY, w: bdW, h: bdH,
-        fontFace: F, fontSize: 9, bold: true, color: C.primary,
+        fontFace: F, fontSize: 9, bold: true, color: C.textOnPrimary,
         align: 'center', valign: 'middle' });
 
       // 제목 (굵게)
@@ -3527,12 +3527,14 @@
 
       if (valStr && valStr !== '') {
         // ── 숫자 통계 모드 — 숫자+단위 통합 중앙 정렬 ──
-        const fullVal = valStr + (unitStr ? ' ' + unitStr : '');
+        const fullVal = valStr + (unitStr ? '\u00A0' + unitStr : '');  // non-breaking space
+        const fullLen = valStr.length + (unitStr ? unitStr.length + 1 : 0);
         const valFontSize = N === 4
-          ? (valStr.length <= 3 ? 52 : valStr.length <= 5 ? 40 : 30)
-          : (valStr.length <= 3 ? 76 : valStr.length <= 5 ? 56 : 42);
+          ? (fullLen <= 4 ? 52 : fullLen <= 6 ? 40 : 30)
+          : (fullLen <= 4 ? 76 : fullLen <= 7 ? 56 : 42);
         s.addText(fullVal, {
           x: x + colW2 * 0.05, y: cy + cH * 0.05, w: colW2 * 0.90, h: cH * 0.48,
+          wrap: false, shrinkText: true,
           fontFace: FD, fontSize: valFontSize, bold: true, color: 'FFFFFF',
           align: 'center', valign: 'middle' });
 
@@ -4313,10 +4315,11 @@
                          x: W - 0.56, y: 0.10, w: 0.38, h: 0.38, transparency: 10 });
           }
         } else if (showFavicon && stype !== 'cover') {
-          // 최소 크기 필터(300바이트) — 16×16 favicon 제외, 고해상도만 표시
           if (faviconB64 && faviconB64.length > 300) {
+            // 원본 비율 유지 — contain으로 박스 내 맞춤
             s.addImage({ data: `data:image/${faviconMime};base64,${faviconB64}`,
-                         x: W - 0.56, y: 0.10, w: 0.38, h: 0.38, transparency: 20 });
+                         x: W - 0.56, y: 0.10, w: 0.42, h: 0.42,
+                         sizing: { type: 'contain', w: 0.42, h: 0.42 } });
           }
         }
       };
@@ -4489,10 +4492,13 @@
           // ── 데코 원 + 워터마크 ──
           s.addShape('ellipse', { x: W * 0.65, y: -H * 0.28, w: H * 1.10, h: H * 1.10,
             fill: { color: C.primary, transparency: _cv.circTr }, line: { type: 'none' } });
-          s.addText((companyName || '').toUpperCase(), {
-            x: W * 0.22, y: H * 0.42, w: W * 0.76, h: H * 0.58,
-            fontSize: 110, bold: true, color: C.primary, transparency: _cv.wmarkTr,
-            align: 'right', valign: 'bottom', fontFace: F, wrap: false });
+          // 워터마크: 6글자 이하만 표시 (긴 회사명은 어색 — 삼성전기 등)
+          if ((companyName || '').length <= 6) {
+            s.addText((companyName || '').toUpperCase(), {
+              x: W * 0.22, y: H * 0.42, w: W * 0.76, h: H * 0.58,
+              fontSize: 110, bold: true, color: C.primary, transparency: Math.max(_cv.wmarkTr, 95),
+              align: 'right', valign: 'bottom', fontFace: F, wrap: false });
+          }
           // ── 회사명 레이블 ──
           if (companyName) s.addText(companyName.toUpperCase(), {
             x: W * 0.08, y: _cv.coY, w: W * 0.82, h: H * 0.09,
