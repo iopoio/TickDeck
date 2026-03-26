@@ -596,6 +596,30 @@
     .edit-modal-actions { display: flex; gap: 8px; margin-top: 20px; }
     .edit-modal-actions button { flex: 1; }
 
+    /* ── 모바일 반응형 ── */
+    @media (max-width: 768px) {
+      .page { padding: 40px 12px 60px; }
+      header { margin-bottom: 28px; }
+      h1 { font-size: 24px !important; }
+      header p { font-size: 14px; }
+      .card { padding: 20px; max-width: 100%; }
+      .purpose-pills { gap: 6px; }
+      .purpose-pill { padding: 6px 12px; font-size: 12px; }
+      .btn { padding: 12px; font-size: 14px; }
+      .btn-pptx, .btn-pdf { padding: 12px; font-size: 14px; }
+      .done-meta { flex-direction: column; gap: 12px; }
+      .done-meta-item { text-align: left; display: flex; align-items: center; gap: 8px; }
+      .done-meta-item .val { font-size: 18px; }
+      .terminal { height: 140px; font-size: 12px; }
+      #user-bar { top: 10px; right: 12px; gap: 8px; }
+      #user-bar span, #user-bar button { font-size: 11px; }
+      .step-guide { flex-wrap: wrap; gap: 6px; }
+      .step-guide span { font-size: 12px; }
+      #history-modal > div { padding: 20px; }
+      #auth-section { max-width: 100%; }
+      #google-login-btn { font-size: 14px; padding: 11px; }
+    }
+
   </style>
 </head>
 <body>
@@ -616,7 +640,7 @@
         <h3 style="font-size:18px; font-weight:700; color:#111827;">생성 이력</h3>
         <button onclick="document.getElementById('history-modal').style.display='none'" style="background:none; border:none; font-size:18px; cursor:pointer; color:#94A3B8;">✕</button>
       </div>
-      <p style="font-size:12px; color:#94A3B8; margin-bottom:16px;">직전 생성의 PDF만 다운로드 가능합니다</p>
+      <p style="font-size:12px; color:#94A3B8; margin-bottom:16px;">직전 생성의 PDF만 다운로드 가능합니다<br>새로 생성하면 이전 PDF는 삭제되니, 필요하시면 미리 다운로드해 주세요</p>
       <div id="history-list" style="font-size:14px; color:#374151;"></div>
       <div id="history-pdf-btn" style="display:none; margin-top:16px;">
         <a href="/api/generations/latest-pdf" class="btn btn-primary" style="display:block; text-align:center; text-decoration:none; padding:12px;">📥 직전 PDF 다운로드</a>
@@ -899,10 +923,11 @@
       const res = await fetch('/api/generations');
       const data = await res.json();
       if (data.ok && data.generations.length > 0) {
+        const _purposeLabel = { auto: 'AI 추천', brand: '브랜드 소개', sales: '영업 제안', ir: '투자 IR', portfolio: '포트폴리오', report: '내부 보고' };
         list.innerHTML = data.generations.map(g =>
           `<div style="padding:10px 0; border-bottom:0.5px solid #D8E1EC;">
             <div style="font-weight:500;">${g.company_name || g.url}</div>
-            <div style="font-size:12px; color:#6B7685;">${g.created_at} · ${g.status === 'completed' ? '✅ 완료' : g.status}</div>
+            <div style="font-size:12px; color:#6B7685;">${g.created_at} · ${_purposeLabel[g.purpose] || g.purpose || ''} · ${g.status === 'completed' ? '✅ 완료' : g.status}</div>
           </div>`
         ).join('');
         pdfBtn.style.display = data.has_latest_pdf ? 'block' : 'none';
@@ -6127,7 +6152,9 @@
                 const _isEmail = /@/.test(_raw);
                 const _isPhone = /^[\d\s\-\+\(\)\.]{7,}$/.test(_raw);
                 const _isAddr = /[시구동로길]\s|[Ff]loor|[Ss]t\.|층|호|번지/.test(_raw);
-                const _lbl = _isEmail ? 'EMAIL' : _isPhone ? 'PHONE' : _isAddr ? 'ADDRESS' : 'WEBSITE';
+                const _isCeo = /CEO|대표|대표이사|Representative/i.test(_raw);
+                const _isWeb = /www\.|\.com|\.co\.kr|\.net|http/i.test(_raw);
+                const _lbl = _isEmail ? 'EMAIL' : _isPhone ? 'PHONE' : _isAddr ? 'ADDRESS' : _isCeo ? 'CEO' : _isWeb ? 'WEBSITE' : 'INFO';
                 s.addText(_lbl, { x: rX, y: _iY, w: rW2, h: 0.24,
                   fontSize: 8, bold: true, color: C.primary, charSpacing: 2,
                   align: 'left', valign: 'middle', fontFace: F });

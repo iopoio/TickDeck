@@ -354,7 +354,7 @@ def _pw_dismiss_cookie(page) -> bool:
     return False
 
 
-def _playwright_screenshot_color(url: str, timeout: int = 25000) -> str:
+def _playwright_screenshot_color(url: str, timeout: int = 15000) -> str:
     """Playwright로 페이지 스크린샷 찍고 dominant color 추출 → '#RRGGBB' or ''"""
     try:
         from playwright.sync_api import sync_playwright
@@ -379,7 +379,7 @@ def _playwright_screenshot_color(url: str, timeout: int = 25000) -> str:
         return ''
 
 
-def _fetch_with_playwright(url: str, wait: str = 'networkidle', timeout: int = 25000) -> str:
+def _fetch_with_playwright(url: str, wait: str = 'networkidle', timeout: int = 15000) -> str:
     """JS 렌더링 후 HTML 반환. 실패 시 빈 문자열."""
     try:
         from playwright.sync_api import sync_playwright
@@ -684,8 +684,11 @@ def scrape_website(url):
 
     # ── STEP 3A: 사이트맵 있음 → 관련 URL 크롤링 ───────────────────────────
     if sitemap_urls:
-        _to_crawl = [u for u in sitemap_urls if u not in visited and _is_relevant_link(u)][:12]
-        logger.info(f"[Sitemap] {len(_to_crawl)}개 페이지 크롤링")
+        _all_relevant = [u for u in sitemap_urls if u not in visited and _is_relevant_link(u)]
+        # 1차: 상위 5개만 빠르게 크롤링
+        _to_crawl = _all_relevant[:5]
+        logger.info(f"[Sitemap] {len(_all_relevant)}개 관련 URL 발견 (전체 {len(sitemap_urls)}개 중)")
+        logger.info(f"[Sitemap] 1차 크롤링: 상위 {len(_to_crawl)}개")
         for sm_url in _to_crawl:
             visited.add(sm_url)
             try:
@@ -701,6 +704,27 @@ def scrape_website(url):
                         image_urls.append(src)
             except Exception as e:
                 logger.warning(f"오류 ({sm_url}): {e}")
+
+        # 정보 부족 시 2차 확장 (5000자 미만이면 추가 크롤링)
+        if len(all_text) < 5000 and len(_all_relevant) > 5:
+            _extra = [u for u in _all_relevant[5:12] if u not in visited]
+            if _extra:
+                logger.info(f"[Sitemap] 정보 부족({len(all_text)}자) — 2차 크롤링: {len(_extra)}개 추가")
+                for sm_url in _extra:
+                    visited.add(sm_url)
+                    try:
+                        logger.info(f"크롤링 중 (sitemap 2차): {sm_url}")
+                        s, _ = _fetch_page(sm_url, base_url)
+                        if not s:
+                            continue
+                        pt, ft, imgs2 = _extract_page_content(s, base_url, sm_url)
+                        if len(pt) > 50:
+                            all_text += f"--- URL: {sm_url} ---\n{pt}\n{ft}\n"
+                        for src in imgs2:
+                            if src not in image_urls:
+                                image_urls.append(src)
+                    except Exception as e:
+                        logger.warning(f"오류 ({sm_url}): {e}")
 
     # ── STEP 3B: 사이트맵 없음 → 헤더/네비 링크 우선, 그 다음 _SCRAPE_PATHS ─
     else:

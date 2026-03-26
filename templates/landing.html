@@ -212,6 +212,24 @@
       border-top: 0.5px solid var(--border);
     }
     footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── 모바일 반응형 ── */
+    @media (max-width: 768px) {
+      .hero { padding: 100px 20px 60px; }
+      .hero h1 { font-size: 28px; }
+      .hero p { font-size: 15px; }
+      .hero-cta { padding: 12px 28px; font-size: 15px; }
+      .steps-section, .features-section, .donate-section, .cta-section { padding: 48px 20px; }
+      .steps-section h2, .features-section h2, .cta-section h2 { font-size: 22px; }
+      .steps-grid { grid-template-columns: 1fr; gap: 16px; }
+      .features-grid { grid-template-columns: 1fr; gap: 16px; }
+      .step-card, .feature-item { padding: 24px 20px; }
+      .donate-card { padding: 28px 20px; }
+      .donate-card h2 { font-size: 20px; }
+      nav > div { padding: 12px 16px; }
+      .nav-logo { font-size: 16px; }
+      .nav-cta { padding: 6px 14px; font-size: 13px; }
+    }
   </style>
 </head>
 <body>
@@ -228,7 +246,7 @@
   <section class="hero">
     <div class="hero-badge">AI 프레젠테이션 생성기</div>
     <h1>당신의 웹사이트를<br><span>PPT로</span> 만들어드립니다</h1>
-    <p>URL만 입력하면 AI가 브랜드 컬러, 로고, 콘텐츠를 분석해서<br>맞춤형 프레젠테이션을 자동으로 생성합니다.</p>
+    <p>복잡한 도구나 디자인 스킬이 필요 없습니다.<br>URL 하나면 AI가 알아서 브랜드에 맞는 프레젠테이션을 완성합니다.</p>
     <a href="/app" class="hero-cta">무료로 시작하기</a>
     <div class="hero-sub">가입 시 무료 토큰 2개 제공 · 추가 충전 가능</div>
   </section>
@@ -258,7 +276,7 @@
 
   <!-- Features -->
   <section class="features-section">
-    <h2>TickDeck만의 특별한 기능</h2>
+    <h2>AI를 몰라도, 디자인을 몰라도</h2>
     <div class="features-grid">
       <div class="feature-item">
         <div class="feature-icon">🎨</div>
