@@ -452,6 +452,10 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
         _p("[3단계-A] 리서처 에이전트: 팩트북 추출 중...")
         factbook = agent_researcher(raw_info, _p, page_subject=page_subject,
                                     forced_narrative=_pre_narrative)
+        # 비용 최적화: factbook 4000자 제한 (Gemini 입력 토큰 30~40% 절감)
+        if len(factbook) > 4000:
+            factbook = factbook[:4000] + '\n...(이하 생략)'
+            _p(f"  → factbook 길이 제한 적용: {len(factbook)}자")
         _p(f"\n{'='*55}")
         _p(factbook[:1000] + ("..." if len(factbook) > 1000 else ""))
         _p('='*55 + "\n")
