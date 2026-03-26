@@ -372,15 +372,31 @@
 <!-- 커피 QR 모달 -->
 <div id="coffee-modal-landing" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1200;align-items:center;justify-content:center;padding:16px;"
      onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:#fff;border-radius:14px;padding:20px;width:calc(100% - 32px);max-width:300px;text-align:center;box-shadow:0 8px 32px rgba(28,61,90,0.15);">
-    <h3 style="font-size:15px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">☕ 커피 한 잔 후원하기</h3>
-    <p style="font-size:11px;color:#374151;line-height:1.5;margin-bottom:10px;">서비스 유지비로 소중히 사용됩니다</p>
+  <div id="coffee-modal-inner" style="background:#fff;border-radius:14px;padding:32px;width:calc(100% - 32px);max-width:380px;text-align:center;box-shadow:0 8px 32px rgba(28,61,90,0.15);">
+    <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">☕ 커피 한 잔 후원하기</h3>
+    <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:12px;">서비스 유지비로 소중히 사용됩니다</p>
     <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406915" target="_blank">
-      <img src="/static/img/coffee_qr.png" alt="카카오페이 QR" style="width:180px;max-width:80%;border-radius:10px;margin-bottom:8px;">
+      <img src="/static/img/coffee_qr.png" alt="카카오페이 QR" style="width:240px;max-width:85%;border-radius:10px;margin-bottom:8px;">
     </a>
     <p style="font-size:10px;color:#9E9A90;margin-bottom:10px;">모바일: 이미지 클릭 · PC: QR 스캔</p>
     <button onclick="document.getElementById('coffee-modal-landing').style.display='none'" style="background:none;border:none;color:#9E9A90;font-size:12px;cursor:pointer;">닫기</button>
   </div>
+  <script>
+    // 랜딩 커피 모달 반응형
+    (function(){
+      const inner = document.getElementById('coffee-modal-inner');
+      if (!inner) return;
+      function resize() {
+        const mob = window.innerWidth < 768;
+        inner.style.maxWidth = mob ? '300px' : '380px';
+        inner.style.padding = mob ? '20px' : '32px';
+        const img = inner.querySelector('img');
+        if (img) img.style.width = mob ? '180px' : '240px';
+      }
+      resize();
+      window.addEventListener('resize', resize);
+    })();
+  </script>
 </div>
 
 </body>
