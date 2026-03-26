@@ -48,11 +48,7 @@
     .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 40px;
       display: flex; justify-content: space-between; align-items: center; }
     .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    .nav-logo-icon { width: 36px; height: 36px; }
-    .nav-logo-icon img { width: 36px; height: 36px; }
-    .nav-logo-text { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--primary); }
-    .nav-logo-text span { background: linear-gradient(135deg, var(--secondary-dark), var(--secondary));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-logo img { height: 36px; }
     .nav-cta { background: linear-gradient(135deg, var(--primary), var(--secondary-dark));
       color: #fff; border: none; padding: 10px 26px; border-radius: 12px;
       font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
@@ -238,10 +234,7 @@
 <nav>
   <div class="nav-inner">
     <a class="nav-logo" href="/">
-      <div class="nav-logo-icon">
-        <img src="/static/img/favicon.svg" alt="TickDeck">
-      </div>
-      <div class="nav-logo-text">Tick<span>Deck</span></div>
+      <img src="/static/img/logo.svg" alt="TickDeck" style="height:36px;">
     </a>
     <a class="nav-cta" href="/app">시작하기</a>
   </div>
