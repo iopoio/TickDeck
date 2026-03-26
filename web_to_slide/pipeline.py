@@ -778,10 +778,14 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
             final_color = _fav_dom
             _is_monochrome = False  # 모노크롬 해제 (브랜드 컬러 존재)
             _reason = f'파비콘 교차검증 override (모노크롬→{_fav_dom})'
-        elif not _color_close(final_color, _fav_dom, threshold=80):
-            _p(f"  ⚠ 파비콘 교차검증: primaryColor({final_color})와 파비콘({_fav_dom}) 불일치 → 파비콘 우선")
+        elif _color_vibrancy(final_color) < 0.15 and not _color_close(final_color, _fav_dom, threshold=80):
+            # CSS 감지 색이 무채색에 가까울 때만 파비콘으로 교체
+            # CSS에서 이미 선명한 색(빨강 등)을 잡았으면 파비콘(노랑 등)으로 덮어씌우지 않음
+            _p(f"  ⚠ 파비콘 교차검증: primaryColor({final_color}) 무채색 + 파비콘({_fav_dom}) 선명 → 파비콘 우선")
             final_color = _fav_dom
             _reason = f'파비콘 교차검증 override ({_fav_dom})'
+        else:
+            _p(f"  → 파비콘 교차검증: CSS({final_color}) vibrancy={_color_vibrancy(final_color):.2f} 충분 → 유지")
 
     # ── 스크린샷 교차검증: CSS 감지가 의심스러울 때 실제 렌더링 색상으로 보정 ──
     # 조건: 파비콘 교차검증이 작동하지 않았고, CSS 감지 결과가 WP 기본 팔레트일 가능성
