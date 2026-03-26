@@ -58,9 +58,9 @@
 
     .badge {
       display: inline-block;
-      background: #5085C30C;
-      border: 1px solid #5085C322;
-      color: #4A7DB8;
+      background: #1C3D5A0C;
+      border: 1px solid #1C3D5A22;
+      color: #5A9E86;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.08em;
@@ -92,7 +92,7 @@
       border: 0.5px solid #D8E1EC;
       border-radius: 14px;
       padding: 28px;
-      box-shadow: 0 2px 8px rgba(80,133,195,0.06);
+      box-shadow: 0 2px 8px rgba(28,61,90,0.06);
     }
 
     /* ── 입력 폼 ────────────────────────────────────── */
@@ -108,13 +108,13 @@
       white-space: nowrap;
       box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
-    .purpose-pill:hover { border-color: #5085C344; color: #4A7DB8; background: #F0F4F9; }
+    .purpose-pill:hover { border-color: #1C3D5A44; color: #5A9E86; background: #F0F4F9; }
     .purpose-pill:active { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(0,0,0,0.08); }
     .purpose-pill.active {
-      background: #5085C30F; border-color: #5085C355; color: #3D6FA8;
-      box-shadow: 0 1px 2px rgba(80,133,195,0.10);
+      background: #1C3D5A0F; border-color: #1C3D5A55; color: #4A8A72;
+      box-shadow: 0 1px 2px rgba(28,61,90,0.10);
     }
-    .purpose-pill.active:active { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(80,133,195,0.15); }
+    .purpose-pill.active:active { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(28,61,90,0.15); }
 
     input[type="text"] {
       width: 100%;
@@ -128,7 +128,7 @@
       transition: border-color .2s, box-shadow .2s;
       font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     }
-    input[type="text"]:focus { border-color: #5085C3; box-shadow: 0 0 0 3px rgba(80,133,195,0.12); }
+    input[type="text"]:focus { border-color: #1C3D5A; box-shadow: 0 0 0 3px rgba(28,61,90,0.12); }
     input[type="text"]::placeholder { color: #94A3B8; }
 
     .hint { font-size: 13px; color: #94A3B8; margin-top: 7px; }
@@ -166,7 +166,7 @@
       margin-top: 12px;
       transition: all .15s ease;
     }
-    .btn-outline:hover { border-color: #5085C355; color: #4A7DB8; }
+    .btn-outline:hover { border-color: #1C3D5A55; color: #5A9E86; }
     .btn-outline:active { transform: translateY(1px); box-shadow: inset 0 1px 2px rgba(0,0,0,0.06); }
 
     /* ── 진행 화면 ──────────────────────────────────── */
@@ -179,7 +179,7 @@
 
     .spinner {
       width: 42px; height: 42px;
-      border: 3px solid rgba(80,133,195,0.2);
+      border: 3px solid rgba(28,61,90,0.2);
       border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin .8s linear infinite;
@@ -204,7 +204,7 @@
       background: var(--border);
       transition: background .4s;
     }
-    .step-dot.active  { background: #5085C3; }
+    .step-dot.active  { background: #1C3D5A; }
     .step-dot.done    { background: var(--success); }
     .step-line { width: 32px; height: 1px; background: var(--border); }
 
@@ -268,15 +268,15 @@
     .btn-pptx {
       display: flex; align-items: center; justify-content: center; gap: 10px;
       width: 100%; padding: 14px;
-      background: #5085C3; color: #fff; border: none; border-radius: 10px;
+      background: #1C3D5A; color: #fff; border: none; border-radius: 10px;
       font-size: 15px; font-weight: 500; cursor: pointer;
       font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-      box-shadow: 0 2px 6px rgba(80,133,195,0.25);
+      box-shadow: 0 2px 6px rgba(28,61,90,0.25);
       transition: all .15s ease;
       margin-bottom: 10px;
     }
-    .btn-pptx:hover { background: #4A7DB8; box-shadow: 0 4px 12px rgba(80,133,195,0.30); }
-    .btn-pptx:active { transform: translateY(1px); background: #3D6FA8; }
+    .btn-pptx:hover { background: #5A9E86; box-shadow: 0 4px 12px rgba(28,61,90,0.30); }
+    .btn-pptx:active { transform: translateY(1px); background: #4A8A72; }
     .btn-pptx:disabled { opacity: .45; cursor: not-allowed; }
 
     .btn-pdf {
@@ -288,7 +288,7 @@
       transition: all .15s ease;
       margin-bottom: 10px;
     }
-    .btn-pdf:hover { border-color: #5085C355; color: #4A7DB8; }
+    .btn-pdf:hover { border-color: #1C3D5A55; color: #5A9E86; }
     .btn-pdf:active { transform: translateY(1px); box-shadow: inset 0 1px 2px rgba(0,0,0,0.06); }
     .btn-pdf:disabled { opacity: .45; cursor: not-allowed; }
 
@@ -301,7 +301,7 @@
       transition: all .15s ease;
       margin-bottom: 10px;
     }
-    .btn-json:hover { border-color: #5085C355; color: #4A7DB8; }
+    .btn-json:hover { border-color: #1C3D5A55; color: #5A9E86; }
 
     /* ── 에러 박스 ──────────────────────────────────── */
     .error-box {
@@ -335,7 +335,7 @@
       border: 0.5px solid #D8E1EC;
       transition: transform .2s, box-shadow .2s;
     }
-    .slide-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(80,133,195,0.15); }
+    .slide-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(28,61,90,0.15); }
     .sc-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
     .sc-overlay { position: absolute; inset: 0; background: #000; }
     .sc-page-num {
@@ -486,9 +486,9 @@
     .step-guide span { display: flex; align-items: center; gap: 6px; }
     .step-guide .num {
       width: 22px; height: 22px;
-      background: #5085C312;
+      background: #1C3D5A12;
       border: none;
-      color: #4A7DB8;
+      color: #5A9E86;
       border-radius: 50%;
       font-size: 11px; font-weight: 500;
       display: flex; align-items: center; justify-content: center;
@@ -515,7 +515,7 @@
       overflow: hidden; background: #07071e;
       border: 1px solid var(--border); transition: box-shadow .2s;
     }
-    .stitch-card:hover { box-shadow: 0 8px 24px rgba(80,133,195,0.15); }
+    .stitch-card:hover { box-shadow: 0 8px 24px rgba(28,61,90,0.15); }
     .stitch-card iframe { pointer-events: none; border: none; display: block; }
     .stitch-card-fallback {
       width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
@@ -546,7 +546,7 @@
     .slide-edit-item:hover { background: #F0F4F9; }
     .slide-edit-num {
       min-width: 24px; height: 24px; border-radius: 6px;
-      background: rgba(80,133,195,0.10); color: var(--accent);
+      background: rgba(28,61,90,0.10); color: var(--accent);
       font-size: 11px; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
     }
@@ -568,7 +568,7 @@
     .edit-modal {
       background: #FFFFFF; border: 0.5px solid #D8E1EC; border-radius: 14px;
       padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
-      box-shadow: 0 8px 32px rgba(80,133,195,0.15);
+      box-shadow: 0 8px 32px rgba(28,61,90,0.15);
     }
     .edit-modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
     .edit-modal .edit-slide-type { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
@@ -627,15 +627,15 @@
 
   <!-- ── 유저 바 (로그인 시 표시) ── -->
   <div id="user-bar" style="display:none; align-items:center; gap:12px; position:absolute; top:20px; right:28px;">
-    <span id="user-tokens" style="font-size:13px; color:#5085C3; font-weight:500;">🎫 2개</span>
+    <span id="user-tokens" style="font-size:13px; color:#1C3D5A; font-weight:500;">🎫 2개</span>
     <span id="user-email" style="font-size:13px; color:#6B7685;"></span>
-    <button onclick="_showHistory()" style="font-size:12px; color:#5085C3; background:none; border:none; cursor:pointer;">이력</button>
+    <button onclick="_showHistory()" style="font-size:12px; color:#1C3D5A; background:none; border:none; cursor:pointer;">이력</button>
     <button id="logout-btn" onclick="_doLogout()" style="font-size:12px; color:#94A3B8; background:none; border:none; cursor:pointer; text-decoration:underline;">로그아웃</button>
   </div>
 
   <!-- ── 이력 모달 ── -->
   <div id="history-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; display:none; align-items:center; justify-content:center; padding:16px;">
-    <div style="background:#FFF; border-radius:14px; padding:28px; width:100%; max-width:520px; max-height:80vh; overflow-y:auto; box-shadow:0 8px 32px rgba(80,133,195,0.15);">
+    <div style="background:#FFF; border-radius:14px; padding:28px; width:100%; max-width:520px; max-height:80vh; overflow-y:auto; box-shadow:0 8px 32px rgba(28,61,90,0.15);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
         <h3 style="font-size:18px; font-weight:700; color:#111827;">생성 이력</h3>
         <button onclick="document.getElementById('history-modal').style.display='none'" style="background:none; border:none; font-size:18px; cursor:pointer; color:#94A3B8;">✕</button>
@@ -668,7 +668,7 @@
       font-size:15px; font-weight:500; cursor:pointer;
       text-decoration:none; transition:all .15s ease;
       box-shadow:0 1px 3px rgba(0,0,0,0.08);
-    " onmouseover="this.style.borderColor='#5085C355';this.style.background='#F0F4F9'"
+    " onmouseover="this.style.borderColor='#1C3D5A55';this.style.background='#F0F4F9'"
        onmouseout="this.style.borderColor='#D8E1EC';this.style.background='#FFF'">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
       Google로 계속하기
@@ -686,7 +686,7 @@
     <div id="phase-form">
       <div id="token-notice" style="display:none; text-align:center; padding:14px; margin-bottom:16px; background:#F0F4F9; border:1px solid #D8E1EC; border-radius:10px;">
         <p style="color:#374151; font-size:13px; margin-bottom:10px;">토큰을 모두 사용했습니다</p>
-        <button onclick="_freeCharge()" style="background:#5085C3; color:#fff; border:none; border-radius:8px; padding:8px 20px; font-size:13px; font-weight:500; cursor:pointer;">🎫 무료 토큰 2개 충전</button>
+        <button onclick="_freeCharge()" style="background:#1C3D5A; color:#fff; border:none; border-radius:8px; padding:8px 20px; font-size:13px; font-weight:500; cursor:pointer;">🎫 무료 토큰 2개 충전</button>
       </div>
       <div class="field">
         <label>홈페이지 주소</label>
