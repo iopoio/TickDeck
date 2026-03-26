@@ -1037,7 +1037,7 @@
         btn.textContent = '🎫 무료 토큰 2개 충전';
         btn.onclick = _freeCharge;
         const hint = btn.nextElementSibling;
-        if (hint) hint.textContent = '설문 완료 · 무료 충전 가능';
+        if (hint) hint.innerHTML = '베타 기간 무료 충전 · <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406739" target="_blank" style="color:#1C3D5A;text-decoration:underline;">☕ 개발자에게 커피 한 잔?</a>';
       }
     } catch {}
   }
