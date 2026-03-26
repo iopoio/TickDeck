@@ -6,6 +6,7 @@
   <title>TickDeck Admin</title>
   <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Pretendard', sans-serif; background: #f8f7f3; color: #1b1c18; padding: 24px; }
@@ -79,9 +80,24 @@
 
     <!-- 설문 결과 -->
     <div id="tab-surveys" style="display:none;">
-      <div style="margin-bottom:12px;">
-        <a href="/api/admin/surveys/csv" class="btn-sm" style="text-decoration:none;padding:8px 16px;display:inline-block;">📥 엑셀(CSV) 다운로드</a>
+      <!-- 참여자 수 + 다운로드 -->
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+        <div class="stat-card" style="margin:0;min-width:120px;">
+          <div class="val" id="sv-total">-</div>
+          <div class="lbl">설문 참여자</div>
+        </div>
+        <a href="/api/admin/surveys/csv" class="btn-sm" style="text-decoration:none;padding:8px 16px;">📥 엑셀(CSV) 다운로드</a>
       </div>
+      <!-- 차트 대시보드 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;" id="survey-charts">
+        <div class="table-wrap" style="padding:16px;"><canvas id="chart-industry"></canvas></div>
+        <div class="table-wrap" style="padding:16px;"><canvas id="chart-role"></canvas></div>
+        <div class="table-wrap" style="padding:16px;"><canvas id="chart-payment"></canvas></div>
+        <div class="table-wrap" style="padding:16px;"><canvas id="chart-features"></canvas></div>
+        <div class="table-wrap" style="padding:16px;"><canvas id="chart-size"></canvas></div>
+        <div class="table-wrap" style="padding:16px;"><canvas id="chart-frequency"></canvas></div>
+      </div>
+      <!-- 테이블 -->
       <div class="table-wrap" id="surveys-table">
         <div class="loading">불러오는 중...</div>
       </div>
@@ -176,16 +192,69 @@
       } catch { alert('서버 오류'); }
     }
 
-    // 설문 결과
+    // 설문 결과 + 차트
+    const _chartInstances = {};
+    const CHART_COLORS = ['#1C3D5A','#5A9E86','#B98391','#76B9A1','#E8A87C','#6BA3C7','#3A6B8C','#D4A574'];
+
+    function _countField(surveys, field) {
+      const counts = {};
+      surveys.forEach(s => {
+        let val = s[field];
+        if (!val || val === 'null') return;
+        // JSON 배열 파싱 (q5, q8)
+        try { const arr = JSON.parse(val); if (Array.isArray(arr)) { arr.forEach(v => { counts[v] = (counts[v]||0)+1; }); return; } } catch {}
+        counts[val] = (counts[val]||0)+1;
+      });
+      return Object.entries(counts).sort((a,b) => b[1]-a[1]);
+    }
+
+    function _makeChart(canvasId, label, data, type='doughnut') {
+      if (_chartInstances[canvasId]) _chartInstances[canvasId].destroy();
+      const ctx = document.getElementById(canvasId);
+      if (!ctx || !data.length) return;
+      _chartInstances[canvasId] = new Chart(ctx, {
+        type,
+        data: {
+          labels: data.map(d => d[0].length > 15 ? d[0].slice(0,15)+'…' : d[0]),
+          datasets: [{ data: data.map(d => d[1]), backgroundColor: CHART_COLORS,
+                       borderWidth: type === 'doughnut' ? 2 : 0, borderColor: '#fff' }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: { display: true, text: label, font: { size: 13, weight: 700 }, color: '#1C3D5A' },
+            legend: { position: type === 'doughnut' ? 'bottom' : 'hidden', labels: { font: { size: 10 } } }
+          },
+          ...(type === 'bar' ? { indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } } : {})
+        }
+      });
+    }
+
     async function loadSurveys() {
       try {
         const res = await fetch('/api/admin/surveys');
         const d = await res.json();
+        const surveys = d.surveys || [];
+        document.getElementById('sv-total').textContent = surveys.length + '명';
+
         const el = document.getElementById('surveys-table');
-        if (!d.surveys.length) { el.innerHTML = '<div class="loading">설문 없음</div>'; return; }
+        if (!surveys.length) {
+          el.innerHTML = '<div class="loading">설문 없음</div>';
+          return;
+        }
+
+        // 차트 렌더링
+        _makeChart('chart-industry', '업종 분포', _countField(surveys, 'q1_industry'), 'doughnut');
+        _makeChart('chart-role', '직무 분포', _countField(surveys, 'q2_role'), 'doughnut');
+        _makeChart('chart-payment', '결제 방식 선호', _countField(surveys, 'q6_payment_type'), 'doughnut');
+        _makeChart('chart-features', '희망 기능 TOP', _countField(surveys, 'q8_features'), 'bar');
+        _makeChart('chart-size', '회사 규모', _countField(surveys, 'q3_company_size'), 'doughnut');
+        _makeChart('chart-frequency', '제작 빈도', _countField(surveys, 'q4_frequency'), 'doughnut');
+
+        // 테이블
         el.innerHTML = `<table>
           <tr><th>ID</th><th>이메일</th><th>업종</th><th>직무</th><th>규모</th><th>빈도</th><th>결제방식</th><th>가격</th><th>희망기능</th><th>자유의견</th><th>참여일</th></tr>
-          ${d.surveys.map(s => `<tr>
+          ${surveys.map(s => `<tr>
             <td>${s.id}</td>
             <td>${s.email}</td>
             <td>${s.q1_industry || '-'}</td>
