@@ -797,8 +797,26 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
             _p(f"  ⚠ 파비콘 교차검증: primaryColor({final_color}) 무채색 + 파비콘({_fav_dom}) 선명 → 파비콘 우선")
             final_color = _fav_dom
             _reason = f'파비콘 교차검증 override ({_fav_dom})'
+        elif not _color_close(final_color, _fav_dom, threshold=80):
+            # 파비콘 색이 CSS 상위 5개 안에 있으면 → 파비콘이 진짜 브랜드 컬러일 가능성 높음
+            _fav_in_top5 = any(_color_close(_fav_dom, c, threshold=50) for c in _freq_colors[:5])
+            if _fav_in_top5:
+                # 빈도 차이 체크: CSS 1위 대비 파비콘 매칭 색의 빈도가 50% 이상이면 교체
+                _fav_match_score = max(
+                    (_freq_scores.get(c, 0) for c in _freq_colors[:5] if _color_close(_fav_dom, c, threshold=50)),
+                    default=0
+                )
+                _top_score = max(_freq_scores.values()) if _freq_scores else 1
+                if _fav_match_score >= _top_score * 0.3:  # 30% 이상이면 의미 있는 사용
+                    _p(f"  ⚠ 파비콘({_fav_dom})이 CSS 상위5에 존재 (score={_fav_match_score}/{_top_score}) → 파비콘 우선")
+                    final_color = _fav_dom
+                    _reason = f'파비콘+CSS 상위 교차검증 ({_fav_dom})'
+                else:
+                    _p(f"  → 파비콘 CSS 상위5 매칭이나 빈도 부족 ({_fav_match_score}/{_top_score}) → CSS 유지")
+            else:
+                _p(f"  → 파비콘({_fav_dom}) CSS 상위5에 없음 → CSS({final_color}) 유지")
         else:
-            _p(f"  → 파비콘 교차검증: CSS({final_color}) vibrancy={_color_vibrancy(final_color):.2f} 충분 → 유지")
+            _p(f"  → 파비콘 교차검증: CSS({final_color})와 파비콘 유사 → 유지")
 
     # ── 스크린샷 교차검증: CSS 감지가 의심스러울 때 실제 렌더링 색상으로 보정 ──
     # 조건: 파비콘 교차검증이 작동하지 않았고, CSS 감지 결과가 WP 기본 팔레트일 가능성
