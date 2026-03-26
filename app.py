@@ -713,6 +713,7 @@ def serve_static(filename):
 
 
 @app.route("/api/convert-pdf", methods=["POST"])
+@login_required
 def convert_to_pdf():
     """PPTX 파일을 받아서 LibreOffice로 PDF 변환 후 반환"""
     if 'file' not in request.files:
