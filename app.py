@@ -802,6 +802,16 @@ def serve_static(filename):
     return send_from_directory(static_dir, filename)
 
 
+@app.route("/robots.txt")
+def robots_txt():
+    return send_from_directory(BASE_DIR / "static", "robots.txt", mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    return send_from_directory(BASE_DIR / "static", "sitemap.xml", mimetype="application/xml")
+
+
 @app.route("/api/convert-pdf", methods=["POST"])
 @login_required
 def convert_to_pdf():
