@@ -858,6 +858,11 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
         slide_json['brand']['siteDarkBg'] = _site_dark_bg
         slide_json['brand']['isDarkSite']   = _is_dark_site
         slide_json['brand']['isMonochrome'] = _is_monochrome
+        # 사이트 밝은 배경색 (크림/파스텔 → 슬라이드 배경 반영)
+        _site_light_bg = assets.get('site_light_bg', '')
+        if _site_light_bg:
+            slide_json['brand']['siteLightBg'] = _site_light_bg
+            _p(f"  → 사이트 밝은 배경: {_site_light_bg}")
         slide_json['brand']['fontCategory']  = assets.get('font_category', 'sans')
         slide_json['brand']['detectedFonts'] = assets.get('detected_fonts', [])
         # 다음 캐시 실행 때 복원용으로 저장

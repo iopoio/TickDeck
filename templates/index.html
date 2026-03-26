@@ -4324,7 +4324,9 @@
     const narrativeType = (meta.narrative_type || brand.narrative_type || 'A').toUpperCase();
     const NT_PPTMON_BG  = { A:'F5F5F8', B:'F5F5F8', C:'F5F5F8', D:'F5F5F8' };
     const NT_BG_DARK    = { A:'111827', B:'1A2F4A', C:'2D1F3D', D:'0F0F0F' };
-    const pmBg   = NT_PPTMON_BG[narrativeType] || 'F8F9FA';
+    // 사이트 밝은 배경색이 있으면 슬라이드 배경에 반영 (크림/파스텔 느낌)
+    const _siteLightBg = (brand.siteLightBg || '').replace('#', '');
+    const pmBg   = _siteLightBg || NT_PPTMON_BG[narrativeType] || 'F8F9FA';
     const bgDark = NT_BG_DARK[narrativeType]  || '111827';
     const C       = createColorSystem(accentHex, pmBg);
 

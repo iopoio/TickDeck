@@ -592,6 +592,19 @@ def extract_brand_assets(url):
                     dark_bg_color = _dc
                     break
 
+        # ── 밝은 배경색 감지 (사이트 크림/파스텔 배경 → 슬라이드 반영) ──
+        site_light_bg = ''
+        for _lm in _dark_sel_pat.finditer(raw_css):
+            _block = _lm.group(1)
+            _bg_m = re.search(r'background(?:-color)?\s*:\s*(#[0-9a-fA-F]{6})\b', _block, re.I)
+            if _bg_m:
+                _lc = '#' + _bg_m.group(1).lstrip('#').upper()
+                _luma = _luma_c(_lc)
+                # 밝은 파스텔/크림 계열만 (luma 0.85~0.97 — 순백 #FFF 제외)
+                if 0.85 <= _luma <= 0.97 and _color_vibrancy(_lc) < 0.25:
+                    site_light_bg = _lc
+                    break
+
         # ── OG / 히어로 이미지 픽셀 분석 ───────────────────────────
         og_image_color = _download_og_image_color(soup, base_url)
 
@@ -757,6 +770,7 @@ def extract_brand_assets(url):
         'css_light_total': css_light_total,
         'og_image_color': og_image_color,
         'dark_bg_color': dark_bg_color,
+        'site_light_bg': site_light_bg,
         'footer_contact': footer_contact,
         'favicon_url': favicon_url,
         'font_category': font_category,
