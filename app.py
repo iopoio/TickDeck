@@ -61,7 +61,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from web_to_slide.pipeline import run_pipeline
 from web_to_slide.database import (
-    init_app as init_db_app, init_db,
+    init_app as init_db_app, init_db, get_db,
     create_user, get_user_by_email, get_user_by_id,
     update_last_login, check_and_deduct_token, refund_token,
     create_generation, complete_generation, add_tokens,
