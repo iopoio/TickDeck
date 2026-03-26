@@ -344,13 +344,27 @@
 <footer>
   <p>© 2026 TickDeck. All rights reserved.</p>
   <div style="display:flex; gap:16px; align-items:center;">
-    <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406915" target="_blank"
-       style="display:inline-block;padding:8px 18px;background:#F5E6D3;border:1px solid #E8D5BF;border-radius:8px;color:#6B4C30;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.2s;"
+    <button onclick="document.getElementById('coffee-modal-landing').style.display='flex'"
+       style="padding:8px 18px;background:#F5E6D3;border:1px solid #E8D5BF;border-radius:8px;color:#6B4C30;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;"
        onmouseover="this.style.background='#EDD9C2';this.style.transform='translateY(-1px)'"
-       onmouseout="this.style.background='#F5E6D3';this.style.transform='none'">☕ 커피 한 잔 후원하기</a>
+       onmouseout="this.style.background='#F5E6D3';this.style.transform='none'">☕ 커피 한 잔 후원하기</button>
     <a href="mailto:chaejenn@gmail.com">문의하기</a>
   </div>
 </footer>
+
+<!-- 커피 QR 모달 -->
+<div id="coffee-modal-landing" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1200;align-items:center;justify-content:center;padding:16px;"
+     onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:14px;padding:28px;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(28,61,90,0.15);">
+    <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">☕ 커피 한 잔 후원하기</h3>
+    <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:14px;">서비스 유지비로 소중히 사용됩니다</p>
+    <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406915" target="_blank">
+      <img src="/static/img/coffee_qr.png" alt="카카오페이 QR" style="width:220px;border-radius:10px;margin-bottom:10px;">
+    </a>
+    <p style="font-size:11px;color:#9E9A90;margin-bottom:12px;">모바일: 이미지 클릭 · PC: 카메라로 QR 스캔</p>
+    <button onclick="document.getElementById('coffee-modal-landing').style.display='none'" style="background:none;border:none;color:#9E9A90;font-size:12px;cursor:pointer;">닫기</button>
+  </div>
+</div>
 
 </body>
 </html>
