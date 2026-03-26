@@ -4520,7 +4520,7 @@
           s.addShape('rect', { x: 0, y: 0, w: W * 0.030, h: H,
             fill: { color: C.primary }, line: { type: 'none' } });
           s.addShape('rect', { x: 0, y: 0, w: W, h: W * 0.006,
-            fill: { color: C2 }, line: { type: 'none' } });
+            fill: { color: C.accentLight }, line: { type: 'none' } });
           s.addShape('rect', { x: 0, y: H - 0.06, w: W, h: 0.06,
             fill: { color: C.primary }, line: { type: 'none' } });
           if (companyName) s.addText(companyName.toUpperCase(), {
@@ -4568,6 +4568,18 @@
               fill: { color: '000000', transparency: 62 }, line: { type: 'none' } });
           } else {
             s.background = { color: _cv.bg };
+            // ── 이미지 없는 커버: 기하학 장식 강화 (빈 공간 보완) ──
+            // 좌하단 보조 데코 원 (primary, 매우 투명)
+            s.addShape('ellipse', { x: -W * 0.12, y: H * 0.55, w: H * 0.75, h: H * 0.75,
+              fill: { color: C.primary, transparency: _cv.circTr + 2 }, line: { type: 'none' } });
+            // 회사명 대형 워터마크 (배경에 은은하게)
+            if (companyName) s.addText(companyName.toUpperCase(), {
+              x: W * 0.30, y: H * 0.05, w: W * 0.72, h: H * 0.90,
+              fontSize: 120, bold: true, color: 'FFFFFF', transparency: _cv.wmarkTr,
+              align: 'right', valign: 'middle', fontFace: F, wrap: false });
+            // 우측 중앙 얇은 대각선 느낌의 수직선 (depth 레이어)
+            s.addShape('rect', { x: W * 0.72, y: H * 0.08, w: 0.012, h: H * 0.50,
+              fill: { color: 'FFFFFF', transparency: 88 }, line: { type: 'none' } });
           }
           // ── accent bars ──
           if (NT === 'D') {
@@ -5057,7 +5069,7 @@
               fill: { color: C.primary }, line: { type: 'none' } });
             const bdX2 = panRight ? darkW - 0.022 : litW;
             s.addShape('rect', { x: bdX2, y: 0, w: 0.022, h: H,
-              fill: { color: C2 }, line: { type: 'none' } });
+              fill: { color: C.accentLight }, line: { type: 'none' } });
             if (companyName) s.addText(companyName.toUpperCase(), {
               x: litX, y: H * 0.02, w: litW, h: H * 0.22,
               fontSize: 42, bold: true, color: C.primary, transparency: 88,
@@ -5120,15 +5132,15 @@
             // A / B / F: solid primary panel
             s.addShape('rect', { x: panX, y: 0, w: panW, h: H, fill: { color: C.primary }, line: { type: 'none' } });
             const divX = panRight ? W - panW - 0.02 : panW;
-            s.addShape('rect', { x: divX, y: 0, w: 0.022, h: H, fill: { color: C2 }, line: { type: 'none' } });
+            s.addShape('rect', { x: divX, y: 0, w: 0.022, h: H, fill: { color: C.accentLight }, line: { type: 'none' } });
             s.addShape('rect', { x: panX + panW * 0.09, y: H * 0.22, w: panW * 0.82, h: 0.03, fill: { color: 'FFFFFF', transparency: 70 }, line: { type: 'none' } });
-            s.addShape('rect', { x: panX + panW * 0.09, y: H * 0.75, w: panW * 0.82, h: 0.018, fill: { color: C2 }, line: { type: 'none' } });
+            s.addShape('rect', { x: panX + panW * 0.09, y: H * 0.75, w: panW * 0.82, h: 0.018, fill: { color: C.accentLight }, line: { type: 'none' } });
           }
           // 대형 C2 데코 원
           const circSz = H * 1.10;
           const circX = panRight ? cntX - circSz * 0.35 : cntX + cntW - circSz * 0.65;
           s.addShape('ellipse', { x: circX, y: -H * 0.15, w: circSz, h: circSz,
-            fill: { color: C2, transparency: _pf.circTr }, line: { type: 'none' } });
+            fill: { color: C.accentLight, transparency: _pf.circTr }, line: { type: 'none' } });
           // 로고
           addLogo(panX + panW * 0.08, H * 0.08, 1.6, 0.46);
           if (!showLogo && companyName) s.addText(companyName.toUpperCase(), {
@@ -5150,7 +5162,7 @@
             fontSize: 30, bold: _pf.hlBold, color: 'FFFFFF',
             wrap: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FH });
           s.addShape('rect', { x: cntTxtX, y: H * 0.61, w: cntTxtW * 0.35, h: 0.022,
-            fill: { color: C2 }, line: { type: 'none' } });
+            fill: { color: C.accentLight }, line: { type: 'none' } });
           let _pfY = H * 0.65;
           if (sub) { s.addText(sub, { x: cntTxtX, y: _pfY, w: cntTxtW, h: H * 0.11,
             fontSize: 15, color: _pf.subClr, wrap: true, align: 'left', valign: 'top', fontFace: F });

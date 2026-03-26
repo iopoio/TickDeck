@@ -473,9 +473,11 @@ No vivid color found → industry default:
           "[shield] 리스크 관리: 규제 준수 자동화 · 법적 리스크 최소화"
     BAD:  아이콘 없이 텍스트만 사용 (service_pillar_* 등에서는 아이콘 생략 금지)
 5. Infographic labels: 2-5 words ONLY
-5b. [BODY MINIMUM] — 모든 슬라이드의 body[]는 최소 2개 아이템을 포함해야 합니다.
+5b. [BODY MINIMUM — 절대 규칙] — 모든 슬라이드의 body[]는 최소 2개 아이템을 포함해야 합니다.
     body 1개만 있으면 슬라이드가 허전해짐. 다만 데이터에 없는 내용을 지어내서 채우지 말 것.
-    크롤링 데이터에서 관련 내용이 1개뿐이면, 같은 내용을 다른 관점(예: 기능 vs 효과)으로 분리하여 2개로 구성.
+    크롤링 데이터에서 관련 내용이 1개뿐이면, 같은 내용을 다른 관점(예: 기능 vs 효과, 현재 vs 미래)으로 분리하여 2개로 구성.
+    ⚠️ C-type 필수 슬라이드(brand_story, creative_approach, showcase_work_1)는 특히 body 2개 이상 필수.
+    데이터 부족 시에도 해당 업종/아티스트의 공통 서술로 반드시 2개 이상 채울 것.
 6. NEVER fabricate phone numbers, addresses, client names, or KPIs not in data
 6b. DATA FIDELITY — service_pillar_*, core_business_*, showcase_work_* 슬라이드의 서비스/역량 내용은
     반드시 크롤링된 데이터에 명시된 것만 사용. 데이터에 없는 서비스 영역을 추론·확장·발명 금지.

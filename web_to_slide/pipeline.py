@@ -23,6 +23,7 @@ from .agents import (
     agent_researcher, agent_strategist, generate_slide_json,
     match_images_semantically, _detect_page_subject,
     _detect_page_subject_from_text, _detect_auto_narrative,
+    _call_gemini_with_retry,
 )
 from .image_pipeline import (
     OVERLAY_OPACITY, IMAGE_SLIDE_TYPES, SLIDE_VISUAL_STRATEGY, TYPOGRAPHY_BG_STYLE,
@@ -517,11 +518,81 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
             slide['body'] = cleaned_body
         _p("  → [정제] 마크다운/서술형 제거 완료")
 
+        # ── body 부족 슬라이드 Gemini 2차 보충 ──
+        _keep_types = {'cover', 'cta_session', 'cta', 'contact', 'cta_contact', 'section_intro'}
+        _thin_slides = []
+        for si, sl in enumerate(slide_json.get('slides', [])):
+            if sl.get('type', '') in _keep_types:
+                continue
+            meaningful = [b for b in sl.get('body', []) if len(b.strip()) >= 10]
+            if len(meaningful) < 2:
+                _thin_slides.append((si, sl))
+        if _thin_slides:
+            _p(f"  → body 부족 슬라이드 {len(_thin_slides)}개 감지 → Gemini 보충 중...")
+            _patch_items = []
+            for si, sl in _thin_slides:
+                _patch_items.append({
+                    "index": si,
+                    "type": sl.get('type', ''),
+                    "headline": sl.get('headline', ''),
+                    "subheadline": sl.get('subheadline', ''),
+                    "current_body": sl.get('body', [])
+                })
+            _patch_prompt = f"""아래 슬라이드들의 body가 부족합니다 (최소 2개 필요).
+크롤링 데이터를 참고하여 각 슬라이드의 body를 2~4개로 보충해주세요.
+
+규칙:
+- 기존 body 항목은 유지하고, 부족한 만큼 추가
+- 크롤링 데이터에 근거한 내용만 사용 (없으면 해당 업종 공통 서술)
+- 각 bullet은 15자 이상, "짧은제목: 설명" 형식 권장
+- 마크다운 금지, 문장형(~다/~요) 금지
+- 회사명: {company_name}
+
+보충 대상:
+{json.dumps(_patch_items, ensure_ascii=False, indent=2)}
+
+참고 데이터 (Factbook 요약):
+{factbook[:3000] if factbook else '(없음)'}
+
+출력: JSON 배열 — 각 항목 {{"index": 슬라이드인덱스, "body": ["보충된 전체 body 배열"]}}
+기존 body를 포함한 완성된 body 배열을 반환하세요."""
+            try:
+                _patch_resp = _call_gemini_with_retry(
+                    model="models/gemini-2.5-flash",
+                    contents=_patch_prompt,
+                    config={"temperature": 0.2, "max_output_tokens": 4000}
+                )
+                _patch_text = _patch_resp.text.strip()
+                _patch_text = re.sub(r'```json\s*', '', _patch_text)
+                _patch_text = re.sub(r'```', '', _patch_text)
+                _start = _patch_text.find('[')
+                _end = _patch_text.rfind(']')
+                if _start != -1 and _end != -1:
+                    _patches = json.loads(_patch_text[_start:_end+1])
+                    _patched = 0
+                    for p in _patches:
+                        idx = p.get('index')
+                        new_body = p.get('body', [])
+                        if idx is not None and isinstance(new_body, list) and len(new_body) >= 2:
+                            if 0 <= idx < len(slide_json['slides']):
+                                slide_json['slides'][idx]['body'] = new_body
+                                _patched += 1
+                    if _patched:
+                        _p(f"  → {_patched}개 슬라이드 body 보충 완료")
+            except Exception as e:
+                _p(f"  → body 보충 실패 (무시): {e}")
+
         # 빈/허전한 body 슬라이드 제거 (cover/cta/contact 제외)
         _keep_empty = {'cover', 'cta_session', 'cta', 'contact', 'cta_contact', 'section_intro'}
+        _nt = slide_json.get('narrative_type', '') or slide_json.get('brand', {}).get('narrative_type', '')
+        # C-type 핵심 슬라이드는 body 1개여도 보존 (2차 보충 후에도 부족하면 최소 유지)
+        _c_core = {'brand_story', 'creative_approach', 'showcase_work_1', 'showcase_work_2'}
         def _has_meaningful_body(slide):
             """body에 10자 이상인 의미 있는 항목이 2개 이상 있는지 (1개는 허전)"""
             meaningful = [b for b in slide.get('body', []) if len(b.strip()) >= 10]
+            # C-type 핵심 슬라이드는 1개만 있어도 통과
+            if _nt == 'C' and slide.get('type', '') in _c_core:
+                return len(meaningful) >= 1
             return len(meaningful) >= 2
         slides_before = len(slide_json.get('slides', []))
         slide_json['slides'] = [
