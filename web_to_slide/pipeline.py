@@ -520,8 +520,9 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
         # 빈/허전한 body 슬라이드 제거 (cover/cta/contact 제외)
         _keep_empty = {'cover', 'cta_session', 'cta', 'contact', 'cta_contact', 'section_intro'}
         def _has_meaningful_body(slide):
-            """body에 10자 이상인 의미 있는 항목이 1개 이상 있는지"""
-            return any(len(b.strip()) >= 10 for b in slide.get('body', []))
+            """body에 10자 이상인 의미 있는 항목이 2개 이상 있는지 (1개는 허전)"""
+            meaningful = [b for b in slide.get('body', []) if len(b.strip()) >= 10]
+            return len(meaningful) >= 2
         slides_before = len(slide_json.get('slides', []))
         slide_json['slides'] = [
             s for s in slide_json.get('slides', [])

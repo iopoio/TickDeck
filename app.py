@@ -246,6 +246,45 @@ def free_charge():
     return jsonify({"ok": True, "tokens": user['tokens']})
 
 
+@app.route("/api/generations")
+@login_required
+def api_generations():
+    """내 생성 이력 목록"""
+    from flask import session
+    user_id = session['user_id']
+    from web_to_slide.database import get_db
+    db = get_db()
+    rows = db.execute(
+        "SELECT id, url, company_name, purpose, status, created_at, completed_at "
+        "FROM generations WHERE user_id = ? ORDER BY created_at DESC LIMIT 20",
+        (user_id,)
+    ).fetchall()
+    # 직전 PDF 존재 여부 확인
+    pdf_dir = os.path.join(BASE_DIR, 'user_pdfs', str(user_id))
+    has_pdf = os.path.exists(os.path.join(pdf_dir, 'latest.pdf'))
+    return jsonify({
+        "ok": True,
+        "generations": [dict(r) for r in rows],
+        "has_latest_pdf": has_pdf,
+    })
+
+
+@app.route("/api/generations/latest-pdf")
+@login_required
+def download_latest_pdf():
+    """직전 생성 PDF 다운로드"""
+    from flask import session
+    import glob
+    user_id = session['user_id']
+    user_pdf_dir = os.path.join(BASE_DIR, 'user_pdfs', str(user_id))
+    pdfs = glob.glob(os.path.join(user_pdf_dir, '*.pdf'))
+    if not pdfs:
+        return jsonify({"error": "저장된 PDF가 없습니다"}), 404
+    pdf_path = pdfs[0]
+    return send_file(pdf_path, mimetype='application/pdf',
+                     as_attachment=True, download_name=os.path.basename(pdf_path))
+
+
 @app.route("/api/auth/me")
 def auth_me():
     from flask import session
@@ -498,6 +537,19 @@ def convert_to_pdf():
         pdf_path = os.path.join(tmpdir, 'slides.pdf')
         if not os.path.exists(pdf_path):
             return jsonify({'error': 'PDF 파일이 생성되지 않았습니다.'}), 500
+
+        # 로그인된 사용자면 직전 PDF 저장 (이전 파일 삭제 → 항상 1개만)
+        from flask import session
+        import shutil, glob
+        user_id = session.get('user_id')
+        if user_id:
+            user_pdf_dir = os.path.join(BASE_DIR, 'user_pdfs', str(user_id))
+            os.makedirs(user_pdf_dir, exist_ok=True)
+            # 이전 PDF 전부 삭제
+            for old_pdf in glob.glob(os.path.join(user_pdf_dir, '*.pdf')):
+                os.remove(old_pdf)
+            # 새 PDF 저장 (원본 파일명)
+            shutil.copy2(pdf_path, os.path.join(user_pdf_dir, dl_name + '.pdf'))
 
         return send_file(
             pdf_path,
