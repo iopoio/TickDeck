@@ -968,6 +968,21 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
     site_img_pool_meta = assets.get('site_img_pool_meta', [])
     _p(f"[4단계] 이미지 배정 시작 — 수집 이미지 풀: {len(site_img_pool_meta)}개 / accent: {accent_color}")
 
+    # ── 이미지 aspect ratio 계산 헬퍼 ──
+    def _calc_aspect(b64_str):
+        """base64 이미지 → width/height 비율 (실패 시 1.5 fallback)"""
+        try:
+            if HAS_PIL:
+                from PIL import Image
+                _bytes = base64.b64decode(b64_str)
+                img = Image.open(io.BytesIO(_bytes))
+                w, h = img.size
+                if h > 0:
+                    return round(w / h, 3)
+        except Exception:
+            pass
+        return 1.5  # 가로형 기본값
+
     # ── B그룹(company_image) 슬라이드만 필터 ──
     image_slides = [
         (i, s) for i, s in enumerate(slides)
@@ -987,7 +1002,8 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
                     img = site_img_pool_meta[pool_idx]
                     slide['bg_b64'] = img['b64']
                     slide['bg_mime'] = img.get('mime', 'jpeg')
-                    _p(f"  [{slide_idx+1}] {slide.get('type','')} <- 이미지 #{pool_idx} (시맨틱 매칭)")
+                    slide['bg_aspect'] = _calc_aspect(img['b64'])
+                    _p(f"  [{slide_idx+1}] {slide.get('type','')} <- 이미지 #{pool_idx} (시맨틱 매칭, aspect={slide['bg_aspect']})")
         # 2차: 순서 배정 (시맨틱 매칭 못 받은 슬라이드)
         used_indices = set()
         for slide_idx, slide in image_slides:
@@ -997,8 +1013,9 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
                 if pi not in used_indices:
                     slide['bg_b64'] = img['b64']
                     slide['bg_mime'] = img.get('mime', 'jpeg')
+                    slide['bg_aspect'] = _calc_aspect(img['b64'])
                     used_indices.add(pi)
-                    _p(f"  [{slide_idx+1}] {slide.get('type','')} <- 이미지 #{pi} (순서 배정)")
+                    _p(f"  [{slide_idx+1}] {slide.get('type','')} <- 이미지 #{pi} (순서 배정, aspect={slide['bg_aspect']})")
                     break
     # 이미지 없는 B그룹 슬라이드 → 타이포그래피 폴백 (bg_b64 없음으로 표시)
     for slide_idx, slide in image_slides:
