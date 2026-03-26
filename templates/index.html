@@ -1023,10 +1023,33 @@
       if (data.ok) {
         _currentUser.tokens = data.tokens;
         _updateTokenUI(data.tokens);
-        // 커피 안내 모달
-        _showCoffeeModal();
       }
     } catch { alert('충전에 실패했습니다'); }
+  }
+
+  function _showCoffeeChargeModal() {
+    let m = document.getElementById('coffee-charge-modal');
+    if (m) m.remove();
+    m = document.createElement('div');
+    m.id = 'coffee-charge-modal';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1200;display:flex;align-items:center;justify-content:center;padding:16px;';
+    m.innerHTML = `<div style="background:#fff;border-radius:14px;padding:28px;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(28,61,90,0.15);">
+      <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">☕ 개발자에게 커피 한 잔?</h3>
+      <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:14px;">서버 유지비로 소중히 사용됩니다</p>
+      <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406915" target="_blank">
+        <img src="/static/img/coffee_qr.png" alt="카카오페이 QR" style="width:200px;border-radius:10px;margin-bottom:8px;">
+      </a>
+      <p style="font-size:10px;color:#9E9A90;margin-bottom:14px;">모바일: 이미지 클릭 · PC: 카메라로 QR 스캔</p>
+      <button onclick="_chargeAfterCoffee()" style="width:100%;padding:10px;background:#1C3D5A;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">🎫 토큰 2개 충전하기</button>
+    </div>`;
+    document.body.appendChild(m);
+    m.addEventListener('click', (e) => { if (e.target === m) m.remove(); });
+  }
+
+  async function _chargeAfterCoffee() {
+    const m = document.getElementById('coffee-charge-modal');
+    if (m) m.remove();
+    await _freeCharge();
   }
 
   function _showCoffeeModal() {
@@ -1059,9 +1082,9 @@
       const btn = document.getElementById('btn-survey-or-charge');
       if (btn && _surveyDone) {
         btn.textContent = '🎫 무료 토큰 2개 충전';
-        btn.onclick = _freeCharge;
+        btn.onclick = _showCoffeeChargeModal;
         const hint = btn.nextElementSibling;
-        if (hint) hint.innerHTML = '베타 기간 무료 충전<br><button onclick="_showCoffeeModal()" style="display:inline-block;margin-top:8px;padding:6px 16px;background:#F5E6D3;border:1px solid #E8D5BF;border-radius:6px;color:#6B4C30;font-size:11px;font-weight:600;cursor:pointer;">☕ 개발자에게 커피 한 잔?</button>';
+        if (hint) hint.textContent = '베타 기간 무료 충전';
       }
     } catch {}
   }
