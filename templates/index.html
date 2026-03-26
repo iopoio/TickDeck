@@ -2230,8 +2230,8 @@
   // 슬라이드 크기 상수 (모든 pm_add* 함수에서 공유)
   const W = 13.3333, H = 7.5;
 
-  // Phase 8: 카드 soft shadow (PptxGenJS OOXML shadow)
-  const PM_CARD_SHADOW = { type: 'outer', color: '000000', blur: 4, offset: 2, opacity: 0.18 };
+  // Phase 8: 카드 soft shadow — 비활성화 (PPTX 복구 오류 원인)
+  const PM_CARD_SHADOW = undefined;
 
   // 공통 프레임: eyebrow pill + 타이틀 + full-width 구분선
   function pm_addSlideFrame(s, C, fonts, title, eyebrow) {
