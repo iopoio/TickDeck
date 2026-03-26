@@ -65,12 +65,14 @@
       align-items: center; justify-content: center;
       padding: 120px 40px 80px; text-align: center; position: relative;
       background:
-        radial-gradient(ellipse 60% 50% at 15% 20%, rgba(118,185,161,0.08) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 45% at 85% 75%, rgba(185,131,145,0.05) 0%, transparent 60%),
-        radial-gradient(ellipse 45% 40% at 50% 15%, rgba(28,61,90,0.04) 0%, transparent 55%); }
-    .hero::before { content: ''; position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
-      width: 900px; height: 500px;
-      background: radial-gradient(ellipse 70% 55% at 50% 30%, var(--secondary-06) 0%, transparent 70%);
+        linear-gradient(180deg, var(--surface) 0%, rgba(251,249,242,0) 35%),
+        radial-gradient(ellipse 70% 45% at 20% 55%, rgba(118,185,161,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 55% 40% at 75% 70%, rgba(185,131,145,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 50% at 50% 45%, rgba(28,61,90,0.07) 0%, transparent 60%),
+        var(--surface); }
+    .hero::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 1000px; height: 600px;
+      background: radial-gradient(ellipse 65% 50% at 50% 40%, rgba(118,185,161,0.12) 0%, transparent 70%);
       pointer-events: none; }
     .hero-badge { display: inline-flex; align-items: center; gap: 6px;
       font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
