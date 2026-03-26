@@ -78,7 +78,19 @@ init_db_app(app)
 with app.app_context():
     init_db()
 
-# job_id → { status, lines, result, error }
+# ── Celery/Redis 또는 In-Memory 모드 ──────────────────────────────────────
+USE_CELERY = os.environ.get('USE_CELERY', '').lower() in ('1', 'true', 'yes')
+
+if USE_CELERY:
+    import redis as _redis_mod
+    from celery_app import run_pipeline_task, REDIS_URL
+    _redis_client = _redis_mod.Redis.from_url(REDIS_URL, decode_responses=True)
+    _log("[MODE] Celery + Redis 모드")
+else:
+    _redis_client = None
+    _log("[MODE] In-Memory 모드 (단일 워커)")
+
+# In-Memory 모드용 (USE_CELERY=false)
 JOBS: dict[str, dict] = {}
 
 
@@ -472,11 +484,19 @@ def generate():
     db.commit()
 
     job_id = str(uuid.uuid4())
-    JOBS[job_id] = {"status": "running", "lines": [], "result": None, "error": None,
-                    "user_id": user_id, "gen_id": gen_id}
 
-    t = threading.Thread(target=_run, args=(job_id, url, company, narrative_type, mood, purpose, brand_color), daemon=True)
-    t.start()
+    if USE_CELERY:
+        # Celery + Redis 모드
+        run_pipeline_task.delay(
+            job_id, url, company, narrative_type, mood, purpose, brand_color,
+            user_id, gen_id
+        )
+    else:
+        # In-Memory 모드 (로컬 개발)
+        JOBS[job_id] = {"status": "running", "lines": [], "result": None, "error": None,
+                        "user_id": user_id, "gen_id": gen_id}
+        t = threading.Thread(target=_run, args=(job_id, url, company, narrative_type, mood, purpose, brand_color), daemon=True)
+        t.start()
 
     return jsonify({"job_id": job_id, "remaining_tokens": remaining})
 
@@ -484,6 +504,13 @@ def generate():
 @app.route("/stream/<job_id>")
 def stream(job_id: str):
     """Server-Sent Events — 실시간 로그 + 완료 이벤트"""
+    if USE_CELERY:
+        return _stream_redis(job_id)
+    return _stream_memory(job_id)
+
+
+def _stream_memory(job_id):
+    """In-Memory 모드 SSE"""
     def generate():
         sent = 0
         while True:
@@ -491,11 +518,9 @@ def stream(job_id: str):
             if not job:
                 yield f"data: {json.dumps({'error': '존재하지 않는 작업입니다.'})}\n\n"
                 break
-
             while sent < len(job["lines"]):
                 yield f"data: {json.dumps({'line': job['lines'][sent]})}\n\n"
                 sent += 1
-
             if job["status"] == "done":
                 meta = job["result"].get("meta", {}) if job["result"] else {}
                 slide_count = len(job["result"].get("slides", [])) if job["result"] else 0
@@ -504,9 +529,46 @@ def stream(job_id: str):
             elif job["status"] == "error":
                 yield f"data: {json.dumps({'status': 'error', 'error': job.get('error', '')})}\n\n"
                 break
-
             time.sleep(0.4)
+    return Response(generate(), mimetype="text/event-stream",
+                    headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
+
+def _stream_redis(job_id):
+    """Celery + Redis 모드 SSE (pub/sub + LRANGE 하이브리드)"""
+    def generate():
+        r = _redis_client
+        pubsub = r.pubsub()
+        pubsub.subscribe(f'job:{job_id}:channel')
+        sent = 0
+        try:
+            while True:
+                # 미전송 라인 catch-up
+                lines = r.lrange(f'job:{job_id}:lines', sent, -1)
+                for line in lines:
+                    yield f"data: {json.dumps({'line': line})}\n\n"
+                    sent += 1
+                # 상태 확인
+                status = r.get(f'job:{job_id}:status')
+                if status == 'done':
+                    result_raw = r.get(f'job:{job_id}:result')
+                    result = json.loads(result_raw) if result_raw else {}
+                    meta = result.get('meta', {})
+                    slide_count = len(result.get('slides', []))
+                    yield f"data: {json.dumps({'status': 'done', 'meta': meta, 'slide_count': slide_count})}\n\n"
+                    break
+                elif status == 'error':
+                    error = r.get(f'job:{job_id}:error') or ''
+                    yield f"data: {json.dumps({'status': 'error', 'error': error})}\n\n"
+                    break
+                elif status is None:
+                    yield f"data: {json.dumps({'error': '존재하지 않는 작업입니다.'})}\n\n"
+                    break
+                # pub/sub 대기 (0.5초 타임아웃)
+                pubsub.get_message(timeout=0.5)
+        finally:
+            pubsub.unsubscribe()
+            pubsub.close()
     return Response(generate(), mimetype="text/event-stream",
                     headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
@@ -540,12 +602,22 @@ def clear_cache():
 @app.route("/result/<job_id>")
 def result(job_id: str):
     """완료된 작업의 JSON 결과 반환 (슬라이드 데이터 전체)"""
-    job = JOBS.get(job_id)
-    if not job:
-        return jsonify({"error": "존재하지 않는 작업입니다."}), 404
-    if job["status"] != "done":
-        return jsonify({"error": "작업이 아직 완료되지 않았습니다.", "status": job["status"]}), 202
-    return jsonify(job["result"])
+    if USE_CELERY:
+        r = _redis_client
+        status = r.get(f'job:{job_id}:status')
+        if status is None:
+            return jsonify({"error": "존재하지 않는 작업입니다."}), 404
+        if status != 'done':
+            return jsonify({"error": "작업이 아직 완료되지 않았습니다.", "status": status}), 202
+        result_raw = r.get(f'job:{job_id}:result')
+        return Response(result_raw, mimetype='application/json')
+    else:
+        job = JOBS.get(job_id)
+        if not job:
+            return jsonify({"error": "존재하지 않는 작업입니다."}), 404
+        if job["status"] != "done":
+            return jsonify({"error": "작업이 아직 완료되지 않았습니다.", "status": job["status"]}), 202
+        return jsonify(job["result"])
 
 
 @app.route("/static/<path:filename>")
