@@ -246,6 +246,54 @@ def free_charge():
     return jsonify({"ok": True, "tokens": user['tokens']})
 
 
+@app.route("/api/regen-slide", methods=["POST"])
+@login_required
+def api_regen_slide():
+    """단일 슬라이드 AI 재생성 — 토큰 소모 없음 (텍스트만 재작성)"""
+    data = request.get_json(force=True)
+    slide_type = data.get('slide_type', '')
+    headline = data.get('headline', '')
+    company_name = data.get('company_name', '')
+    factbook_url = data.get('factbook_url', '')
+
+    if not slide_type:
+        return jsonify({"ok": False, "error": "slide_type 필수"}), 400
+
+    try:
+        from web_to_slide.agents import _call_gemini_with_retry
+        prompt = f"""회사명: {company_name}
+슬라이드 타입: {slide_type}
+기존 헤드라인: {headline}
+참고 URL: {factbook_url}
+
+이 슬라이드의 카피를 다시 작성해주세요.
+규칙:
+- headline: 핵심 메시지 (10~25자, 한국어)
+- subheadline: 보조 설명 (15~30자, 선택)
+- body: 2~4개 bullet 항목 (각 15자 이상, "짧은제목: 설명" 형식)
+- 마크다운 금지, 문장형(~다/~요) 금지
+- 데이터에 없는 내용을 지어내지 말 것
+- JSON만 출력: {{"headline":"...","subheadline":"...","body":["...","..."]}}"""
+
+        resp = _call_gemini_with_retry(
+            model="models/gemini-2.5-flash",
+            contents=prompt,
+            config={"temperature": 0.3, "max_output_tokens": 2000}
+        )
+        import re
+        text = resp.text.strip()
+        text = re.sub(r'```json\s*', '', text)
+        text = re.sub(r'```', '', text)
+        start = text.find('{')
+        end = text.rfind('}')
+        if start != -1 and end != -1:
+            slide = json.loads(text[start:end+1])
+            return jsonify({"ok": True, "slide": slide})
+        return jsonify({"ok": False, "error": "JSON 파싱 실패"}), 500
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
 @app.route("/api/generations")
 @login_required
 def api_generations():
