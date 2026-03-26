@@ -626,15 +626,23 @@
   </style>
 </head>
 <body>
-<div class="page" style="position:relative;">
-
-  <!-- ── 유저 바 (로그인 시 표시) ── -->
-  <div id="user-bar" style="display:none; align-items:center; justify-content:center; gap:10px; padding:10px 16px; margin-bottom:8px; flex-wrap:wrap;">
-    <span id="user-tokens" style="font-size:13px; color:#1C3D5A; font-weight:600;">🎫 2개</span>
-    <span id="user-email" style="font-size:12px; color:#6B7685;"></span>
-    <button onclick="_showHistory()" style="font-size:11px; color:#1C3D5A; background:#F5F3EC; border:1px solid #D8D4CA; border-radius:6px; padding:4px 12px; cursor:pointer; font-weight:500;">이력</button>
-    <button id="logout-btn" onclick="_doLogout()" style="font-size:11px; color:#9E9A90; background:none; border:none; cursor:pointer; text-decoration:underline;">로그아웃</button>
+<!-- ── App Nav ── -->
+<nav style="background:var(--surface);border-bottom:0.5px solid #D8D4CA;padding:10px 0;position:sticky;top:0;z-index:100;">
+  <div style="max-width:700px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;">
+    <a href="/" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <img src="/static/img/logo.svg" alt="TickDeck" style="height:28px;">
+      <span style="font-size:9px;background:#1C3D5A;color:#fff;padding:2px 6px;border-radius:4px;">Beta</span>
+    </a>
+    <div id="user-bar" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span id="user-tokens" style="font-size:12px;color:#1C3D5A;font-weight:600;">🎫 2개</span>
+      <span id="user-email" style="font-size:11px;color:#6B7685;"></span>
+      <button onclick="_showHistory()" style="font-size:10px;color:#1C3D5A;background:#F5F3EC;border:1px solid #D8D4CA;border-radius:5px;padding:3px 10px;cursor:pointer;font-weight:500;">이력</button>
+      <button id="logout-btn" onclick="_doLogout()" style="font-size:10px;color:#9E9A90;background:none;border:none;cursor:pointer;text-decoration:underline;">로그아웃</button>
+    </div>
   </div>
+</nav>
+
+<div class="page" style="position:relative;">
 
   <!-- ── 이력 모달 ── -->
   <div id="history-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; display:none; align-items:center; justify-content:center; padding:16px;">
