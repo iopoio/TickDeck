@@ -258,6 +258,96 @@ def free_charge():
     return jsonify({"ok": True, "tokens": user['tokens']})
 
 
+@app.route("/api/survey/check")
+@login_required
+def survey_check():
+    """설문 참여 여부 확인"""
+    from flask import session
+    user_id = session['user_id']
+    db = get_db()
+    done = db.execute("SELECT id FROM surveys WHERE user_id = ?", (user_id,)).fetchone()
+    return jsonify({"done": bool(done)})
+
+
+@app.route("/api/survey", methods=["POST"])
+@login_required
+def submit_survey():
+    """설문 제출 → 토큰 2개 지급 (계정당 1회)"""
+    from flask import session
+    user_id = session['user_id']
+    db = get_db()
+
+    # 중복 방지
+    existing = db.execute("SELECT id FROM surveys WHERE user_id = ?", (user_id,)).fetchone()
+    if existing:
+        return jsonify({"error": "이미 설문에 참여하셨습니다."}), 400
+
+    data = request.get_json(force=True)
+    db.execute("""
+        INSERT INTO surveys
+        (user_id, q1_industry, q2_role, q3_company_size,
+         q4_frequency, q5_current_method, q6_payment_type,
+         q7_price, q8_features, q9_feedback)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        user_id,
+        data.get('q1'), data.get('q2'), data.get('q3'),
+        data.get('q4'), json.dumps(data.get('q5', [])),
+        data.get('q6'), data.get('q7'),
+        json.dumps(data.get('q8', [])),
+        data.get('q9')
+    ))
+
+    # 토큰 지급
+    db.execute("UPDATE users SET tokens = tokens + 2 WHERE id = ?", (user_id,))
+    db.execute(
+        "INSERT INTO token_history (user_id, amount, reason) VALUES (?, 2, 'survey')",
+        (user_id,)
+    )
+    db.commit()
+
+    user = get_user_by_id(user_id)
+    return jsonify({"ok": True, "tokens": user['tokens']})
+
+
+@app.route("/api/admin/surveys")
+@admin_required
+def admin_surveys():
+    db = get_db()
+    rows = db.execute(
+        "SELECT s.*, u.email FROM surveys s JOIN users u ON s.user_id = u.id ORDER BY s.created_at DESC"
+    ).fetchall()
+    return jsonify({"surveys": [dict(r) for r in rows]})
+
+
+@app.route("/api/admin/surveys/csv")
+@admin_required
+def admin_surveys_csv():
+    """설문 결과 CSV 다운로드 (엑셀 호환)"""
+    import csv, io
+    db = get_db()
+    rows = db.execute(
+        "SELECT s.id, u.email, s.q1_industry, s.q2_role, s.q3_company_size, "
+        "s.q4_frequency, s.q5_current_method, s.q6_payment_type, s.q7_price, "
+        "s.q8_features, s.q9_feedback, s.created_at "
+        "FROM surveys s JOIN users u ON s.user_id = u.id ORDER BY s.created_at DESC"
+    ).fetchall()
+    output = io.StringIO()
+    output.write('\ufeff')  # BOM for Excel UTF-8
+    writer = csv.writer(output)
+    writer.writerow(['ID', '이메일', '업종', '직무', '회사규모', '제작빈도',
+                     '기존방법', '결제방식', '가격', '희망기능', '자유의견', '참여일시'])
+    for r in rows:
+        writer.writerow([r['id'], r['email'], r['q1_industry'], r['q2_role'],
+                         r['q3_company_size'], r['q4_frequency'], r['q5_current_method'],
+                         r['q6_payment_type'], r['q7_price'], r['q8_features'],
+                         r['q9_feedback'], r['created_at']])
+    resp = make_response(output.getvalue())
+    resp.headers['Content-Type'] = 'text/csv; charset=utf-8-sig'
+    resp.headers['Content-Disposition'] = 'attachment; filename=tickdeck_surveys.csv'
+    return resp
+
+
 @app.route("/api/regen-slide", methods=["POST"])
 @login_required
 def api_regen_slide():

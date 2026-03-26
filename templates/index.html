@@ -646,6 +646,104 @@
     </div>
   </div>
 
+  <!-- ── 설문 모달 ── -->
+  <div id="survey-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1100; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#fff; border-radius:14px; padding:28px; width:100%; max-width:520px; max-height:85vh; overflow-y:auto; box-shadow:0 8px 32px rgba(28,61,90,0.15);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:18px; font-weight:700; color:#1C3D5A;">📋 TickDeck 설문</h3>
+        <button onclick="document.getElementById('survey-modal').style.display='none'" style="background:none; border:none; font-size:18px; cursor:pointer; color:#9E9A90;">✕</button>
+      </div>
+      <p style="font-size:12px; color:#9E9A90; margin-bottom:20px;">2~3분이면 끝나는 간단한 설문입니다. 완료 시 토큰 2개를 드립니다.</p>
+
+      <div id="survey-form">
+        <!-- Q1 -->
+        <div class="sv-q"><label class="sv-label">Q1. 어떤 업종에서 일하고 계신가요?</label>
+          <select id="sv-q1" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
+            <option value="">선택해주세요</option>
+            <option>IT / 소프트웨어</option><option>제조업</option><option>유통 / 커머스</option>
+            <option>전문 서비스 (컨설팅, 회계, 법률 등)</option><option>교육 / 학술</option>
+            <option>건설 / 부동산</option><option>마케팅 / 광고 에이전시</option><option>기타</option>
+          </select></div>
+        <!-- Q2 -->
+        <div class="sv-q"><label class="sv-label">Q2. 직무가 무엇인가요?</label>
+          <select id="sv-q2" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
+            <option value="">선택해주세요</option>
+            <option>대표 / 경영진</option><option>영업 / 사업개발</option><option>마케팅 / 브랜딩</option>
+            <option>기획 / 전략</option><option>디자인</option><option>개발 / IT</option><option>기타</option>
+          </select></div>
+        <!-- Q3 -->
+        <div class="sv-q"><label class="sv-label">Q3. 회사 규모는 어느 정도인가요?</label>
+          <select id="sv-q3" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
+            <option value="">선택해주세요</option>
+            <option>1인 (프리랜서 / 1인 기업)</option><option>2~10명</option><option>11~50명</option>
+            <option>51~200명</option><option>200명 이상</option>
+          </select></div>
+        <!-- Q4 -->
+        <div class="sv-q"><label class="sv-label">Q4. 회사소개서는 얼마나 자주 만드시나요?</label>
+          <select id="sv-q4" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
+            <option value="">선택해주세요</option>
+            <option>거의 안 만든다 (연 1~2회)</option><option>가끔 만든다 (분기 1~2회)</option>
+            <option>자주 만든다 (월 1회 이상)</option><option>매우 자주 만든다 (주 1회 이상)</option>
+          </select></div>
+        <!-- Q5 -->
+        <div class="sv-q"><label class="sv-label">Q5. 기존에 어떻게 만들고 계셨나요? (복수 선택)</label>
+          <div id="sv-q5" style="display:flex;flex-wrap:wrap;gap:6px;">
+            <label class="sv-cb"><input type="checkbox" value="직접 파워포인트로 제작"> 직접 파워포인트로 제작</label>
+            <label class="sv-cb"><input type="checkbox" value="사내 디자이너에게 요청"> 사내 디자이너에게 요청</label>
+            <label class="sv-cb"><input type="checkbox" value="외주 (에이전시, 프리랜서)"> 외주</label>
+            <label class="sv-cb"><input type="checkbox" value="템플릿 사이트 (미리캔버스, Canva 등)"> 템플릿 사이트</label>
+            <label class="sv-cb"><input type="checkbox" value="만든 적 없다"> 만든 적 없다</label>
+          </div></div>
+        <!-- Q6 -->
+        <div class="sv-q"><label class="sv-label">Q6. 유료 서비스가 된다면, 어떤 결제 방식을 선호하시나요?</label>
+          <select id="sv-q6" onchange="toggleQ7()" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
+            <option value="">선택해주세요</option>
+            <option value="per_item">건당 결제 (필요할 때만)</option>
+            <option value="subscription">월 정기 구독</option>
+            <option value="free_only">무료가 아니면 안 쓸 것 같다</option>
+          </select></div>
+        <!-- Q7 (조건부) -->
+        <div class="sv-q" id="sv-q7-wrap" style="display:none;"><label class="sv-label">Q7. 적정 가격은 어느 정도라고 생각하시나요?</label>
+          <select id="sv-q7" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
+            <option value="">선택해주세요</option>
+          </select></div>
+        <!-- Q8 -->
+        <div class="sv-q"><label class="sv-label">Q8. 가장 필요한 기능은? (최대 3개)</label>
+          <div id="sv-q8" style="display:flex;flex-wrap:wrap;gap:6px;">
+            <label class="sv-cb"><input type="checkbox" value="웹에서 직접 편집"> 웹에서 직접 편집</label>
+            <label class="sv-cb"><input type="checkbox" value="용도별 특화 템플릿"> 용도별 특화 템플릿</label>
+            <label class="sv-cb"><input type="checkbox" value="영문 회사소개서"> 영문 회사소개서</label>
+            <label class="sv-cb"><input type="checkbox" value="생성 이력 저장/재다운로드"> 이력 저장/재다운로드</label>
+            <label class="sv-cb"><input type="checkbox" value="팀 계정"> 팀 계정</label>
+            <label class="sv-cb"><input type="checkbox" value="브랜드 가이드라인 저장"> 브랜드 가이드라인 저장</label>
+            <label class="sv-cb"><input type="checkbox" value="한 페이지 요약 PDF"> 한 페이지 요약 PDF</label>
+            <label class="sv-cb"><input type="checkbox" value="경쟁사 분석 포함"> 경쟁사 분석 포함</label>
+          </div></div>
+        <!-- Q9 -->
+        <div class="sv-q"><label class="sv-label">Q9. 자유 의견 (선택)</label>
+          <textarea id="sv-q9" rows="3" placeholder="예: 슬라이드 디자인이 좀 더 다양했으면 좋겠어요" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;resize:vertical;"></textarea>
+        </div>
+
+        <button onclick="_submitSurvey()" style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,#1C3D5A,#5A9E86);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">설문 제출하고 토큰 2개 받기</button>
+      </div>
+
+      <div id="survey-done" style="display:none;text-align:center;padding:20px 0;">
+        <div style="font-size:40px;margin-bottom:12px;">🎉</div>
+        <h3 style="font-size:18px;font-weight:700;color:#1C3D5A;">감사합니다!</h3>
+        <p style="font-size:14px;color:#374151;margin-top:8px;">토큰 2개가 지급되었습니다.</p>
+        <button onclick="document.getElementById('survey-modal').style.display='none';location.reload();" style="margin-top:16px;padding:10px 24px;background:#1C3D5A;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;">슬라이드 만들러 가기</button>
+      </div>
+    </div>
+  </div>
+  <style>
+    .sv-q { margin-bottom:14px; }
+    .sv-label { display:block; font-size:13px; font-weight:600; color:#1b1c18; margin-bottom:6px; }
+    .sv-cb { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border:1px solid #D8D4CA;
+             border-radius:6px; font-size:12px; cursor:pointer; background:#fff; }
+    .sv-cb:has(input:checked) { background:#F0F7F4; border-color:#5A9E86; color:#1C3D5A; }
+    .sv-cb input { display:none; }
+  </style>
+
   <!-- ── 헤더 ── -->
   <header>
     <div class="badge" style="display:inline-flex;align-items:center;gap:6px;">
@@ -687,7 +785,8 @@
     <div id="phase-form">
       <div id="token-notice" style="display:none; text-align:center; padding:14px; margin-bottom:16px; background:#F5F3EC; border:1px solid #D8D4CA; border-radius:10px;">
         <p style="color:#374151; font-size:13px; margin-bottom:10px;">토큰을 모두 사용했습니다</p>
-        <button onclick="_freeCharge()" style="background:#1C3D5A; color:#fff; border:none; border-radius:8px; padding:8px 20px; font-size:13px; font-weight:500; cursor:pointer;">🎫 무료 토큰 2개 충전</button>
+        <button id="btn-survey-or-charge" onclick="_openSurveyOrCharge()" style="background:#1C3D5A; color:#fff; border:none; border-radius:8px; padding:8px 20px; font-size:13px; font-weight:500; cursor:pointer;">📋 설문 참여하고 토큰 2개 받기</button>
+        <p style="font-size:11px; color:#9E9A90; margin-top:6px;">2~3분 소요 · 계정당 1회</p>
       </div>
       <div class="field">
         <label>홈페이지 주소</label>
@@ -871,6 +970,7 @@
       if (data.ok && data.user) {
         _currentUser = data.user;
         _showLoggedIn();
+        _checkSurveyStatus();
       } else {
         _showAuthForm();
       }
@@ -923,6 +1023,72 @@
         _updateTokenUI(data.tokens);
       }
     } catch { alert('충전에 실패했습니다'); }
+  }
+
+  // 설문 or 무료충전 분기
+  let _surveyDone = false;
+  async function _checkSurveyStatus() {
+    try {
+      const res = await fetch('/api/survey/check');
+      const d = await res.json();
+      _surveyDone = d.done;
+      const btn = document.getElementById('btn-survey-or-charge');
+      if (btn && _surveyDone) {
+        btn.textContent = '🎫 무료 토큰 2개 충전';
+        btn.onclick = _freeCharge;
+        const hint = btn.nextElementSibling;
+        if (hint) hint.textContent = '설문 완료 · 무료 충전 가능';
+      }
+    } catch {}
+  }
+
+  function _openSurveyOrCharge() {
+    if (_surveyDone) { _freeCharge(); return; }
+    document.getElementById('survey-modal').style.display = 'flex';
+  }
+
+  function toggleQ7() {
+    const v = document.getElementById('sv-q6').value;
+    const wrap = document.getElementById('sv-q7-wrap');
+    const sel = document.getElementById('sv-q7');
+    if (v === 'per_item') {
+      sel.innerHTML = '<option value="">선택해주세요</option><option>1건당 3,000원 이하</option><option>1건당 3,000~5,000원</option><option>1건당 5,000~10,000원</option><option>1건당 10,000~30,000원</option><option>1건당 30,000원 이상도 괜찮다</option>';
+      wrap.style.display = '';
+    } else if (v === 'subscription') {
+      sel.innerHTML = '<option value="">선택해주세요</option><option>월 9,900원 (5건)</option><option>월 19,900원 (10건)</option><option>월 29,000원 (20건)</option><option>월 49,000원 (무제한)</option>';
+      wrap.style.display = '';
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  async function _submitSurvey() {
+    const q1 = document.getElementById('sv-q1').value;
+    const q2 = document.getElementById('sv-q2').value;
+    const q3 = document.getElementById('sv-q3').value;
+    const q4 = document.getElementById('sv-q4').value;
+    if (!q1 || !q2 || !q3 || !q4) { alert('Q1~Q4는 필수입니다'); return; }
+    const q5 = [...document.querySelectorAll('#sv-q5 input:checked')].map(c => c.value);
+    const q6 = document.getElementById('sv-q6').value;
+    const q7 = document.getElementById('sv-q7').value || null;
+    const q8 = [...document.querySelectorAll('#sv-q8 input:checked')].map(c => c.value);
+    if (q8.length > 3) { alert('Q8은 최대 3개까지 선택 가능합니다'); return; }
+    const q9 = document.getElementById('sv-q9').value.trim() || null;
+    try {
+      const res = await fetch('/api/survey', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q1, q2, q3, q4, q5, q6, q7, q8, q9 })
+      });
+      const d = await res.json();
+      if (d.ok) {
+        _surveyDone = true;
+        _currentUser.tokens = d.tokens;
+        _updateTokenUI(d.tokens);
+        document.getElementById('survey-form').style.display = 'none';
+        document.getElementById('survey-done').style.display = '';
+      } else { alert(d.error || '설문 제출 실패'); }
+    } catch { alert('서버 오류'); }
   }
 
   async function _showHistory() {

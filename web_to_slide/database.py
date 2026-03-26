@@ -32,6 +32,21 @@ CREATE TABLE IF NOT EXISTS generations (
     completed_at  DATETIME
 );
 
+CREATE TABLE IF NOT EXISTS surveys (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id         INTEGER NOT NULL REFERENCES users(id),
+    q1_industry     TEXT,
+    q2_role         TEXT,
+    q3_company_size TEXT,
+    q4_frequency    TEXT,
+    q5_current_method TEXT,
+    q6_payment_type TEXT,
+    q7_price        TEXT,
+    q8_features     TEXT,
+    q9_feedback     TEXT,
+    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS token_history (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id       INTEGER NOT NULL REFERENCES users(id),
