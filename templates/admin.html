@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TickDeck Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Pretendard', sans-serif; background: #f8f7f3; color: #1b1c18; padding: 24px; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    h1 { font-size: 24px; font-weight: 800; color: #1C3D5A; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    h1 img { width: 28px; height: 28px; }
+
+    /* 통계 카드 */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 32px; }
+    .stat-card { background: #fff; border-radius: 12px; padding: 16px; border: 0.5px solid #D8D4CA; }
+    .stat-card .val { font-size: 28px; font-weight: 800; color: #1C3D5A; }
+    .stat-card .lbl { font-size: 12px; color: #7a7e85; margin-top: 4px; }
+
+    /* 탭 */
+    .tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+    .tab { padding: 8px 20px; border-radius: 8px; border: none; background: #F5F3EC; color: #7a7e85;
+           font-size: 13px; font-weight: 600; cursor: pointer; }
+    .tab.active { background: #1C3D5A; color: #fff; }
+
+    /* 테이블 */
+    .table-wrap { background: #fff; border-radius: 12px; border: 0.5px solid #D8D4CA; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #F5F3EC; padding: 10px 12px; text-align: left; font-weight: 600; color: #7a7e85;
+         font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+    td { padding: 10px 12px; border-top: 0.5px solid #F0EDE6; white-space: nowrap; }
+    tr:hover td { background: #faf9f5; }
+
+    /* 상태 배지 */
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+    .badge-ok { background: #E8F5EE; color: #5A9E86; }
+    .badge-fail { background: #FDEDF0; color: #B98391; }
+    .badge-run { background: #FFF8E1; color: #C49A20; }
+
+    /* 토큰 지급 버튼 */
+    .btn-sm { padding: 4px 10px; border-radius: 6px; border: 1px solid #D8D4CA; background: #fff;
+              font-size: 11px; cursor: pointer; color: #1C3D5A; font-weight: 500; }
+    .btn-sm:hover { background: #F5F3EC; }
+
+    .loading { text-align: center; padding: 40px; color: #9E9A90; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><img src="/static/img/favicon.svg" alt=""> TickDeck Admin</h1>
+
+    <!-- 통계 -->
+    <div class="stats" id="stats">
+      <div class="stat-card"><div class="val" id="s-users">-</div><div class="lbl">총 사용자</div></div>
+      <div class="stat-card"><div class="val" id="s-gens">-</div><div class="lbl">총 생성</div></div>
+      <div class="stat-card"><div class="val" id="s-today">-</div><div class="lbl">오늘 생성</div></div>
+      <div class="stat-card"><div class="val" id="s-rate">-</div><div class="lbl">성공률</div></div>
+      <div class="stat-card"><div class="val" id="s-fail">-</div><div class="lbl">실패</div></div>
+    </div>
+
+    <!-- 탭 -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('users')">사용자</button>
+      <button class="tab" onclick="showTab('generations')">생성 이력</button>
+    </div>
+
+    <!-- 사용자 테이블 -->
+    <div id="tab-users" class="table-wrap">
+      <div class="loading">불러오는 중...</div>
+    </div>
+
+    <!-- 생성 이력 테이블 -->
+    <div id="tab-generations" class="table-wrap" style="display:none;">
+      <div class="loading">불러오는 중...</div>
+    </div>
+  </div>
+
+  <script>
+    // 탭 전환
+    function showTab(name) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tab-users').style.display = name === 'users' ? '' : 'none';
+      document.getElementById('tab-generations').style.display = name === 'generations' ? '' : 'none';
+    }
+
+    // 통계
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/admin/stats');
+        const d = await res.json();
+        document.getElementById('s-users').textContent = d.total_users;
+        document.getElementById('s-gens').textContent = d.total_generations;
+        document.getElementById('s-today').textContent = d.today_generations;
+        document.getElementById('s-rate').textContent = d.success_rate + '%';
+        document.getElementById('s-fail').textContent = d.failed;
+      } catch { }
+    }
+
+    // 사용자 목록
+    async function loadUsers() {
+      try {
+        const res = await fetch('/api/admin/users');
+        const d = await res.json();
+        const el = document.getElementById('tab-users');
+        if (!d.users.length) { el.innerHTML = '<div class="loading">사용자 없음</div>'; return; }
+        el.innerHTML = `<table>
+          <tr><th>ID</th><th>이메일</th><th>이름</th><th>토큰</th><th>생성수</th><th>가입일</th><th>최근 로그인</th><th>토큰 지급</th></tr>
+          ${d.users.map(u => `<tr>
+            <td>${u.id}</td>
+            <td>${u.email}</td>
+            <td>${u.name || '-'}</td>
+            <td><strong>${u.tokens}</strong></td>
+            <td>${u.gen_count}</td>
+            <td>${(u.created_at || '').slice(0, 16)}</td>
+            <td>${(u.last_login || '-').slice(0, 16)}</td>
+            <td><button class="btn-sm" onclick="grantTokens(${u.id})">+5 지급</button></td>
+          </tr>`).join('')}
+        </table>`;
+      } catch { }
+    }
+
+    // 생성 이력
+    async function loadGenerations() {
+      try {
+        const res = await fetch('/api/admin/generations');
+        const d = await res.json();
+        const el = document.getElementById('tab-generations');
+        if (!d.generations.length) { el.innerHTML = '<div class="loading">이력 없음</div>'; return; }
+        el.innerHTML = `<table>
+          <tr><th>ID</th><th>사용자</th><th>URL</th><th>회사명</th><th>용도</th><th>상태</th><th>생성일</th><th>완료일</th></tr>
+          ${d.generations.map(g => {
+            const badge = g.status === 'completed' ? 'badge-ok' : g.status === 'failed' ? 'badge-fail' : 'badge-run';
+            const label = g.status === 'completed' ? '완료' : g.status === 'failed' ? '실패' : g.status;
+            return `<tr>
+              <td>${g.id}</td>
+              <td>${g.user_email}</td>
+              <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${g.url}</td>
+              <td>${g.company_name || '-'}</td>
+              <td>${g.purpose || '-'}</td>
+              <td><span class="badge ${badge}">${label}</span></td>
+              <td>${(g.created_at || '').slice(0, 16)}</td>
+              <td>${(g.completed_at || '-').slice(0, 16)}</td>
+            </tr>`;
+          }).join('')}
+        </table>`;
+      } catch { }
+    }
+
+    // 토큰 지급
+    async function grantTokens(userId) {
+      if (!confirm('이 사용자에게 토큰 5개를 지급하시겠습니까?')) return;
+      try {
+        const res = await fetch('/api/admin/add-tokens', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId, amount: 5 })
+        });
+        const d = await res.json();
+        if (d.ok) { alert(`지급 완료! 현재 토큰: ${d.tokens}개`); loadUsers(); loadStats(); }
+        else alert(d.error || '실패');
+      } catch { alert('서버 오류'); }
+    }
+
+    // 초기 로드
+    loadStats();
+    loadUsers();
+    loadGenerations();
+  </script>
+</body>
+</html>

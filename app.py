@@ -620,6 +620,91 @@ def result(job_id: str):
         return jsonify(job["result"])
 
 
+# ── 관리자 ─────────────────────────────────────────────────────────────────
+ADMIN_EMAILS = set(
+    e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', 'chaejenn@gmail.com').split(',') if e.strip()
+)
+
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        from flask import session
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'error': '로그인이 필요합니다'}), 401
+        user = get_user_by_id(user_id)
+        if not user or user['email'].lower() not in ADMIN_EMAILS:
+            return jsonify({'error': '관리자 권한이 필요합니다'}), 403
+        return f(*args, **kwargs)
+    return decorated
+
+
+@app.route("/admin")
+@admin_required
+def admin_page():
+    return render_template("admin.html")
+
+
+@app.route("/api/admin/stats")
+@admin_required
+def admin_stats():
+    db = get_db()
+    total_users = db.execute("SELECT COUNT(*) c FROM users").fetchone()['c']
+    total_gens = db.execute("SELECT COUNT(*) c FROM generations").fetchone()['c']
+    today_gens = db.execute(
+        "SELECT COUNT(*) c FROM generations WHERE DATE(created_at) = DATE('now')"
+    ).fetchone()['c']
+    completed = db.execute(
+        "SELECT COUNT(*) c FROM generations WHERE status = 'completed'"
+    ).fetchone()['c']
+    failed = db.execute(
+        "SELECT COUNT(*) c FROM generations WHERE status = 'failed'"
+    ).fetchone()['c']
+    return jsonify({
+        'total_users': total_users, 'total_generations': total_gens,
+        'today_generations': today_gens, 'completed': completed, 'failed': failed,
+        'success_rate': round(completed / max(total_gens, 1) * 100, 1)
+    })
+
+
+@app.route("/api/admin/users")
+@admin_required
+def admin_users():
+    db = get_db()
+    rows = db.execute(
+        "SELECT u.id, u.email, u.name, u.tokens, u.created_at, u.last_login, "
+        "(SELECT COUNT(*) FROM generations g WHERE g.user_id = u.id) as gen_count "
+        "FROM users u ORDER BY u.created_at DESC LIMIT 100"
+    ).fetchall()
+    return jsonify({'users': [dict(r) for r in rows]})
+
+
+@app.route("/api/admin/generations")
+@admin_required
+def admin_generations():
+    db = get_db()
+    rows = db.execute(
+        "SELECT g.id, g.url, g.company_name, g.purpose, g.status, g.created_at, g.completed_at, "
+        "u.email as user_email "
+        "FROM generations g JOIN users u ON g.user_id = u.id "
+        "ORDER BY g.created_at DESC LIMIT 100"
+    ).fetchall()
+    return jsonify({'generations': [dict(r) for r in rows]})
+
+
+@app.route("/api/admin/add-tokens", methods=["POST"])
+@admin_required
+def admin_add_tokens():
+    data = request.get_json(force=True)
+    user_id = data.get('user_id')
+    amount = data.get('amount', 5)
+    if not user_id:
+        return jsonify({'error': 'user_id 필수'}), 400
+    add_tokens(user_id, amount, 'admin_grant')
+    user = get_user_by_id(user_id)
+    return jsonify({'ok': True, 'tokens': user['tokens']})
+
+
 @app.route("/static/<path:filename>")
 def serve_static(filename):
     """static 폴더 파일 서빙 (stitch_templates.json 등)"""
