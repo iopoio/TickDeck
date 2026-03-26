@@ -5188,8 +5188,8 @@
         const numCols = is2x2 ? 2 : Math.min(Math.max(items.length, 2), 3);
         const numRows = is2x2 ? 2 : 1;
         const cardGap = W * 0.016;
-        const cardY   = is2x2 ? (sub ? H * 0.46 : H * 0.40) : (sub ? H * 0.48 : H * 0.43);
-        const cardH   = (H - cardY - (is2x2 ? H * 0.17 : H * 0.06) - cardGap * (numRows - 1)) / numRows;
+        const cardY   = is2x2 ? (sub ? H * 0.42 : H * 0.36) : (sub ? H * 0.48 : H * 0.43);
+        const cardH   = (H - cardY - (is2x2 ? H * 0.20 : H * 0.08) - cardGap * (numRows - 1)) / numRows;
         const cardW   = (cW - cardGap * (numCols - 1)) / numCols;
         const circD   = Math.min(cardW * 0.22, 0.60);
         const circR   = circD / 2;

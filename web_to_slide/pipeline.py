@@ -336,6 +336,13 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
         favicon_b64 = ''
         favicon_mime = 'png'
         favicon_url = assets.get('favicon_url', '')
+        # 파비콘 도메인 검증: 입력 URL의 도메인과 다르면 외부 로고 → 스킵
+        if favicon_url:
+            _fav_domain = urlparse(favicon_url).netloc.replace('www.', '').lower()
+            _src_domain = urlparse(url).netloc.replace('www.', '').lower()
+            if _fav_domain and _src_domain and _fav_domain != _src_domain:
+                _p(f"  ⚠ 파비콘 도메인 불일치: {_fav_domain} ≠ {_src_domain} → 스킵")
+                favicon_url = ''
         if favicon_url:
             try:
                 _r = requests.get(favicon_url, headers=HEADERS, timeout=8)
@@ -602,9 +609,16 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
         _c_core = {'brand_story', 'creative_approach', 'showcase_work_1', 'showcase_work_2'}
         def _has_meaningful_body(slide):
             """body에 10자 이상인 의미 있는 항목이 2개 이상 있는지 (1개는 허전)"""
-            meaningful = [b for b in slide.get('body', []) if len(b.strip()) >= 10]
+            stype = slide.get('type', '')
+            body = slide.get('body', [])
+            meaningful = [b for b in body if len(b.strip()) >= 10]
+            # key_metrics: 값이 0 또는 N/A만 있으면 의미 없음
+            if stype == 'key_metrics':
+                vals = [b for b in body if b and not all(c in '0N/A ·' for c in b.strip())]
+                if not vals:
+                    return False
             # C-type 핵심 슬라이드는 1개만 있어도 통과
-            if _nt == 'C' and slide.get('type', '') in _c_core:
+            if _nt == 'C' and stype in _c_core:
                 return len(meaningful) >= 1
             return len(meaningful) >= 2
         slides_before = len(slide_json.get('slides', []))
