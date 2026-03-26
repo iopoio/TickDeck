@@ -522,6 +522,15 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
             slide['body'] = cleaned_body
         _p("  → [정제] 마크다운/서술형 제거 완료")
 
+        # ── image_en_hint 금지어 필터 ──
+        _FORBIDDEN_HINTS = {'handshake', 'puzzle', 'gears', 'compass', 'dart', 'target',
+                            'synergy', 'process', 'system', 'flowchart', 'diagram', 'chart', 'strategy'}
+        for slide in slide_json.get('slides', []):
+            hint = (slide.get('image_en_hint') or '').lower()
+            if any(fw in hint for fw in _FORBIDDEN_HINTS):
+                slide['image_en_hint'] = 'abstract minimal geometric composition modern studio'
+                _p(f"  → [힌트 정제] {slide.get('type','')}: 금지어 감지 → 기본 힌트로 교체")
+
         # ── body 부족 슬라이드 Gemini 2차 보충 ──
         _keep_types = {'cover', 'cta_session', 'cta', 'contact', 'cta_contact', 'section_intro'}
         _thin_slides = []

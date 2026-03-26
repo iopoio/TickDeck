@@ -2809,7 +2809,7 @@
     // 핵심 텍스트 (eyebrow가 있으면 상단 pill)
     if (eyebrow) {
       const ewStr = eyebrow.toUpperCase();
-      const ewW = Math.min(ewStr.length * 0.13 + 0.50, 7.0), ewH = 0.30;
+      const ewW = Math.min(ewStr.length * 0.13 + 0.50, 3.5), ewH = 0.30;
       s.addShape('roundRect', { x: W * 0.09, y: H * 0.10, w: ewW, h: ewH,
         fill: { color: 'FFFFFF', transparency: 70 }, line: { type: 'none' }, rectRadius: ewH / 2 });
       s.addText(ewStr, { x: W * 0.09, y: H * 0.10, w: ewW, h: ewH,
@@ -4390,7 +4390,8 @@
       const _stripIcon = t => String(t||'').replace(/^\[[\w-]+\]\s*/, '');
       const hl     = _stripIcon(slide.headline    || '');
       const sub    = _stripIcon(slide.subheadline || '');
-      const body   = Array.isArray(slide.body) ? slide.body : [];
+      const _rawBody = Array.isArray(slide.body) ? slide.body.filter(b => b && b.trim()) : [];
+      const body   = _rawBody.length > 0 ? _rawBody : (sub ? [sub] : []);
       const bgB64    = slide.bg_b64    || '';
       const bgMime   = slide.bg_mime   || 'png';
       const bgAspect = slide.bg_aspect || 1.0;
@@ -4472,8 +4473,8 @@
       const addLogo = (x, y, maxW = 1.8, maxH = 0.5) => {
         if (!showLogo || !logoAspect) return;
         if (!logoB64 || logoB64.length < 300) return;
-        // 세로형(aspect < 1.0)은 사진이 로고로 오감지된 것 → 스킵
-        if (logoAspect < 1.0) return;
+        // 세로형(< 1.0) 또는 극단적 가로형(> 4.0)은 로고 오감지 → 스킵
+        if (logoAspect < 1.0 || logoAspect > 4.0) return;
         let lW, lH;
         if (logoAspect >= maxW / maxH) { lW = maxW; lH = maxW / logoAspect; }
         else { lH = maxH; lW = maxH * logoAspect; }
@@ -4507,7 +4508,7 @@
       const addCopyright = (clr, cpX) => {
         if (!companyName) return;
         _cpDone = true;
-        s.addText(`© 2025 ${companyName}. All Rights Reserved.`, {
+        s.addText(`© ${new Date().getFullYear()} ${companyName}. All Rights Reserved.`, {
           x: cpX !== undefined ? cpX : 0.48, y: H - 0.4, w: 6, h: 0.28,
           fontSize: 8, color: clr || C.textMuted, fontFace: F });
       };
@@ -4855,7 +4856,7 @@
         if (eyebrow) {
           const ewStr = eyebrow.toUpperCase();
           const ewLen = ewStr.replace(/[^\x00-\xff]/g, 'xx').length;
-          const ewW = Math.min(ewLen * 0.125 + 0.48, 7.0), ewH = 0.28;
+          const ewW = Math.min(ewLen * 0.125 + 0.48, 3.5), ewH = 0.28;
           // splitBold(어두운 배경)이면 흰 배경+어두운 텍스트, 밝은 배경이면 primary 색
           const ewFill = splitBold
             ? { color: 'FFFFFF' }
@@ -4959,7 +4960,7 @@
         if (eyebrow) {
           const ewStr = eyebrow.toUpperCase();
           const ewLen = ewStr.replace(/[^\x00-\xff]/g, 'xx').length;
-          const ewW = Math.min(ewLen * 0.125 + 0.48, 7.0), ewH = 0.28;
+          const ewW = Math.min(ewLen * 0.125 + 0.48, 3.5), ewH = 0.28;
           s.addShape('roundRect', { x: 0.28, y: 0.12, w: ewW, h: ewH,
             fill: { color: C.primary }, line: { type: 'none' }, rectRadius: ewH / 2 });
           s.addText(ewStr, { x: 0.28, y: 0.12, w: ewW, h: ewH,
@@ -5133,10 +5134,11 @@
             if (sub) { s.addText(sub, { x: W * 0.06, y: pfYc, w: W * 0.88, h: H * 0.08,
               fontSize: 13, color: 'EEEEEE', wrap: true, align: 'left', valign: 'top', fontFace: F });
               pfYc += H * 0.07; }
-            body.slice(0, 1).forEach(b => {
-              if (pfYc + H * 0.06 > H * 0.94) return;
-              s.addText('·  ' + b.replace(/^\[[a-z][a-z0-9-]*\]\s*/i, ''), { x: W * 0.06, y: pfYc, w: W * 0.85, h: H * 0.06,
-                fontSize: 11, color: 'CCCCCC', wrap: true, align: 'left', valign: 'top', fontFace: F }); });
+            body.slice(0, 3).forEach(b => {
+              if (pfYc + H * 0.05 > H * 0.95) return;
+              s.addText('·  ' + b.replace(/^\[[\w-\s]+\]\s*/i, ''), { x: W * 0.06, y: pfYc, w: W * 0.85, h: H * 0.05,
+                fontSize: 11, color: 'CCCCCC', wrap: true, align: 'left', valign: 'top', fontFace: F });
+              pfYc += H * 0.05; });
             addCopyright('AAAAAA');
             addFavicon();
             addPageNum('AAAAAA');

@@ -21,7 +21,7 @@ celery.conf.update(
     task_track_started=True,
     task_time_limit=600,          # 10분 hard limit
     task_soft_time_limit=540,     # 9분 soft limit
-    worker_concurrency=2,         # 동시 2개 파이프라인 (API rate limit 고려)
+    worker_concurrency=1,         # 동시 1개 파이프라인 (4GB 서버 메모리 제한)
     worker_prefetch_multiplier=1,
 )
 
