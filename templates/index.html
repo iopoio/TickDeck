@@ -4472,6 +4472,8 @@
       const addLogo = (x, y, maxW = 1.8, maxH = 0.5) => {
         if (!showLogo || !logoAspect) return;
         if (!logoB64 || logoB64.length < 300) return;
+        // 세로형(aspect < 1.0)은 사진이 로고로 오감지된 것 → 스킵
+        if (logoAspect < 1.0) return;
         let lW, lH;
         if (logoAspect >= maxW / maxH) { lW = maxW; lH = maxW / logoAspect; }
         else { lH = maxH; lW = maxH * logoAspect; }
@@ -6121,7 +6123,8 @@
             // 하단 thick accent 바
             s.addShape('rect', { x: 0, y: H - 0.08, w: W, h: 0.08, fill: { color: 'FFFFFF', transparency: 40 }, line: { type: 'none' } });
             // 아티스트명 초대형 중앙 — 로고 있으면 이미지, 없으면 텍스트
-            if (showLogo && logoAspect) {
+            // 세로형 이미지(aspect < 1.2)는 사진이 로고로 오감지된 것 → 텍스트 폴백
+            if (showLogo && logoAspect && logoAspect >= 1.2) {
               // 로고 중앙 대형 배치 (최대 5" × 2.5" 박스 내 비율 보존)
               const _lgMaxW = 5.0, _lgMaxH = 2.5;
               let _lgW, _lgH;
