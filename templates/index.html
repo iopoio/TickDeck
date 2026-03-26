@@ -1173,7 +1173,7 @@
 
     // 메타 정보 표시
     const narrativeType = (meta || {}).narrative_type || '—';
-    const accentColor   = (meta || {}).accent_color   || '#6C47FF';
+    const accentColor   = (meta || {}).accent_color   || '#1C3D5A';
     const typeLabel = { A: 'A형', B: 'B형', C: 'C형', D: 'D형' }[narrativeType] || narrativeType;
     document.getElementById('meta-slide-count').textContent = slideCount || '—';
     document.getElementById('meta-narrative').textContent   = typeLabel;
@@ -1229,7 +1229,7 @@
 
     const slides  = data.slides || [];
     const brand   = data.brand  || {};
-    const accent  = (brand.primaryColor || '#7C5CF6');
+    const accent  = (brand.primaryColor || '#1C3D5A');
     const nt      = brand.narrative_type || '';
 
     // 템플릿 없으면 section 숨김 유지
@@ -1390,7 +1390,7 @@
   function renderPreview(data) {
     const slides = data.slides || [];
     const brand  = data.brand  || {};
-    const accent = brand.primaryColor || '#6C47FF';
+    const accent = brand.primaryColor || '#1C3D5A';
     const grid   = document.getElementById('slide-grid');
     grid.innerHTML = '';
     let splitPreviewIdx = 0, prevPreviewLayout = '', previewLayoutCount = {};
@@ -1434,7 +1434,7 @@
       cardBgCss = `background-image:url('data:image/${bgMime};base64,${bgB64}');background-size:cover;background-position:center;`;
     } else {
       const bgBase  = vs.bg_base  || '#0F0F0F';
-      const bgColor = vs.bg_color || '#7B5CF0';
+      const bgColor = vs.bg_color || '#1C3D5A';
       const bgSt    = vs.bg_style || 'solid_dark';
       const bgCssMap = {
         'solid_dark':        `background:${bgBase};`,
@@ -1545,7 +1545,7 @@
           <div style="background:${accent};padding:8% 8%;display:flex;align-items:center">
             <div style="font-size:9%;font-weight:800;color:#fff;line-height:1.3">${escHtml(hl)}</div>
           </div>
-          <div style="background:#1a2a4a;padding:8% 8%">
+          <div style="background:#0D1F2D;padding:8% 8%">
             <div style="font-size:8%;color:rgba(255,255,255,0.9);line-height:1.5">${body.slice(0,2).map(b=>'· '+escHtml(b)).join('<br>')}</div>
           </div>
           <div style="${cardBgCss}position:relative">
@@ -4232,7 +4232,7 @@
     const brand       = data.brand  || {};
     const slides      = data.slides || [];
     const meta        = data.meta   || {};
-    const accentHex   = (brand.primaryColor || '#6C47FF').replace('#','');
+    const accentHex   = (brand.primaryColor || '#1C3D5A').replace('#','');
     const companyName = brand.name    || '';
     const logoB64     = brand.logoB64  || '';
     const logoMime    = brand.logoMime || 'png';
@@ -4360,7 +4360,7 @@
           // typography 모드: visual_style 기반 단색 배경
           // (PPTX는 CSS 그라디언트 미지원 → 단색이 오히려 깔끔)
           const _bgBase  = (vs.bg_base  || '#0F0F0F').replace('#', '');
-          const _bgColor = (vs.bg_color || '#7B5CF0').replace('#', '');
+          const _bgColor = (vs.bg_color || '#1C3D5A').replace('#', '');
           const _bst     = vs.bg_style || 'solid_dark';
           if (_bst === 'solid_light') {
             s.background = { color: 'F5F5F5' };
