@@ -2154,8 +2154,8 @@
   // 슬라이드 크기 상수 (모든 pm_add* 함수에서 공유)
   const W = 13.3333, H = 7.5;
 
-  // G-1: 카드 soft shadow — PptxGenJS 호환성 검증 후 활성화
-  const PM_CARD_SHADOW = undefined;  // TODO: PptxGenJS shadow 호환 확인 후 복원
+  // Phase 8: 카드 soft shadow (PptxGenJS OOXML shadow)
+  const PM_CARD_SHADOW = { type: 'outer', color: '000000', blur: 4, offset: 2, opacity: 0.18 };
 
   // 공통 프레임: eyebrow pill + 타이틀 + full-width 구분선
   function pm_addSlideFrame(s, C, fonts, title, eyebrow) {
@@ -2337,7 +2337,7 @@
   // icon: ICON_SET 키 문자열 (있으면 상단 좌측에 아이콘 원형 렌더링, 없으면 번호 pill)
   function pm_addContentCard(s, C, fonts, x, y, w, h, heading, bodyText, icon, idx) {
     const {F, FH, FD} = _ff(fonts);
-    const r = 0.12;
+    const r = 0.16;
     // 카드 본체 (G-1: soft shadow)
     s.addShape('roundRect', { x, y, w, h,
       fill: { color: 'FFFFFF' },
@@ -3450,7 +3450,7 @@
       // 카드 배경
       s.addShape('roundRect', { x, y, w: qW, h: qH,
         fill: { color: _pm_bright(C.primary, 0.91) },
-        line: { color: C.lineColor, width: 0.75 }, rectRadius: 0.10 });
+        line: { color: C.lineColor, width: 0.75 }, rectRadius: 0.14, shadow: PM_CARD_SHADOW });
       // 헤더 (primary 텍스트)
       s.addText(labels[i], { x: x+0.18, y: y+0.10, w: qW-0.36, h: hdrH,
         fontFace: FH, fontSize: 14, bold: true, color: C.primary,
@@ -3476,7 +3476,7 @@
     const bdW=1.40, bdH=0.46;
     const bdX=aX+aW/2-bdW/2, bdY=aY+aH/2-bdH/2;
     s.addShape('roundRect', { x: bdX, y: bdY, w: bdW, h: bdH,
-      fill: { color: C.primary }, line: { type: 'none' }, rectRadius: 0.10 });
+      fill: { color: C.primary }, line: { type: 'none' }, rectRadius: 0.14 });
     s.addText('SWOT', { x: bdX, y: bdY, w: bdW, h: bdH,
       fontFace: F, fontSize: 14, bold: true, color: C.textOnPrimary,
       align: 'center', valign: 'middle' });
@@ -3711,7 +3711,7 @@
       const subClr  = isLight ? C.textSecondary : _pm_bright(fill, 0.55);
 
       s.addShape('roundRect', { x: bx, y: by, w: boxW, h: boxH,
-        fill: { color: fill }, line: { type: 'none' }, rectRadius: 0.12 });
+        fill: { color: fill }, line: { type: 'none' }, rectRadius: 0.16, shadow: PM_CARD_SHADOW });
 
       // 대형 숫자 + 단위
       const valStr = String(item.value || '—') + String(item.unit || '');
@@ -3782,7 +3782,7 @@
 
       // 배경 카드 (아주 연하게)
       s.addShape('roundRect', { x: txtX - 0.06, y: txtY, w: txtMaxW + 0.12, h: txtH,
-        fill: { color: C.accentLight, transparency: 80 }, line: { type: 'none' }, rectRadius: 0.08 });
+        fill: { color: C.accentLight, transparency: 80 }, line: { type: 'none' }, rectRadius: 0.12 });
 
       // 제목
       s.addText(item.heading || item.label || '', {
@@ -3823,7 +3823,7 @@
 
       // 헤더
       s.addShape('roundRect', { x, y: aY, w: cardW, h: headerH,
-        fill: { color: fill }, line: { type: 'none' }, rectRadius: 0.12 });
+        fill: { color: fill }, line: { type: 'none' }, rectRadius: 0.14 });
       s.addText(items[0] ? (items[0].groupLabel || (isPrimary ? 'Option A' : 'Option B')) : '',
         { x: x + 0.14, y: aY, w: cardW - 0.28, h: headerH,
           fontFace: FH, fontSize: 14, bold: true,
@@ -3832,7 +3832,7 @@
 
       // 바디 카드
       s.addShape('roundRect', { x, y: aY + headerH + 0.08, w: cardW, h: bodyH,
-        fill: { color: C.bg }, line: { color: C.lineColor, width: 1 }, rectRadius: 0.12 });
+        fill: { color: C.bg }, line: { color: C.lineColor, width: 1 }, rectRadius: 0.14, shadow: PM_CARD_SHADOW });
 
       // 수평 진행바 목록
       const barAreaY = aY + headerH + 0.22;
@@ -4687,13 +4687,10 @@
 
         items.slice(0, 4).forEach((item, ti) => {
           const cx = cardAreaX + ti * (cWT + cardGapT);
-          // 카드 그림자
-          s.addShape('roundRect', { x: cx + 0.04, y: cYT + 0.04, w: cWT, h: cHT,
-            fill: { color: 'CCCCCC', transparency: 60 }, line: { type: 'none' }, rectRadius: 0.10 });
-          // 카드 본체
+          // 카드 본체 (Phase 8: 소프트 쉐도우 + 큰 라디우스)
           s.addShape('roundRect', { x: cx, y: cYT, w: cWT, h: cHT,
             fill: { color: 'FFFFFF' },
-            line: { color: C.accentLight, width: 0.75 }, rectRadius: 0.10 });
+            line: { color: C.accentLight, width: 0.75 }, rectRadius: 0.14, shadow: PM_CARD_SHADOW });
           // 번호 배지
           const bdT = Math.min(cWT * 0.25, 0.52);
           s.addShape('ellipse', { x: cx + cWT * 0.10, y: cYT + cHT * 0.12,
@@ -4948,7 +4945,7 @@
             x: cx, y: cy + topOff, w: cardW, h: cardH - topOff,
             fill: { color: cardFill },
             line: useColorCard ? { type: 'none' } : { color: C.lineColor, width: 0.75 },
-            rectRadius: 0.12 });
+            rectRadius: 0.16, shadow: PM_CARD_SHADOW });
           // 2x2 카드: 상단 primary accent bar (레퍼런스 PDF 스타일)
           if (is2x2) {
             s.addShape('roundRect', { x: cx, y: cy + topOff, w: cardW, h: 0.08,
@@ -5316,14 +5313,14 @@
         if (showTwoCol) {
           // ── AS-IS 컬럼 (neutral_dark 헤더) ──
           s.addShape('roundRect', { x: cmpColL, y: cmpColY, w: cmpColW, h: cmpHdrH,
-            fill: { color: '4D4D4D' }, line: { type: 'none' }, rectRadius: 0.10 });
+            fill: { color: '4D4D4D' }, line: { type: 'none' }, rectRadius: 0.14 });
           s.addText('AS-IS  현재 상황', {
             x: cmpColL, y: cmpColY, w: cmpColW, h: cmpHdrH,
             fontSize: 14, bold: true, color: 'FFFFFF',
             align: 'center', valign: 'middle', fontFace: F });
           s.addShape('roundRect', { x: cmpColL, y: cmpColY + cmpHdrH + 0.05,
             w: cmpColW, h: cmpColH - cmpHdrH - 0.05,
-            fill: { color: 'F5F5F5' }, line: { color: 'DDDDDD', width: 1 }, rectRadius: 0.10 });
+            fill: { color: 'F5F5F5' }, line: { color: 'DDDDDD', width: 1 }, rectRadius: 0.14, shadow: PM_CARD_SHADOW });
           s.addText(beforeItems.slice(0, 4).map(b => '✕  ' + b).join('\n'), {
             x: cmpColL + cmpColW * 0.07, y: cmpColY + cmpHdrH + 0.18,
             w: cmpColW * 0.86, h: cmpColH - cmpHdrH - 0.28,
@@ -5336,14 +5333,14 @@
         const tobeX = showTwoCol ? cmpColR : cmpColL;
         if (showTwoCol) {
           s.addShape('roundRect', { x: tobeX, y: cmpColY, w: cmpColW, h: cmpHdrH,
-            fill: { color: C.primary }, line: { type: 'none' }, rectRadius: 0.10 });
+            fill: { color: C.primary }, line: { type: 'none' }, rectRadius: 0.14 });
           s.addText('TO-BE  개선 방향', {
             x: tobeX, y: cmpColY, w: cmpColW, h: cmpHdrH,
             fontSize: 14, bold: true, color: C.textOnPrimary,
             align: 'center', valign: 'middle', fontFace: F });
           s.addShape('roundRect', { x: tobeX, y: cmpColY + cmpHdrH + 0.05,
             w: cmpColW, h: cmpColH - cmpHdrH - 0.05,
-            fill: { color: 'FFFFFF' }, line: { color: C.primary, transparency: 65, width: 1.5 }, rectRadius: 0.10 });
+            fill: { color: 'FFFFFF' }, line: { color: C.primary, transparency: 65, width: 1.5 }, rectRadius: 0.14, shadow: PM_CARD_SHADOW });
           s.addText(afterItems.slice(0, 5).map(b => '·  ' + b.replace(/^\[[a-z][a-z0-9-]*\]\s*/i, '')).join('\n'), {
             x: tobeX + cmpColW * 0.05, y: cmpColY + cmpHdrH + 0.18,
             w: cmpColW * 0.90, h: cmpColH - cmpHdrH - 0.28,
