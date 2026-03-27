@@ -1447,20 +1447,7 @@
       }
     }).catch(() => {});
 
-    // 백그라운드 PDF 자동 저장 (사용자 모르게)
-    (async () => {
-      try {
-        await loadPptxGen();
-        const blobData = { ..._slideData, _returnBlob: true };
-        const pptxBlob = await generateAndDownloadPPTX(blobData);
-        const companyName = (_slideData.meta?.company_name || 'slides');
-        const formData = new FormData();
-        formData.append('file', pptxBlob, 'slides.pptx');
-        formData.append('filename', companyName + '_slides');
-        await fetch('/api/convert-pdf', { method: 'POST', body: formData });
-        console.debug('[auto-save] PDF 저장 완료');
-      } catch (e) { console.debug('[auto-save] PDF 저장 실패:', e); }
-    })();
+    // PDF 자동 저장은 fetchAndRenderResult 완료 후 실행 (아래 참조)
 
     // 메타 정보 표시
     const narrativeType = (meta || {}).narrative_type || '—';
@@ -1494,6 +1481,20 @@
       document.getElementById('btn-pptx').disabled = false;
       document.getElementById('pdf-btn-text').textContent = '⬇ PDF 다운로드';
       document.getElementById('btn-pdf').disabled = false;
+
+      // 백그라운드 PDF 자동 저장 (_slideData 로드 완료 후)
+      (async () => {
+        try {
+          await loadPptxGen();
+          const pptxBlob = await generateAndDownloadPPTX({ ...data, _returnBlob: true });
+          const companyName = (data.meta?.company_name || 'slides');
+          const formData = new FormData();
+          formData.append('file', pptxBlob, 'slides.pptx');
+          formData.append('filename', companyName + '_slides');
+          await fetch('/api/convert-pdf', { method: 'POST', body: formData });
+          console.debug('[auto-save] PDF 저장 완료');
+        } catch (e) { console.debug('[auto-save] PDF 저장 실패:', e); }
+      })();
 
     } catch (err) {
       console.error('결과 로드 실패:', err);

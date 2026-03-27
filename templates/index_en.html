@@ -1446,20 +1446,7 @@
       }
     }).catch(() => {});
 
-    // 백그라운드 PDF 자동 저장 (사용자 모르게)
-    (async () => {
-      try {
-        await loadPptxGen();
-        const blobData = { ..._slideData, _returnBlob: true };
-        const pptxBlob = await generateAndDownloadPPTX(blobData);
-        const companyName = (_slideData.meta?.company_name || 'slides');
-        const formData = new FormData();
-        formData.append('file', pptxBlob, 'slides.pptx');
-        formData.append('filename', companyName + '_slides');
-        await fetch('/api/convert-pdf', { method: 'POST', body: formData });
-        console.debug('[auto-save] PDF 저장 완료');
-      } catch (e) { console.debug('[auto-save] PDF 저장 실패:', e); }
-    })();
+    // PDF auto-save moved to fetchAndRenderResult (after data load)
 
     // 메타 정보 표시
     const narrativeType = (meta || {}).narrative_type || '—';
@@ -1494,10 +1481,24 @@
       document.getElementById('pdf-btn-text').textContent = '⬇ Download PDF';
       document.getElementById('btn-pdf').disabled = false;
 
+      // Background PDF auto-save (after data load)
+      (async () => {
+        try {
+          await loadPptxGen();
+          const pptxBlob = await generateAndDownloadPPTX({ ...data, _returnBlob: true });
+          const companyName = (data.meta?.company_name || 'slides');
+          const formData = new FormData();
+          formData.append('file', pptxBlob, 'slides.pptx');
+          formData.append('filename', companyName + '_slides');
+          await fetch('/api/convert-pdf', { method: 'POST', body: formData });
+          console.debug('[auto-save] PDF saved');
+        } catch (e) { console.debug('[auto-save] PDF save failed:', e); }
+      })();
+
     } catch (err) {
-      console.error('결과 로드 실패:', err);
-      document.getElementById('pptx-btn-text').textContent = '⚠ 로드 실패 — 새로고침 후 시도';
-      document.getElementById('pdf-btn-text').textContent = '⚠ 로드 실패';
+      console.error('Result load failed:', err);
+      document.getElementById('pptx-btn-text').textContent = '⚠ Load failed — refresh and retry';
+      document.getElementById('pdf-btn-text').textContent = '⚠ Load failed';
     }
   }
 
