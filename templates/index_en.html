@@ -852,17 +852,17 @@
         <div class="step-line"></div>
         <div class="step">
           <div class="step-dot" id="dot-2"></div>
-          <span>AI 콘텐츠 생성</span>
+          <span>Crafting Content</span>
         </div>
         <div class="step-line"></div>
         <div class="step">
           <div class="step-dot" id="dot-3"></div>
-          <span>이미지 합성</span>
+          <span>Composing Visuals</span>
         </div>
         <div class="step-line"></div>
         <div class="step">
           <div class="step-dot" id="dot-4"></div>
-          <span>완료</span>
+          <span>Done</span>
         </div>
       </div>
 
@@ -1398,15 +1398,15 @@
 
   // 고객에게 보여줄 메시지만 필터링 (내부 기술 로그 숨김)
   const _USER_VISIBLE = [
-    { pattern: /\[1단계\]/, msg: '🔍 웹사이트를 분석하고 있어요...' },
-    { pattern: /\[2단계\]/, msg: '🎨 Brand Color와 로고를 찾고 있어요...' },
-    { pattern: /\[2c단계\]/, msg: '🖼️ 홈페이지 이미지를 수집하고 있어요...' },
-    { pattern: /\[3단계-A\]/, msg: '📋 핵심 정보를 정리하고 있어요...' },
-    { pattern: /\[3단계-B\]/, msg: '📐 Slides 구성을 설계하고 있어요...' },
-    { pattern: /\[3단계-C\]/, msg: '✍️ Slides 내용을 작성하고 있어요...' },
-    { pattern: /\[4단계\]/, msg: '🖼️ 이미지를 준비하고 있어요...' },
-    { pattern: /\[완료\]/, msg: '✅ 완성! Slides를 확인하세요' },
-    { pattern: /\[품질 검사\]/, msg: '✨ 품질을 점검하고 있어요...' },
+    { pattern: /\[1단계\]/, msg: '🔍 Analyzing website... (may take a minute for complex sites)' },
+    { pattern: /\[2단계\]/, msg: '🎨 Detecting brand colors and logo...' },
+    { pattern: /\[2c단계\]/, msg: '🖼️ Collecting images from the website...' },
+    { pattern: /\[3단계-A\]/, msg: '📋 Extracting key information...' },
+    { pattern: /\[3단계-B\]/, msg: '📐 Designing slide structure...' },
+    { pattern: /\[3단계-C\]/, msg: '✍️ Writing slide content...' },
+    { pattern: /\[4단계\]/, msg: '🖼️ Preparing images...' },
+    { pattern: /\[완료\]/, msg: '✅ Done! Check your slides' },
+    { pattern: /\[품질 검사\]/, msg: '✨ Quality check in progress...' },
   ];
   function appendLog(el, text, cls) {
     // 에러는 항상 표시
@@ -1464,7 +1464,7 @@
     // 메타 정보 표시
     const narrativeType = (meta || {}).narrative_type || '—';
     const accentColor   = (meta || {}).accent_color   || '#1C3D5A';
-    const typeLabel = { A: 'A형', B: 'B형', C: 'C형', D: 'D형' }[narrativeType] || narrativeType;
+    const typeLabel = { A: 'Type A', B: 'Type B', C: 'Type C', D: 'Type D' }[narrativeType] || narrativeType;
     document.getElementById('meta-slide-count').textContent = slideCount || '—';
     document.getElementById('meta-narrative').textContent   = typeLabel;
     document.getElementById('meta-accent').style.color      = accentColor;
