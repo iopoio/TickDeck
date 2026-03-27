@@ -817,7 +817,7 @@
           <button class="purpose-pill" data-purpose="brand">Brand Intro</button>
           <button class="purpose-pill" data-purpose="sales">Sales Proposal</button>
           <button class="purpose-pill" data-purpose="ir">Investor IR</button>
-          <button class="purpose-pill" data-purpose="portfolio">포트폴리오</button>
+          <button class="purpose-pill" data-purpose="portfolio">Portfolio</button>
           <button class="purpose-pill" data-purpose="report">Internal Report</button>
         </div>
       </div>
@@ -832,8 +832,8 @@
         <button id="btn-generate" class="btn btn-primary" onclick="clearCacheAndGenerate()">Generate Slides</button>
       </div>
       <div style="margin-top:14px;padding:10px 14px;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;font-size:11px;color:#991B1B;line-height:1.6;">
-        ⚠️ AI가 생성하므로 매번 결과가 다를 수 있습니다 · 재생성 시 이전 결과는 삭제되며 복구 불가합니다<br>
-        생성된 PPT/PDF는 본인만 다운로드할 수 있으며, 운영팀은 결과물에 접근하지 않습니다
+        ⚠️ AI-generated results may vary each time · Previous results are deleted on regeneration and cannot be recovered<br>
+        Generated PPT/PDF can only be downloaded by you. Our team does not access your content.
       </div>
     </div>
 
@@ -971,7 +971,7 @@
   <div class="step-guide">
     <span><div class="num">1</div> Website Analysis</span>
     <span class="arrow">→</span>
-    <span><div class="num">2</div> AI Slides 제작</span>
+    <span><div class="num">2</div> Crafting Content</span>
     <span class="arrow">→</span>
     <span><div class="num">3</div> PPT Download</span>
   </div>
@@ -1191,7 +1191,7 @@
       const res = await fetch('/api/generations');
       const data = await res.json();
       if (data.ok && data.generations.length > 0) {
-        const _purposeLabel = { auto: 'AI Pick', brand: 'Brand Intro', sales: 'Sales Proposal', ir: 'Investor IR', portfolio: '포트폴리오', report: 'Internal Report' };
+        const _purposeLabel = { auto: 'AI Pick', brand: 'Brand Intro', sales: 'Sales Proposal', ir: 'Investor IR', portfolio: 'Portfolio', report: 'Internal Report' };
         const hasPdf = data.has_latest_pdf;
         // 가장 최근 completed 항목 찾기
         const latestCompleted = data.generations.find(g => g.status === 'completed');
@@ -1282,7 +1282,7 @@
     brand:     'auto',  // AI가 사이트 분석 후 최적 타입 선택
     sales:     'A',     // 문제-해결형 (영업/마케팅)
     ir:        'B',     // 산업 주도형 (실적·성장·시장 강조)
-    portfolio: 'C',     // 포트폴리오형 (크리에이티브·에이전시)
+    portfolio: 'C',     // Portfolio형 (크리에이티브·에이전시)
     report:    'B',     // 비즈니스 리포트
   };
   let _selectedPurpose = 'auto';
