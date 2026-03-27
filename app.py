@@ -499,6 +499,21 @@ def app_page():
     return resp
 
 
+@app.route("/en")
+def landing_en():
+    """English landing page"""
+    return render_template("landing_en.html")
+
+
+@app.route("/en/app")
+def app_page_en():
+    """English app page"""
+    resp = make_response(render_template("index_en.html"))
+    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+    resp.headers["Pragma"] = "no-cache"
+    return resp
+
+
 @app.route("/generate", methods=["POST"])
 @login_required
 def generate():
