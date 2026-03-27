@@ -170,9 +170,11 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
     _p(f"  [용도] {_PURPOSE_CONTEXT.get(purpose, purpose or 'brand')} (narrative_type={narrative_type or 'auto'})")
 
     # 분리 캐시 파일 (텍스트/이미지 분리로 ~1MB vs ~11MB 절감)
-    _text_cache = f"slide_{company_name}_text.json"
-    _img_cache  = f"slide_{company_name}_img.json"
-    _legacy_cache = f"slide_{company_name}.json"   # 구버전 통합 캐시 (마이그레이션용)
+    # 언어별 캐시 분리 (ko/en → 다른 파일)
+    _lang_suffix = f"_{slide_lang}" if slide_lang != 'ko' else ''
+    _text_cache = f"slide_{company_name}{_lang_suffix}_text.json"
+    _img_cache  = f"slide_{company_name}{_lang_suffix}_img.json"
+    _legacy_cache = f"slide_{company_name}.json"   # 구버전 통합 캐시 (마이그레이션용, ko만)
 
     json_file = _text_cache   # 기본적으로 텍스트 캐시 사용
     slide_json = None
@@ -281,8 +283,8 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
             if company_name != _old_name:
                 _p(f"  [주체 확정-og] {company_name} → narrative_type=C 적용")
                 # 캐시 파일명 재계산 (company_name이 바뀐 경우)
-                _text_cache = f"slide_{company_name}_text.json"
-                _img_cache  = f"slide_{company_name}_img.json"
+                _text_cache = f"slide_{company_name}{_lang_suffix}_text.json"
+                _img_cache  = f"slide_{company_name}{_lang_suffix}_img.json"
                 _legacy_cache = f"slide_{company_name}.json"
 
         raw_info = clean_raw_text(raw_info)
