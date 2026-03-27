@@ -637,7 +637,7 @@
     </a>
     <div id="user-bar" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
       <a href="/app" style="font-size:11px;color:#7a7e85;text-decoration:none;">🇰🇷 한국어</a>
-      <span id="user-tokens" style="font-size:12px;color:#1C3D5A;font-weight:600;">🎫 2</span>
+      <span id="user-tokens" style="font-size:12px;color:#1C3D5A;font-weight:600;">🎫 2개</span>
       <span id="user-email" style="font-size:11px;color:#6B7685;"></span>
       <button onclick="_showHistory()" style="font-size:10px;color:#1C3D5A;background:#F5F3EC;border:1px solid #D8D4CA;border-radius:5px;padding:3px 10px;cursor:pointer;font-weight:500;">History</button>
       <button id="logout-btn" onclick="_doLogout()" style="font-size:10px;color:#9E9A90;background:none;border:none;cursor:pointer;text-decoration:underline;">Logout</button>
@@ -654,7 +654,7 @@
         <h3 style="font-size:18px; font-weight:700; color:#111827;">생성 History</h3>
         <button onclick="document.getElementById('history-modal').style.display='none'" style="background:none; border:none; font-size:18px; cursor:pointer; color:#9E9A90;">✕</button>
       </div>
-      <p style="font-size:12px; color:#9E9A90; margin-bottom:16px;">직전 생성의 PDF만 보관됩니다 · 새로 생성하면 이전 PDF는 삭제됩니다</p>
+      <p style="font-size:12px; color:#9E9A90; margin-bottom:16px;">Only the latest PDF is kept · Previous PDF is deleted on regeneration</p>
       <div id="history-list" style="font-size:14px; color:#374151;"></div>
     </div>
   </div>
@@ -666,7 +666,7 @@
         <h3 style="font-size:18px; font-weight:700; color:#1C3D5A;">📋 TickDeck Survey</h3>
         <button onclick="document.getElementById('survey-modal').style.display='none'" style="background:none; border:none; font-size:18px; cursor:pointer; color:#9E9A90;">✕</button>
       </div>
-      <p style="font-size:12px; color:#9E9A90; margin-bottom:20px;">2~3분이면 끝나는 간단한 설문입니다. 완료 시 토큰 2개를 드립니다.</p>
+      <p style="font-size:12px; color:#9E9A90; margin-bottom:20px;">A quick 2-3 minute survey. Earn 2 tokens on completion.</p>
 
       <div id="survey-form">
         <!-- Q1 -->
@@ -733,7 +733,7 @@
             <label class="sv-cb"><input type="checkbox" value="Competitor analysis"> Competitor analysis</label>
           </div></div>
         <!-- Q9 -->
-        <div class="sv-q"><label class="sv-label">Q9. 자유 의견 (optional)</label>
+        <div class="sv-q"><label class="sv-label">Q9. Feedback? (optional)</label>
           <textarea id="sv-q9" rows="3" placeholder="예: Slides Design이 좀 더 다양했으면 좋겠어요" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;resize:vertical;"></textarea>
         </div>
 
@@ -841,7 +841,7 @@
     <div id="phase-running" class="hidden">
       <div class="progress-header">
         <div class="spinner"></div>
-        <h2>AI is generating your slides</h2>
+        <h2>AI가 Slides를 생성하고 있습니다</h2>
         <p>Takes about 3-5 minutes. Please wait.</p>
       </div>
 
@@ -971,7 +971,7 @@
   <div class="step-guide">
     <span><div class="num">1</div> Website Analysis</span>
     <span class="arrow">→</span>
-    <span><div class="num">2</div> Crafting Content</span>
+    <span><div class="num">2</div> AI Slides 제작</span>
     <span class="arrow">→</span>
     <span><div class="num">3</div> PPT Download</span>
   </div>
@@ -1158,12 +1158,12 @@
     const q2 = document.getElementById('sv-q2').value;
     const q3 = document.getElementById('sv-q3').value;
     const q4 = document.getElementById('sv-q4').value;
-    if (!q1 || !q2 || !q3 || !q4) { alert('Q1~Q4는 필수입니다'); return; }
+    if (!q1 || !q2 || !q3 || !q4) { alert('Q1-Q4 are required'); return; }
     const q5 = [...document.querySelectorAll('#sv-q5 input:checked')].map(c => c.value);
     const q6 = document.getElementById('sv-q6').value;
     const q7 = document.getElementById('sv-q7').value || null;
     const q8 = [...document.querySelectorAll('#sv-q8 input:checked')].map(c => c.value);
-    if (q8.length > 3) { alert('Q8은 최대 3개까지 선택 가능합니다'); return; }
+    if (q8.length > 3) { alert('Q8: Select up to 3'); return; }
     const q9 = document.getElementById('sv-q9').value.trim() || null;
     try {
       const res = await fetch('/api/survey', {
@@ -1191,7 +1191,7 @@
       const res = await fetch('/api/generations');
       const data = await res.json();
       if (data.ok && data.generations.length > 0) {
-        const _purposeLabel = { auto: 'AI Pick', brand: 'Brand Intro', sales: 'Sales Proposal', ir: 'Investor IR', portfolio: 'Portfolio', report: 'Internal Report' };
+        const _purposeLabel = { auto: 'AI 추천', brand: 'Brand Intro', sales: 'Sales Proposal', ir: 'Investor IR', portfolio: 'Portfolio', report: 'Internal Report' };
         const hasPdf = data.has_latest_pdf;
         // 가장 최근 completed 항목 찾기
         const latestCompleted = data.generations.find(g => g.status === 'completed');
@@ -4423,11 +4423,11 @@
       const txtW = aW - (txtX - aX) - 0.18;
 
       if (result) {
-        // 방법론(볼드·크게) + 성과(보조) — 간격 최소화
-        s.addText(approach, { x: txtX, y: cy + cardH * 0.10, w: txtW, h: cardH * 0.50,
+        // 방법론(볼드) + 성과(보라) — 위아래 여백 균등
+        s.addText(approach, { x: txtX, y: cy + cardH * 0.12, w: txtW, h: cardH * 0.42,
           fontFace: FH, fontSize: 14, bold: true, color: C.textPrimary,
           align: 'left', valign: 'middle', wrap: true, lineSpacingMultiple: 1.2 });
-        s.addText(result, { x: txtX, y: cy + cardH * 0.58, w: txtW, h: cardH * 0.32,
+        s.addText(result, { x: txtX, y: cy + cardH * 0.52, w: txtW, h: cardH * 0.36,
           fontFace: F, fontSize: 11, color: C.primary,
           align: 'left', valign: 'middle', wrap: true, lineSpacingMultiple: 1.15 });
       } else {
@@ -4946,7 +4946,7 @@
               x: W * 0.30, y: H * 0.05, w: W * 0.72, h: H * 0.90,
               fontSize: 120, bold: true, color: 'FFFFFF', transparency: _cv.wmarkTr,
               align: 'right', valign: 'middle', fontFace: F, wrap: false });
-            // 수직선 제거
+            // 수직선 제거 (거슬림)
           }
           // ── accent bars ──
           if (NT === 'D') {
@@ -6496,9 +6496,9 @@
             // ── 좌 Primary 패널 ──
             s.addShape('rect', { x: 0, y: 0, w: lpW, h: H, fill: { color: C.primary }, line: { type: 'none' } });
             s.addShape('ellipse', { x: -lpW * 0.35, y: H * 0.52, w: lpW * 1.05, h: lpW * 1.05, fill: { color: 'FFFFFF', transparency: 92 }, line: { type: 'none' } });
-            s.addText(brand.name || '', { x: W * 0.05, y: H * 0.10, w: lpW - W * 0.06, h: H * 0.10,
+            s.addText(brand.name || '', { x: W * 0.05, y: H * 0.12, w: lpW - W * 0.06, h: H * 0.10,
               fontSize: 16, bold: true, color: 'FFFFFF', charSpacing: 2, align: 'left', valign: 'middle', fontFace: FH });
-            s.addShape('rect', { x: W * 0.05, y: H * 0.24, w: lpW * 0.30, h: 0.04, fill: { color: 'FFFFFF', transparency: 50 }, line: { type: 'none' } });
+            s.addShape('rect', { x: W * 0.05, y: H * 0.22, w: lpW * 0.30, h: 0.04, fill: { color: 'FFFFFF', transparency: 50 }, line: { type: 'none' } });
             s.addText(hl || 'Thank you.', { x: W * 0.05, y: H * 0.27, w: lpW - W * 0.06, h: H * 0.50,
               fontSize: 28, bold: true, color: 'FFFFFF', wrap: true, shrinkText: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FD });
 
@@ -6712,25 +6712,25 @@
     const userMsg = document.getElementById('error-user-msg');
     if (!hint) return;
     const r = (rawErr || '').toLowerCase();
-    let title = '생성 중 오류가 발생했습니다.';
-    let body  = '잠시 후 Retry해주세요. 문제가 반복되면 URL을 확인하거나 관리자에게 문의하세요.';
+    let title = 'An error occurred during generation.';
+    let body  = 'Please retry shortly. If the problem persists, check the URL or contact support.';
     if (r.includes('api_key') || r.includes('api key') || r.includes('invalid key') || r.includes('authentication')) {
-      title = 'API 키 오류';
+      title = 'API Key Error';
       body  = '.env 파일의 GEMINI_API_KEY 또는 PEXELS_API_KEY가 올바른지 확인하세요.';
     } else if (r.includes('quota') || r.includes('rate limit') || r.includes('429') || r.includes('resource_exhausted')) {
-      title = 'API 호출 한도 초과 (429)';
+      title = 'API Rate Limit Exceeded';
       body  = 'Gemini / Imagen API 무료 한도를 초과했습니다. 1~2분 후 Retry하거나 유료 요금제를 확인하세요.';
     } else if (r.includes('timeout') || r.includes('timed out')) {
-      title = '요청 시간 초과';
+      title = 'Request Timeout';
       body  = '웹페이지 크롤링 또는 API 응답이 너무 오래 걸렸습니다. URL이 접근 가능한지 확인 후 Retry하세요.';
     } else if (r.includes('connection') || r === 'connection' || r.includes('network') || r.includes('connect')) {
       title = 'Server Disconnected';
       body  = '서버와의 연결이 끊어졌습니다. Flask 서버(app.py)가 실행 중인지 확인 후 Retry하세요.';
     } else if (r.includes('json') || r.includes('parse') || r.includes('decode')) {
-      title = 'AI 응답 파싱 오류';
+      title = 'AI Response Error';
       body  = 'Gemini가 올바르지 않은 형식으로 응답했습니다. Retry하면 보통 해결됩니다.';
     } else if (r.includes('blocked') || r.includes('safety') || r.includes('harm')) {
-      title = 'AI 안전 필터 차단';
+      title = 'Content Blocked';
       body  = 'URL의 콘텐츠가 AI 안전 정책에 의해 차단되었습니다. 다른 URL을 시도하세요.';
     }
     if (userMsg) userMsg.textContent = title;

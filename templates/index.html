@@ -4423,11 +4423,11 @@
       const txtW = aW - (txtX - aX) - 0.18;
 
       if (result) {
-        // 방법론(볼드·크게) + 성과(보조) — 간격 최소화
-        s.addText(approach, { x: txtX, y: cy + cardH * 0.10, w: txtW, h: cardH * 0.50,
+        // 방법론(볼드) + 성과(보라) — 위아래 여백 균등
+        s.addText(approach, { x: txtX, y: cy + cardH * 0.12, w: txtW, h: cardH * 0.42,
           fontFace: FH, fontSize: 14, bold: true, color: C.textPrimary,
           align: 'left', valign: 'middle', wrap: true, lineSpacingMultiple: 1.2 });
-        s.addText(result, { x: txtX, y: cy + cardH * 0.58, w: txtW, h: cardH * 0.32,
+        s.addText(result, { x: txtX, y: cy + cardH * 0.52, w: txtW, h: cardH * 0.36,
           fontFace: F, fontSize: 11, color: C.primary,
           align: 'left', valign: 'middle', wrap: true, lineSpacingMultiple: 1.15 });
       } else {
@@ -6496,9 +6496,9 @@
             // ── 좌 Primary 패널 ──
             s.addShape('rect', { x: 0, y: 0, w: lpW, h: H, fill: { color: C.primary }, line: { type: 'none' } });
             s.addShape('ellipse', { x: -lpW * 0.35, y: H * 0.52, w: lpW * 1.05, h: lpW * 1.05, fill: { color: 'FFFFFF', transparency: 92 }, line: { type: 'none' } });
-            s.addText(brand.name || '', { x: W * 0.05, y: H * 0.10, w: lpW - W * 0.06, h: H * 0.10,
+            s.addText(brand.name || '', { x: W * 0.05, y: H * 0.12, w: lpW - W * 0.06, h: H * 0.10,
               fontSize: 16, bold: true, color: 'FFFFFF', charSpacing: 2, align: 'left', valign: 'middle', fontFace: FH });
-            s.addShape('rect', { x: W * 0.05, y: H * 0.24, w: lpW * 0.30, h: 0.04, fill: { color: 'FFFFFF', transparency: 50 }, line: { type: 'none' } });
+            s.addShape('rect', { x: W * 0.05, y: H * 0.22, w: lpW * 0.30, h: 0.04, fill: { color: 'FFFFFF', transparency: 50 }, line: { type: 'none' } });
             s.addText(hl || 'Thank you.', { x: W * 0.05, y: H * 0.27, w: lpW - W * 0.06, h: H * 0.50,
               fontSize: 28, bold: true, color: 'FFFFFF', wrap: true, shrinkText: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FD });
 
