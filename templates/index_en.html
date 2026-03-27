@@ -4946,9 +4946,7 @@
               x: W * 0.30, y: H * 0.05, w: W * 0.72, h: H * 0.90,
               fontSize: 120, bold: true, color: 'FFFFFF', transparency: _cv.wmarkTr,
               align: 'right', valign: 'middle', fontFace: F, wrap: false });
-            // 우측 중앙 얇은 대각선 느낌의 수직선 (depth 레이어)
-            s.addShape('rect', { x: W * 0.72, y: H * 0.08, w: 0.012, h: H * 0.50,
-              fill: { color: 'FFFFFF', transparency: 88 }, line: { type: 'none' } });
+            // 수직선 제거
           }
           // ── accent bars ──
           if (NT === 'D') {
