@@ -308,6 +308,22 @@ def _make_pw_page(browser):
     return page
 
 
+def _pw_wait_ready(page, max_ms=3000):
+    """DOM 안정화 대기 — 하드코딩 4000ms 대신 동적 감지.
+    DOM 변경이 멈출 때까지 대기 (최대 max_ms). React/Next.js 하이드레이션 포함."""
+    try:
+        page.wait_for_load_state('domcontentloaded', timeout=max_ms)
+        # 네트워크 idle 시도 (짧은 timeout — 안 되면 무시)
+        try:
+            page.wait_for_load_state('networkidle', timeout=min(max_ms, 2000))
+        except Exception:
+            pass
+        # 추가 JS 실행 대기 (500ms 안에 body 변화 없으면 안정)
+        page.wait_for_timeout(500)
+    except Exception:
+        page.wait_for_timeout(min(max_ms, 1500))
+
+
 def _pw_dismiss_cookie(page) -> bool:
     """쿠키/GDPR 동의 모달 자동 클릭. 닫혔으면 True 반환.
     ibighit.com처럼 모달이 전체 페이지를 덮는 사이트 대응.
@@ -336,7 +352,7 @@ def _pw_dismiss_cookie(page) -> bool:
         }""")
         if clicked:
             # 클릭 후 React 재렌더 대기 (ibighit 기준 ~3초 필요)
-            page.wait_for_timeout(3500)
+            page.wait_for_timeout(1000)
             return True
     except Exception as e:
         logger.debug(f"쿠키 모달 JS 클릭 실패: {e}")
@@ -347,7 +363,7 @@ def _pw_dismiss_cookie(page) -> bool:
                 '[class*="Cookie"] button', '[class*="Consent"] button']:
         try:
             page.click(sel, timeout=1500)
-            page.wait_for_timeout(3500)
+            page.wait_for_timeout(1000)
             return True
         except Exception as e:
             logger.debug(f"쿠키 모달 CSS 셀렉터 클릭 실패 ({sel}): {e}")
@@ -364,9 +380,8 @@ def _playwright_screenshot_color(url: str, timeout: int = 15000) -> str:
             try:
                 page = _make_pw_page(browser)
                 page.goto(url, wait_until='domcontentloaded', timeout=timeout)
-                page.wait_for_timeout(4000)
+                _pw_wait_ready(page, 2500)
                 _pw_dismiss_cookie(page)
-                page.wait_for_timeout(1000)
                 screenshot_bytes = page.screenshot(type='png')
             finally:
                 browser.close()
@@ -388,9 +403,8 @@ def _fetch_with_playwright(url: str, wait: str = 'networkidle', timeout: int = 1
             try:
                 page = _make_pw_page(browser)
                 page.goto(url, wait_until='domcontentloaded', timeout=timeout)
-                page.wait_for_timeout(4000)   # React/Next.js 하이드레이션 대기
+                _pw_wait_ready(page, 2500)
                 _pw_dismiss_cookie(page)
-                page.wait_for_timeout(1000)
                 html = page.content()
             finally:
                 browser.close()
@@ -411,9 +425,8 @@ def _playwright_get_links(url: str, base_url: str) -> list:
             try:
                 page = _make_pw_page(browser)
                 page.goto(url, wait_until='domcontentloaded', timeout=20000)
-                page.wait_for_timeout(4000)   # React 하이드레이션 대기 (쿠키 모달 포함)
-                _pw_dismiss_cookie(page)       # 쿠키 모달 닫기 (내부에서 재렌더 대기)
-                page.wait_for_timeout(1500)   # 모달 닫힌 후 nav 재렌더 대기
+                _pw_wait_ready(page, 2500)
+                _pw_dismiss_cookie(page)
                 hrefs = page.evaluate("""() =>
                     Array.from(document.querySelectorAll('a[href]'))
                         .map(a => a.getAttribute('href'))
@@ -459,17 +472,14 @@ def _playwright_extract_images(url: str, base: str, _skip_pat=None) -> list:
             try:
                 page = _make_pw_page(browser)
                 page.goto(url, wait_until='domcontentloaded', timeout=20000)
-                page.wait_for_timeout(4000)   # React 하이드레이션 + 쿠키 모달 대기
-                _pw_dismiss_cookie(page)       # 쿠키 모달 닫기 (내부에서 재렌더 대기)
-                page.wait_for_timeout(1500)   # 모달 닫힌 후 이미지 재렌더 대기
-                # ── 레이지로딩 트리거: 스크롤 다운 ──
+                _pw_wait_ready(page, 2500)
+                _pw_dismiss_cookie(page)
+                # ── 레이지로딩 트리거: 스크롤 다운 (축소) ──
                 try:
-                    page.evaluate("() => { window.scrollTo(0, document.body.scrollHeight/3); }")
-                    page.wait_for_timeout(700)
-                    page.evaluate("() => { window.scrollTo(0, document.body.scrollHeight*2/3); }")
-                    page.wait_for_timeout(700)
+                    page.evaluate("() => { window.scrollTo(0, document.body.scrollHeight/2); }")
+                    page.wait_for_timeout(400)
                     page.evaluate("() => { window.scrollTo(0, document.body.scrollHeight); }")
-                    page.wait_for_timeout(1000)
+                    page.wait_for_timeout(400)
                     page.evaluate("() => { window.scrollTo(0, 0); }")
                 except Exception as e:
                     logger.debug(f"Playwright 스크롤/JS eval 실패: {e}")

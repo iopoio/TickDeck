@@ -549,8 +549,11 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
             meaningful = [b for b in sl.get('body', []) if len(b.strip()) >= 10]
             if len(meaningful) < 2:
                 _thin_slides.append((si, sl))
-        if _thin_slides:
+        if len(_thin_slides) >= 3:  # 3개 이상일 때만 Gemini 호출 (비용 최적화)
             _p(f"  → body 부족 슬라이드 {len(_thin_slides)}개 감지 → Gemini 보충 중...")
+        elif _thin_slides:
+            _p(f"  → body 부족 {len(_thin_slides)}개 (3개 미만 → 보충 스킵)")
+        if len(_thin_slides) >= 3:
             _patch_items = []
             for si, sl in _thin_slides:
                 _patch_items.append({
