@@ -85,16 +85,31 @@
 
 ---
 
+## ✅ 추가 완료 (2026-03-27 후반)
+
+- ✅ **랜딩 디자인 리뉴얼** — 2컬럼 히어로 + 밝은 Steps + 둥근 CTA + 새 푸터
+- ✅ **텍스트 로고** — Tick(네이비) + Deck(그린), weight 800 (모든 페이지)
+- ✅ **앱 디자인 폴리시** — 카드/인풋/버튼 라운딩 14~20px + 소프트 보더
+- ✅ **영어 슬라이드 생성** — Gemini CRITICAL LANGUAGE OVERRIDE
+- ✅ **EN 디자인 통일** — KO와 동일 디자인 + 전체 텍스트 영문화
+- ✅ **앱 SEO** — canonical, hreflang, OG 태그 (KO + EN)
+- ✅ **SSH 직접 배포** — ssh root@서버 "명령어" 방식 확보
+- ✅ **커버 세로줄 제거** — 이미지 없는 커버 depth 라인 삭제
+- ✅ **7p 텍스트 여백 균등화** — checklist pills 번호 박스 위아래 맞춤
+- ✅ **9p 회사명 위치 조정** — 구분선과 가까워지도록
+
+---
+
 ## 🟡 중요 — 다음 작업
 
-1. **랜딩 디자인 마무리** — 한국어/영문 2컬럼 히어로 + 세련된 CTA
-2. **SSE 끊김 시 job_id 복원** — 페이지 새로고침해도 결과 확인 가능
-3. **processing 상태 자동 실패 처리** — 10분 초과 시 토큰 환불
-4. **SSH MCP 설정** — 서버 직접 접근 자동화
-5. **primaryColor 로직 리팩토링** — 7단계 폴백 → 점수 기반 단일 함수
-6. **C-type 아티스트 이미지 최소 해상도** — 600px → 300px
-7. **timeout 상수 통일** — config.py에 SCRAPER_TIMEOUT 정의
-8. **_clear_cache() 공유화** — app.py/celery_app.py 중복 제거
+1. **SSE 끊김 시 job_id 복원** — 페이지 새로고침해도 결과 확인 가능
+2. **processing 상태 자동 실패 처리** — 10분 초과 시 토큰 환불
+3. **5p 카드 하단 허전함** — how_it_works 카드 body가 짧을 때 높이 조정
+4. **primaryColor 로직 리팩토링** — 7단계 폴백 → 점수 기반 단일 함수
+5. **C-type 아티스트 이미지 최소 해상도** — 600px → 300px
+6. **timeout 상수 통일** — config.py에 SCRAPER_TIMEOUT 정의
+7. **_clear_cache() 공유화** — app.py/celery_app.py 중복 제거
+8. **Playwright 중복 호출 제거** — brand_extractor 리팩토링 (30~40초 추가 절감)
 
 ---
 
