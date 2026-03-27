@@ -417,7 +417,16 @@ def generate_slide_json(factbook: str, storyline: list, narrative_type: str,
   레이블 브랜드색처럼 보이면 크리에이티브/엔터테인먼트 기본값(#1A1A1A 또는 #2C2C2C)으로 교체.
 """
 
-    user_prompt = f"""회사명: {company_name}
+    _lang_override = ''
+    if slide_lang == 'en':
+        _lang_override = """⚠️ CRITICAL LANGUAGE OVERRIDE ⚠️
+ALL slide text (headline, subheadline, body[]) MUST be written in ENGLISH.
+Do NOT write in Korean. Every single text field must be in English.
+Company name (brand.name) should use the original name from the website.
+This is a non-negotiable requirement.
+
+"""
+    user_prompt = f"""{_lang_override}회사명: {company_name}
 브랜드 색상: {', '.join(colors[:8]) if colors else 'unknown — use industry-appropriate default'}
 내러티브 타입: {narrative_type}
 {_subject_hint}

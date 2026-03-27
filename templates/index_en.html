@@ -1052,7 +1052,7 @@
     return { mw: mob ? '300px' : '380px', pad: mob ? '20px' : '32px', qr: mob ? '180px' : '240px' };
   }
   const _kofiBlock = `<div style="border-top:1px solid #F0EDE6;padding-top:12px;margin-top:8px;">
-    <p style="font-size:10px;color:#9E9A90;margin-bottom:8px;">해외 결제</p>
+    <p style="font-size:10px;color:#9E9A90;margin-bottom:8px;">International</p>
     <div id="kofi-btn-container"></div>
   </div>`;
   function _initKofi() {
@@ -1078,7 +1078,7 @@
       <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406915" target="_blank">
         <img src="/static/img/coffee_qr.png" alt="카카오페이 QR" style="width:${sz.qr};max-width:85%;border-radius:10px;margin-bottom:8px;">
       </a>
-      <p style="font-size:10px;color:#9E9A90;margin-bottom:10px;">모바일: 이미지 클릭 · PC: 카메라로 QR 스캔</p>
+      <p style="font-size:10px;color:#9E9A90;margin-bottom:10px;">Mobile: tap image · PC: scan QR</p>
       ${_kofiBlock}
       <button onclick="_chargeAfterCoffee()" style="width:100%;padding:10px;background:#1C3D5A;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px;">🎫 Get 2 Tokens</button>
     </div>`;
@@ -1101,12 +1101,12 @@
       m.id = 'coffee-modal';
       m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1200;display:flex;align-items:center;justify-content:center;padding:16px;';
       m.innerHTML = `<div style="background:#fff;border-radius:14px;padding:${sz.pad};width:calc(100% - 32px);max-width:${sz.mw};text-align:center;box-shadow:0 8px 32px rgba(28,61,90,0.15);">
-        <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">☕ 토큰 충전 완료!</h3>
-        <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:14px;">이 서비스의 유지를 위해<br>개발자에게 커피 한 잔은 어떨까요?</p>
+        <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">☕ Tokens Recharged!</h3>
+        <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:14px;">Help keep this service running.<br>Buy the developer a coffee?</p>
         <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406915" target="_blank">
           <img src="/static/img/coffee_qr.png" alt="카카오페이 QR" style="width:${sz.qr};max-width:85%;border-radius:10px;margin-bottom:8px;">
         </a>
-        <p style="font-size:11px;color:#9E9A90;margin-bottom:10px;">모바일: 이미지 클릭 · PC: 카메라로 QR 스캔</p>
+        <p style="font-size:11px;color:#9E9A90;margin-bottom:10px;">Mobile: tap image · PC: scan QR</p>
         ${_kofiBlock}
         <button onclick="document.getElementById('coffee-modal').remove()" style="background:none;border:none;color:#9E9A90;font-size:12px;cursor:pointer;margin-top:10px;">Maybe next time</button>
       </div>`;
