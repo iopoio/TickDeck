@@ -231,7 +231,8 @@
     .bcta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(118,185,161,0.40); background: #88c7ae; }
 
     /* Footer */
-    footer { padding: 28px 40px; background: var(--primary);
+    footer { padding: 28px 40px; background: var(--primary); }
+    footer > div.footer-inner { max-width: 1440px; margin: 0 auto;
       display: flex; justify-content: space-between; align-items: center; }
     footer p { font-size: 12px; color: rgba(255,255,255,0.35); }
     footer a { color: rgba(255,255,255,0.45); text-decoration: none; font-size: 12px; }
@@ -361,6 +362,7 @@
 </section>
 
 <footer>
+<div class="footer-inner">
   <p>© 2026 TickDeck. All rights reserved.</p>
   <div style="display:flex; gap:16px; align-items:center;">
     <button onclick="document.getElementById('coffee-modal-landing').style.display='flex'"
@@ -369,6 +371,7 @@
        onmouseout="this.style.background='#F5E6D3';this.style.transform='none'">☕ 커피 한 잔 후원하기</button>
     <a href="mailto:chaejenn@gmail.com">문의하기</a>
   </div>
+</div>
 </footer>
 
 <!-- 커피 QR 모달 -->
