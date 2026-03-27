@@ -144,34 +144,34 @@
     .hero-mockup-check svg { width: 22px; height: 22px; }
 
     /* Steps */
-    .steps { padding: 80px 40px 100px; position: relative;
-      background: linear-gradient(135deg, var(--primary) 0%, #264f70 100%); }
+    .steps { padding: 100px 40px 120px; position: relative;
+      background: #f0eee7; }
     .sh { text-align: center; margin-bottom: 56px; }
     .sh h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 800;
-      letter-spacing: -0.03em; margin-bottom: 12px; color: #fff; }
-    .sh h2 span { color: var(--secondary); }
-    .sh p { font-size: 16px; color: rgba(255,255,255,0.65); }
+      letter-spacing: -0.03em; margin-bottom: 12px; color: var(--primary); }
+    .sh h2 span { color: var(--secondary-dark); }
+    .sh p { font-size: 16px; color: var(--on-surface-variant); }
     .sg { display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 24px; max-width: 1200px; margin: 0 auto; }
-    .sc { background: var(--surface-card); border-radius: 24px;
-      padding: 40px 28px; text-align: center; transition: all 0.3s;
-      position: relative; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
-    .sc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
-    .sc:nth-child(1)::before { background: linear-gradient(90deg, var(--primary), var(--primary-60)); }
-    .sc:nth-child(2)::before { background: linear-gradient(90deg, var(--secondary-dark), var(--secondary)); }
-    .sc:nth-child(3)::before { background: linear-gradient(90deg, var(--tertiary-dark), var(--tertiary)); }
-    .sc:hover { transform: translateY(-6px); box-shadow: 0 20px 56px rgba(0,0,0,0.20); }
-    .sc-icon { font-size: 36px; margin-bottom: 16px; display: block; }
-    .sc-num { position: absolute; top: 16px; right: 20px;
-      font-size: 48px; font-weight: 900; opacity: 0.06; color: var(--primary); }
+    .sc { background: var(--surface-card); border-radius: 20px;
+      padding: 44px 32px; text-align: left; transition: all 0.3s;
+      position: relative; overflow: hidden; border: 1px solid rgba(28,61,90,0.06); }
+    .sc:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(28,61,90,0.08); }
+    .sc-icon { font-size: 28px; margin-bottom: 20px; display: flex; align-items: center;
+      justify-content: center; width: 52px; height: 52px; border-radius: 14px; }
+    .sc:nth-child(1) .sc-icon { background: var(--primary-10); }
+    .sc:nth-child(2) .sc-icon { background: var(--secondary-10); }
+    .sc:nth-child(3) .sc-icon { background: var(--tertiary-10); }
+    .sc-num { position: absolute; top: 8px; right: 16px;
+      font-size: 72px; font-weight: 900; opacity: 0.03; color: var(--primary); }
     .sc h3 { font-size: 18px; font-weight: 700; color: var(--primary);
       margin-bottom: 10px; letter-spacing: -0.01em; }
-    .sc p { font-size: 14px; line-height: 1.6; color: var(--on-surface-variant); }
+    .sc p { font-size: 14px; line-height: 1.7; color: var(--on-surface-variant); }
 
     /* Value */
     .value { padding: 100px 40px; background: var(--surface); }
-    .value-inner { max-width: 1000px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .value-inner { max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
     .vt h2 { font-size: clamp(28px, 4vw, 42px); font-weight: 800;
       letter-spacing: -0.03em; color: var(--primary); line-height: 1.25; margin-bottom: 20px; }
     .vt > p { font-size: 16px; line-height: 1.8; color: var(--on-surface-variant); margin-bottom: 32px; }
@@ -220,8 +220,7 @@
     .ms-check svg { width: 24px; height: 24px; }
 
     /* Audience */
-    .aud { padding: 100px 40px;
-      background: linear-gradient(135deg, #e8f4ef 0%, #f0f7f3 50%, #f6f4ec 100%); }
+    .aud { padding: 100px 40px; background: #f0eee7; }
     .aud-inner { max-width: 1000px; margin: 0 auto; text-align: center; }
     .aud-inner > h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 800;
       letter-spacing: -0.03em; margin-bottom: 12px; }
@@ -229,11 +228,10 @@
     .aud-inner > h2 .b { color: var(--primary); }
     .aud-inner > p { font-size: 16px; color: var(--on-surface-variant); margin-bottom: 48px; }
     .ag { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: left; }
-    .ac { background: var(--surface-card); border-radius: 24px; padding: 32px 24px;
-      box-shadow: 0 4px 20px var(--cg, rgba(28,61,90,0.06));
+    .ac { background: var(--surface-card); border-radius: 20px; padding: 36px 28px;
       transition: all 0.3s; position: relative; overflow: hidden;
       border: 1px solid rgba(28,61,90,0.06); }
-    .ac:hover { transform: translateY(-4px); box-shadow: 0 12px 36px var(--cg); }
+    .ac:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(28,61,90,0.08); }
     .ac::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
     .ac:nth-child(1) { --cg: rgba(28,61,90,0.06); }
     .ac:nth-child(1)::before { background: linear-gradient(90deg, var(--primary), var(--primary-60)); }
@@ -246,15 +244,16 @@
     .ac p { font-size: 13px; line-height: 1.6; color: var(--on-surface-variant); }
 
     /* Bottom CTA */
-    .bcta { padding: 100px 40px; text-align: center; position: relative; overflow: hidden;
-      background: linear-gradient(135deg, var(--primary) 0%, #264f70 40%, var(--tertiary-dark) 100%); }
-    .bcta::before { content: ''; position: absolute; inset: 0; opacity: 0.08; pointer-events: none;
+    .bcta { padding: 80px 40px; text-align: center; position: relative; background: var(--surface); }
+    .bcta-inner { max-width: 900px; margin: 0 auto; padding: 80px 60px;
+      background: var(--primary); border-radius: 32px; position: relative; overflow: hidden; }
+    .bcta-inner::before { content: ''; position: absolute; inset: 0; opacity: 0.06; pointer-events: none;
       background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0);
       background-size: 32px 32px; }
-    .bcta h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 800;
-      letter-spacing: -0.03em; color: #fff; margin-bottom: 16px; position: relative; }
-    .bcta p { font-size: 17px; color: rgba(255,255,255,0.65); margin-bottom: 36px; position: relative; }
-    .bcta-btn { display: inline-block; padding: 16px 48px;
+    .bcta h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+      letter-spacing: -0.03em; color: #fff; margin-bottom: 16px; position: relative; z-index: 1; }
+    .bcta p { font-size: 17px; color: rgba(255,255,255,0.55); margin-bottom: 36px; position: relative; z-index: 1; }
+    .bcta-btn { display: inline-block; padding: 16px 48px; position: relative; z-index: 1;
       background: var(--secondary); border: none; border-radius: 16px;
       font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.25s;
       box-shadow: 0 4px 24px rgba(118,185,161,0.30); font-family: inherit;
@@ -415,21 +414,24 @@
 </section>
 
 <section class="bcta">
-  <h2>지금 바로 시작하세요</h2>
-  <p>URL 하나로 전문가 수준의 프레젠테이션을 만들어 보세요</p>
-  <a href="/app" class="bcta-btn">무료로 시작하기</a>
+  <div class="bcta-inner">
+    <h2>지금 바로 시작하세요</h2>
+    <p>URL 하나로 전문가 수준의 프레젠테이션을 만들어 보세요</p>
+    <a href="/app" class="bcta-btn">무료로 시작하기</a>
+  </div>
 </section>
 
-<footer>
-<div class="footer-inner">
-  <p>© 2026 TickDeck. All rights reserved. <span style="font-size:9px;opacity:0.3;">v11.0</span></p>
-  <div style="display:flex; gap:16px; align-items:center;">
+<footer style="background:#f0eee7;border-top:1px solid rgba(28,61,90,0.06);">
+<div class="footer-inner" style="flex-direction:column;gap:16px;padding:40px 40px;">
+  <div style="font-size:18px;font-weight:800;color:var(--primary);letter-spacing:-0.02em;">TickDeck</div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:center;">
+    <a href="#" style="color:var(--on-surface-muted);">이용약관</a>
+    <a href="#" style="color:var(--on-surface-muted);">개인정보처리방침</a>
+    <a href="mailto:chaejenn@gmail.com" style="color:var(--on-surface-muted);">문의하기</a>
     <button onclick="document.getElementById('coffee-modal-landing').style.display='flex'"
-       style="padding:8px 18px;background:#F5E6D3;border:1px solid #E8D5BF;border-radius:8px;color:#6B4C30;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;"
-       onmouseover="this.style.background='#EDD9C2';this.style.transform='translateY(-1px)'"
-       onmouseout="this.style.background='#F5E6D3';this.style.transform='none'">☕ 커피 한 잔 후원하기</button>
-    <a href="mailto:chaejenn@gmail.com">문의하기</a>
+       style="padding:6px 14px;background:#F5E6D3;border:1px solid #E8D5BF;border-radius:6px;color:#6B4C30;font-size:12px;font-weight:600;cursor:pointer;">☕ 후원</button>
   </div>
+  <p style="font-size:11px;color:var(--on-surface-muted);opacity:0.6;">© 2026 TickDeck. All rights reserved. v11.0</p>
 </div>
 </footer>
 
