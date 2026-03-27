@@ -887,7 +887,7 @@
           <div class="val" id="meta-narrative">—</div>
           <div class="lbl">Narrative Type</div>
         </div>
-        <div class="done-meta-item" style="cursor:pointer;" onclick="document.getElementById('color-override').click()" title="클릭하여 Brand Color 변경">
+        <div class="done-meta-item" style="cursor:pointer;" onclick="document.getElementById('color-override').click()" title="Click to change Brand Color">
           <div class="val" id="meta-accent" style="font-size:16px">●</div>
           <div class="lbl">Brand Color <span style="font-size:10px;opacity:0.6;">✏️</span></div>
           <input type="color" id="color-override" style="position:absolute;opacity:0;pointer-events:none;" onchange="applyColorOverride(this.value)">
@@ -895,12 +895,12 @@
       </div>
 
       <button id="btn-pptx" class="btn-pptx" onclick="onClickPptx()" disabled>
-        <span id="pptx-btn-text">⏳ 데이터 로딩 중...</span>
+        <span id="pptx-btn-text">⏳ Loading data...</span>
       </button>
       <div id="pptx-font-info" style="display:none"></div>
 
       <button id="btn-pdf" class="btn-pdf" onclick="onClickPdf()" disabled>
-        <span id="pdf-btn-text">⏳ 데이터 로딩 중...</span>
+        <span id="pdf-btn-text">⏳ Loading data...</span>
       </button>
 
 
@@ -929,9 +929,9 @@
           <input type="text" id="edit-sub" />
         </div>
         <div class="edit-field" id="edit-body-field">
-          <label>본문 항목</label>
+          <label>Body Items</label>
           <div id="edit-body-items"></div>
-          <button class="edit-body-add" onclick="addBodyItem()">+ 항목 추가</button>
+          <button class="edit-body-add" onclick="addBodyItem()">+ Add Item</button>
         </div>
         <div class="edit-modal-actions">
           <button class="btn btn-outline" onclick="closeEditModal()">취소</button>
@@ -1020,7 +1020,7 @@
     const notice = document.getElementById('token-notice');
     if (tokens <= 0) {
       btn.disabled = true;
-      btn.textContent = '토큰이 부족합니다';
+      btn.textContent = 'Not enough tokens';
       btn.style.background = '#D1D5DB';
       btn.style.cursor = 'not-allowed';
       btn.style.boxShadow = 'none';
@@ -1127,7 +1127,7 @@
         btn.textContent = '🎫 Free Token Recharge';
         btn.onclick = _showCoffeeChargeModal;
         const hint = btn.nextElementSibling;
-        if (hint) hint.textContent = '베타 기간 무료 충전';
+        if (hint) hint.textContent = 'Free recharge during beta';
       }
     } catch {}
   }
@@ -6775,9 +6775,9 @@
     document.getElementById('slide-grid').innerHTML   = '';
     document.getElementById('done-meta').style.display = 'none';
     document.getElementById('btn-pptx').disabled = true;
-    document.getElementById('pptx-btn-text').textContent = '⏳ 데이터 로딩 중...';
+    document.getElementById('pptx-btn-text').textContent = '⏳ Loading data...';
     document.getElementById('btn-pdf').disabled = true;
-    document.getElementById('pdf-btn-text').textContent = '⏳ 데이터 로딩 중...';
+    document.getElementById('pdf-btn-text').textContent = '⏳ Loading data...';
     for (let i = 1; i <= 4; i++) setDot(i, '');
     lastDot = 0;
     showPhase('form');
