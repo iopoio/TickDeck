@@ -1343,45 +1343,58 @@
   function startStream(jobId) {
     const term = document.getElementById('terminal');
     term.innerHTML = '';
+    let _reconnects = 0;
+    const MAX_RECONNECT = 30;
 
-    eventSource = new EventSource(`/stream/${jobId}`);
+    function connect() {
+      eventSource = new EventSource(`/stream/${jobId}`);
 
-    eventSource.onmessage = (e) => {
-      const msg = JSON.parse(e.data);
+      eventSource.onmessage = (e) => {
+        _reconnects = 0;  // 메시지 수신 → 재연결 카운터 리셋
+        const msg = JSON.parse(e.data);
 
-      if (msg.line !== undefined) {
-        appendLog(term, msg.line);
-        const step = detectStep(msg.line);
-        if (step) {
-          advanceDots(step.dot);
-          document.getElementById('current-step').textContent = step.label;
+        if (msg.line !== undefined) {
+          appendLog(term, msg.line);
+          const step = detectStep(msg.line);
+          if (step) {
+            advanceDots(step.dot);
+            document.getElementById('current-step').textContent = step.label;
+          }
         }
-      }
 
-      if (msg.status === 'done') {
+        if (msg.status === 'done') {
+          eventSource.close();
+          for (let i = 1; i <= 4; i++) setDot(i, 'done');
+          const label = document.getElementById('inp-company').value.trim()
+                     || document.getElementById('inp-url').value.trim();
+          showDone(msg.meta, msg.slide_count, jobId, label);
+        }
+
+        if (msg.status === 'error') {
+          eventSource.close();
+          const errTerm = document.getElementById('terminal-error');
+          errTerm.innerHTML = term.innerHTML;
+          const rawErr = msg.error || '';
+          if (rawErr) appendLog(errTerm, rawErr, 'error');
+          _showErrorHint(rawErr);
+          showPhase('error');
+        }
+      };
+
+      eventSource.onerror = () => {
         eventSource.close();
-        for (let i = 1; i <= 4; i++) setDot(i, 'done');
-        const label = document.getElementById('inp-company').value.trim()
-                   || document.getElementById('inp-url').value.trim();
-        showDone(msg.meta, msg.slide_count, jobId, label);
-      }
+        _reconnects++;
+        if (_reconnects > MAX_RECONNECT) {
+          _showErrorHint('connection');
+          showPhase('error');
+          return;
+        }
+        appendLog(term, `⏳ 연결이 잠시 끊겼습니다. 재연결 중... (${_reconnects}/${MAX_RECONNECT})`);
+        setTimeout(connect, 3000);
+      };
+    }
 
-      if (msg.status === 'error') {
-        eventSource.close();
-        const errTerm = document.getElementById('terminal-error');
-        errTerm.innerHTML = term.innerHTML;
-        const rawErr = msg.error || '';
-        if (rawErr) appendLog(errTerm, rawErr, 'error');
-        _showErrorHint(rawErr);
-        showPhase('error');
-      }
-    };
-
-    eventSource.onerror = () => {
-      eventSource.close();
-      _showErrorHint('connection');
-      showPhase('error');
-    };
+    connect();
   }
 
   // 고객에게 보여줄 메시지만 필터링 (내부 기술 로그 숨김)
