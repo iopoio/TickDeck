@@ -6712,26 +6712,26 @@
     const userMsg = document.getElementById('error-user-msg');
     if (!hint) return;
     const r = (rawErr || '').toLowerCase();
-    let title = '생성 중 오류가 발생했습니다.';
-    let body  = '잠시 후 Retry해주세요. 문제가 반복되면 URL을 확인하거나 관리자에게 문의하세요.';
+    let title = 'An error occurred during generation.';
+    let body  = 'Please retry shortly. If the problem persists, check the URL or contact support.';
     if (r.includes('api_key') || r.includes('api key') || r.includes('invalid key') || r.includes('authentication')) {
-      title = 'API 키 오류';
-      body  = '.env 파일의 GEMINI_API_KEY 또는 PEXELS_API_KEY가 올바른지 확인하세요.';
+      title = 'API Key Error';
+      body  = 'The API key is invalid or missing. Please contact support.';
     } else if (r.includes('quota') || r.includes('rate limit') || r.includes('429') || r.includes('resource_exhausted')) {
-      title = 'API 호출 한도 초과 (429)';
-      body  = 'Gemini / Imagen API 무료 한도를 초과했습니다. 1~2분 후 Retry하거나 유료 요금제를 확인하세요.';
+      title = 'API Rate Limit Exceeded';
+      body  = 'Too many requests. Please wait 1-2 minutes and retry.';
     } else if (r.includes('timeout') || r.includes('timed out')) {
-      title = '요청 시간 초과';
-      body  = '웹페이지 크롤링 또는 API 응답이 너무 오래 걸렸습니다. URL이 접근 가능한지 확인 후 Retry하세요.';
+      title = 'Request Timeout';
+      body  = 'The website took too long to respond. Please check if the URL is accessible and retry.';
     } else if (r.includes('connection') || r === 'connection' || r.includes('network') || r.includes('connect')) {
       title = 'Server Disconnected';
-      body  = '서버와의 연결이 끊어졌습니다. Flask 서버(app.py)가 실행 중인지 확인 후 Retry하세요.';
+      body  = 'Lost connection to the server. Please check if the server is running and retry.';
     } else if (r.includes('json') || r.includes('parse') || r.includes('decode')) {
-      title = 'AI 응답 파싱 오류';
-      body  = 'Gemini가 올바르지 않은 형식으로 응답했습니다. Retry하면 보통 해결됩니다.';
+      title = 'AI Response Error';
+      body  = 'The AI returned an invalid response. Retrying usually fixes this.';
     } else if (r.includes('blocked') || r.includes('safety') || r.includes('harm')) {
-      title = 'AI 안전 필터 차단';
-      body  = 'URL의 콘텐츠가 AI 안전 정책에 의해 차단되었습니다. 다른 URL을 시도하세요.';
+      title = 'Content Blocked';
+      body  = 'The URL content was blocked by AI safety policies. Try a different URL.';
     }
     if (userMsg) userMsg.textContent = title;
     hint.textContent = body;
