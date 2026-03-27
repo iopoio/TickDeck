@@ -383,11 +383,26 @@
     <p style="font-size:10px;color:#9E9A90;margin-bottom:12px;">모바일: 이미지 클릭 · PC: QR 스캔</p>
     <div style="border-top:1px solid #F0EDE6;padding-top:12px;margin-top:4px;">
       <p style="font-size:10px;color:#9E9A90;margin-bottom:8px;">해외 결제</p>
-      <a href="https://ko-fi.com/tickdeck" target="_blank" style="display:inline-block;padding:8px 20px;background:#FF5E5B;color:#fff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;">☕ Ko-fi로 후원하기</a>
+      <div id="kofi-btn-landing"></div>
     </div>
     <button onclick="document.getElementById('coffee-modal-landing').style.display='none'" style="background:none;border:none;color:#9E9A90;font-size:12px;cursor:pointer;margin-top:10px;">닫기</button>
   </div>
+  <script type="text/javascript" src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
   <script>
+    // 랜딩 Ko-fi 버튼 초기화
+    document.getElementById('coffee-modal-landing').addEventListener('transitionend', function() {
+      const c = document.getElementById('kofi-btn-landing');
+      if (c && !c.hasChildNodes() && typeof kofiwidget2 !== 'undefined') {
+        kofiwidget2.init('Support me on Ko-fi', '#5A9E86', 'D1D01WQ4K0');
+        c.innerHTML = kofiwidget2.getHTML();
+      }
+    });
+    // 모달 열릴 때도 초기화
+    const _origBtn = document.querySelector('[onclick*="coffee-modal-landing"]');
+    if (_origBtn) {
+      const _origClick = _origBtn.getAttribute('onclick');
+      _origBtn.setAttribute('onclick', _origClick + ';setTimeout(function(){var c=document.getElementById("kofi-btn-landing");if(c&&!c.hasChildNodes()&&typeof kofiwidget2!=="undefined"){kofiwidget2.init("Support me on Ko-fi","#5A9E86","D1D01WQ4K0");c.innerHTML=kofiwidget2.getHTML();}},100)');
+    }
     // 랜딩 커피 모달 반응형
     (function(){
       const inner = document.getElementById('coffee-modal-inner');

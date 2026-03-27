@@ -15,6 +15,7 @@
   <meta name="description" content="URL만 입력하면 AI가 브랜드 맞춤형 프레젠테이션을 자동으로 만들어드립니다." />
   <meta name="robots" content="noindex" />
   <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+  <script type="text/javascript" src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1043,8 +1044,17 @@
   }
   const _kofiBlock = `<div style="border-top:1px solid #F0EDE6;padding-top:12px;margin-top:8px;">
     <p style="font-size:10px;color:#9E9A90;margin-bottom:8px;">해외 결제</p>
-    <a href="https://ko-fi.com/tickdeck" target="_blank" style="display:inline-block;padding:8px 20px;background:#FF5E5B;color:#fff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;">☕ Ko-fi로 후원하기</a>
+    <div id="kofi-btn-container"></div>
   </div>`;
+  function _initKofi() {
+    setTimeout(() => {
+      const container = document.getElementById('kofi-btn-container');
+      if (container && !container.hasChildNodes() && typeof kofiwidget2 !== 'undefined') {
+        kofiwidget2.init('Support me on Ko-fi', '#5A9E86', 'D1D01WQ4K0');
+        container.innerHTML = kofiwidget2.getHTML();
+      }
+    }, 100);
+  }
 
   function _showCoffeeChargeModal() {
     let m = document.getElementById('coffee-charge-modal');
@@ -1065,6 +1075,7 @@
     </div>`;
     document.body.appendChild(m);
     m.addEventListener('click', (e) => { if (e.target === m) m.remove(); });
+    _initKofi();
   }
 
   async function _chargeAfterCoffee() {
@@ -1092,6 +1103,7 @@
       </div>`;
       document.body.appendChild(m);
       m.addEventListener('click', (e) => { if (e.target === m) m.remove(); });
+      _initKofi();
     }
   }
 
