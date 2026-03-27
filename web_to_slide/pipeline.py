@@ -347,7 +347,7 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
                 favicon_url = ''
         if favicon_url:
             try:
-                _r = requests.get(favicon_url, headers=HEADERS, timeout=8)
+                _r = requests.Session().get(favicon_url, headers=HEADERS, timeout=8)
                 if _r.status_code == 200 and 'image' in _r.headers.get('content-type', ''):
                     _fav_bytes = _r.content
                     # ico 파일 → PNG 변환 (PPTX/브라우저 호환성 개선)

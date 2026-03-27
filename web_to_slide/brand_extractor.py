@@ -11,6 +11,10 @@ from bs4 import BeautifulSoup
 from collections import Counter, defaultdict
 
 from .config import HEADERS, _GOOGLEBOT_HEADERS, HAS_PIL, logger
+
+# HTTP Session 풀링 — 동일 도메인 연결 재사용 (DNS/TCP/TLS 절약)
+_session = requests.Session()
+_session.headers.update(HEADERS)
 from .utils import _color_vibrancy, extract_dominant_color
 from .scraper import (
     _fetch_with_playwright,
@@ -191,7 +195,7 @@ def _download_og_image_color(soup, base_url: str) -> str:
             break
     for url in candidates[:2]:
         try:
-            r = requests.get(url, headers=HEADERS, timeout=8)
+            r = _session.get(url, timeout=8)
             if r.status_code == 200 and len(r.content) > 1000:
                 c = extract_dominant_color(r.content)
                 if c:
@@ -250,7 +254,7 @@ def extract_brand_assets(url):
     colors = []
     footer_contact = {}
     try:
-        resp = requests.get(base_url, headers=HEADERS, timeout=10)
+        resp = _session.get(base_url, timeout=10)
         if resp.status_code != 200:
             return {'logo_url': None, 'colors': [], 'footer_contact': {}}
         soup = BeautifulSoup(resp.text, 'html.parser')
@@ -428,7 +432,7 @@ def extract_brand_assets(url):
         for href in to_load:
             css_url = href if href.startswith('http') else base_url + '/' + href.lstrip('/')
             try:
-                r = requests.get(css_url, headers=HEADERS, timeout=8)
+                r = _session.get(css_url, timeout=8)
                 if r.status_code == 200:
                     raw_css += r.text
             except Exception as e:
@@ -721,7 +725,7 @@ def extract_brand_assets(url):
                               '/ko/contact', '/en/contact', '/about/contact']
             for _cpath in _contact_paths:
                 try:
-                    _cr = requests.get(base_url.rstrip('/') + _cpath, headers=HEADERS, timeout=7)
+                    _cr = _session.get(base_url.rstrip('/') + _cpath, timeout=7)
                     if _cr.status_code != 200:
                         continue
                     _cs = BeautifulSoup(_cr.text, 'html.parser')
@@ -888,7 +892,7 @@ def extract_website_images(url, max_images=30, _progress_fn=None, _artist_mode=F
         soup_home = None
         for hdrs in [HEADERS, _GOOGLEBOT_HEADERS]:
             try:
-                resp = requests.get(base, headers=hdrs, timeout=10)
+                resp = _session.get(base, headers=hdrs, timeout=10)
                 if resp.status_code == 200:
                     soup_home = BeautifulSoup(resp.text, 'html.parser')
                     _collect_images_from_soup(soup_home, domain_root_img, _add)
@@ -920,7 +924,7 @@ def extract_website_images(url, max_images=30, _progress_fn=None, _artist_mode=F
                 got = False
                 for hdrs in [HEADERS, _GOOGLEBOT_HEADERS]:
                     try:
-                        resp = requests.get(page_url, headers=hdrs, timeout=8)
+                        resp = _session.get(page_url, headers=hdrs, timeout=8)
                         if resp.status_code == 200:
                             soup_p = BeautifulSoup(resp.text, 'html.parser')
                             before = len(images)
@@ -948,7 +952,7 @@ def extract_website_images(url, max_images=30, _progress_fn=None, _artist_mode=F
         _gallery_kw = re.compile(r'gallery|photo|disc|album|media|news|music|video|image', re.I)
         _extra_links = []
         try:
-            resp = requests.get(base, headers=HEADERS, timeout=8)
+            resp = _session.get(base, timeout=8)
             if resp.status_code == 200:
                 soup_e = BeautifulSoup(resp.text, 'html.parser')
                 for a in soup_e.find_all('a', href=True):
@@ -965,7 +969,7 @@ def extract_website_images(url, max_images=30, _progress_fn=None, _artist_mode=F
             if len(images) >= max_images:
                 break
             try:
-                resp = requests.get(_el, headers=HEADERS, timeout=8)
+                resp = _session.get(_el, timeout=8)
                 if resp.status_code == 200:
                     # 페이지 URL에 discography/album 키워드가 있으면 해당 페이지 이미지에 'album' ctx prefix
                     _page_ctx_prefix = 'album ' if _disc_kw.search(_el) else ''
@@ -983,7 +987,7 @@ def download_image_b64(img_url):
     - 최소 해상도: max(w,h) >= 600 and min(w,h) >= 300 (세로형/정사각형 모두 허용)
     """
     try:
-        r = requests.get(img_url, headers=HEADERS, timeout=8)
+        r = _session.get(img_url, timeout=8)
         if r.status_code == 200:
             ct = r.headers.get('content-type', '').split(';')[0].strip()
             if 'image' in ct and 'svg' not in ct:
@@ -1096,7 +1100,7 @@ def capture_logo_transparent(url, logo_url=None):
         - direct=False (폴백): PNG는 배경 제거 시도
         """
         try:
-            r = requests.get(target_url, headers=HEADERS, timeout=12)
+            r = _session.get(target_url, timeout=12)
             if r.status_code != 200:
                 return None
             ct = r.headers.get('content-type', '')
@@ -1134,7 +1138,7 @@ def capture_logo_transparent(url, logo_url=None):
     # ── STEP 2: 페이지에서 헤더/nav/푸터 중심으로 재탐색 (logo_url 미제공 시) ──
     logo_url_quick = None
     try:
-        resp = requests.get(base_url, headers=HEADERS, timeout=10)
+        resp = _session.get(base_url, timeout=10)
         if resp.status_code == 200:
             soup = BeautifulSoup(resp.text, 'html.parser')
 

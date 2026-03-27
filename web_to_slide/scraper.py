@@ -10,6 +10,10 @@ from urllib.parse import urlparse, unquote
 
 from .config import HEADERS, _GOOGLEBOT_HEADERS, logger
 
+# HTTP Session 풀링
+_session = requests.Session()
+_session.headers.update(HEADERS)
+
 # ────────────────────────────────────────────────────────────────────────────
 # 상수
 # ────────────────────────────────────────────────────────────────────────────
@@ -156,7 +160,7 @@ def _fetch_sitemap_urls(base_url: str, max_urls: int = 30) -> list:
 
     # robots.txt에서 Sitemap: 지시어 확인
     try:
-        _rob = requests.get(base_url + '/robots.txt', headers=_GOOGLEBOT_HEADERS, timeout=5)
+        _rob = _session.get(base_url + '/robots.txt', headers=_GOOGLEBOT_HEADERS, timeout=5)
         if _rob.status_code == 200:
             for _sm in re.findall(r'(?i)^Sitemap:\s*(https?://\S+)', _rob.text, re.MULTILINE):
                 sitemap_queue.append(_sm.strip())
@@ -178,7 +182,7 @@ def _fetch_sitemap_urls(base_url: str, max_urls: int = 30) -> list:
         fetched_sitemaps.add(sm_url)
         fetch_count += 1
         try:
-            r = requests.get(sm_url, headers=_GOOGLEBOT_HEADERS, timeout=6)
+            r = _session.get(sm_url, headers=_GOOGLEBOT_HEADERS, timeout=6)
             if r.status_code != 200:
                 continue
             _txt = r.text
@@ -530,7 +534,7 @@ def _fetch_page(target_url: str, base_url: str) -> tuple:
     """단일 URL 페치 → (soup, raw_text) 반환. 쿠키 월 감지 시 Googlebot UA 재시도."""
     for hdrs in [HEADERS, _GOOGLEBOT_HEADERS]:
         try:
-            resp = requests.get(target_url, headers=hdrs, timeout=10)
+            resp = _session.get(target_url, headers=hdrs, timeout=10)
             if resp.status_code == 200:
                 soup = BeautifulSoup(resp.text, 'html.parser')
                 raw_text = soup.get_text(separator=' ').strip()
