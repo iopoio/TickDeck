@@ -82,6 +82,7 @@ def run_pipeline_task(self, job_id, url, company, narrative_type, mood, purpose,
     """run_pipeline()을 Celery 워커에서 실행, 진행 상황을 Redis에 기록"""
     import re as _re
     from web_to_slide.pipeline import run_pipeline
+    logger.info(f"[Celery] slide_lang={slide_lang}, user_id={user_id}, gen_id={gen_id}")
 
     r = _get_redis()
 

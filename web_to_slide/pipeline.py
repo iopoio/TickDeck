@@ -486,7 +486,7 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
         _p("")
 
         # ── [3단계-C] 카피라이터+포맷터: JSON 생성 ─────────────
-        _p("[3단계-C] 카피라이터: 슬라이드 카피 작성 중...")
+        _p(f"[3단계-C] 카피라이터: 슬라이드 카피 작성 중... (lang={slide_lang})")
         slide_json = generate_slide_json(factbook, storyline, narrative_type_str, assets, company_name, mood=mood, page_subject=page_subject, slide_lang=slide_lang)
         if not slide_json:
             raise RuntimeError("Gemini JSON 생성 실패. 파이프라인을 종료합니다.")
