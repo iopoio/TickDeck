@@ -78,7 +78,7 @@ def _refund_and_fail(user_id, gen_id):
 # ── Celery 태스크 ─────────────────────────────────────────────────────────
 @celery.task(bind=True, name='webtoslide.run_pipeline')
 def run_pipeline_task(self, job_id, url, company, narrative_type, mood, purpose,
-                      brand_color, user_id, gen_id):
+                      brand_color, user_id, gen_id, slide_lang='ko'):
     """run_pipeline()을 Celery 워커에서 실행, 진행 상황을 Redis에 기록"""
     import re as _re
     from web_to_slide.pipeline import run_pipeline
@@ -111,7 +111,7 @@ def run_pipeline_task(self, job_id, url, company, narrative_type, mood, purpose,
     try:
         result = run_pipeline(url, company or None, progress_fn=on_progress,
                               narrative_type=narrative_type, mood=mood,
-                              purpose=purpose, brand_color=brand_color)
+                              purpose=purpose, brand_color=brand_color, slide_lang=slide_lang)
         r.set(f'job:{job_id}:result', json.dumps(result, ensure_ascii=False))
         r.set(f'job:{job_id}:status', 'done')
         r.publish(f'job:{job_id}:channel', json.dumps({'status': 'done'}))
@@ -131,7 +131,7 @@ def run_pipeline_task(self, job_id, url, company, narrative_type, mood, purpose,
         try:
             result = run_pipeline(url, company or None, progress_fn=on_progress,
                                   narrative_type=narrative_type, mood=mood,
-                                  purpose=purpose, brand_color=brand_color)
+                                  purpose=purpose, brand_color=brand_color, slide_lang=slide_lang)
             r.set(f'job:{job_id}:result', json.dumps(result, ensure_ascii=False))
             r.set(f'job:{job_id}:status', 'done')
             r.publish(f'job:{job_id}:channel', json.dumps({'status': 'done'}))

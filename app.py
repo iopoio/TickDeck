@@ -418,7 +418,7 @@ def auth_me():
 # ── 파이프라인 실행 ─────────────────────────────────────────────────────────
 def _run(job_id: str, url: str, company: str,
          narrative_type: str = "auto", mood: str = "professional", purpose: str = "brand",
-         brand_color: str = ""):
+         brand_color: str = "", slide_lang: str = "ko"):
     job = JOBS[job_id]
 
     def on_progress(line: str):
@@ -446,7 +446,7 @@ def _run(job_id: str, url: str, company: str,
                 complete_generation(gen_id, 'processing')
         result = run_pipeline(url, company or None, progress_fn=on_progress,
                               narrative_type=narrative_type, mood=mood, purpose=purpose,
-                              brand_color=brand_color)
+                              brand_color=brand_color, slide_lang=slide_lang)
         job["result"] = result
         job["status"] = "done"
         if gen_id:
@@ -526,6 +526,7 @@ def generate():
     mood           = (data.get("mood") or "professional").strip()
     purpose        = (data.get("purpose") or "auto").strip()
     brand_color    = (data.get("brand_color") or "").strip()
+    slide_lang     = (data.get("slide_lang") or "ko").strip()
 
     if not url:
         return jsonify({"error": "URL을 입력하세요."}), 400
@@ -556,13 +557,13 @@ def generate():
         # Celery + Redis 모드
         run_pipeline_task.delay(
             job_id, url, company, narrative_type, mood, purpose, brand_color,
-            user_id, gen_id
+            user_id, gen_id, slide_lang
         )
     else:
         # In-Memory 모드 (로컬 개발)
         JOBS[job_id] = {"status": "running", "lines": [], "result": None, "error": None,
                         "user_id": user_id, "gen_id": gen_id}
-        t = threading.Thread(target=_run, args=(job_id, url, company, narrative_type, mood, purpose, brand_color), daemon=True)
+        t = threading.Thread(target=_run, args=(job_id, url, company, narrative_type, mood, purpose, brand_color, slide_lang), daemon=True)
         t.start()
 
     return jsonify({"job_id": job_id, "remaining_tokens": remaining})

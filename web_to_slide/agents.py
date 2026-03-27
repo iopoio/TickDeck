@@ -397,7 +397,8 @@ def agent_strategist(factbook: str, company_name: str, progress_fn=None,
 
 def generate_slide_json(factbook: str, storyline: list, narrative_type: str,
                         brand_assets: dict, company_name: str,
-                        mood: str = 'professional', page_subject: dict = None):
+                        mood: str = 'professional', page_subject: dict = None,
+                        slide_lang: str = 'ko'):
     """카피라이터 + JSON 포맷터 에이전트 — Factbook + Storyline → Slide JSON"""
     colors = brand_assets.get('colors', [])
     logo_url = brand_assets.get('logo_url', '')
@@ -487,7 +488,7 @@ No vivid color found → industry default:
     - GOOD: "~방식으로 ~문제를 해결합니다", "~를 통해 ~를 실현합니다", "~개 기업이 선택한 이유"
     - BAD:  "저희 회사를 소개합니다", "최선을 다하겠습니다" (모호하고 평범한 표현 금지)
     - BAD:  데이터에 없는 서비스를 "가능합니다", "지원합니다"로 만들어 내는 것
-7. ALL copy in Korean, formal register (격식체/경어체)
+7. LANGUAGE: {{SLIDE_LANG_INSTRUCTION}}
 8. Return ONLY valid JSON. No markdown. No comments.
 10. UNIQUENESS: proof_of_concept = BREADTH (여러 고객사·산업의 성과를 한 장에).
     case_study = DEPTH (단일 고객사 하나의 여정: 문제→접근법→결과).
@@ -542,7 +543,12 @@ No vivid color found → industry default:
             model="models/gemini-2.5-flash",
             contents=user_prompt,
             config={
-                "system_instruction": SLIDE_SYSTEM_PROMPT,
+                "system_instruction": SLIDE_SYSTEM_PROMPT.replace(
+                    '{{SLIDE_LANG_INSTRUCTION}}',
+                    'ALL copy in English. Professional business tone. Company name (brand.name) should use the name as it appears on the website (do not translate company names).'
+                    if slide_lang == 'en' else
+                    'ALL copy in Korean, formal register (격식체/경어체). 회사명(brand.name)은 홈페이지에서 사용하는 이름 그대로 사용.'
+                ),
                 "temperature": 0.25,
                 "max_output_tokens": 32000,
             }

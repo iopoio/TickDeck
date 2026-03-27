@@ -812,12 +812,19 @@
       <div class="field">
         <label>What's the purpose?</label>
         <div class="purpose-pills">
-          <button class="purpose-pill active" data-purpose="auto">✦ AI 추천</button>
-          <button class="purpose-pill" data-purpose="brand">브랜드 소개</button>
-          <button class="purpose-pill" data-purpose="sales">영업 제안</button>
-          <button class="purpose-pill" data-purpose="ir">투자 IR</button>
-          <button class="purpose-pill" data-purpose="portfolio">포트폴리오</button>
-          <button class="purpose-pill" data-purpose="report">내부 보고</button>
+          <button class="purpose-pill active" data-purpose="auto">✦ AI Pick</button>
+          <button class="purpose-pill" data-purpose="brand">Brand Intro</button>
+          <button class="purpose-pill" data-purpose="sales">Sales Proposal</button>
+          <button class="purpose-pill" data-purpose="ir">Investor IR</button>
+          <button class="purpose-pill" data-purpose="portfolio">Portfolio</button>
+          <button class="purpose-pill" data-purpose="report">Internal Report</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Slide Language</label>
+        <div class="purpose-pills">
+          <button class="purpose-pill" data-lang="ko">🇰🇷 한국어</button>
+          <button class="purpose-pill active" data-lang="en">🇺🇸 English</button>
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:center;">
@@ -1278,11 +1285,19 @@
     report:    'B',     // 비즈니스 리포트
   };
   let _selectedPurpose = 'auto';
-  document.querySelectorAll('.purpose-pill').forEach(btn => {
+  let _selectedLang = 'en';
+  document.querySelectorAll('.purpose-pill[data-purpose]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.purpose-pill').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.purpose-pill[data-purpose]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       _selectedPurpose = btn.dataset.purpose;
+    });
+  });
+  document.querySelectorAll('.purpose-pill[data-lang]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.purpose-pill[data-lang]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _selectedLang = btn.dataset.lang;
     });
   });
 
@@ -1309,6 +1324,7 @@
         narrative_type: nt,
         purpose,
         mood: 'professional',
+        slide_lang: _selectedLang,
       }),
     });
     const data = await res.json();

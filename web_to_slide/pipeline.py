@@ -120,7 +120,7 @@ def _build_toc_slide(slides: list) -> dict | None:
 
 def run_pipeline(url: str, company_name: str = None, progress_fn=None,
                  narrative_type: str = None, mood: str = 'professional',
-                 purpose: str = 'brand', brand_color: str = '') -> dict:
+                 purpose: str = 'brand', brand_color: str = '', slide_lang: str = 'ko') -> dict:
     """
     AI 데이터 엔진 파이프라인: 크롤링 → Gemini JSON → 이미지 생성 → dict 반환
 
@@ -487,7 +487,7 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
 
         # ── [3단계-C] 카피라이터+포맷터: JSON 생성 ─────────────
         _p("[3단계-C] 카피라이터: 슬라이드 카피 작성 중...")
-        slide_json = generate_slide_json(factbook, storyline, narrative_type_str, assets, company_name, mood=mood, page_subject=page_subject)
+        slide_json = generate_slide_json(factbook, storyline, narrative_type_str, assets, company_name, mood=mood, page_subject=page_subject, slide_lang=slide_lang)
         if not slide_json:
             raise RuntimeError("Gemini JSON 생성 실패. 파이프라인을 종료합니다.")
 
