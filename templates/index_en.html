@@ -742,7 +742,7 @@
           </div></div>
         <!-- Q9 -->
         <div class="sv-q"><label class="sv-label">Q9. Feedback? (optional)</label>
-          <textarea id="sv-q9" rows="3" placeholder="예: Slides Design이 좀 더 다양했으면 좋겠어요" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;resize:vertical;"></textarea>
+          <textarea id="sv-q9" rows="3" placeholder="e.g. I wish there were more slide design options" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;resize:vertical;"></textarea>
         </div>
 
         <button onclick="_submitSurvey()" style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,#1C3D5A,#5A9E86);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">Submit Survey &amp; Get 2 Tokens</button>
@@ -896,7 +896,7 @@
           <div class="val" id="meta-narrative">—</div>
           <div class="lbl">Narrative Type</div>
         </div>
-        <div class="done-meta-item" style="cursor:pointer;" onclick="document.getElementById('color-override').click()" title="클릭하여 Brand Color 변경">
+        <div class="done-meta-item" style="cursor:pointer;" onclick="document.getElementById('color-override').click()" title="Click to change Brand Color">
           <div class="val" id="meta-accent" style="font-size:16px">●</div>
           <div class="lbl">Brand Color <span style="font-size:10px;opacity:0.6;">✏️</span></div>
           <input type="color" id="color-override" style="position:absolute;opacity:0;pointer-events:none;" onchange="applyColorOverride(this.value)">
@@ -1151,10 +1151,10 @@
     const wrap = document.getElementById('sv-q7-wrap');
     const sel = document.getElementById('sv-q7');
     if (v === 'per_item') {
-      sel.innerHTML = '<option value="">Select</option><option>1건당 3,000원 이하</option><option>1건당 3,000~5,000원</option><option>1건당 5,000~10,000원</option><option>1건당 10,000~30,000원</option><option>1건당 30,000원 이상도 괜찮다</option>';
+      sel.innerHTML = '<option value="">Select</option><option>Under ₩3,000 per item</option><option>₩3,000~5,000 per item</option><option>₩5,000~10,000 per item</option><option>₩10,000~30,000 per item</option><option>Over ₩30,000 is fine</option>';
       wrap.style.display = '';
     } else if (v === 'subscription') {
-      sel.innerHTML = '<option value="">Select</option><option>월 9,900원 (5건)</option><option>월 19,900원 (10건)</option><option>월 29,000원 (20건)</option><option>월 49,000원 (무제한)</option>';
+      sel.innerHTML = '<option value="">Select</option><option>₩9,900/mo (5 slides)</option><option>₩19,900/mo (10 slides)</option><option>₩29,000/mo (20 slides)</option><option>₩49,000/mo (unlimited)</option>';
       wrap.style.display = '';
     } else {
       wrap.style.display = 'none';
@@ -1194,7 +1194,7 @@
     const modal = document.getElementById('history-modal');
     modal.style.display = 'flex';
     const list = document.getElementById('history-list');
-    list.innerHTML = '<p style="color:#9E9A90;">불러오는 중...</p>';
+    list.innerHTML = '<p style="color:#9E9A90;">Loading...</p>';
     try {
       const res = await fetch('/api/generations');
       const data = await res.json();
@@ -1219,9 +1219,9 @@
           </div>`;
         }).join('');
       } else {
-        list.innerHTML = '<p style="color:#9E9A90;">아직 생성 History이 없습니다</p>';
+        list.innerHTML = '<p style="color:#9E9A90;">No generation history yet</p>';
       }
-    } catch { list.innerHTML = '<p style="color:#DC2626;">불러오기 실패</p>'; }
+    } catch { list.innerHTML = '<p style="color:#DC2626;">Failed to load</p>'; }
   }
 
   async function _doLogout() {
@@ -1269,7 +1269,7 @@
   async function clearCacheAndGenerate() {
     const url     = document.getElementById('inp-url').value.trim();
     const company = document.getElementById('inp-company').value.trim();
-    if (!url) { alert('URL을 먼저 입력하세요.'); return; }
+    if (!url) { alert('Please enter a URL first.'); return; }
     try {
       const res = await fetch('/clear-cache', {
         method: 'POST',
@@ -1506,7 +1506,7 @@
 
     } catch (err) {
       console.error('Result load failed:', err);
-      document.getElementById('pptx-btn-text').textContent = '⚠ Load failed — 새로고침 후 시도';
+      document.getElementById('pptx-btn-text').textContent = '⚠ Load failed — please refresh';
       document.getElementById('pdf-btn-text').textContent = '⚠ Load failed';
     }
   }
@@ -1536,7 +1536,7 @@
     // 템플릿 없으면 section 숨김 유지
     if (!_stitchTemplates || !slides.length) return;
 
-    document.getElementById('stitch-preview-count').textContent = `${slides.length}장`;
+    document.getElementById('stitch-preview-count').textContent = `${slides.length} slides`;
     const grid = document.getElementById('stitch-preview-grid');
     grid.innerHTML = '';
 
@@ -1590,7 +1590,7 @@
       // 편집 버튼
       const editBtn = document.createElement('button');
       editBtn.className = 'stitch-edit-btn';
-      editBtn.textContent = '편집';
+      editBtn.textContent = 'Edit';
       editBtn.onclick = () => openEditModal(idx);
       wrapper.appendChild(editBtn);
 
@@ -1608,11 +1608,11 @@
     const list = document.getElementById('slide-edit-list');
     const items = document.getElementById('slide-edit-items');
     if (!slides.length) return;
-    document.getElementById('slide-edit-count').textContent = `${slides.length}장`;
+    document.getElementById('slide-edit-count').textContent = `${slides.length} slides`;
     items.innerHTML = '';
     slides.forEach((slide, idx) => {
       const typeLabel = (slide.type || '').replace(/_\d+$/, '').replace(/_/g, ' ').toUpperCase();
-      const hl = slide.headline || '(헤드라인 없음)';
+      const hl = slide.headline || '(No headline)';
       const el = document.createElement('div');
       el.className = 'slide-edit-item';
       el.id = `sei-${idx}`;
@@ -1622,8 +1622,8 @@
           <div class="slide-edit-type">${escHtml(typeLabel)}</div>
           <div class="slide-edit-hl" id="sei-hl-${idx}">${escHtml(hl)}</div>
         </div>
-        <button class="slide-edit-btn" style="padding:2px 6px;font-size:11px;min-width:0;" onclick="moveSlide(${idx},-1)" title="위로" ${idx === 0 ? 'disabled' : ''}>▲</button>
-        <button class="slide-edit-btn" style="padding:2px 6px;font-size:11px;min-width:0;" onclick="moveSlide(${idx},1)" title="아래로" ${idx === slides.length - 1 ? 'disabled' : ''}>▼</button>
+        <button class="slide-edit-btn" style="padding:2px 6px;font-size:11px;min-width:0;" onclick="moveSlide(${idx},-1)" title="Move up" ${idx === 0 ? 'disabled' : ''}>▲</button>
+        <button class="slide-edit-btn" style="padding:2px 6px;font-size:11px;min-width:0;" onclick="moveSlide(${idx},1)" title="Move down" ${idx === slides.length - 1 ? 'disabled' : ''}>▼</button>
         <button class="slide-edit-btn" onclick="openEditModal(${idx})">편집</button>`;
       items.appendChild(el);
     });
@@ -1635,7 +1635,7 @@
     if (!slide) return;
     _editIdx = idx;
     const typeLabel = (slide.type || '').replace(/_\d+$/, '').replace(/_/g, ' ').toUpperCase();
-    document.getElementById('edit-modal-title').textContent = `Slides ${idx + 1} 편집`;
+    document.getElementById('edit-modal-title').textContent = `Edit Slide ${idx + 1}`;
     document.getElementById('edit-modal-type').textContent = typeLabel;
     document.getElementById('edit-hl').value = slide.headline || '';
     document.getElementById('edit-sub').value = slide.subheadline || '';
@@ -1655,8 +1655,8 @@
     const row = document.createElement('div');
     row.className = 'edit-body-item';
     row.innerHTML = `
-      <input type="text" value="${escHtml(value)}" placeholder="항목 텍스트" />
-      <button class="edit-body-remove" onclick="this.parentElement.remove()" title="삭제">×</button>`;
+      <input type="text" value="${escHtml(value)}" placeholder="Item text" />
+      <button class="edit-body-remove" onclick="this.parentElement.remove()" title="Delete">×</button>`;
     container.appendChild(row);
   }
 
@@ -1678,7 +1678,7 @@
 
     // 목록 내 헤드라인 업데이트
     const hlEl = document.getElementById(`sei-hl-${_editIdx}`);
-    if (hlEl) hlEl.textContent = slide.headline || '(헤드라인 없음)';
+    if (hlEl) hlEl.textContent = slide.headline || '(No headline)';
 
     closeEditModal();
   }
@@ -1714,7 +1714,7 @@
     if (!slide) return;
     const btn = document.getElementById('edit-regen-btn');
     btn.disabled = true;
-    btn.textContent = '⏳ 생성 중...';
+    btn.textContent = '⏳ Generating...';
     try {
       const res = await fetch('/api/regen-slide', {
         method: 'POST',
@@ -1736,15 +1736,15 @@
         openEditModal(_editIdx);
         // 목록 헤드라인도 갱신
         const hlEl = document.getElementById(`sei-hl-${_editIdx}`);
-        if (hlEl) hlEl.textContent = slide.headline || '(헤드라인 없음)';
+        if (hlEl) hlEl.textContent = slide.headline || '(No headline)';
       } else {
-        alert(data.error || 'AI 재생성에 실패했습니다');
+        alert(data.error || 'AI regeneration failed');
       }
     } catch (e) {
-      alert('서버 연결 오류: ' + e.message);
+      alert('Server connection error: ' + e.message);
     } finally {
       btn.disabled = false;
-      btn.textContent = '🔄 AI 재생성';
+      btn.textContent = '🔄 AI Regenerate';
     }
   }
 
@@ -1773,7 +1773,7 @@
       grid.appendChild(card);
     });
     const _pc = document.getElementById('preview-count');
-    if (_pc) _pc.textContent = `${slides.length}장`;
+    if (_pc) _pc.textContent = `${slides.length} slides`;
     const _pb = document.getElementById('preview-board');
     if (_pb) _pb.classList.remove('hidden');
   }
@@ -1950,15 +1950,15 @@
     const btn  = document.getElementById('btn-pptx');
     const txt  = document.getElementById('pptx-btn-text');
     btn.disabled = true;
-    txt.textContent = '⏳ PptxGenJS 로딩 중...';
+    txt.textContent = '⏳ Loading PptxGenJS...';
 
     try {
       await loadPptxGen();
-      txt.textContent = '⏳ PPTX 조립 중...';
+      txt.textContent = '⏳ Building PPTX...';
       await generateAndDownloadPPTX(_slideData);
     } catch (err) {
       console.error('PPTX 오류:', err);
-      alert('PPTX 생성 중 오류: ' + err.message);
+      alert('PPTX generation error: ' + err.message);
     } finally {
       btn.disabled = false;
       txt.textContent = '⬇ Download PPTX';
@@ -1982,7 +1982,7 @@
     const btn = document.getElementById('btn-pdf');
     const txt = document.getElementById('pdf-btn-text');
     btn.disabled = true;
-    txt.textContent = '⏳ PPTX 생성 중...';
+    txt.textContent = '⏳ Generating PPTX...';
 
     try {
       await loadPptxGen();
@@ -2019,7 +2019,7 @@
 
     } catch (err) {
       console.error('PDF 오류:', err);
-      alert('PDF 변환에 실패했습니다. PPTX를 먼저 다운로드해 주세요.\n' + err.message);
+      alert('PDF conversion failed. Please download PPTX first.\n' + err.message);
     } finally {
       btn.disabled = false;
       txt.textContent = '⬇ Download PDF';
@@ -2300,8 +2300,8 @@
       core_business_1:          'split',
       core_business_2:          'cards',
       core_business_3:          'portfolio',
-      showcase_work_1:          'portfolio',
-      showcase_work_2:          'split',
+      showcase_work_1:          hasBg ? 'portfolio' : 'cards',
+      showcase_work_2:          hasBg ? 'split' : 'two_col_text',
       showcase_work_3:          'cards',
       // ── 신규 Slides 타입 → 레이아웃 매핑 ──
       key_metrics:              'stat_3col',         // 핵심 KPI → 대형 숫자 카드
@@ -4595,9 +4595,9 @@
 
       const catLabel = _fontCategory === 'serif' ? fonts.FH :
                        _fontCategory === 'display' ? fonts.FH : 'Pretendard-XB';
-      if (_pptxFontEl) _pptxFontEl.textContent = `폰트: ${fonts.F} + ${catLabel} (PPTX 내장)`;
+      if (_pptxFontEl) _pptxFontEl.textContent = `Font: ${fonts.F} + ${catLabel} (embedded in PPTX)`;
     } catch(e) {
-      if (_pptxFontEl) _pptxFontEl.textContent = '폰트: 맑은 고딕 (fallback)';
+      if (_pptxFontEl) _pptxFontEl.textContent = 'Font: Malgun Gothic (fallback)';
     }
 
     const W = 13.3333, H = 7.5;
@@ -6456,7 +6456,16 @@
             s.addShape('rect', { x: 0, y: 0, w: W, h: 0.03, fill: { color: C.primary }, line: { type: 'none' } });
             s.addShape('rect', { x: 0, y: H - 0.03, w: W, h: 0.03, fill: { color: C.primary }, line: { type: 'none' } });
             const _ctBodyD = body.filter(b => !/사업자|등록번호|business.*reg|tax.*num/i.test(b));
-            s.addText(brand.name || '', { x: W * 0.08, y: H * 0.10, w: W * 0.84, h: H * 0.10,
+            // Logo (top right)
+            if (showLogo && logoAspect && logoAspect >= 1.0 && logoAspect <= 4.0) {
+              const _lgMW = 1.8, _lgMH = 0.50;
+              let _lgW3, _lgH3;
+              if (logoAspect >= _lgMW / _lgMH) { _lgW3 = _lgMW; _lgH3 = _lgMW / logoAspect; }
+              else { _lgH3 = _lgMH; _lgW3 = _lgMH * logoAspect; }
+              s.addImage({ data: `data:image/${logoMime};base64,${logoB64}`,
+                           x: W - _lgW3 - W * 0.06, y: H * 0.10, w: _lgW3, h: _lgH3 });
+            }
+            s.addText(brand.name || '', { x: W * 0.08, y: H * 0.10, w: W * 0.55, h: H * 0.10,
               fontSize: 12, color: C.primary, charSpacing: 4, align: 'left', valign: 'middle', fontFace: F });
             s.addShape('rect', { x: W * 0.08, y: H * 0.24, w: W * 0.12, h: 0.03,
               fill: { color: C.primary, transparency: 30 }, line: { type: 'none' } });
@@ -6478,8 +6487,17 @@
             s.addText(brand.name || '', { x: W * 0.04, y: H * 0.10, w: W * 0.30, h: H * 0.12,
               fontSize: 13, color: 'FFFFFF', charSpacing: 1, align: 'left', valign: 'middle', fontFace: F });
             s.addShape('rect', { x: W * 0.04, y: H * 0.25, w: W * 0.14, h: 0.04, fill: { color: 'FFFFFF', transparency: 50 }, line: { type: 'none' } });
-            s.addText(hl || 'Thank you.', { x: W * 0.04, y: H * 0.28, w: W * 0.30, h: H * 0.45,
+            s.addText(hl || 'Thank you.', { x: W * 0.04, y: H * 0.28, w: W * 0.30, h: H * 0.40,
               fontSize: 24, bold: true, color: 'FFFFFF', wrap: true, align: 'left', valign: 'middle', lineSpacingMultiple: 1.3, fontFace: FD });
+            // Logo (left panel bottom)
+            if (showLogo && logoAspect && logoAspect >= 1.0 && logoAspect <= 4.0) {
+              const _lgMW4 = W * 0.28, _lgMH4 = 0.45;
+              let _lgW4, _lgH4;
+              if (logoAspect >= _lgMW4 / _lgMH4) { _lgW4 = _lgMW4; _lgH4 = _lgMW4 / logoAspect; }
+              else { _lgH4 = _lgMH4; _lgW4 = _lgMH4 * logoAspect; }
+              s.addImage({ data: `data:image/${logoMime};base64,${logoB64}`,
+                           x: W * 0.04, y: H * 0.78 - _lgH4 / 2, w: _lgW4, h: _lgH4 });
+            }
             s.addShape('rect', { x: W * 0.42, y: H * 0.20, w: W * 0.55 * 0.50, h: 0.04, fill: { color: C.primary }, line: { type: 'none' } });
             if (body.length > 0) s.addText(body.slice(0, 5).map(b => ({ text: b + '\n', options: {} })), {
               x: W * 0.42, y: H * 0.26, w: W * 0.52, h: H * 0.60,
@@ -6562,6 +6580,15 @@
                 }
               });
             }
+            // Logo (left panel bottom)
+            if (showLogo && logoAspect && logoAspect >= 1.0 && logoAspect <= 4.0) {
+              const _lgMaxW2 = lpW * 0.55, _lgMaxH2 = 0.50;
+              let _lgW2, _lgH2;
+              if (logoAspect >= _lgMaxW2 / _lgMaxH2) { _lgW2 = _lgMaxW2; _lgH2 = _lgMaxW2 / logoAspect; }
+              else { _lgH2 = _lgMaxH2; _lgW2 = _lgMaxH2 * logoAspect; }
+              s.addImage({ data: `data:image/${logoMime};base64,${logoB64}`,
+                           x: W * 0.05, y: H * 0.80 - _lgH2 / 2, w: _lgW2, h: _lgH2 });
+            }
             s.addShape('rect', { x: 0, y: H - 0.06, w: W, h: 0.06, fill: { color: C.primary }, line: { type: 'none' } });
             addCopyright('AAAAAA');
             addPageNum('AAAAAA');
@@ -6586,6 +6613,9 @@
             s.addShape('rect', { x: 0, y: H - 0.03, w: W, h: 0.03, fill: { color: C.primary }, line: { type: 'none' } });
             s.addShape('rect', { x: W * 0.20, y: H * 0.60, w: W * 0.60, h: 0.01,
               fill: { color: C.primary, transparency: 40 }, line: { type: 'none' } });
+            // Company name (top left)
+            if (brand.name) s.addText(brand.name, { x: W * 0.08, y: H * 0.05, w: W * 0.50, h: 0.28,
+              fontSize: 10, color: C.primary, charSpacing: 3, align: 'left', valign: 'middle', fontFace: F });
             if (eyebrow) { const _ewWD = Math.min(eyebrow.toUpperCase().length * 0.11 + 0.50, 5.5); _addEwPill2(W / 2 - _ewWD / 2, H * 0.13, C.primary, 'FFFFFF'); }
             s.addText(hl, { x: W * 0.08, y: H * 0.24, w: W * 0.84, h: H * 0.35,
               fontSize: 38, bold: false, color: 'FFFFFF', wrap: true, align: 'center', valign: 'top', lineSpacingMultiple: 1.30, fontFace: FD });
@@ -6620,6 +6650,9 @@
               fill: { color: C.primary }, line: { type: 'none' } });
             s.addShape('rect', { x: 0, y: H - 0.06, w: W, h: 0.06,
               fill: { color: C.primary }, line: { type: 'none' } });
+            // Company name (top right)
+            if (brand.name) s.addText(brand.name, { x: W * 0.50, y: H * 0.04, w: W * 0.44, h: 0.28,
+              fontSize: 9, color: 'FFFFFF', charSpacing: 2, transparency: 40, align: 'right', valign: 'middle', fontFace: F });
             // eyebrow
             if (eyebrow) s.addText(eyebrow.toUpperCase(), { x: W * 0.07, y: H * 0.11, w: W * 0.60, h: H * 0.08,
               fontSize: 11, bold: true, color: 'FFFFFF', charSpacing: 5, align: 'left', valign: 'middle', fontFace: F });
@@ -6639,6 +6672,9 @@
             s.addShape('rect', { x: 0, y: 0, w: W * 0.008, h: H, fill: { color: C.primary }, line: { type: 'none' } });
             s.addShape('rect', { x: 0, y: 0, w: W, h: 0.06, fill: { color: C.primary }, line: { type: 'none' } });
             s.addShape('rect', { x: 0, y: H - 0.06, w: W, h: 0.06, fill: { color: C.primary }, line: { type: 'none' } });
+            // Company name (top right in bar)
+            if (brand.name) s.addText(brand.name, { x: W * 0.50, y: H * 0.01, w: W * 0.44, h: 0.04,
+              fontSize: 8, color: 'FFFFFF', charSpacing: 1, align: 'right', valign: 'middle', fontFace: F });
             _addEwPill2(W * 0.06, H * 0.12, C.primary, 'FFFFFF');
             s.addText(hl, { x: W * 0.06, y: H * 0.25, w: W * 0.80, h: H * 0.35,
               fontSize: 36, bold: true, color: C.textPrimary, wrap: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FD });
@@ -6668,6 +6704,9 @@
             s.addShape('ellipse', { x: -W * 0.07, y: H * 0.58, w: W * 0.24, h: W * 0.24, fill: { color: _ctR.decoClr, transparency: _ctR.decoTr2 }, line: { type: 'none' } });
             s.addShape('rect', { x: 0, y: 0, w: W, h: 0.05, fill: { color: _ctR.topBarClr, transparency: _ctR.topBarTr }, line: { type: 'none' } });
             s.addShape('rect', { x: 0, y: H - 0.05, w: W, h: 0.05, fill: { color: _ctR.botBarClr, transparency: _ctR.botBarTr }, line: { type: 'none' } });
+            // Company name (top bar)
+            if (brand.name) s.addText(brand.name, { x: W * 0.08, y: H * 0.01, w: W * 0.84, h: 0.04,
+              fontSize: 8, color: 'FFFFFF', charSpacing: 2, transparency: 30, align: 'center', valign: 'middle', fontFace: F });
             if (eyebrow) { const _ewWR = Math.min(eyebrow.toUpperCase().length * 0.11 + 0.50, 5.5); _addEwPill2(W / 2 - _ewWR / 2, H * 0.13, _ctR.ewFill, _ctR.ewText); }
             s.addText(hl, { x: W * 0.08, y: H * 0.24, w: W * 0.84, h: H * 0.35,
               fontSize: 36, bold: true, color: 'FFFFFF', wrap: true, align: 'center', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FD });

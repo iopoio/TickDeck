@@ -209,23 +209,40 @@ def _download_og_image_color(soup, base_url: str) -> str:
 # ────────────────────────────────────────────────────────────────────────────
 
 def _extract_logo_url_with_playwright(url: str) -> str:
-    """Playwright로 JS 렌더 후 img/CSS에서 logo 키워드 포함 URL 반환. 실패 시 빈 문자열."""
+    """캐시된 Playwright HTML 또는 새 Playwright 렌더에서 logo 키워드 포함 URL 반환. 실패 시 빈 문자열."""
     try:
+        # 1차: _pw_cache에서 이미 렌더된 HTML 재활용 (중복 기동 방지)
+        from .scraper import _pw_cache
+        cache_key = url.rstrip('/')
+        cached_html = _pw_cache.get(cache_key, {}).get('html', '')
+        if cached_html:
+            logger.info(f"  [Playwright Logo] 캐시된 HTML 재활용 ({len(cached_html)}자)")
+            soup = BeautifulSoup(cached_html, 'html.parser')
+            logo_urls = []
+            for img in soup.find_all('img'):
+                src = img.get('src') or img.get('data-src') or ''
+                if src:
+                    logo_urls.append(src)
+            candidates = [u for u in logo_urls if 'logo' in u.lower()]
+            svg_logos = [u for u in candidates if u.lower().endswith('.svg')]
+            png_logos = [u for u in candidates if any(u.lower().endswith(e) for e in ['.png', '.webp', '.jpg'])]
+            result = svg_logos[0] if svg_logos else (png_logos[0] if png_logos else (candidates[0] if candidates else ''))
+            if result:
+                return result
+
+        # 2차: 캐시 없으면 Playwright 기동
         from playwright.sync_api import sync_playwright
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             try:
                 page = _make_pw_page(browser)
                 page.goto(url, wait_until='networkidle', timeout=LOGO_TIMEOUT)
-                # JS 실행으로 img src + CSS background-image URL 수집
                 logo_urls = page.evaluate("""() => {
                     const results = [];
-                    // img 태그 src
                     document.querySelectorAll('img').forEach(img => {
                         const src = img.src || img.getAttribute('data-src') || '';
                         if (src) results.push(src);
                     });
-                    // CSS background-image
                     document.querySelectorAll('*').forEach(el => {
                         const bg = getComputedStyle(el).backgroundImage;
                         const m = bg && bg.match(/url\\(["']?([^"')]+)["']?\\)/);
@@ -235,7 +252,6 @@ def _extract_logo_url_with_playwright(url: str) -> str:
                 }""")
             finally:
                 browser.close()
-        # logo 키워드 포함 URL 우선, SVG 우선
         candidates = [u for u in logo_urls if 'logo' in u.lower()]
         svg_logos = [u for u in candidates if u.lower().endswith('.svg')]
         png_logos = [u for u in candidates if any(u.lower().endswith(e) for e in ['.png', '.webp', '.jpg'])]
@@ -984,7 +1000,7 @@ def extract_website_images(url, max_images=30, _progress_fn=None, _artist_mode=F
 
 def download_image_b64(img_url):
     """이미지 URL → (base64_str, mime_type, width, height) 또는 (None, None, 0, 0)
-    - 최소 해상도: max(w,h) >= 600 and min(w,h) >= 300 (세로형/정사각형 모두 허용)
+    - 최소 해상도: max(w,h) >= 300 and min(w,h) >= 200 (C-type 아티스트 사진 허용)
     """
     try:
         r = _session.get(img_url, timeout=8)
@@ -996,9 +1012,12 @@ def download_image_b64(img_url):
                         img = _PILImage.open(io.BytesIO(r.content))
                         w, h = img.size
                         # 1. 해상도 필터: 너무 작은 아이콘/썸네일 제외
-                        if max(w, h) < 600 or min(w, h) < 300:
+                        if max(w, h) < 300 or min(w, h) < 200:
                             return None, None, 0, 0
-                        # 2. 가로세로비 필터 제거 → 세로형 아티스트 사진·정사각 앨범아트 허용
+                        # 2. 가로세로비 가드: 극단적 비율 제외 (배너/리본 방지)
+                        _aspect = w / h if h > 0 else 1
+                        if _aspect < 0.4 or _aspect > 2.5:
+                            return None, None, 0, 0
                         # 3. 픽셀 분산 필터: 완전 단색 이미지만 제외 (std < 8)
                         try:
                             import statistics as _st

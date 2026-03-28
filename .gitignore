@@ -9,3 +9,4 @@ app_log.txt
 node_modules/
 instance/
 user_pdfs/
+reference/
