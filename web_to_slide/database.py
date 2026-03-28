@@ -48,6 +48,16 @@ CREATE TABLE IF NOT EXISTS surveys (
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS feedback (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id       INTEGER REFERENCES users(id),
+    email         TEXT,
+    category      TEXT NOT NULL,
+    message       TEXT NOT NULL,
+    page_url      TEXT,
+    created_at    DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS token_history (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id       INTEGER NOT NULL REFERENCES users(id),

@@ -735,6 +735,29 @@ def active_job():
     return jsonify({"active": False})
 
 
+@app.route("/api/feedback", methods=["POST"])
+def submit_feedback():
+    """피드백 제출 (로그인 불필요 — 비회원도 가능)"""
+    data = request.json or {}
+    category = (data.get("category") or "").strip()
+    message = (data.get("message") or "").strip()
+    if not message:
+        return jsonify({"error": "메시지를 입력해주세요."}), 400
+    user_id = session.get("user_id")
+    email = data.get("email", "")
+    if not email and user_id:
+        db = get_db()
+        row = db.execute("SELECT email FROM users WHERE id = ?", (user_id,)).fetchone()
+        email = row["email"] if row else ""
+    db = get_db()
+    db.execute(
+        "INSERT INTO feedback (user_id, email, category, message, page_url) VALUES (?, ?, ?, ?, ?)",
+        (user_id, email, category or "general", message, data.get("page_url", ""))
+    )
+    db.commit()
+    return jsonify({"ok": True})
+
+
 # ── 관리자 ─────────────────────────────────────────────────────────────────
 ADMIN_EMAILS = set(
     e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', 'chaejenn@gmail.com').split(',') if e.strip()
@@ -856,6 +879,17 @@ def admin_surveys_csv():
     resp.headers['Content-Type'] = 'text/csv; charset=utf-8-sig'
     resp.headers['Content-Disposition'] = 'attachment; filename=tickdeck_surveys.csv'
     return resp
+
+
+@app.route("/api/admin/feedback")
+@admin_required
+def admin_feedback():
+    db = get_db()
+    rows = db.execute(
+        "SELECT f.id, f.email, f.category, f.message, f.page_url, f.created_at "
+        "FROM feedback f ORDER BY f.created_at DESC LIMIT 100"
+    ).fetchall()
+    return jsonify([dict(r) for r in rows])
 
 
 @app.route("/static/<path:filename>")
