@@ -155,6 +155,7 @@ def _fetch_sitemap_urls(base_url: str, max_urls: int = 30) -> list:
     """sitemap.xml에서 회사소개 관련 URL 목록 추출 — sitemap index 지원, 관련도순 정렬"""
     _parsed = urlparse(base_url)
     _domain = _parsed.netloc
+    _origin = _parsed.scheme + '://' + _parsed.netloc  # 도메인 루트
 
     def _extract_locs(xml_text: str) -> list:
         return re.findall(r'<loc>\s*(https?://[^<\s]+)\s*</loc>', xml_text)
@@ -162,18 +163,18 @@ def _fetch_sitemap_urls(base_url: str, max_urls: int = 30) -> list:
     collected = []
     sitemap_queue = []
 
-    # robots.txt에서 Sitemap: 지시어 확인
+    # robots.txt에서 Sitemap: 지시어 확인 (도메인 루트 기준)
     try:
-        _rob = _session.get(base_url + '/robots.txt', headers=_GOOGLEBOT_HEADERS, timeout=5)
+        _rob = _session.get(_origin + '/robots.txt', headers=_GOOGLEBOT_HEADERS, timeout=5)
         if _rob.status_code == 200:
             for _sm in re.findall(r'(?i)^Sitemap:\s*(https?://\S+)', _rob.text, re.MULTILINE):
                 sitemap_queue.append(_sm.strip())
     except Exception as e:
         logger.debug(f"robots.txt 파싱 실패: {e}")
 
-    # 기본 경로들도 시도
+    # 기본 경로들도 시도 (도메인 루트 기준)
     for path in ['/sitemap.xml', '/sitemap_index.xml', '/sitemap/sitemap.xml', '/sitemap/index.xml']:
-        sitemap_queue.append(base_url + path)
+        sitemap_queue.append(_origin + path)
     sitemap_queue = list(dict.fromkeys(sitemap_queue))  # 중복 제거
 
     fetched_sitemaps = set()
