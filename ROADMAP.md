@@ -100,16 +100,33 @@
 
 ---
 
-## 🟡 중요 — 다음 작업
+## ✅ 추가 완료 (2026-03-28)
 
-1. **SSE 끊김 시 job_id 복원** — 페이지 새로고침해도 결과 확인 가능
-2. **processing 상태 자동 실패 처리** — 10분 초과 시 토큰 환불
-3. **5p 카드 하단 허전함** — how_it_works 카드 body가 짧을 때 높이 조정
-4. **primaryColor 로직 리팩토링** — 7단계 폴백 → 점수 기반 단일 함수
-5. **C-type 아티스트 이미지 최소 해상도** — 600px → 300px
-6. **timeout 상수 통일** — config.py에 SCRAPER_TIMEOUT 정의
-7. **_clear_cache() 공유화** — app.py/celery_app.py 중복 제거
-8. **Playwright 중복 호출 제거** — brand_extractor 리팩토링 (30~40초 추가 절감)
+- ✅ **SSE job_id 복원** — DB 저장 + 페이지 로드 시 자동 재연결
+- ✅ **processing 자동 실패** — 10분 초과 시 토큰 환불
+- ✅ **5p 카드 하단 허전함** — heading+desc 세로 중앙 정렬
+- ✅ **Playwright 캐시** — 중복 호출 제거 (30~40초 절감)
+- ✅ **코드 정리** — cache 유틸 공유 + timeout 상수 통일
+- ✅ **primaryColor 함수 추출** — 260줄 → color_resolver.py 분리
+- ✅ **사이트맵 도메인 루트 수정** — 깊은 URL 입력 시 sitemap 못 찾던 버그
+- ✅ **EN 앱 한글 잔존 텍스트 수정** — 진행 UI/모달/설문 전부 영문화
+- ✅ **피드백 시스템** — 모달 + API + 관리자 뷰 (KO/EN)
+- ✅ **GitHub MCP 설정** — 연결 확인 완료
+
+---
+
+## 🟡 중요 — 다음 작업 (슬라이드 품질)
+
+1. **레이아웃 연속 중복 방지** — brand_story/creative_approach 연속 3열 카드 → 다른 레이아웃 강제
+2. **이미지 부족 시 반복 방지** — showcase_work 이미지 2개 미만이면 Pexels 폴백 or 타이포 전환
+3. **contact 슬라이드 허전** — 회사명 대형 텍스트 + 로고 누락 수정
+4. **EN 앱 진행 중 한글 로그** — 서버 로그는 한글이라 프론트 표시 시 번역 필요
+
+## 🟡 중요 — 다음 작업 (인프라)
+
+5. **primaryColor 점수 기반 리팩토링** — 현재 함수 추출 완료, 로직 자체는 추후
+6. **C-type 아티스트 이미지 최소 해상도** — 600px → 300px
+7. **Playwright brand_extractor 중복** — 로고 탐색에서 추가 30초 소모
 
 ---
 
