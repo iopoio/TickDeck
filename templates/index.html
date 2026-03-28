@@ -2300,6 +2300,7 @@
       core_business_1:          'split',
       core_business_2:          'cards',
       core_business_3:          'portfolio',
+      showcase_work:            hasBg ? 'portfolio' : 'cards',
       showcase_work_1:          hasBg ? 'portfolio' : 'cards',
       showcase_work_2:          hasBg ? 'split' : 'two_col_text',
       showcase_work_3:          'cards',
@@ -2334,7 +2335,7 @@
     // ── 연속 동일 레이아웃 방지 (section은 독립 구분자이므로 제외) ──
     if (prevLayout && layout === prevLayout
         && !['radial','4step','timeline','section','mosaic'].includes(layout)) {
-      const rot = ['split','cards','portfolio','comparison'];
+      const rot = ['split','cards','two_col_text','portfolio','comparison'];
       layout = rot[(rot.indexOf(layout) + 1) % rot.length];
     }
     // ── 번호 목록 패밀리 연속 배치 방지 (numbered_process ↔ process_cards) ──
@@ -2354,7 +2355,7 @@
                     'market_circles','checklist_pills','asymmetric_1_3'];
     const MAX_USE = 2;
     if (!_FIXED.includes(layout) && (layoutCount[layout] || 0) >= MAX_USE) {
-      const rot = ['split','cards','portfolio','comparison'];
+      const rot = ['split','cards','two_col_text','portfolio','comparison'];
       const sorted = rot.filter(l => l !== layout)
                         .sort((a, b) => (layoutCount[a] || 0) - (layoutCount[b] || 0));
       if (sorted.length) layout = sorted[0];
@@ -6705,8 +6706,8 @@
             s.addShape('rect', { x: 0, y: 0, w: W, h: 0.05, fill: { color: _ctR.topBarClr, transparency: _ctR.topBarTr }, line: { type: 'none' } });
             s.addShape('rect', { x: 0, y: H - 0.05, w: W, h: 0.05, fill: { color: _ctR.botBarClr, transparency: _ctR.botBarTr }, line: { type: 'none' } });
             // 회사명 (상단 바 내)
-            if (brand.name) s.addText(brand.name, { x: W * 0.08, y: H * 0.01, w: W * 0.84, h: 0.04,
-              fontSize: 8, color: 'FFFFFF', charSpacing: 2, transparency: 30, align: 'center', valign: 'middle', fontFace: F });
+            if (brand.name) s.addText(brand.name, { x: W * 0.08, y: 0, w: W * 0.84, h: 0.05,
+              fontSize: 8, color: 'FFFFFF', charSpacing: 1, transparency: 30, align: 'center', valign: 'middle', fontFace: F });
             if (eyebrow) { const _ewWR = Math.min(eyebrow.toUpperCase().length * 0.11 + 0.50, 5.5); _addEwPill2(W / 2 - _ewWR / 2, H * 0.13, _ctR.ewFill, _ctR.ewText); }
             s.addText(hl, { x: W * 0.08, y: H * 0.24, w: W * 0.84, h: H * 0.35,
               fontSize: 36, bold: true, color: 'FFFFFF', wrap: true, align: 'center', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FD });
