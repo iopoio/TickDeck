@@ -459,15 +459,16 @@ def _playwright_get_links(url: str, base_url: str) -> list:
                                       && !h.startsWith('tel:')
                                       && !h.startsWith('javascript:'))
                     """)
-                    # HTML도 캐시
                     html = page.content()
                     if cache_key not in _pw_cache:
                         _pw_cache[cache_key] = {}
                     _pw_cache[cache_key]['html'] = html
                 finally:
                     browser.close()
-        except Exception:
-            hrefs = []
+        except Exception as e:
+            logger.warning(f"[Playwright Nav] 실패: {e}")
+            return []
+    try:
         base = base_url.rstrip('/')
         links, seen = [], set()
         for href in (hrefs or []):
@@ -485,7 +486,7 @@ def _playwright_get_links(url: str, base_url: str) -> list:
         logger.info(f"[Playwright Nav] {len(links)}개 내부 링크 발견")
         return links
     except Exception as e:
-        logger.warning(f"[Playwright Nav] 실패: {e}")
+        logger.warning(f"[Playwright Nav] 링크 파싱 실패: {e}")
         return []
 
 
