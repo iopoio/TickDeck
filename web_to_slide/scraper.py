@@ -14,6 +14,10 @@ from .config import HEADERS, _GOOGLEBOT_HEADERS, logger
 _session = requests.Session()
 _session.headers.update(HEADERS)
 
+# Playwright 결과 캐시 (같은 URL 중복 렌더링 방지)
+# key: url → { 'html': str, 'links': list, 'screenshot_color': str }
+_pw_cache = {}
+
 # ────────────────────────────────────────────────────────────────────────────
 # 상수
 # ────────────────────────────────────────────────────────────────────────────
@@ -399,7 +403,11 @@ def _playwright_screenshot_color(url: str, timeout: int = 15000) -> str:
 
 
 def _fetch_with_playwright(url: str, wait: str = 'networkidle', timeout: int = 15000) -> str:
-    """JS 렌더링 후 HTML 반환. 실패 시 빈 문자열."""
+    """JS 렌더링 후 HTML 반환. 캐시 히트 시 재사용. 실패 시 빈 문자열."""
+    cache_key = url.rstrip('/')
+    if cache_key in _pw_cache and 'html' in _pw_cache[cache_key]:
+        logger.info(f"[Playwright] 캐시 히트: {url}")
+        return _pw_cache[cache_key]['html']
     try:
         from playwright.sync_api import sync_playwright
         with sync_playwright() as p:
@@ -412,6 +420,10 @@ def _fetch_with_playwright(url: str, wait: str = 'networkidle', timeout: int = 1
                 html = page.content()
             finally:
                 browser.close()
+        # 캐시 저장
+        if cache_key not in _pw_cache:
+            _pw_cache[cache_key] = {}
+        _pw_cache[cache_key]['html'] = html
         return html
     except Exception as e:
         logger.warning(f"[Playwright] 실패: {e}")
@@ -420,27 +432,42 @@ def _fetch_with_playwright(url: str, wait: str = 'networkidle', timeout: int = 1
 
 def _playwright_get_links(url: str, base_url: str) -> list:
     """Playwright로 JS 렌더 후 DOM 전체 <a href> 수집 → 내부 링크 리스트.
-    networkidle 대신 domcontentloaded + 2.5초 대기로 React 하이드레이션 확보.
+    캐시된 HTML이 있으면 BeautifulSoup으로 추출 (Playwright 재호출 방지).
     """
-    try:
-        from playwright.sync_api import sync_playwright
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            try:
-                page = _make_pw_page(browser)
-                page.goto(url, wait_until='domcontentloaded', timeout=20000)
-                _pw_wait_ready(page, 2500)
-                _pw_dismiss_cookie(page)
-                hrefs = page.evaluate("""() =>
-                    Array.from(document.querySelectorAll('a[href]'))
-                        .map(a => a.getAttribute('href'))
-                        .filter(h => h && !h.startsWith('#')
-                                  && !h.startsWith('mailto:')
-                                  && !h.startsWith('tel:')
-                                  && !h.startsWith('javascript:'))
-                """)
-            finally:
-                browser.close()
+    cache_key = url.rstrip('/')
+    # 캐시 히트: HTML이 있으면 BS4로 링크 추출 (Playwright 불필요)
+    if cache_key in _pw_cache and 'html' in _pw_cache[cache_key]:
+        logger.info(f"[Playwright Nav] 캐시 HTML로 링크 추출: {url}")
+        soup = BeautifulSoup(_pw_cache[cache_key]['html'], 'html.parser')
+        hrefs = [a.get('href', '') for a in soup.find_all('a', href=True)]
+        hrefs = [h for h in hrefs if h and not h.startswith('#') and not h.startswith('mailto:') and not h.startswith('tel:') and not h.startswith('javascript:')]
+    else:
+        try:
+            from playwright.sync_api import sync_playwright
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True)
+                try:
+                    page = _make_pw_page(browser)
+                    page.goto(url, wait_until='domcontentloaded', timeout=20000)
+                    _pw_wait_ready(page, 2500)
+                    _pw_dismiss_cookie(page)
+                    hrefs = page.evaluate("""() =>
+                        Array.from(document.querySelectorAll('a[href]'))
+                            .map(a => a.getAttribute('href'))
+                            .filter(h => h && !h.startsWith('#')
+                                      && !h.startsWith('mailto:')
+                                      && !h.startsWith('tel:')
+                                      && !h.startsWith('javascript:'))
+                    """)
+                    # HTML도 캐시
+                    html = page.content()
+                    if cache_key not in _pw_cache:
+                        _pw_cache[cache_key] = {}
+                    _pw_cache[cache_key]['html'] = html
+                finally:
+                    browser.close()
+        except Exception:
+            hrefs = []
         base = base_url.rstrip('/')
         links, seen = [], set()
         for href in (hrefs or []):

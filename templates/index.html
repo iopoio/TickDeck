@@ -3414,17 +3414,19 @@
       const heading = colon > 0 ? raw.slice(0, colon).trim() : raw;
       const desc    = colon > 0 ? raw.slice(colon + 1).trim() : (typeof item === 'object' ? (item.body || '') : '');
 
-      // heading text
+      // heading + description — vertically centered in lower card area
+      const textAreaY = cardY + bandH + 0.10;
+      const textAreaH = cardH - bandH - 0.20;
       const headFs = heading.length > 18 ? 14 : 15;
+      const headH = desc ? textAreaH * 0.35 : textAreaH;
       s.addText(heading, {
-        x: cx + 0.14, y: cardY + bandH + 0.14, w: cardW - 0.28, h: bandH * 0.55,
+        x: cx + 0.14, y: textAreaY, w: cardW - 0.28, h: headH,
         fontFace: FH, fontSize: headFs, bold: true, color: C.textPrimary,
-        align: 'left', valign: 'top', wrap: true });
+        align: 'left', valign: desc ? 'bottom' : 'middle', wrap: true });
 
-      // description text
       if (desc) {
         s.addText(desc, {
-          x: cx + 0.14, y: cardY + bandH + 0.55, w: cardW - 0.28, h: cardH - bandH - 0.65,
+          x: cx + 0.14, y: textAreaY + headH + 0.08, w: cardW - 0.28, h: textAreaH - headH - 0.08,
           fontFace: F, fontSize: 11.5, color: C.textSecondary,
           align: 'left', valign: 'top', wrap: true, lineSpacingMultiple: 1.3 });
       }
@@ -6791,12 +6793,30 @@
   }
 
   // Enter 키 지원
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     ['inp-url','inp-company'].forEach(id => {
       document.getElementById(id).addEventListener('keydown', e => {
         if (e.key === 'Enter') startGenerate();
       });
     });
+    // ── 진행 중인 작업 자동 복원 ──
+    try {
+      const res = await fetch('/api/active-job');
+      const data = await res.json();
+      if (data.active && data.job_id) {
+        if (data.status === 'done') {
+          // 완료됨 → 바로 결과 표시
+          currentJobId = data.job_id;
+          await fetchAndRenderResult(data.job_id);
+        } else if (data.status === 'running') {
+          // 진행 중 → SSE 재연결
+          currentJobId = data.job_id;
+          document.getElementById('inp-url').value = data.url || '';
+          showPhase('running');
+          startStream(data.job_id);
+        }
+      }
+    } catch(e) { /* 로그인 안 됐거나 네트워크 오류 — 무시 */ }
   });
 </script>
 

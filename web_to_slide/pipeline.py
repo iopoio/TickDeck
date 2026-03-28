@@ -136,6 +136,10 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
     """
     validate_config()  # API 키 검증 — 누락 시 ValueError 즉시 발생
 
+    # Playwright 캐시 초기화 (이전 파이프라인 실행의 캐시 클리어)
+    from .scraper import _pw_cache
+    _pw_cache.clear()
+
     storyline = []        # 모든 코드 경로에서 참조 가능하도록 최상단 초기화
     page_subject = {}     # 아티스트/그룹 페이지 감지 결과
 

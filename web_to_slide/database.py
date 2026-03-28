@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS generations (
     company_name  TEXT,
     purpose       TEXT,
     status        TEXT DEFAULT 'pending',
+    job_id        TEXT,
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     completed_at  DATETIME
 );
@@ -83,9 +84,14 @@ def close_db(e=None):
 
 
 def init_db():
-    """스키마 생성 (테이블 없으면 자동 생성)"""
+    """스키마 생성 (테이블 없으면 자동 생성) + 마이그레이션"""
     db = get_db()
     db.executescript(SCHEMA_SQL)
+    # 마이그레이션: generations에 job_id 컬럼 추가
+    try:
+        db.execute("ALTER TABLE generations ADD COLUMN job_id TEXT")
+    except Exception:
+        pass  # 이미 존재
     db.commit()
 
 

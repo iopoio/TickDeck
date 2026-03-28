@@ -553,6 +553,13 @@ def generate():
 
     job_id = str(uuid.uuid4())
 
+    # job_id를 DB에 저장 (새로고침 시 복원용)
+    try:
+        db.execute("UPDATE generations SET job_id = ? WHERE id = ?", (job_id, gen_id))
+        db.commit()
+    except Exception:
+        pass  # job_id 컬럼 없는 구버전 DB에서도 동작
+
     if USE_CELERY:
         # Celery + Redis 모드
         run_pipeline_task.delay(
@@ -686,6 +693,54 @@ def result(job_id: str):
         if job["status"] != "done":
             return jsonify({"error": "작업이 아직 완료되지 않았습니다.", "status": job["status"]}), 202
         return jsonify(job["result"])
+
+
+def _cleanup_stale_processing():
+    """10분 이상 processing 상태인 작업 → failed 전환 + 토큰 환불"""
+    try:
+        db = get_db()
+        stale = db.execute(
+            "SELECT id, user_id FROM generations WHERE status = 'processing' AND created_at < datetime('now', '-10 minutes')"
+        ).fetchall()
+        for row in stale:
+            db.execute("UPDATE generations SET status = 'failed', completed_at = CURRENT_TIMESTAMP WHERE id = ?", (row['id'],))
+            db.execute("UPDATE users SET tokens = tokens + 1 WHERE id = ?", (row['user_id'],))
+            db.execute(
+                "INSERT INTO token_history (user_id, amount, reason, generation_id) VALUES (?, 1, 'refund_timeout', ?)",
+                (row['user_id'], row['id'])
+            )
+        if stale:
+            db.commit()
+    except Exception:
+        pass
+
+
+@app.route("/api/active-job")
+@login_required
+def active_job():
+    """현재 사용자의 진행 중인 작업 복원 — 새로고침 시 SSE 재연결"""
+    _cleanup_stale_processing()
+    user_id = session['user_id']
+    db = get_db()
+    row = db.execute(
+        "SELECT job_id, url, status FROM generations WHERE user_id = ? AND status = 'processing' ORDER BY id DESC LIMIT 1",
+        (user_id,)
+    ).fetchone()
+    if not row or not row['job_id']:
+        return jsonify({"active": False})
+    job_id = row['job_id']
+    # Redis에서 실제 상태 확인
+    if USE_CELERY:
+        r = _redis_client
+        status = r.get(f'job:{job_id}:status')
+        if status == 'done':
+            result_raw = r.get(f'job:{job_id}:result')
+            return jsonify({"active": True, "job_id": job_id, "status": "done", "url": row['url']})
+        elif status == 'error':
+            return jsonify({"active": True, "job_id": job_id, "status": "error", "url": row['url']})
+        elif status:
+            return jsonify({"active": True, "job_id": job_id, "status": "running", "url": row['url']})
+    return jsonify({"active": False})
 
 
 # ── 관리자 ─────────────────────────────────────────────────────────────────
