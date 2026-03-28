@@ -645,7 +645,7 @@
     </a>
     <div id="user-bar" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
       <a href="/app" style="font-size:11px;color:#7a7e85;text-decoration:none;">🇰🇷 한국어</a>
-      <span id="user-tokens" style="font-size:12px;color:#1C3D5A;font-weight:600;">🎫 2개</span>
+      <span id="user-tokens" style="font-size:12px;color:#1C3D5A;font-weight:600;">🎫 2</span>
       <span id="user-email" style="font-size:11px;color:#6B7685;"></span>
       <button onclick="_showHistory()" style="font-size:10px;color:#1C3D5A;background:#F5F3EC;border:1px solid #D8D4CA;border-radius:5px;padding:3px 10px;cursor:pointer;font-weight:500;">History</button>
       <button id="logout-btn" onclick="_doLogout()" style="font-size:10px;color:#9E9A90;background:none;border:none;cursor:pointer;text-decoration:underline;">Logout</button>
@@ -659,7 +659,7 @@
   <div id="history-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; display:none; align-items:center; justify-content:center; padding:16px;">
     <div style="background:#FFF; border-radius:14px; padding:28px; width:100%; max-width:520px; max-height:80vh; overflow-y:auto; box-shadow:0 8px 32px rgba(28,61,90,0.15);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="font-size:18px; font-weight:700; color:#111827;">생성 History</h3>
+        <h3 style="font-size:18px; font-weight:700; color:#111827;">Generation History</h3>
         <button onclick="document.getElementById('history-modal').style.display='none'" style="background:none; border:none; font-size:18px; cursor:pointer; color:#9E9A90;">✕</button>
       </div>
       <p style="font-size:12px; color:#9E9A90; margin-bottom:16px;">Only the latest PDF is kept · Previous PDF is deleted on regeneration</p>
@@ -711,8 +711,8 @@
           <div id="sv-q5" style="display:flex;flex-wrap:wrap;gap:6px;">
             <label class="sv-cb"><input type="checkbox" value="Made with PowerPoint"> Made with PowerPoint</label>
             <label class="sv-cb"><input type="checkbox" value="In-house designer"> In-house designer</label>
-            <label class="sv-cb"><input type="checkbox" value="Outsourced"> 외주</label>
-            <label class="sv-cb"><input type="checkbox" value="템플릿 사이트 (미리캔버스, Canva 등)"> 템플릿 사이트</label>
+            <label class="sv-cb"><input type="checkbox" value="Outsourced"> Outsourced</label>
+            <label class="sv-cb"><input type="checkbox" value="Template sites (Canva, etc.)"> Template sites (Canva, etc.)</label>
             <label class="sv-cb"><input type="checkbox" value="Never made one"> Never made one</label>
           </div></div>
         <!-- Q6 -->
@@ -721,7 +721,7 @@
             <option value="">Select</option>
             <option value="per_item">Per-use (pay as you go)</option>
             <option value="subscription">Monthly subscription</option>
-            <option value="free_only">무료가 아니면 안 쓸 것 같다</option>
+            <option value="free_only">Wouldn't use if not free</option>
           </select></div>
         <!-- Q7 (조건부) -->
         <div class="sv-q" id="sv-q7-wrap" style="display:none;"><label class="sv-label">Q7. Fair price?</label>
@@ -734,7 +734,7 @@
             <label class="sv-cb"><input type="checkbox" value="Edit in browser"> Edit in browser</label>
             <label class="sv-cb"><input type="checkbox" value="Purpose-specific templates"> Purpose-specific templates</label>
             <label class="sv-cb"><input type="checkbox" value="Multi-language"> Multi-language</label>
-            <label class="sv-cb"><input type="checkbox" value="생성 History 저장/재다운로드"> History 저장/재다운로드</label>
+            <label class="sv-cb"><input type="checkbox" value="Generation history save/re-download"> History save/re-download</label>
             <label class="sv-cb"><input type="checkbox" value="Team accounts"> Team accounts</label>
             <label class="sv-cb"><input type="checkbox" value="Brand guideline presets"> Brand guideline presets</label>
             <label class="sv-cb"><input type="checkbox" value="One-page summary PDF"> One-page summary PDF</label>
@@ -752,7 +752,7 @@
         <div style="font-size:40px;margin-bottom:12px;">🎉</div>
         <h3 style="font-size:18px;font-weight:700;color:#1C3D5A;">Thank you!</h3>
         <p style="font-size:14px;color:#374151;margin-top:8px;">2 tokens have been added!</p>
-        <button onclick="document.getElementById('survey-modal').style.display='none';location.reload();" style="margin-top:16px;padding:10px 24px;background:#1C3D5A;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;">Slides 만들러 가기</button>
+        <button onclick="document.getElementById('survey-modal').style.display='none';location.reload();" style="margin-top:16px;padding:10px 24px;background:#1C3D5A;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;">Start creating slides</button>
       </div>
     </div>
   </div>
@@ -778,7 +778,7 @@
 
   <!-- ── 인증 섹션 (비로그인 시 표시) ── -->
   <div id="auth-section" class="card" style="display:none; text-align:center;">
-    <h3 style="font-size:20px; font-weight:700; margin-bottom:8px; color:#111827;">시작하기</h3>
+    <h3 style="font-size:20px; font-weight:700; margin-bottom:8px; color:#111827;">Get Started</h3>
     <p style="font-size:14px; color:#6B7685; margin-bottom:24px;">Sign in to get 2 free tokens</p>
 
     <a href="/api/auth/google" id="google-login-btn" style="
@@ -795,7 +795,7 @@
     </a>
 
     <p style="margin-top:16px; font-size:12px; color:#9E9A90;">
-      로그인 시 <a href="#" style="color:#6B7685;">이용약관</a> 및 <a href="#" style="color:#6B7685;">개인정보처리방침</a>에 동의합니다
+      By signing in, you agree to our <a href="#" style="color:#6B7685;">Terms of Service</a> and <a href="#" style="color:#6B7685;">Privacy Policy</a>
     </p>
   </div>
 
@@ -849,7 +849,7 @@
     <div id="phase-running" class="hidden">
       <div class="progress-header">
         <div class="spinner"></div>
-        <h2>AI가 Slides를 생성하고 있습니다</h2>
+        <h2>AI is generating your slides</h2>
         <p>Takes about 3-5 minutes. Please wait.</p>
       </div>
 
@@ -979,7 +979,7 @@
   <div class="step-guide">
     <span><div class="num">1</div> Website Analysis</span>
     <span class="arrow">→</span>
-    <span><div class="num">2</div> AI Slides 제작</span>
+    <span><div class="num">2</div> AI Slide Creation</span>
     <span class="arrow">→</span>
     <span><div class="num">3</div> PPT Download</span>
   </div>
@@ -1206,10 +1206,10 @@
         list.innerHTML = data.generations.map(g => {
           const isLatest = latestCompleted && g.id === latestCompleted.id;
           const statusBadge = g.status === 'completed'
-            ? '<span style="color:#5A9E86;font-weight:500;">완료</span>'
+            ? '<span style="color:#5A9E86;font-weight:500;">Completed</span>'
             : g.status === 'failed'
-            ? '<span style="color:#B98391;">실패</span>'
-            : '<span style="color:#9E9A90;">진행 중</span>';
+            ? '<span style="color:#B98391;">Failed</span>'
+            : '<span style="color:#9E9A90;">Processing</span>';
           const pdfLink = (isLatest && hasPdf)
             ? ' · <a href="/api/generations/latest-pdf" style="color:#1C3D5A;font-weight:500;text-decoration:none;">📥 PDF</a>'
             : (isLatest ? ' · <span style="color:#9E9A90;">PDF 없음</span>' : '');
@@ -1240,7 +1240,7 @@
     { keywords: ['3단계-B', '전략', '기획'], dot: 2, label: '📐 Designing slide structure' },
     { keywords: ['3단계-C', '카피', 'JSON'], dot: 2, label: '✍️ Writing slide content' },
     { keywords: ['4단계', 'Imagen', 'imagen', 'Pexels', '이미지'], dot: 3, label: '🖼️ Preparing images' },
-    { keywords: ['완료', 'overlay', 'MIME', '최종', '품질'], dot: 4, label: '✨ 거의 다 됐어요!' },
+    { keywords: ['완료', 'overlay', 'MIME', '최종', '품질'], dot: 4, label: '✨ Almost done!' },
   ];
 
   function detectStep(line) {
@@ -1414,7 +1414,7 @@
     { pattern: /\[3단계-B\]/, msg: '📐 Designing slide structure...' },
     { pattern: /\[3단계-C\]/, msg: '✍️ Writing slide content...' },
     { pattern: /\[4단계\]/, msg: '🖼️ Preparing images...' },
-    { pattern: /\[완료\]/, msg: '✅ 완성! Slides를 확인하세요' },
+    { pattern: /\[완료\]/, msg: '✅ Done! Check your slides' },
     { pattern: /\[품질 검사\]/, msg: '✨ Quality check in progress...' },
   ];
   function appendLog(el, text, cls) {
