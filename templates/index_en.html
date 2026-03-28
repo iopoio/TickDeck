@@ -2278,7 +2278,9 @@
       corporate_overview:       'split',
       market_shock:             hasBg ? 'portfolio' : 'comparison',  // 이미지 있으면 풀스크린, 없으면 대비
       market_problem:           n >= 5 ? 'comparison' : 'cards',     // 항목 충분할 때만 comparison
-      brand_story:              hasBg ? 'portfolio' : 'split',
+      brand_story:              hasBg ? 'portfolio' : (n >= 3 ? 'cards' : 'split'),
+      creative_approach:        hasBg ? 'split' : (n >= 3 ? 'two_col_text' : 'split'),
+      creative_philosophy:      hasBg ? 'split' : 'two_col_text',
       market_impact:            hasBg ? 'portfolio' : 'cards',
       proof_of_concept:         hasBg ? 'portfolio' : 'cards',
       results:                  hasBg ? 'portfolio' : 'cards',

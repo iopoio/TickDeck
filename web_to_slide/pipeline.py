@@ -799,7 +799,10 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
                     slide['bg_aspect'] = _calc_aspect(img['b64'])
                     _p(f"  [{slide_idx+1}] {slide.get('type','')} <- 이미지 #{pool_idx} (시맨틱 매칭, aspect={slide['bg_aspect']})")
         # 2차: 순서 배정 (시맨틱 매칭 못 받은 슬라이드)
+        # 시맨틱 매칭에서 이미 사용된 인덱스 수집 (중복 배정 방지)
         used_indices = set()
+        if semantic_mapping:
+            used_indices = set(semantic_mapping.values())
         for slide_idx, slide in image_slides:
             if slide.get('bg_b64'):
                 continue
