@@ -50,6 +50,29 @@ from google import genai
 
 _client = genai.Client(api_key=GEMINI_API_KEY)
 
+# ── Timeout 상수 ─────────────────────────────────────────────────────────────
+SCRAPER_TIMEOUT = 15000      # Playwright 기본 timeout (ms)
+SCRAPER_TIMEOUT_LONG = 20000 # 링크/이미지 수집 timeout (ms)
+LOGO_TIMEOUT = 25000         # 로고 탐색 timeout (ms)
+
+# ── 캐시 유틸 ────────────────────────────────────────────────────────────────
+import re as _re_mod
+
+def clear_slide_cache(company_name: str, progress_fn=None):
+    """슬라이드 캐시 파일 삭제 (app.py / celery_app.py 공용)"""
+    import os
+    _slug = _re_mod.sub(r'[^\w]', '', (company_name or '').lower())[:20]
+    suffixes = ['_text.json', '_img.json', '.json', '_en_text.json', '_en_img.json']
+    for sfx in suffixes:
+        _cf = f"slide_{_slug}{sfx}"
+        try:
+            if os.path.exists(_cf):
+                os.remove(_cf)
+                if progress_fn:
+                    progress_fn(f"  → 캐시 삭제: {_cf}")
+        except Exception:
+            pass
+
 # ── HTTP 헤더 ────────────────────────────────────────────────────────────────
 
 HEADERS = {

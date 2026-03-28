@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, unquote
 
-from .config import HEADERS, _GOOGLEBOT_HEADERS, logger
+from .config import HEADERS, _GOOGLEBOT_HEADERS, logger, SCRAPER_TIMEOUT, SCRAPER_TIMEOUT_LONG, LOGO_TIMEOUT
 
 # HTTP Session 풀링
 _session = requests.Session()
@@ -448,7 +448,7 @@ def _playwright_get_links(url: str, base_url: str) -> list:
                 browser = p.chromium.launch(headless=True)
                 try:
                     page = _make_pw_page(browser)
-                    page.goto(url, wait_until='domcontentloaded', timeout=20000)
+                    page.goto(url, wait_until='domcontentloaded', timeout=SCRAPER_TIMEOUT_LONG)
                     _pw_wait_ready(page, 2500)
                     _pw_dismiss_cookie(page)
                     hrefs = page.evaluate("""() =>
@@ -502,7 +502,7 @@ def _playwright_extract_images(url: str, base: str, _skip_pat=None) -> list:
             browser = p.chromium.launch(headless=True)
             try:
                 page = _make_pw_page(browser)
-                page.goto(url, wait_until='domcontentloaded', timeout=20000)
+                page.goto(url, wait_until='domcontentloaded', timeout=SCRAPER_TIMEOUT_LONG)
                 _pw_wait_ready(page, 2500)
                 _pw_dismiss_cookie(page)
                 # ── 레이지로딩 트리거: 스크롤 다운 (축소) ──

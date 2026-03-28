@@ -427,15 +427,7 @@ def _run(job_id: str, url: str, company: str,
             _log(line)
 
     import os, re as _re
-    def _clear_cache(co):
-        _slug = _re.sub(r'[^\w]', '', (co or '').lower())[:20]
-        for _cf in [f"slide_{_slug}_text.json", f"slide_{_slug}_img.json", f"slide_{_slug}.json"]:
-            try:
-                if os.path.exists(_cf):
-                    os.remove(_cf)
-                    on_progress(f"  → 캐시 삭제: {_cf}")
-            except Exception:
-                pass
+    from web_to_slide.config import clear_slide_cache
 
     gen_id = job.get("gen_id")
     user_id = job.get("user_id")
@@ -458,8 +450,8 @@ def _run(job_id: str, url: str, company: str,
         for _tl in _tb.format_exc().splitlines():
             on_progress(f"  TB| {_tl}")
         on_progress(f"  ⚠ 오류 발생: {err_str}")
-        _slug = _re.sub(r'[^\w]', '', (company or url.split('//')[-1].split('/')[0].replace('.', '')).lower())[:20]
-        _clear_cache(_slug)
+        _slug = company or url.split('//')[-1].split('/')[0].replace('.', '')
+        clear_slide_cache(_slug, on_progress)
         on_progress("  → 캐시 삭제 후 재시도 중...")
         try:
             result = run_pipeline(url, company or None, progress_fn=on_progress,

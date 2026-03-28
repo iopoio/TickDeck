@@ -10,7 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 from collections import Counter, defaultdict
 
-from .config import HEADERS, _GOOGLEBOT_HEADERS, HAS_PIL, logger
+from .config import HEADERS, _GOOGLEBOT_HEADERS, HAS_PIL, logger, LOGO_TIMEOUT
 
 # HTTP Session 풀링 — 동일 도메인 연결 재사용 (DNS/TCP/TLS 절약)
 _session = requests.Session()
@@ -216,7 +216,7 @@ def _extract_logo_url_with_playwright(url: str) -> str:
             browser = p.chromium.launch(headless=True)
             try:
                 page = _make_pw_page(browser)
-                page.goto(url, wait_until='networkidle', timeout=25000)
+                page.goto(url, wait_until='networkidle', timeout=LOGO_TIMEOUT)
                 # JS 실행으로 img src + CSS background-image URL 수집
                 logo_urls = page.evaluate("""() => {
                     const results = [];

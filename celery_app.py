@@ -96,15 +96,7 @@ def run_pipeline_task(self, job_id, url, company, narrative_type, mood, purpose,
             # 실시간 SSE용 pub/sub
             r.publish(f'job:{job_id}:channel', json.dumps({'line': line}))
 
-    def _clear_cache(co):
-        _slug = _re.sub(r'[^\w]', '', (co or '').lower())[:20]
-        for _cf in [f"slide_{_slug}_text.json", f"slide_{_slug}_img.json", f"slide_{_slug}.json"]:
-            try:
-                if os.path.exists(_cf):
-                    os.remove(_cf)
-                    on_progress(f"  → 캐시 삭제: {_cf}")
-            except Exception:
-                pass
+    from web_to_slide.config import clear_slide_cache
 
     if gen_id:
         _update_generation_status(gen_id, 'processing')
@@ -125,8 +117,8 @@ def run_pipeline_task(self, job_id, url, company, narrative_type, mood, purpose,
         on_progress(f"  ⚠ 오류 발생: {e}")
 
         # 캐시 삭제 후 재시도
-        _slug = _re.sub(r'[^\w]', '', (company or url.split('//')[-1].split('/')[0].replace('.', '')).lower())[:20]
-        _clear_cache(_slug)
+        _slug = company or url.split('//')[-1].split('/')[0].replace('.', '')
+        clear_slide_cache(_slug, on_progress)
         on_progress("  → 캐시 삭제 후 재시도 중...")
 
         try:
