@@ -52,6 +52,14 @@ def _log(msg: str):
 
 from flask import Flask, jsonify, make_response, render_template, request, Response, send_file, send_from_directory, session, redirect
 
+# S4: Rate Limiting
+try:
+    from flask_limiter import Limiter
+    from flask_limiter.util import get_remote_address
+    _has_limiter = True
+except ImportError:
+    _has_limiter = False
+
 BASE_DIR = Path(__file__).parent
 sys.path.insert(0, str(BASE_DIR))
 
@@ -70,8 +78,34 @@ from web_to_slide.database import (
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tickdeck-dev-secret-change-in-production')
+
+# S2: SECRET_KEY — 프로덕션에서는 환경변수 필수
+_secret = os.environ.get('SECRET_KEY', '')
+if not _secret:
+    import warnings
+    _secret = 'tickdeck-dev-ONLY-change-in-production'
+    warnings.warn("SECRET_KEY 환경변수가 설정되지 않았습니다. 프로덕션에서는 반드시 설정하세요!", stacklevel=1)
+app.config['SECRET_KEY'] = _secret
+
+# 세션 쿠키 보안
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+if os.environ.get('FLASK_ENV') == 'production' or os.environ.get('USE_CELERY'):
+    app.config['SESSION_COOKIE_SECURE'] = True
+
 app.jinja_env.auto_reload = True
+
+# S4: Rate Limiter 초기화
+if _has_limiter:
+    limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"],
+                      storage_uri="memory://")
+else:
+    # flask-limiter 미설치 시 no-op 데코레이터
+    class _NoopLimiter:
+        def limit(self, *a, **kw):
+            def decorator(f): return f
+            return decorator
+    limiter = _NoopLimiter()
 
 # DB 초기화
 init_db_app(app)
@@ -119,7 +153,10 @@ GOOGLE_USERINFO_URL = 'https://www.googleapis.com/oauth2/v2/userinfo'
 @app.route("/api/auth/google")
 def auth_google():
     """Google OAuth 시작 — 동의 화면으로 리다이렉트"""
-    import urllib.parse
+    import urllib.parse, secrets as _secrets
+    # S1: OAuth CSRF 방지 — state 토큰 생성
+    state = _secrets.token_urlsafe(32)
+    session['oauth_state'] = state
     params = {
         'client_id': GOOGLE_CLIENT_ID,
         'redirect_uri': GOOGLE_REDIRECT_URI,
@@ -127,6 +164,7 @@ def auth_google():
         'scope': 'email profile',
         'access_type': 'offline',
         'prompt': 'select_account',
+        'state': state,
     }
     url = GOOGLE_AUTH_URL + '?' + urllib.parse.urlencode(params)
     from flask import redirect
@@ -141,6 +179,13 @@ def auth_google_callback():
     if not code:
         return redirect('/app?error=google_auth_failed')
 
+    # S1: OAuth state 검증 — CSRF 방지
+    state = request.args.get('state', '')
+    expected = session.pop('oauth_state', None)
+    if not state or state != expected:
+        _log(f"[Google OAuth] state 불일치: expected={expected}, got={state}")
+        return redirect('/app?error=google_auth_csrf')
+
     # 코드 → 토큰 교환
     token_resp = requests.post(GOOGLE_TOKEN_URL, data={
         'code': code,
@@ -151,7 +196,7 @@ def auth_google_callback():
     }, timeout=10)
 
     if token_resp.status_code != 200:
-        _log(f"[Google OAuth] 토큰 교환 실패: {token_resp.text}")
+        _log(f"[Google OAuth] 토큰 교환 실패: status={token_resp.status_code}")
         return redirect('/app?error=google_token_failed')
 
     access_token = token_resp.json().get('access_token')
@@ -187,6 +232,7 @@ def auth_google_callback():
 
 # ── 인증 API ─────────────────────────────────────────────────────────────────
 @app.route("/api/auth/signup", methods=["POST"])
+@limiter.limit("5 per hour")
 def auth_signup():
     data = request.get_json(force=True) or {}
     email = (data.get("email") or "").strip().lower()
@@ -220,6 +266,7 @@ def auth_signup():
 
 
 @app.route("/api/auth/login", methods=["POST"])
+@limiter.limit("10 per hour")
 def auth_login():
     data = request.get_json(force=True) or {}
     email = (data.get("email") or "").strip().lower()
@@ -355,7 +402,8 @@ def api_regen_slide():
             return jsonify({"ok": True, "slide": slide})
         return jsonify({"ok": False, "error": "JSON 파싱 실패"}), 500
     except Exception as e:
-        return jsonify({"ok": False, "error": str(e)}), 500
+        _log(f"[regen-slide] 오류: {e}")
+        return jsonify({"ok": False, "error": "AI 재생성 중 오류가 발생했습니다."}), 500
 
 
 @app.route("/api/generations")
@@ -507,6 +555,7 @@ def app_page_en():
 
 
 @app.route("/generate", methods=["POST"])
+@limiter.limit("10 per hour")
 @login_required
 def generate():
     from flask import session
@@ -525,6 +574,19 @@ def generate():
 
     if not url.startswith("http"):
         url = "https://" + url
+
+    # S3: SSRF 방지 — 내부 네트워크 접근 차단
+    try:
+        from urllib.parse import urlparse
+        _parsed = urlparse(url)
+        _host = (_parsed.hostname or '').lower()
+        _blocked = ('localhost', '127.0.0.1', '0.0.0.0', '[::1]', 'metadata.google.internal')
+        if _host in _blocked or _host.startswith('10.') or _host.startswith('192.168.') or _host.startswith('172.'):
+            return jsonify({"error": "내부 네트워크 URL은 사용할 수 없습니다."}), 400
+        if not _parsed.scheme in ('http', 'https'):
+            return jsonify({"error": "http/https URL만 지원합니다."}), 400
+    except Exception:
+        return jsonify({"error": "올바른 URL 형식이 아닙니다."}), 400
 
     # 토큰 차감 (먼저 차감 → 실패 시 환불)
     remaining = check_and_deduct_token(user_id)

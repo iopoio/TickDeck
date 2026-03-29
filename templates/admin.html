@@ -106,6 +106,13 @@
 
   <script>
     // 탭 전환
+    // S5: XSS 방지 — HTML 이스케이프
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s == null ? '' : String(s);
+      return d.innerHTML;
+    }
+
     function showTab(name) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       event.target.classList.add('active');
@@ -138,8 +145,8 @@
           <tr><th>ID</th><th>이메일</th><th>이름</th><th>토큰</th><th>생성수</th><th>가입일</th><th>최근 로그인</th><th>토큰 지급</th></tr>
           ${d.users.map(u => `<tr>
             <td>${u.id}</td>
-            <td>${u.email}</td>
-            <td>${u.name || '-'}</td>
+            <td>${esc(u.email)}</td>
+            <td>${esc(u.name || '-')}</td>
             <td><strong>${u.tokens}</strong></td>
             <td>${u.gen_count}</td>
             <td>${(u.created_at || '').slice(0, 16)}</td>
@@ -164,10 +171,10 @@
             const label = g.status === 'completed' ? '완료' : g.status === 'failed' ? '실패' : g.status;
             return `<tr>
               <td>${g.id}</td>
-              <td>${g.user_email}</td>
-              <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${g.url}</td>
-              <td>${g.company_name || '-'}</td>
-              <td>${g.purpose || '-'}</td>
+              <td>${esc(g.user_email)}</td>
+              <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${esc(g.url)}</td>
+              <td>${esc(g.company_name || '-')}</td>
+              <td>${esc(g.purpose || '-')}</td>
               <td><span class="badge ${badge}">${label}</span></td>
               <td>${(g.created_at || '').slice(0, 16)}</td>
               <td>${(g.completed_at || '-').slice(0, 16)}</td>
@@ -256,7 +263,7 @@
           <tr><th>ID</th><th>이메일</th><th>업종</th><th>직무</th><th>규모</th><th>빈도</th><th>결제방식</th><th>가격</th><th>희망기능</th><th>자유의견</th><th>참여일</th></tr>
           ${surveys.map(s => `<tr>
             <td>${s.id}</td>
-            <td>${s.email}</td>
+            <td>${esc(s.email)}</td>
             <td>${s.q1_industry || '-'}</td>
             <td>${s.q2_role || '-'}</td>
             <td>${s.q3_company_size || '-'}</td>
