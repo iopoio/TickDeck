@@ -589,6 +589,52 @@ No vivid color found → industry default:
                 result['brand']['narrative_type'] = narrative_type
             return result
 
+        def _validate_and_fix_slides(result):
+            """A1: 슬라이드 시맨틱 검증 + 자동 수정"""
+            if not isinstance(result, dict) or 'slides' not in result:
+                return result
+            for slide in result['slides']:
+                headline = slide.get('headline', '')
+                body = slide.get('body', [])
+                if not isinstance(body, list):
+                    body = [body] if body else []
+                    slide['body'] = body
+
+                # RULE J: 헤드라인 숫자 ↔ body 개수 불일치 수정
+                nums = re.findall(r'(\d+)\s*(?:가지|단계|개|Ways|Steps|Key)', headline)
+                if nums:
+                    expected = int(nums[0])
+                    actual = len(body)
+                    if expected != actual and actual >= 2:
+                        # 헤드라인의 숫자를 실제 body 수로 교체
+                        old_n = nums[0]
+                        slide['headline'] = headline.replace(old_n, str(actual), 1)
+                        logger.info(f"[A1] RULE J 수정: '{headline}' → body {actual}개에 맞춰 숫자 교체")
+
+                # body 최소 2개 보장 (sub로 채움)
+                if len(body) < 2 and slide.get('type') not in ('cover', 'contact', 'section'):
+                    sub = slide.get('subheadline', '')
+                    if sub and len(body) < 2:
+                        body.append(sub)
+                        slide['body'] = body
+                        logger.info(f"[A1] body 부족 → sub 보충: {slide.get('type')}")
+
+                # 헤드라인 길이 제한 (22자 초과 시 자연스럽게 자름)
+                if len(headline) > 28:
+                    # 마지막 공백/조사에서 자르기
+                    cut = headline[:28]
+                    last_space = max(cut.rfind(' '), cut.rfind(','), cut.rfind(':'))
+                    if last_space > 15:
+                        slide['headline'] = cut[:last_space]
+                    else:
+                        slide['headline'] = cut
+                    logger.info(f"[A1] 헤드라인 길이 초과 → 자름: {len(headline)}→{len(slide['headline'])}자")
+
+                # 빈 body 항목 제거
+                slide['body'] = [b for b in slide.get('body', []) if b and str(b).strip()]
+
+            return result
+
         def _recover_truncated_json(s):
             """토큰 한도로 잘린 JSON을 닫는 괄호 추가로 복구"""
             # 1) trailing comma 제거
@@ -615,14 +661,15 @@ No vivid color found → industry default:
             return s
 
         try:
-            return _inject_narrative(json.loads(cleaned_text))
+            parsed = _inject_narrative(json.loads(cleaned_text))
+            return _validate_and_fix_slides(parsed)
         except json.JSONDecodeError:
             logger.warning("표준 JSON 파싱 실패 → 잘린 JSON 복구 시도...")
             try:
                 fixed_text = _recover_truncated_json(cleaned_text)
                 result = json.loads(fixed_text)
                 logger.info(f"JSON 복구 성공 — 슬라이드 {len(result.get('slides', []))}개")
-                return _inject_narrative(result)
+                return _validate_and_fix_slides(_inject_narrative(result))
             except json.JSONDecodeError as e2:
                 logger.warning(f"JSON 복구 실패: {e2}")
 
