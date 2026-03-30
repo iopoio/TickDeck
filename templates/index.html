@@ -1398,7 +1398,9 @@
           return;
         }
         appendLog(term, `⏳ 연결이 잠시 끊겼습니다. 재연결 중... (${_reconnects}/${MAX_RECONNECT})`);
-        setTimeout(connect, 3000);
+        // M4: 지수 백오프 (3s → 6s → 12s → ... 최대 30s)
+        const backoff = Math.min(3000 * Math.pow(2, _reconnects - 1), 30000);
+        setTimeout(connect, backoff);
       };
     }
 

@@ -76,11 +76,13 @@ def _refund_and_fail(user_id, gen_id):
 
 
 # ── Celery 태스크 ─────────────────────────────────────────────────────────
-@celery.task(bind=True, name='webtoslide.run_pipeline')
+@celery.task(bind=True, name='webtoslide.run_pipeline',
+             soft_time_limit=540, time_limit=600)
 def run_pipeline_task(self, job_id, url, company, narrative_type, mood, purpose,
                       brand_color, user_id, gen_id, slide_lang='ko'):
     """run_pipeline()을 Celery 워커에서 실행, 진행 상황을 Redis에 기록"""
     import re as _re
+    from celery.exceptions import SoftTimeLimitExceeded
     from web_to_slide.pipeline import run_pipeline
     logger.info(f"[Celery] slide_lang={slide_lang}, user_id={user_id}, gen_id={gen_id}")
 
@@ -110,6 +112,17 @@ def run_pipeline_task(self, job_id, url, company, narrative_type, mood, purpose,
         r.publish(f'job:{job_id}:channel', json.dumps({'status': 'done'}))
         if gen_id:
             _update_generation_status(gen_id, 'completed')
+    except SoftTimeLimitExceeded:
+        # M7: 타임아웃 시 깔끔한 정리
+        logger.error(f"[Celery] 타임아웃 (9분 초과): job={job_id}")
+        on_progress("  ⚠ 생성 시간 초과 (9분) — 자동 종료")
+        r.set(f'job:{job_id}:status', 'error')
+        r.set(f'job:{job_id}:error', '생성 시간이 초과되었습니다. 다시 시도해 주세요.')
+        r.publish(f'job:{job_id}:channel', json.dumps({'status': 'error', 'error': '생성 시간 초과'}))
+        if user_id and gen_id:
+            _refund_and_fail(user_id, gen_id)
+            on_progress("  → 토큰 환불 완료")
+        return
     except Exception as e:
         import traceback as _tb
         for _tl in _tb.format_exc().splitlines():

@@ -66,6 +66,15 @@ CREATE TABLE IF NOT EXISTS token_history (
     generation_id INTEGER REFERENCES generations(id),
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- M5: 성능 인덱스
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_generations_user_id ON generations(user_id);
+CREATE INDEX IF NOT EXISTS idx_generations_status ON generations(status);
+CREATE INDEX IF NOT EXISTS idx_generations_job_id ON generations(job_id);
+CREATE INDEX IF NOT EXISTS idx_surveys_user_id ON surveys(user_id);
+CREATE INDEX IF NOT EXISTS idx_token_history_user_id ON token_history(user_id);
+CREATE INDEX IF NOT EXISTS idx_feedback_user_id ON feedback(user_id);
 """
 
 
@@ -171,12 +180,15 @@ def deduct_token(user_id, generation_id=None):
 
 
 def check_and_deduct_token(user_id):
-    """토큰 1개 차감. 성공 시 남은 토큰 수 반환, 부족 시 None."""
+    """토큰 1개 차감. 성공 시 남은 토큰 수 반환, 부족 시 None.
+    M6: WHERE tokens >= 1 조건으로 원자적 차감 (레이스 컨디션 방지)"""
     db = get_db()
-    user = db.execute("SELECT tokens FROM users WHERE id = ?", (user_id,)).fetchone()
-    if not user or user['tokens'] < 1:
-        return None
-    db.execute("UPDATE users SET tokens = tokens - 1 WHERE id = ?", (user_id,))
+    cursor = db.execute(
+        "UPDATE users SET tokens = tokens - 1 WHERE id = ? AND tokens >= 1",
+        (user_id,)
+    )
+    if cursor.rowcount == 0:
+        return None  # 토큰 부족 또는 사용자 없음
     db.commit()
     remaining = db.execute("SELECT tokens FROM users WHERE id = ?", (user_id,)).fetchone()['tokens']
     return remaining

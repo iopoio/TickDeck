@@ -1398,7 +1398,8 @@
           return;
         }
         appendLog(term, `⏳ Connection lost. Reconnecting... (${_reconnects}/${MAX_RECONNECT})`);
-        setTimeout(connect, 3000);
+        const backoff = Math.min(3000 * Math.pow(2, _reconnects - 1), 30000);
+        setTimeout(connect, backoff);
       };
     }
 
