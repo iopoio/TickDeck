@@ -19,6 +19,7 @@ try:
 except ImportError:
     pass  # python-dotenv 없으면 os.environ만 사용
 from pathlib import Path
+from i18n import T_KO, T_EN
 
 # Windows cp949 환경에서 이모지·유니코드 출력 오류 방지
 if hasattr(sys.stdout, 'reconfigure'):
@@ -533,7 +534,7 @@ def landing():
 @app.route("/app")
 def app_page():
     """앱 페이지 (슬라이드 생성)"""
-    resp = make_response(render_template("index.html"))
+    resp = make_response(render_template("index.html", lang="ko", t=T_KO))
     resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
     resp.headers["Pragma"] = "no-cache"
     return resp
@@ -548,7 +549,7 @@ def landing_en():
 @app.route("/en/app")
 def app_page_en():
     """English app page"""
-    resp = make_response(render_template("index_en.html"))
+    resp = make_response(render_template("index.html", lang="en", t=T_EN))
     resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
     resp.headers["Pragma"] = "no-cache"
     return resp

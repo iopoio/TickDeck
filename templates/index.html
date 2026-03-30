@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{{ lang }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,16 +11,16 @@
     gtag('js', new Date());
     gtag('config', 'G-0TN6W0NHQX');
   </script>
-  <title>TickDeck — 당신의 웹사이트를 PPT로</title>
-  <meta name="description" content="URL만 입력하면 AI가 브랜드 맞춤형 프레젠테이션을 자동으로 만들어드립니다." />
+  <title>{{ t.meta_title }}</title>
+  <meta name="description" content="{{ t.meta_desc }}" />
   <meta name="robots" content="noindex" />
-  <link rel="canonical" href="https://tickdeck.site/app" />
+  <link rel="canonical" href="{{ t.meta_canonical }}" />
   <link rel="alternate" hreflang="ko" href="https://tickdeck.site/app" />
   <link rel="alternate" hreflang="en" href="https://tickdeck.site/en/app" />
-  <meta property="og:title" content="TickDeck — AI PPT 생성기" />
-  <meta property="og:description" content="URL 하나면 브랜드 맞춤형 프레젠테이션이 5분 이내에 완성됩니다." />
+  <meta property="og:title" content="{{ t.meta_og_title }}" />
+  <meta property="og:description" content="{{ t.meta_og_desc }}" />
   <meta property="og:image" content="https://tickdeck.site/static/img/og-image.png" />
-  <meta property="og:url" content="https://tickdeck.site/app" />
+  <meta property="og:url" content="{{ t.meta_og_url }}" />
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
   <script type="text/javascript" src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
@@ -639,16 +639,16 @@
 <!-- ── App Nav ── -->
 <nav style="background:rgba(251,249,242,0.70);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(28,61,90,0.04);padding:12px 0;position:sticky;top:0;z-index:100;">
   <div style="max-width:700px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;">
-    <a href="/" style="display:flex;align-items:center;gap:2px;text-decoration:none;font-size:20px;font-weight:800;letter-spacing:-0.04em;">
+    <a href="{{ t.nav_home_href }}" style="display:flex;align-items:center;gap:2px;text-decoration:none;font-size:20px;font-weight:800;letter-spacing:-0.04em;">
       <span style="color:#1C3D5A;">Tick</span><span style="color:#5A9E86;">Deck</span>
       <span style="font-size:9px;background:#1C3D5A;color:#fff;padding:2px 6px;border-radius:4px;margin-left:6px;font-weight:600;letter-spacing:0;">Beta</span>
     </a>
     <div id="user-bar" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
-      <a href="/en/app" style="font-size:11px;color:#7a7e85;text-decoration:none;">🌐 EN</a>
-      <span id="user-tokens" style="font-size:12px;color:#1C3D5A;font-weight:600;">🎫 2개</span>
+      <a href="{{ t.nav_lang_href }}" style="font-size:11px;color:#7a7e85;text-decoration:none;">{{ t.nav_lang_label }}</a>
+      <span id="user-tokens" style="font-size:12px;color:#1C3D5A;font-weight:600;">🎫 2{{ t.nav_tokens_suffix }}</span>
       <span id="user-email" style="font-size:11px;color:#6B7685;"></span>
-      <button onclick="_showHistory()" style="font-size:10px;color:#1C3D5A;background:#F5F3EC;border:1px solid #D8D4CA;border-radius:5px;padding:3px 10px;cursor:pointer;font-weight:500;">이력</button>
-      <button id="logout-btn" onclick="_doLogout()" style="font-size:10px;color:#9E9A90;background:none;border:none;cursor:pointer;text-decoration:underline;">로그아웃</button>
+      <button onclick="_showHistory()" style="font-size:10px;color:#1C3D5A;background:#F5F3EC;border:1px solid #D8D4CA;border-radius:5px;padding:3px 10px;cursor:pointer;font-weight:500;">{{ t.nav_history_btn }}</button>
+      <button id="logout-btn" onclick="_doLogout()" style="font-size:10px;color:#9E9A90;background:none;border:none;cursor:pointer;text-decoration:underline;">{{ t.nav_logout_btn }}</button>
     </div>
   </div>
 </nav>
@@ -659,10 +659,10 @@
   <div id="history-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; display:none; align-items:center; justify-content:center; padding:16px;">
     <div style="background:#FFF; border-radius:14px; padding:28px; width:100%; max-width:520px; max-height:80vh; overflow-y:auto; box-shadow:0 8px 32px rgba(28,61,90,0.15);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="font-size:18px; font-weight:700; color:#111827;">생성 이력</h3>
+        <h3 style="font-size:18px; font-weight:700; color:#111827;">{{ t.modal_history_title }}</h3>
         <button onclick="document.getElementById('history-modal').style.display='none'" style="background:none; border:none; font-size:18px; cursor:pointer; color:#9E9A90;">✕</button>
       </div>
-      <p style="font-size:12px; color:#9E9A90; margin-bottom:16px;">직전 생성의 PDF만 보관됩니다 · 새로 생성하면 이전 PDF는 삭제됩니다</p>
+      <p style="font-size:12px; color:#9E9A90; margin-bottom:16px;">{{ t.modal_history_desc }}</p>
       <div id="history-list" style="font-size:14px; color:#374151;"></div>
     </div>
   </div>
@@ -671,88 +671,76 @@
   <div id="survey-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1100; align-items:center; justify-content:center; padding:16px;">
     <div style="background:#fff; border-radius:14px; padding:28px; width:100%; max-width:520px; max-height:85vh; overflow-y:auto; box-shadow:0 8px 32px rgba(28,61,90,0.15);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <h3 style="font-size:18px; font-weight:700; color:#1C3D5A;">📋 TickDeck 설문</h3>
+        <h3 style="font-size:18px; font-weight:700; color:#1C3D5A;">{{ t.survey_title }}</h3>
         <button onclick="document.getElementById('survey-modal').style.display='none'" style="background:none; border:none; font-size:18px; cursor:pointer; color:#9E9A90;">✕</button>
       </div>
-      <p style="font-size:12px; color:#9E9A90; margin-bottom:20px;">2~3분이면 끝나는 간단한 설문입니다. 완료 시 토큰 2개를 드립니다.</p>
+      <p style="font-size:12px; color:#9E9A90; margin-bottom:20px;">{{ t.survey_desc }}</p>
 
       <div id="survey-form">
         <!-- Q1 -->
-        <div class="sv-q"><label class="sv-label">Q1. 어떤 업종에서 일하고 계신가요?</label>
+        <div class="sv-q"><label class="sv-label">{{ t.survey_q1_label }}</label>
           <select id="sv-q1" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
-            <option value="">선택해주세요</option>
-            <option>IT / 소프트웨어</option><option>제조업</option><option>유통 / 커머스</option>
-            <option>전문 서비스 (컨설팅, 회계, 법률 등)</option><option>교육 / 학술</option>
-            <option>건설 / 부동산</option><option>마케팅 / 광고 에이전시</option><option>기타</option>
+            <option value="">{{ t.survey_q1_placeholder }}</option>
+            {% for opt in t.survey_q1_options %}<option>{{ opt }}</option>{% endfor %}
           </select></div>
         <!-- Q2 -->
-        <div class="sv-q"><label class="sv-label">Q2. 직무가 무엇인가요?</label>
+        <div class="sv-q"><label class="sv-label">{{ t.survey_q2_label }}</label>
           <select id="sv-q2" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
-            <option value="">선택해주세요</option>
-            <option>대표 / 경영진</option><option>영업 / 사업개발</option><option>마케팅 / 브랜딩</option>
-            <option>기획 / 전략</option><option>디자인</option><option>개발 / IT</option><option>기타</option>
+            <option value="">{{ t.survey_q2_placeholder }}</option>
+            {% for opt in t.survey_q2_options %}<option>{{ opt }}</option>{% endfor %}
           </select></div>
         <!-- Q3 -->
-        <div class="sv-q"><label class="sv-label">Q3. 회사 규모는 어느 정도인가요?</label>
+        <div class="sv-q"><label class="sv-label">{{ t.survey_q3_label }}</label>
           <select id="sv-q3" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
-            <option value="">선택해주세요</option>
-            <option>1인 (프리랜서 / 1인 기업)</option><option>2~10명</option><option>11~50명</option>
-            <option>51~200명</option><option>200명 이상</option>
+            <option value="">{{ t.survey_q3_placeholder }}</option>
+            {% for opt in t.survey_q3_options %}<option>{{ opt }}</option>{% endfor %}
           </select></div>
         <!-- Q4 -->
-        <div class="sv-q"><label class="sv-label">Q4. 회사소개서는 얼마나 자주 만드시나요?</label>
+        <div class="sv-q"><label class="sv-label">{{ t.survey_q4_label }}</label>
           <select id="sv-q4" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
-            <option value="">선택해주세요</option>
-            <option>거의 안 만든다 (연 1~2회)</option><option>가끔 만든다 (분기 1~2회)</option>
-            <option>자주 만든다 (월 1회 이상)</option><option>매우 자주 만든다 (주 1회 이상)</option>
+            <option value="">{{ t.survey_q4_placeholder }}</option>
+            {% for opt in t.survey_q4_options %}<option>{{ opt }}</option>{% endfor %}
           </select></div>
         <!-- Q5 -->
-        <div class="sv-q"><label class="sv-label">Q5. 기존에 어떻게 만들고 계셨나요? (복수 선택)</label>
+        <div class="sv-q"><label class="sv-label">{{ t.survey_q5_label }}</label>
           <div id="sv-q5" style="display:flex;flex-wrap:wrap;gap:6px;">
-            <label class="sv-cb"><input type="checkbox" value="직접 파워포인트로 제작"> 직접 파워포인트로 제작</label>
-            <label class="sv-cb"><input type="checkbox" value="사내 디자이너에게 요청"> 사내 디자이너에게 요청</label>
-            <label class="sv-cb"><input type="checkbox" value="외주 (에이전시, 프리랜서)"> 외주</label>
-            <label class="sv-cb"><input type="checkbox" value="템플릿 사이트 (미리캔버스, Canva 등)"> 템플릿 사이트</label>
-            <label class="sv-cb"><input type="checkbox" value="만든 적 없다"> 만든 적 없다</label>
+            {% for val, label in t.survey_q5_options %}
+            <label class="sv-cb"><input type="checkbox" value="{{ val }}"> {{ label }}</label>
+            {% endfor %}
           </div></div>
         <!-- Q6 -->
-        <div class="sv-q"><label class="sv-label">Q6. 유료 서비스가 된다면, 어떤 결제 방식을 선호하시나요?</label>
+        <div class="sv-q"><label class="sv-label">{{ t.survey_q6_label }}</label>
           <select id="sv-q6" onchange="toggleQ7()" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
-            <option value="">선택해주세요</option>
-            <option value="per_item">건당 결제 (필요할 때만)</option>
-            <option value="subscription">월 정기 구독</option>
-            <option value="free_only">무료가 아니면 안 쓸 것 같다</option>
+            <option value="">{{ t.survey_q6_placeholder }}</option>
+            <option value="per_item">{{ t.survey_q6_per_item }}</option>
+            <option value="subscription">{{ t.survey_q6_subscription }}</option>
+            <option value="free_only">{{ t.survey_q6_free_only }}</option>
           </select></div>
         <!-- Q7 (조건부) -->
-        <div class="sv-q" id="sv-q7-wrap" style="display:none;"><label class="sv-label">Q7. 적정 가격은 어느 정도라고 생각하시나요?</label>
+        <div class="sv-q" id="sv-q7-wrap" style="display:none;"><label class="sv-label">{{ t.survey_q7_label }}</label>
           <select id="sv-q7" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;">
-            <option value="">선택해주세요</option>
+            <option value="">{{ t.survey_q7_placeholder }}</option>
           </select></div>
         <!-- Q8 -->
-        <div class="sv-q"><label class="sv-label">Q8. 가장 필요한 기능은? (최대 3개)</label>
+        <div class="sv-q"><label class="sv-label">{{ t.survey_q8_label }}</label>
           <div id="sv-q8" style="display:flex;flex-wrap:wrap;gap:6px;">
-            <label class="sv-cb"><input type="checkbox" value="웹에서 직접 편집"> 웹에서 직접 편집</label>
-            <label class="sv-cb"><input type="checkbox" value="용도별 특화 템플릿"> 용도별 특화 템플릿</label>
-            <label class="sv-cb"><input type="checkbox" value="영문 회사소개서"> 영문 회사소개서</label>
-            <label class="sv-cb"><input type="checkbox" value="생성 이력 저장/재다운로드"> 이력 저장/재다운로드</label>
-            <label class="sv-cb"><input type="checkbox" value="팀 계정"> 팀 계정</label>
-            <label class="sv-cb"><input type="checkbox" value="브랜드 가이드라인 저장"> 브랜드 가이드라인 저장</label>
-            <label class="sv-cb"><input type="checkbox" value="한 페이지 요약 PDF"> 한 페이지 요약 PDF</label>
-            <label class="sv-cb"><input type="checkbox" value="경쟁사 분석 포함"> 경쟁사 분석 포함</label>
+            {% for val, label in t.survey_q8_options %}
+            <label class="sv-cb"><input type="checkbox" value="{{ val }}"> {{ label }}</label>
+            {% endfor %}
           </div></div>
         <!-- Q9 -->
-        <div class="sv-q"><label class="sv-label">Q9. 자유 의견 (선택)</label>
-          <textarea id="sv-q9" rows="3" placeholder="예: 슬라이드 디자인이 좀 더 다양했으면 좋겠어요" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;resize:vertical;"></textarea>
+        <div class="sv-q"><label class="sv-label">{{ t.survey_q9_label }}</label>
+          <textarea id="sv-q9" rows="3" placeholder="{{ t.survey_q9_placeholder }}" style="width:100%;padding:8px;border:1px solid #D8D4CA;border-radius:8px;font-size:13px;resize:vertical;"></textarea>
         </div>
 
-        <button onclick="_submitSurvey()" style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,#1C3D5A,#5A9E86);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">설문 제출하고 토큰 2개 받기</button>
+        <button onclick="_submitSurvey()" style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,#1C3D5A,#5A9E86);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">{{ t.survey_submit_btn }}</button>
       </div>
 
       <div id="survey-done" style="display:none;text-align:center;padding:20px 0;">
         <div style="font-size:40px;margin-bottom:12px;">🎉</div>
-        <h3 style="font-size:18px;font-weight:700;color:#1C3D5A;">감사합니다!</h3>
-        <p style="font-size:14px;color:#374151;margin-top:8px;">토큰 2개가 지급되었습니다.</p>
-        <button onclick="document.getElementById('survey-modal').style.display='none';location.reload();" style="margin-top:16px;padding:10px 24px;background:#1C3D5A;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;">슬라이드 만들러 가기</button>
+        <h3 style="font-size:18px;font-weight:700;color:#1C3D5A;">{{ t.survey_done_title }}</h3>
+        <p style="font-size:14px;color:#374151;margin-top:8px;">{{ t.survey_done_msg }}</p>
+        <button onclick="document.getElementById('survey-modal').style.display='none';location.reload();" style="margin-top:16px;padding:10px 24px;background:#1C3D5A;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;">{{ t.survey_done_btn }}</button>
       </div>
     </div>
   </div>
@@ -772,14 +760,14 @@
       TickDeck <span style="font-size:9px;background:#1C3D5A;color:#fff;padding:1px 6px;border-radius:4px;margin-left:4px;vertical-align:middle;">Beta</span>
     </div>
     <script>window.__APP_VERSION__='v11.0';window.__BUILD_DATE__='2026-03-27';window.__BUILD_TIME__='';console.debug(`[TickDeck] ${window.__APP_VERSION__} / ${window.__BUILD_DATE__}`);</script>
-    <h1>당신의 웹사이트를 PPT로</h1>
-    <p>URL을 입력하면<br>AI가 자동으로 브랜드 맞춤형 프레젠테이션을 만듭니다.</p>
+    <h1>{{ t.header_h1 }}</h1>
+    <p>{{ t.header_p | safe }}</p>
   </header>
 
   <!-- ── 인증 섹션 (비로그인 시 표시) ── -->
   <div id="auth-section" class="card" style="display:none; text-align:center;">
-    <h3 style="font-size:20px; font-weight:700; margin-bottom:8px; color:#111827;">시작하기</h3>
-    <p style="font-size:14px; color:#6B7685; margin-bottom:24px;">로그인하면 무료 토큰 2개가 지급됩니다</p>
+    <h3 style="font-size:20px; font-weight:700; margin-bottom:8px; color:#111827;">{{ t.auth_title }}</h3>
+    <p style="font-size:14px; color:#6B7685; margin-bottom:24px;">{{ t.auth_desc }}</p>
 
     <a href="/api/auth/google" id="google-login-btn" style="
       display:flex; align-items:center; justify-content:center; gap:10px;
@@ -791,11 +779,11 @@
     " onmouseover="this.style.borderColor='#1C3D5A55';this.style.background='#F5F3EC'"
        onmouseout="this.style.borderColor='#D8D4CA';this.style.background='#FFF'">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      Google로 계속하기
+      {{ t.auth_google_btn }}
     </a>
 
     <p style="margin-top:16px; font-size:12px; color:#9E9A90;">
-      로그인 시 <a href="#" style="color:#6B7685;">이용약관</a> 및 <a href="#" style="color:#6B7685;">개인정보처리방침</a>에 동의합니다
+      {{ t.auth_tos | safe }}
     </p>
   </div>
 
@@ -805,43 +793,42 @@
     <!-- Phase 1: 입력 폼 -->
     <div id="phase-form">
       <div id="token-notice" style="display:none; text-align:center; padding:14px; margin-bottom:16px; background:#F5F3EC; border:1px solid #D8D4CA; border-radius:10px;">
-        <p style="color:#374151; font-size:13px; margin-bottom:10px;">토큰을 모두 사용했습니다</p>
-        <button id="btn-survey-or-charge" onclick="_openSurveyOrCharge()" style="background:#1C3D5A; color:#fff; border:none; border-radius:8px; padding:8px 20px; font-size:13px; font-weight:500; cursor:pointer;">📋 설문 참여하고 토큰 2개 받기</button>
-        <p style="font-size:11px; color:#9E9A90; margin-top:6px;">2~3분 소요 · 계정당 1회</p>
+        <p style="color:#374151; font-size:13px; margin-bottom:10px;">{{ t.form_token_empty }}</p>
+        <button id="btn-survey-or-charge" onclick="_openSurveyOrCharge()" style="background:#1C3D5A; color:#fff; border:none; border-radius:8px; padding:8px 20px; font-size:13px; font-weight:500; cursor:pointer;">{{ t.form_token_survey_btn }}</button>
+        <p style="font-size:11px; color:#9E9A90; margin-top:6px;">{{ t.form_token_survey_hint }}</p>
       </div>
       <div class="field">
-        <label>홈페이지 주소</label>
+        <label>{{ t.form_url_label }}</label>
         <input id="inp-url" type="text" placeholder="example.com" autocomplete="off" />
       </div>
       <div class="field">
-        <label>회사명 <span style="font-weight:400;color:#444">(선택)</span></label>
-        <input id="inp-company" type="text" placeholder="자동 감지됩니다" autocomplete="off" />
-        <div class="hint">입력하지 않으면 도메인에서 자동 추출합니다.</div>
+        <label>{{ t.form_company_label | safe }}</label>
+        <input id="inp-company" type="text" placeholder="{{ t.form_company_placeholder }}" autocomplete="off" />
+        <div class="hint">{{ t.form_company_hint }}</div>
       </div>
       <div class="field">
-        <label>어떤 용도인가요?</label>
+        <label>{{ t.form_purpose_label }}</label>
         <div class="purpose-pills">
-          <button class="purpose-pill active" data-purpose="auto">✦ AI 추천</button>
-          <button class="purpose-pill" data-purpose="brand">브랜드 소개</button>
-          <button class="purpose-pill" data-purpose="sales">영업 제안</button>
-          <button class="purpose-pill" data-purpose="ir">투자 IR</button>
-          <button class="purpose-pill" data-purpose="portfolio">포트폴리오</button>
-          <button class="purpose-pill" data-purpose="report">내부 보고</button>
+          <button class="purpose-pill active" data-purpose="auto">{{ t.form_purpose_auto }}</button>
+          <button class="purpose-pill" data-purpose="brand">{{ t.form_purpose_brand }}</button>
+          <button class="purpose-pill" data-purpose="sales">{{ t.form_purpose_sales }}</button>
+          <button class="purpose-pill" data-purpose="ir">{{ t.form_purpose_ir }}</button>
+          <button class="purpose-pill" data-purpose="portfolio">{{ t.form_purpose_portfolio }}</button>
+          <button class="purpose-pill" data-purpose="report">{{ t.form_purpose_report }}</button>
         </div>
       </div>
       <div class="field">
-        <label>작성 언어</label>
+        <label>{{ t.form_lang_label }}</label>
         <div class="purpose-pills">
-          <button class="purpose-pill active" data-lang="ko">🇰🇷 한국어</button>
-          <button class="purpose-pill" data-lang="en">🇺🇸 English</button>
+          <button class="purpose-pill{% if lang == 'ko' %} active{% endif %}" data-lang="ko">🇰🇷 한국어</button>
+          <button class="purpose-pill{% if lang == 'en' %} active{% endif %}" data-lang="en">🇺🇸 English</button>
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:center;">
-        <button id="btn-generate" class="btn btn-primary" onclick="clearCacheAndGenerate()">슬라이드 생성하기</button>
+        <button id="btn-generate" class="btn btn-primary" onclick="clearCacheAndGenerate()">{{ t.form_generate_btn }}</button>
       </div>
       <div style="margin-top:14px;padding:10px 14px;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;font-size:11px;color:#991B1B;line-height:1.6;">
-        ⚠️ AI가 생성하므로 매번 결과가 다를 수 있습니다 · 재생성 시 이전 결과는 삭제되며 복구 불가합니다<br>
-        생성된 PPT/PDF는 본인만 다운로드할 수 있으며, 운영팀은 결과물에 접근하지 않습니다
+        {{ t.form_warning | safe }}
       </div>
     </div>
 
@@ -849,29 +836,29 @@
     <div id="phase-running" class="hidden">
       <div class="progress-header">
         <div class="spinner"></div>
-        <h2>AI가 슬라이드를 생성하고 있습니다</h2>
-        <p>약 3~5분 정도 소요됩니다. 잠시 기다려주세요.</p>
+        <h2>{{ t.progress_title }}</h2>
+        <p>{{ t.progress_desc }}</p>
       </div>
 
       <div class="steps">
         <div class="step">
           <div class="step-dot active" id="dot-1"></div>
-          <span>홈페이지 분석</span>
+          <span>{{ t.progress_step1 }}</span>
         </div>
         <div class="step-line"></div>
         <div class="step">
           <div class="step-dot" id="dot-2"></div>
-          <span>AI 콘텐츠 생성</span>
+          <span>{{ t.progress_step2 }}</span>
         </div>
         <div class="step-line"></div>
         <div class="step">
           <div class="step-dot" id="dot-3"></div>
-          <span>이미지 합성</span>
+          <span>{{ t.progress_step3 }}</span>
         </div>
         <div class="step-line"></div>
         <div class="step">
           <div class="step-dot" id="dot-4"></div>
-          <span>완료</span>
+          <span>{{ t.progress_step4 }}</span>
         </div>
       </div>
 
@@ -883,43 +870,43 @@
     <div id="phase-done" class="hidden">
       <div class="done-header">
         <div class="done-icon">✓</div>
-        <h2>슬라이드 생성 완료!</h2>
+        <h2>{{ t.done_title }}</h2>
         <p id="done-company" style="color:var(--accent);font-weight:700"></p>
       </div>
 
       <div class="done-meta" id="done-meta" style="display:none">
         <div class="done-meta-item">
           <div class="val" id="meta-slide-count">—</div>
-          <div class="lbl">슬라이드</div>
+          <div class="lbl">{{ t.done_slides_label }}</div>
         </div>
         <div class="done-meta-item">
           <div class="val" id="meta-narrative">—</div>
-          <div class="lbl">내러티브 타입</div>
+          <div class="lbl">{{ t.done_narrative_label }}</div>
         </div>
-        <div class="done-meta-item" style="cursor:pointer;" onclick="document.getElementById('color-override').click()" title="클릭하여 브랜드 컬러 변경">
+        <div class="done-meta-item" style="cursor:pointer;" onclick="document.getElementById('color-override').click()" title="{{ t.done_color_title }}">
           <div class="val" id="meta-accent" style="font-size:16px">●</div>
-          <div class="lbl">브랜드 컬러 <span style="font-size:10px;opacity:0.6;">✏️</span></div>
+          <div class="lbl">{{ t.done_color_label | safe }}</div>
           <input type="color" id="color-override" style="position:absolute;opacity:0;pointer-events:none;" onchange="applyColorOverride(this.value)">
         </div>
       </div>
 
       <button id="btn-pptx" class="btn-pptx" onclick="onClickPptx()" disabled>
-        <span id="pptx-btn-text">⏳ 데이터 로딩 중...</span>
+        <span id="pptx-btn-text">{{ t.t_js.js_download_loading }}</span>
       </button>
       <div id="pptx-font-info" style="display:none"></div>
 
       <button id="btn-pdf" class="btn-pdf" onclick="onClickPdf()" disabled>
-        <span id="pdf-btn-text">⏳ 데이터 로딩 중...</span>
+        <span id="pdf-btn-text">{{ t.t_js.js_download_loading }}</span>
       </button>
 
 
-      <button class="btn btn-outline" onclick="reset()">↩ 다시 생성하기</button>
+      <button class="btn btn-outline" onclick="reset()">{{ t.done_reset_btn }}</button>
 
       <button onclick="_showCoffeeModal()"
          style="display:block; width:100%; text-align:center; margin-top:12px; padding:10px 24px; background:#F5E6D3; border:1px solid #E8D5BF; border-radius:10px; color:#6B4C30; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;"
          onmouseover="this.style.background='#EDD9C2';this.style.transform='translateY(-1px)'"
          onmouseout="this.style.background='#F5E6D3';this.style.transform='none'">
-        ☕ 커피 한 잔 후원하기
+        {{ t.done_coffee_btn }}
       </button>
 
     </div>
@@ -927,25 +914,25 @@
     <!-- 편집 모달 -->
     <div class="edit-modal-overlay hidden" id="edit-modal-overlay" onclick="closeEditModal(event)">
       <div class="edit-modal" onclick="event.stopPropagation()">
-        <h3 id="edit-modal-title">슬라이드 편집</h3>
+        <h3 id="edit-modal-title">{{ t.edit_modal_title_prefix }} {{ t.edit_modal_title_suffix }}</h3>
         <div class="edit-slide-type" id="edit-modal-type"></div>
         <div class="edit-field">
-          <label>헤드라인</label>
+          <label>{{ t.edit_headline_label }}</label>
           <textarea id="edit-hl" rows="2"></textarea>
         </div>
         <div class="edit-field">
-          <label>서브헤드라인 <span style="font-weight:400;color:#555">(선택)</span></label>
+          <label>{{ t.edit_sub_label | safe }}</label>
           <input type="text" id="edit-sub" />
         </div>
         <div class="edit-field" id="edit-body-field">
-          <label>본문 항목</label>
+          <label>{{ t.edit_body_label }}</label>
           <div id="edit-body-items"></div>
-          <button class="edit-body-add" onclick="addBodyItem()">+ 항목 추가</button>
+          <button class="edit-body-add" onclick="addBodyItem()">{{ t.edit_body_add }}</button>
         </div>
         <div class="edit-modal-actions">
-          <button class="btn btn-outline" onclick="closeEditModal()">취소</button>
-          <button class="btn btn-outline" id="edit-regen-btn" onclick="regenSlide()" style="color:#1C3D5A; border-color:#1C3D5A44;">🔄 AI 재생성</button>
-          <button class="btn btn-primary" onclick="saveEdit()">저장</button>
+          <button class="btn btn-outline" onclick="closeEditModal()">{{ t.edit_cancel_btn }}</button>
+          <button class="btn btn-outline" id="edit-regen-btn" onclick="regenSlide()" style="color:#1C3D5A; border-color:#1C3D5A44;">{{ t.edit_regen_btn }}</button>
+          <button class="btn btn-primary" onclick="saveEdit()">{{ t.edit_save_btn }}</button>
         </div>
       </div>
     </div>
@@ -954,17 +941,17 @@
     <div id="phase-error" class="hidden">
       <div class="done-header">
         <div class="done-icon" style="background:rgba(239,68,68,.12);border-color:var(--error);font-size:22px">✕</div>
-        <h2>생성 실패</h2>
-        <p id="error-user-msg" style="color:var(--muted)">아래 오류 내용을 확인해주세요.</p>
+        <h2>{{ t.error_title }}</h2>
+        <p id="error-user-msg" style="color:var(--muted)">{{ t.error_user_msg }}</p>
       </div>
       <div id="error-hint" style="display:none;margin-bottom:12px;padding:12px 16px;background:rgba(239,68,68,.07);border-left:3px solid var(--error);border-radius:6px;font-size:13px;color:var(--text)"></div>
       <details style="margin-bottom:16px">
-        <summary style="cursor:pointer;font-size:12px;color:var(--muted);user-select:none">상세 로그 보기</summary>
+        <summary style="cursor:pointer;font-size:12px;color:var(--muted);user-select:none">{{ t.error_details_btn }}</summary>
         <div class="terminal" id="terminal-error" style="height:160px;margin-top:8px"></div>
       </details>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="retryGenerate()">↺ 재시도</button>
-        <button class="btn btn-outline" onclick="reset()">↩ 처음으로</button>
+        <button class="btn btn-primary" onclick="retryGenerate()">{{ t.error_retry_btn }}</button>
+        <button class="btn btn-outline" onclick="reset()">{{ t.error_reset_btn }}</button>
       </div>
     </div>
 
@@ -977,16 +964,17 @@
 
   <!-- 하단 안내 -->
   <div class="step-guide">
-    <span><div class="num">1</div> 웹사이트 분석</span>
+    <span><div class="num">1</div> {{ t.step_guide_1 }}</span>
     <span class="arrow">→</span>
-    <span><div class="num">2</div> AI 슬라이드 제작</span>
+    <span><div class="num">2</div> {{ t.step_guide_2 }}</span>
     <span class="arrow">→</span>
-    <span><div class="num">3</div> PPT 다운로드</span>
+    <span><div class="num">3</div> {{ t.step_guide_3 }}</span>
   </div>
 
 </div><!-- /page -->
 
 <script>
+  const T = {{ t.t_js | tojson | safe }};
   let currentJobId  = null;
   let eventSource   = null;
   let _slideData    = null;   // 완성된 JSON 결과 캐시
@@ -1013,7 +1001,7 @@
     const bar = document.getElementById('user-bar');
     bar.style.display = 'flex';
     document.getElementById('user-email').textContent = _currentUser.email;
-    document.getElementById('user-tokens').textContent = `🎫 ${_currentUser.tokens}개`;
+    document.getElementById('user-tokens').textContent = `🎫 ${_currentUser.tokens}${T.js_tokens_unit}`;
     _updateTokenUI(_currentUser.tokens);
   }
 
@@ -1024,19 +1012,19 @@
   }
 
   function _updateTokenUI(tokens) {
-    document.getElementById('user-tokens').textContent = `🎫 ${tokens}개`;
+    document.getElementById('user-tokens').textContent = `🎫 ${tokens}${T.js_tokens_unit}`;
     const btn = document.getElementById('btn-generate');
     const notice = document.getElementById('token-notice');
     if (tokens <= 0) {
       btn.disabled = true;
-      btn.textContent = '토큰이 부족합니다';
+      btn.textContent = T.js_tokens_insufficient;
       btn.style.background = '#D1D5DB';
       btn.style.cursor = 'not-allowed';
       btn.style.boxShadow = 'none';
       notice.style.display = 'block';
     } else {
       btn.disabled = false;
-      btn.textContent = '슬라이드 생성하기';
+      btn.textContent = T.js_tokens_generate;
       btn.style.background = '';
       btn.style.cursor = '';
       btn.style.boxShadow = '';
@@ -1052,7 +1040,7 @@
         _currentUser.tokens = data.tokens;
         _updateTokenUI(data.tokens);
       }
-    } catch { alert('충전에 실패했습니다'); }
+    } catch { alert(T.js_tokens_charge_failed); }
   }
 
   function _coffeeModalSize() {
@@ -1060,7 +1048,7 @@
     return { mw: mob ? '300px' : '380px', pad: mob ? '20px' : '32px', qr: mob ? '180px' : '240px' };
   }
   const _kofiBlock = `<div style="border-top:1px solid #F0EDE6;padding-top:12px;margin-top:8px;">
-    <p style="font-size:10px;color:#9E9A90;margin-bottom:8px;">해외 결제</p>
+    <p style="font-size:10px;color:#9E9A90;margin-bottom:8px;">${T.js_kofi_label}</p>
     <div id="kofi-btn-container"></div>
   </div>`;
   function _initKofi() {
@@ -1081,14 +1069,14 @@
     m.id = 'coffee-charge-modal';
     m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1200;display:flex;align-items:center;justify-content:center;padding:16px;';
     m.innerHTML = `<div style="background:#fff;border-radius:14px;padding:${sz.pad};width:calc(100% - 32px);max-width:${sz.mw};text-align:center;box-shadow:0 8px 32px rgba(28,61,90,0.15);">
-      <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">☕ 개발자에게 커피 한 잔?</h3>
-      <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:14px;">서버 유지비로 소중히 사용됩니다</p>
+      <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">${T.js_coffee_charge_title}</h3>
+      <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:14px;">${T.js_coffee_charge_desc}</p>
       <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406915" target="_blank">
         <img src="/static/img/coffee_qr.png" alt="카카오페이 QR" style="width:${sz.qr};max-width:85%;border-radius:10px;margin-bottom:8px;">
       </a>
-      <p style="font-size:10px;color:#9E9A90;margin-bottom:10px;">모바일: 이미지 클릭 · PC: 카메라로 QR 스캔</p>
+      <p style="font-size:10px;color:#9E9A90;margin-bottom:10px;">${T.js_coffee_charge_qr_hint}</p>
       ${_kofiBlock}
-      <button onclick="_chargeAfterCoffee()" style="width:100%;padding:10px;background:#1C3D5A;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px;">🎫 토큰 2개 충전하기</button>
+      <button onclick="_chargeAfterCoffee()" style="width:100%;padding:10px;background:#1C3D5A;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px;">${T.js_coffee_charge_btn}</button>
     </div>`;
     document.body.appendChild(m);
     m.addEventListener('click', (e) => { if (e.target === m) m.remove(); });
@@ -1109,14 +1097,14 @@
       m.id = 'coffee-modal';
       m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1200;display:flex;align-items:center;justify-content:center;padding:16px;';
       m.innerHTML = `<div style="background:#fff;border-radius:14px;padding:${sz.pad};width:calc(100% - 32px);max-width:${sz.mw};text-align:center;box-shadow:0 8px 32px rgba(28,61,90,0.15);">
-        <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">☕ 토큰 충전 완료!</h3>
-        <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:14px;">이 서비스의 유지를 위해<br>개발자에게 커피 한 잔은 어떨까요?</p>
+        <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">${T.js_coffee_modal_title}</h3>
+        <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:14px;">${T.js_coffee_modal_desc}</p>
         <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406915" target="_blank">
           <img src="/static/img/coffee_qr.png" alt="카카오페이 QR" style="width:${sz.qr};max-width:85%;border-radius:10px;margin-bottom:8px;">
         </a>
-        <p style="font-size:11px;color:#9E9A90;margin-bottom:10px;">모바일: 이미지 클릭 · PC: 카메라로 QR 스캔</p>
+        <p style="font-size:11px;color:#9E9A90;margin-bottom:10px;">${T.js_coffee_modal_qr_hint}</p>
         ${_kofiBlock}
-        <button onclick="document.getElementById('coffee-modal').remove()" style="background:none;border:none;color:#9E9A90;font-size:12px;cursor:pointer;margin-top:10px;">다음에 할게요</button>
+        <button onclick="document.getElementById('coffee-modal').remove()" style="background:none;border:none;color:#9E9A90;font-size:12px;cursor:pointer;margin-top:10px;">${T.js_coffee_modal_dismiss}</button>
       </div>`;
       document.body.appendChild(m);
       m.addEventListener('click', (e) => { if (e.target === m) m.remove(); });
@@ -1133,10 +1121,10 @@
       _surveyDone = d.done;
       const btn = document.getElementById('btn-survey-or-charge');
       if (btn && _surveyDone) {
-        btn.textContent = '🎫 무료 토큰 2개 충전';
+        btn.textContent = T.js_survey_charge_btn;
         btn.onclick = _showCoffeeChargeModal;
         const hint = btn.nextElementSibling;
-        if (hint) hint.textContent = '베타 기간 무료 충전';
+        if (hint) hint.textContent = T.js_survey_charge_hint;
       }
     } catch {}
   }
@@ -1151,10 +1139,10 @@
     const wrap = document.getElementById('sv-q7-wrap');
     const sel = document.getElementById('sv-q7');
     if (v === 'per_item') {
-      sel.innerHTML = '<option value="">선택해주세요</option><option>1건당 3,000원 이하</option><option>1건당 3,000~5,000원</option><option>1건당 5,000~10,000원</option><option>1건당 10,000~30,000원</option><option>1건당 30,000원 이상도 괜찮다</option>';
+      sel.innerHTML = T.js_q7_per_item_options;
       wrap.style.display = '';
     } else if (v === 'subscription') {
-      sel.innerHTML = '<option value="">선택해주세요</option><option>월 9,900원 (5건)</option><option>월 19,900원 (10건)</option><option>월 29,000원 (20건)</option><option>월 49,000원 (무제한)</option>';
+      sel.innerHTML = T.js_q7_subscription_options;
       wrap.style.display = '';
     } else {
       wrap.style.display = 'none';
@@ -1166,12 +1154,12 @@
     const q2 = document.getElementById('sv-q2').value;
     const q3 = document.getElementById('sv-q3').value;
     const q4 = document.getElementById('sv-q4').value;
-    if (!q1 || !q2 || !q3 || !q4) { alert('Q1~Q4는 필수입니다'); return; }
+    if (!q1 || !q2 || !q3 || !q4) { alert(T.js_survey_required); return; }
     const q5 = [...document.querySelectorAll('#sv-q5 input:checked')].map(c => c.value);
     const q6 = document.getElementById('sv-q6').value;
     const q7 = document.getElementById('sv-q7').value || null;
     const q8 = [...document.querySelectorAll('#sv-q8 input:checked')].map(c => c.value);
-    if (q8.length > 3) { alert('Q8은 최대 3개까지 선택 가능합니다'); return; }
+    if (q8.length > 3) { alert(T.js_survey_q8_max); return; }
     const q9 = document.getElementById('sv-q9').value.trim() || null;
     try {
       const res = await fetch('/api/survey', {
@@ -1186,42 +1174,42 @@
         _updateTokenUI(d.tokens);
         document.getElementById('survey-form').style.display = 'none';
         document.getElementById('survey-done').style.display = '';
-      } else { alert(d.error || '설문 제출 실패'); }
-    } catch { alert('서버 오류'); }
+      } else { alert(d.error || T.js_survey_submit_fail); }
+    } catch { alert(T.js_survey_server_error); }
   }
 
   async function _showHistory() {
     const modal = document.getElementById('history-modal');
     modal.style.display = 'flex';
     const list = document.getElementById('history-list');
-    list.innerHTML = '<p style="color:#9E9A90;">불러오는 중...</p>';
+    list.innerHTML = `<p style="color:#9E9A90;">${T.js_history_loading}</p>`;
     try {
       const res = await fetch('/api/generations');
       const data = await res.json();
       if (data.ok && data.generations.length > 0) {
-        const _purposeLabel = { auto: 'AI 추천', brand: '브랜드 소개', sales: '영업 제안', ir: '투자 IR', portfolio: '포트폴리오', report: '내부 보고' };
+        const _purposeLabel = T.js_history_purpose_labels;
         const hasPdf = data.has_latest_pdf;
         // 가장 최근 completed 항목 찾기
         const latestCompleted = data.generations.find(g => g.status === 'completed');
         list.innerHTML = data.generations.map(g => {
           const isLatest = latestCompleted && g.id === latestCompleted.id;
           const statusBadge = g.status === 'completed'
-            ? '<span style="color:#5A9E86;font-weight:500;">완료</span>'
+            ? `<span style="color:#5A9E86;font-weight:500;">${T.js_history_completed}</span>`
             : g.status === 'failed'
-            ? '<span style="color:#B98391;">실패</span>'
-            : '<span style="color:#9E9A90;">진행 중</span>';
+            ? `<span style="color:#B98391;">${T.js_history_failed}</span>`
+            : `<span style="color:#9E9A90;">${T.js_history_processing}</span>`;
           const pdfLink = (isLatest && hasPdf)
             ? ' · <a href="/api/generations/latest-pdf" style="color:#1C3D5A;font-weight:500;text-decoration:none;">📥 PDF</a>'
-            : (isLatest ? ' · <span style="color:#9E9A90;">PDF 없음</span>' : '');
+            : (isLatest ? ` · <span style="color:#9E9A90;">${T.js_history_no_pdf}</span>` : '');
           return `<div style="padding:12px 0; border-bottom:0.5px solid #D8D4CA;">
             <div style="font-weight:500;">${g.company_name || g.url}</div>
             <div style="font-size:12px; color:#6B7685; margin-top:2px;">${g.created_at} · ${_purposeLabel[g.purpose] || g.purpose || ''} · ${statusBadge}${pdfLink}</div>
           </div>`;
         }).join('');
       } else {
-        list.innerHTML = '<p style="color:#9E9A90;">아직 생성 이력이 없습니다</p>';
+        list.innerHTML = `<p style="color:#9E9A90;">${T.js_history_empty}</p>`;
       }
-    } catch { list.innerHTML = '<p style="color:#DC2626;">불러오기 실패</p>'; }
+    } catch { list.innerHTML = `<p style="color:#DC2626;">${T.js_history_load_fail}</p>`; }
   }
 
   async function _doLogout() {
@@ -1235,12 +1223,12 @@
 
   // ── 단계 키워드 매핑 ──────────────────────────────
   const STEP_MAP = [
-    { keywords: ['1단계', '2단계', '브랜드', '로고', '색상', '크롤링'], dot: 1, label: '🔍 웹사이트를 분석하고 있어요' },
-    { keywords: ['3단계-A', '리서처', 'Factbook'], dot: 2, label: '📋 핵심 정보를 정리하고 있어요' },
-    { keywords: ['3단계-B', '전략', '기획'], dot: 2, label: '📐 슬라이드 구성을 설계하고 있어요' },
-    { keywords: ['3단계-C', '카피', 'JSON'], dot: 2, label: '✍️ 슬라이드 내용을 작성하고 있어요' },
-    { keywords: ['4단계', 'Imagen', 'imagen', 'Pexels', '이미지'], dot: 3, label: '🖼️ 이미지를 준비하고 있어요' },
-    { keywords: ['완료', 'overlay', 'MIME', '최종', '품질'], dot: 4, label: '✨ 거의 다 됐어요!' },
+    { keywords: ['1단계', '2단계', '브랜드', '로고', '색상', '크롤링'], dot: 1, label: T.js_step_1 },
+    { keywords: ['3단계-A', '리서처', 'Factbook'], dot: 2, label: T.js_step_2a },
+    { keywords: ['3단계-B', '전략', '기획'], dot: 2, label: T.js_step_2b },
+    { keywords: ['3단계-C', '카피', 'JSON'], dot: 2, label: T.js_step_2c },
+    { keywords: ['4단계', 'Imagen', 'imagen', 'Pexels', '이미지'], dot: 3, label: T.js_step_3 },
+    { keywords: ['완료', 'overlay', 'MIME', '최종', '품질'], dot: 4, label: T.js_step_4 },
   ];
 
   function detectStep(line) {
@@ -1269,7 +1257,7 @@
   async function clearCacheAndGenerate() {
     const url     = document.getElementById('inp-url').value.trim();
     const company = document.getElementById('inp-company').value.trim();
-    if (!url) { alert('URL을 먼저 입력하세요.'); return; }
+    if (!url) { alert(T.js_error_url_required); return; }
     try {
       const res = await fetch('/clear-cache', {
         method: 'POST',
@@ -1294,7 +1282,7 @@
     report:    'B',     // 비즈니스 리포트
   };
   let _selectedPurpose = 'auto';
-  let _selectedLang = 'ko';
+  let _selectedLang = '{{ lang }}';
   document.querySelectorAll('.purpose-pill[data-purpose]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.purpose-pill[data-purpose]').forEach(b => b.classList.remove('active'));
@@ -1397,7 +1385,7 @@
           showPhase('error');
           return;
         }
-        appendLog(term, `⏳ 연결이 잠시 끊겼습니다. 재연결 중... (${_reconnects}/${MAX_RECONNECT})`);
+        appendLog(term, `${T.js_log_reconnect} (${_reconnects}/${MAX_RECONNECT})`);
         // M4: 지수 백오프 (3s → 6s → 12s → ... 최대 30s)
         const backoff = Math.min(3000 * Math.pow(2, _reconnects - 1), 30000);
         setTimeout(connect, backoff);
@@ -1409,15 +1397,15 @@
 
   // 고객에게 보여줄 메시지만 필터링 (내부 기술 로그 숨김)
   const _USER_VISIBLE = [
-    { pattern: /\[1단계\]/, msg: '🔍 웹사이트를 분석하고 있어요... 잠시만 기다려주세요' },
-    { pattern: /\[2단계\]/, msg: '🎨 브랜드 컬러와 로고를 찾고 있어요...' },
-    { pattern: /\[2c단계\]/, msg: '🖼️ 홈페이지 이미지를 수집하고 있어요...' },
-    { pattern: /\[3단계-A\]/, msg: '📋 핵심 정보를 정리하고 있어요...' },
-    { pattern: /\[3단계-B\]/, msg: '📐 슬라이드 구성을 설계하고 있어요...' },
-    { pattern: /\[3단계-C\]/, msg: '✍️ 슬라이드 내용을 작성하고 있어요...' },
-    { pattern: /\[4단계\]/, msg: '🖼️ 이미지를 준비하고 있어요...' },
-    { pattern: /\[완료\]/, msg: '✅ 완성! 슬라이드를 확인하세요' },
-    { pattern: /\[품질 검사\]/, msg: '✨ 품질을 점검하고 있어요...' },
+    { pattern: /\[1단계\]/, msg: T.js_log_step1 },
+    { pattern: /\[2단계\]/, msg: T.js_log_step2 },
+    { pattern: /\[2c단계\]/, msg: T.js_log_step2c },
+    { pattern: /\[3단계-A\]/, msg: T.js_log_step3a },
+    { pattern: /\[3단계-B\]/, msg: T.js_log_step3b },
+    { pattern: /\[3단계-C\]/, msg: T.js_log_step3c },
+    { pattern: /\[4단계\]/, msg: T.js_log_step4 },
+    { pattern: /\[완료\]/, msg: T.js_log_done },
+    { pattern: /\[품질 검사\]/, msg: T.js_log_quality },
   ];
   function appendLog(el, text, cls) {
     // 에러는 항상 표시
@@ -1462,7 +1450,7 @@
     // 메타 정보 표시
     const narrativeType = (meta || {}).narrative_type || '—';
     const accentColor   = (meta || {}).accent_color   || '#1C3D5A';
-    const typeLabel = { A: 'A형', B: 'B형', C: 'C형', D: 'D형' }[narrativeType] || narrativeType;
+    const typeLabel = T.js_narrative_labels[narrativeType] || narrativeType;
     document.getElementById('meta-slide-count').textContent = slideCount || '—';
     document.getElementById('meta-narrative').textContent   = typeLabel;
     document.getElementById('meta-accent').style.color      = accentColor;
@@ -1487,9 +1475,9 @@
       renderPreview(data);
 
       // PPTX / PDF 버튼 활성화
-      document.getElementById('pptx-btn-text').textContent = '⬇ PPTX 다운로드';
+      document.getElementById('pptx-btn-text').textContent = T.js_download_pptx;
       document.getElementById('btn-pptx').disabled = false;
-      document.getElementById('pdf-btn-text').textContent = '⬇ PDF 다운로드';
+      document.getElementById('pdf-btn-text').textContent = T.js_download_pdf;
       document.getElementById('btn-pdf').disabled = false;
 
       // 백그라운드 PDF 자동 저장 (_slideData 로드 완료 후)
@@ -1507,9 +1495,9 @@
       })();
 
     } catch (err) {
-      console.error('결과 로드 실패:', err);
-      document.getElementById('pptx-btn-text').textContent = '⚠ 로드 실패 — 새로고침 후 시도';
-      document.getElementById('pdf-btn-text').textContent = '⚠ 로드 실패';
+      console.error('Result load failed:', err);
+      document.getElementById('pptx-btn-text').textContent = T.js_download_load_fail;
+      document.getElementById('pdf-btn-text').textContent = T.js_download_load_fail_pdf;
     }
   }
 
@@ -1538,7 +1526,7 @@
     // 템플릿 없으면 section 숨김 유지
     if (!_stitchTemplates || !slides.length) return;
 
-    document.getElementById('stitch-preview-count').textContent = `${slides.length}장`;
+    document.getElementById('stitch-preview-count').textContent = `${slides.length}${T.js_stitch_count_suffix}`;
     const grid = document.getElementById('stitch-preview-grid');
     grid.innerHTML = '';
 
@@ -1592,7 +1580,7 @@
       // 편집 버튼
       const editBtn = document.createElement('button');
       editBtn.className = 'stitch-edit-btn';
-      editBtn.textContent = '편집';
+      editBtn.textContent = T.js_edit_btn;
       editBtn.onclick = () => openEditModal(idx);
       wrapper.appendChild(editBtn);
 
@@ -1610,11 +1598,11 @@
     const list = document.getElementById('slide-edit-list');
     const items = document.getElementById('slide-edit-items');
     if (!slides.length) return;
-    document.getElementById('slide-edit-count').textContent = `${slides.length}장`;
+    document.getElementById('slide-edit-count').textContent = `${slides.length}${T.js_slide_count_suffix}`;
     items.innerHTML = '';
     slides.forEach((slide, idx) => {
       const typeLabel = (slide.type || '').replace(/_\d+$/, '').replace(/_/g, ' ').toUpperCase();
-      const hl = slide.headline || '(헤드라인 없음)';
+      const hl = slide.headline || T.js_edit_no_headline;
       const el = document.createElement('div');
       el.className = 'slide-edit-item';
       el.id = `sei-${idx}`;
@@ -1624,9 +1612,9 @@
           <div class="slide-edit-type">${escHtml(typeLabel)}</div>
           <div class="slide-edit-hl" id="sei-hl-${idx}">${escHtml(hl)}</div>
         </div>
-        <button class="slide-edit-btn" style="padding:2px 6px;font-size:11px;min-width:0;" onclick="moveSlide(${idx},-1)" title="위로" ${idx === 0 ? 'disabled' : ''}>▲</button>
-        <button class="slide-edit-btn" style="padding:2px 6px;font-size:11px;min-width:0;" onclick="moveSlide(${idx},1)" title="아래로" ${idx === slides.length - 1 ? 'disabled' : ''}>▼</button>
-        <button class="slide-edit-btn" onclick="openEditModal(${idx})">편집</button>`;
+        <button class="slide-edit-btn" style="padding:2px 6px;font-size:11px;min-width:0;" onclick="moveSlide(${idx},-1)" title="${T.js_edit_move_up}" ${idx === 0 ? 'disabled' : ''}>▲</button>
+        <button class="slide-edit-btn" style="padding:2px 6px;font-size:11px;min-width:0;" onclick="moveSlide(${idx},1)" title="${T.js_edit_move_down}" ${idx === slides.length - 1 ? 'disabled' : ''}>▼</button>
+        <button class="slide-edit-btn" onclick="openEditModal(${idx})">${T.js_edit_btn}</button>`;
       items.appendChild(el);
     });
     list.style.display = '';
@@ -1637,7 +1625,7 @@
     if (!slide) return;
     _editIdx = idx;
     const typeLabel = (slide.type || '').replace(/_\d+$/, '').replace(/_/g, ' ').toUpperCase();
-    document.getElementById('edit-modal-title').textContent = `슬라이드 ${idx + 1} 편집`;
+    document.getElementById('edit-modal-title').textContent = `${T.js_edit_slide_prefix}${idx + 1}${T.js_edit_slide_suffix}`;
     document.getElementById('edit-modal-type').textContent = typeLabel;
     document.getElementById('edit-hl').value = slide.headline || '';
     document.getElementById('edit-sub').value = slide.subheadline || '';
@@ -1657,8 +1645,8 @@
     const row = document.createElement('div');
     row.className = 'edit-body-item';
     row.innerHTML = `
-      <input type="text" value="${escHtml(value)}" placeholder="항목 텍스트" />
-      <button class="edit-body-remove" onclick="this.parentElement.remove()" title="삭제">×</button>`;
+      <input type="text" value="${escHtml(value)}" placeholder="${T.js_edit_item_placeholder}" />
+      <button class="edit-body-remove" onclick="this.parentElement.remove()" title="${T.js_edit_delete_title}">×</button>`;
     container.appendChild(row);
   }
 
@@ -1680,7 +1668,7 @@
 
     // 목록 내 헤드라인 업데이트
     const hlEl = document.getElementById(`sei-hl-${_editIdx}`);
-    if (hlEl) hlEl.textContent = slide.headline || '(헤드라인 없음)';
+    if (hlEl) hlEl.textContent = slide.headline || T.js_edit_no_headline;
 
     closeEditModal();
   }
@@ -1716,7 +1704,7 @@
     if (!slide) return;
     const btn = document.getElementById('edit-regen-btn');
     btn.disabled = true;
-    btn.textContent = '⏳ 생성 중...';
+    btn.textContent = T.js_edit_regen_loading;
     try {
       const res = await fetch('/api/regen-slide', {
         method: 'POST',
@@ -1738,15 +1726,15 @@
         openEditModal(_editIdx);
         // 목록 헤드라인도 갱신
         const hlEl = document.getElementById(`sei-hl-${_editIdx}`);
-        if (hlEl) hlEl.textContent = slide.headline || '(헤드라인 없음)';
+        if (hlEl) hlEl.textContent = slide.headline || T.js_edit_no_headline;
       } else {
-        alert(data.error || 'AI 재생성에 실패했습니다');
+        alert(data.error || T.js_error_regen_fail);
       }
     } catch (e) {
-      alert('서버 연결 오류: ' + e.message);
+      alert(T.js_error_regen_server + e.message);
     } finally {
       btn.disabled = false;
-      btn.textContent = '🔄 AI 재생성';
+      btn.textContent = T.js_edit_regen_btn;
     }
   }
 
@@ -1775,7 +1763,7 @@
       grid.appendChild(card);
     });
     const _pc = document.getElementById('preview-count');
-    if (_pc) _pc.textContent = `${slides.length}장`;
+    if (_pc) _pc.textContent = `${slides.length}${T.js_slide_count_suffix}`;
     const _pb = document.getElementById('preview-board');
     if (_pb) _pb.classList.remove('hidden');
   }
@@ -1952,18 +1940,18 @@
     const btn  = document.getElementById('btn-pptx');
     const txt  = document.getElementById('pptx-btn-text');
     btn.disabled = true;
-    txt.textContent = '⏳ PptxGenJS 로딩 중...';
+    txt.textContent = T.js_download_pptx_loading;
 
     try {
       await loadPptxGen();
-      txt.textContent = '⏳ PPTX 조립 중...';
+      txt.textContent = T.js_download_pptx_building;
       await generateAndDownloadPPTX(_slideData);
     } catch (err) {
-      console.error('PPTX 오류:', err);
-      alert('PPTX 생성 중 오류: ' + err.message);
+      console.error('PPTX error:', err);
+      alert(T.js_error_pptx + err.message);
     } finally {
       btn.disabled = false;
-      txt.textContent = '⬇ PPTX 다운로드';
+      txt.textContent = T.js_download_pptx;
     }
   }
 
@@ -1973,7 +1961,7 @@
       const s = document.createElement('script');
       s.src = 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';
       s.onload  = resolve;
-      s.onerror = () => reject(new Error('PptxGenJS CDN 로드 실패'));
+      s.onerror = () => reject(new Error(T.js_error_pptx_cdn));
       document.head.appendChild(s);
     });
   }
@@ -1984,7 +1972,7 @@
     const btn = document.getElementById('btn-pdf');
     const txt = document.getElementById('pdf-btn-text');
     btn.disabled = true;
-    txt.textContent = '⏳ PPTX 생성 중...';
+    txt.textContent = T.js_download_pdf_gen;
 
     try {
       await loadPptxGen();
@@ -1992,7 +1980,7 @@
       const blobData = { ..._slideData, _returnBlob: true };
       const pptxBlob = await generateAndDownloadPPTX(blobData);
 
-      txt.textContent = '⏳ PDF 변환 중...';
+      txt.textContent = T.js_download_pdf_convert;
 
       // 2. 서버로 전송하여 PDF 변환
       const companyName = _slideData.meta?.company_name || 'slides';
@@ -2007,7 +1995,7 @@
 
       if (!response.ok) {
         const err = await response.json();
-        throw new Error(err.error || 'PDF 변환 실패');
+        throw new Error(err.error || T.js_error_pdf_convert_fail);
       }
 
       // 3. PDF 다운로드
@@ -2020,11 +2008,11 @@
       URL.revokeObjectURL(url);
 
     } catch (err) {
-      console.error('PDF 오류:', err);
-      alert('PDF 변환에 실패했습니다. PPTX를 먼저 다운로드해 주세요.\n' + err.message);
+      console.error('PDF error:', err);
+      alert(T.js_error_pdf_alert + err.message);
     } finally {
       btn.disabled = false;
-      txt.textContent = '⬇ PDF 다운로드';
+      txt.textContent = T.js_download_pdf;
     }
   }
 
@@ -6766,26 +6754,26 @@
     const userMsg = document.getElementById('error-user-msg');
     if (!hint) return;
     const r = (rawErr || '').toLowerCase();
-    let title = '생성 중 오류가 발생했습니다.';
-    let body  = '잠시 후 재시도해주세요. 문제가 반복되면 URL을 확인하거나 관리자에게 문의하세요.';
+    let title = T.js_error_default_title;
+    let body  = T.js_error_default_body;
     if (r.includes('api_key') || r.includes('api key') || r.includes('invalid key') || r.includes('authentication')) {
-      title = 'API 키 오류';
-      body  = '.env 파일의 GEMINI_API_KEY 또는 PEXELS_API_KEY가 올바른지 확인하세요.';
+      title = T.js_error_api_key_title;
+      body  = T.js_error_api_key_body;
     } else if (r.includes('quota') || r.includes('rate limit') || r.includes('429') || r.includes('resource_exhausted')) {
-      title = 'API 호출 한도 초과 (429)';
-      body  = 'Gemini / Imagen API 무료 한도를 초과했습니다. 1~2분 후 재시도하거나 유료 요금제를 확인하세요.';
+      title = T.js_error_quota_title;
+      body  = T.js_error_quota_body;
     } else if (r.includes('timeout') || r.includes('timed out')) {
-      title = '요청 시간 초과';
-      body  = '웹페이지 크롤링 또는 API 응답이 너무 오래 걸렸습니다. URL이 접근 가능한지 확인 후 재시도하세요.';
+      title = T.js_error_timeout_title;
+      body  = T.js_error_timeout_body;
     } else if (r.includes('connection') || r === 'connection' || r.includes('network') || r.includes('connect')) {
-      title = '서버 연결 끊김';
-      body  = '서버와의 연결이 끊어졌습니다. Flask 서버(app.py)가 실행 중인지 확인 후 재시도하세요.';
+      title = T.js_error_connection_title;
+      body  = T.js_error_connection_body;
     } else if (r.includes('json') || r.includes('parse') || r.includes('decode')) {
-      title = 'AI 응답 파싱 오류';
-      body  = 'Gemini가 올바르지 않은 형식으로 응답했습니다. 재시도하면 보통 해결됩니다.';
+      title = T.js_error_parse_title;
+      body  = T.js_error_parse_body;
     } else if (r.includes('blocked') || r.includes('safety') || r.includes('harm')) {
-      title = 'AI 안전 필터 차단';
-      body  = 'URL의 콘텐츠가 AI 안전 정책에 의해 차단되었습니다. 다른 URL을 시도하세요.';
+      title = T.js_error_blocked_title;
+      body  = T.js_error_blocked_body;
     }
     if (userMsg) userMsg.textContent = title;
     hint.textContent = body;
@@ -6828,9 +6816,9 @@
     document.getElementById('slide-grid').innerHTML   = '';
     document.getElementById('done-meta').style.display = 'none';
     document.getElementById('btn-pptx').disabled = true;
-    document.getElementById('pptx-btn-text').textContent = '⏳ 데이터 로딩 중...';
+    document.getElementById('pptx-btn-text').textContent = T.js_download_loading;
     document.getElementById('btn-pdf').disabled = true;
-    document.getElementById('pdf-btn-text').textContent = '⏳ 데이터 로딩 중...';
+    document.getElementById('pdf-btn-text').textContent = T.js_download_loading;
     for (let i = 1; i <= 4; i++) setDot(i, '');
     lastDot = 0;
     showPhase('form');
@@ -6870,8 +6858,8 @@
     <span>© 2026 TickDeck</span>
     <span style="font-size:9px;opacity:0.4;" id="app-ver"></span>
     <script>document.getElementById('app-ver').textContent=window.__APP_VERSION__+' / '+window.__BUILD_DATE__;</script>
-    <button onclick="document.getElementById('feedback-modal').style.display='flex'" style="padding:4px 12px;background:#EEF2F6;border:1px solid #D8D4CA;border-radius:6px;color:#4A5568;font-size:10px;font-weight:600;cursor:pointer;">💬 피드백</button>
-    <button onclick="_showCoffeeModal()" style="padding:4px 12px;background:#F5E6D3;border:1px solid #E8D5BF;border-radius:6px;color:#6B4C30;font-size:10px;font-weight:600;cursor:pointer;">☕ 후원</button>
+    <button onclick="document.getElementById('feedback-modal').style.display='flex'" style="padding:4px 12px;background:#EEF2F6;border:1px solid #D8D4CA;border-radius:6px;color:#4A5568;font-size:10px;font-weight:600;cursor:pointer;">{{ t.footer_feedback_btn }}</button>
+    <button onclick="_showCoffeeModal()" style="padding:4px 12px;background:#F5E6D3;border:1px solid #E8D5BF;border-radius:6px;color:#6B4C30;font-size:10px;font-weight:600;cursor:pointer;">{{ t.footer_coffee_btn }}</button>
   </div>
 </footer>
 
@@ -6879,23 +6867,23 @@
 <div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:16px;padding:28px;width:90%;max-width:420px;position:relative;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <h3 style="font-size:18px;font-weight:700;color:#111827;">💬 피드백 보내기</h3>
+      <h3 style="font-size:18px;font-weight:700;color:#111827;">{{ t.feedback_title }}</h3>
       <button onclick="document.getElementById('feedback-modal').style.display='none'" style="background:none;border:none;font-size:18px;cursor:pointer;color:#9E9A90;">✕</button>
     </div>
-    <p style="font-size:12px;color:#9E9A90;margin-bottom:16px;">베타 서비스 개선을 위한 소중한 의견을 보내주세요</p>
+    <p style="font-size:12px;color:#9E9A90;margin-bottom:16px;">{{ t.feedback_desc }}</p>
     <div id="fb-form">
       <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-        <button class="fb-cat active" data-cat="bug" style="padding:6px 14px;border-radius:20px;border:1px solid #D8D4CA;background:#1C3D5A;color:#fff;font-size:12px;font-weight:500;cursor:pointer;">🐛 오류 신고</button>
-        <button class="fb-cat" data-cat="feature" style="padding:6px 14px;border-radius:20px;border:1px solid #D8D4CA;background:#fff;color:#333;font-size:12px;font-weight:500;cursor:pointer;">💡 기능 제안</button>
-        <button class="fb-cat" data-cat="general" style="padding:6px 14px;border-radius:20px;border:1px solid #D8D4CA;background:#fff;color:#333;font-size:12px;font-weight:500;cursor:pointer;">💬 기타</button>
+        <button class="fb-cat active" data-cat="bug" style="padding:6px 14px;border-radius:20px;border:1px solid #D8D4CA;background:#1C3D5A;color:#fff;font-size:12px;font-weight:500;cursor:pointer;">{{ t.feedback_cat_bug }}</button>
+        <button class="fb-cat" data-cat="feature" style="padding:6px 14px;border-radius:20px;border:1px solid #D8D4CA;background:#fff;color:#333;font-size:12px;font-weight:500;cursor:pointer;">{{ t.feedback_cat_feature }}</button>
+        <button class="fb-cat" data-cat="general" style="padding:6px 14px;border-radius:20px;border:1px solid #D8D4CA;background:#fff;color:#333;font-size:12px;font-weight:500;cursor:pointer;">{{ t.feedback_cat_general }}</button>
       </div>
-      <textarea id="fb-message" rows="4" placeholder="어떤 점이 불편하셨나요? 어떤 기능이 있었으면 하나요?" style="width:100%;padding:10px;border:1px solid #D8D4CA;border-radius:10px;font-size:13px;resize:vertical;box-sizing:border-box;"></textarea>
-      <button id="fb-submit" onclick="_submitFeedback()" style="margin-top:12px;width:100%;padding:12px;background:linear-gradient(135deg,#1C3D5A,#5A9E86);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">보내기</button>
+      <textarea id="fb-message" rows="4" placeholder="{{ t.feedback_placeholder }}" style="width:100%;padding:10px;border:1px solid #D8D4CA;border-radius:10px;font-size:13px;resize:vertical;box-sizing:border-box;"></textarea>
+      <button id="fb-submit" onclick="_submitFeedback()" style="margin-top:12px;width:100%;padding:12px;background:linear-gradient(135deg,#1C3D5A,#5A9E86);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">{{ t.feedback_submit_btn }}</button>
     </div>
     <div id="fb-done" style="display:none;text-align:center;padding:20px 0;">
       <div style="font-size:40px;margin-bottom:8px;">🙏</div>
-      <p style="font-weight:600;color:#1C3D5A;">감사합니다!</p>
-      <p style="font-size:12px;color:#9E9A90;margin-top:4px;">소중한 의견은 서비스 개선에 반영하겠습니다</p>
+      <p style="font-weight:600;color:#1C3D5A;">{{ t.feedback_done_title }}</p>
+      <p style="font-size:12px;color:#9E9A90;margin-top:4px;">{{ t.feedback_done_msg }}</p>
     </div>
   </div>
 </div>
@@ -6912,7 +6900,7 @@
     const msg = document.getElementById('fb-message').value.trim();
     if (!msg) { document.getElementById('fb-message').focus(); return; }
     document.getElementById('fb-submit').disabled = true;
-    document.getElementById('fb-submit').textContent = '전송 중...';
+    document.getElementById('fb-submit').textContent = T.js_feedback_sending;
     try {
       await fetch('/api/feedback', {
         method: 'POST',
@@ -6921,8 +6909,8 @@
       });
       document.getElementById('fb-form').style.display = 'none';
       document.getElementById('fb-done').style.display = 'block';
-      setTimeout(() => { document.getElementById('feedback-modal').style.display='none'; document.getElementById('fb-form').style.display='block'; document.getElementById('fb-done').style.display='none'; document.getElementById('fb-message').value=''; document.getElementById('fb-submit').disabled=false; document.getElementById('fb-submit').textContent='보내기'; }, 2500);
-    } catch(e) { alert('전송 실패 — 잠시 후 다시 시도해주세요.'); document.getElementById('fb-submit').disabled=false; document.getElementById('fb-submit').textContent='보내기'; }
+      setTimeout(() => { document.getElementById('feedback-modal').style.display='none'; document.getElementById('fb-form').style.display='block'; document.getElementById('fb-done').style.display='none'; document.getElementById('fb-message').value=''; document.getElementById('fb-submit').disabled=false; document.getElementById('fb-submit').textContent=T.js_feedback_submit; }, 2500);
+    } catch(e) { alert(T.js_feedback_fail); document.getElementById('fb-submit').disabled=false; document.getElementById('fb-submit').textContent=T.js_feedback_submit; }
   }
 </script>
 </body>
