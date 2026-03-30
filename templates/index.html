@@ -116,7 +116,7 @@
     .purpose-pill {
       padding: 8px 18px; border-radius: 24px; font-size: 13px; font-weight: 500;
       border: 1px solid rgba(28,61,90,0.08); background: #FFF;
-      color: #6B7685; cursor: pointer; transition: all 0.2s ease;
+      color: #6B7685; cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
       white-space: nowrap;
       box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
@@ -155,7 +155,7 @@
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      transition: all .2s ease;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
       font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     }
     .btn:active { transform: scale(.98); }
@@ -177,7 +177,7 @@
       font-size: 14px;
       padding: 11px;
       margin-top: 12px;
-      transition: all .15s ease;
+      transition: border-color .15s, color .15s, background .15s;
     }
     .btn-outline:hover { border-color: #1C3D5A55; color: #5A9E86; }
     .btn-outline:active { transform: translateY(1px); box-shadow: inset 0 1px 2px rgba(0,0,0,0.06); }
@@ -285,7 +285,7 @@
       font-size: 15px; font-weight: 600; cursor: pointer;
       font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
       box-shadow: 0 2px 6px rgba(28,61,90,0.25);
-      transition: all .15s ease;
+      transition: border-color .15s, color .15s, background .15s;
       margin-bottom: 10px;
     }
     .btn-pptx:hover { background: #5A9E86; box-shadow: 0 4px 12px rgba(28,61,90,0.30); }
@@ -298,7 +298,7 @@
       background: #FFF; color: #374151; border: 1px solid rgba(28,61,90,0.08); border-radius: 14px;
       font-size: 15px; font-weight: 500; cursor: pointer;
       font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-      transition: all .15s ease;
+      transition: border-color .15s, color .15s, background .15s;
       margin-bottom: 10px;
     }
     .btn-pdf:hover { border-color: #1C3D5A55; color: #5A9E86; }
@@ -311,7 +311,7 @@
       background: #FFF; border: 1px solid #D8D4CA; border-radius: 10px;
       color: #6B7685; font-size: 13px; font-weight: 500;
       text-decoration: none;
-      transition: all .15s ease;
+      transition: border-color .15s, color .15s, background .15s;
       margin-bottom: 10px;
     }
     .btn-json:hover { border-color: #1C3D5A55; color: #5A9E86; }
@@ -569,7 +569,7 @@
     .slide-edit-btn {
       flex-shrink: 0; padding: 4px 10px; border-radius: 6px;
       border: 1px solid var(--border); background: transparent;
-      color: var(--muted); font-size: 12px; cursor: pointer; transition: all .15s;
+      color: var(--muted); font-size: 12px; cursor: pointer; transition: border-color .15s, color .15s, background .15s;
     }
     .slide-edit-btn:hover { border-color: var(--accent); color: var(--accent); }
 
@@ -598,12 +598,12 @@
     .edit-body-remove {
       flex-shrink: 0; width: 28px; height: 34px; border-radius: 6px;
       border: 1px solid var(--border); background: transparent;
-      color: #666; cursor: pointer; font-size: 14px; transition: all .15s;
+      color: #666; cursor: pointer; font-size: 14px; transition: border-color .15s, color .15s, background .15s;
     }
     .edit-body-remove:hover { border-color: var(--error); color: var(--error); }
     .edit-body-add {
       width: 100%; padding: 7px; border-radius: 6px; border: 1px dashed var(--border);
-      background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; transition: all .15s;
+      background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; transition: border-color .15s, color .15s, background .15s;
     }
     .edit-body-add:hover { border-color: var(--accent); color: var(--accent); }
     .edit-modal-actions { display: flex; gap: 8px; margin-top: 20px; }
@@ -774,7 +774,7 @@
       width:100%; padding:13px; border-radius:10px;
       border:1px solid #D8D4CA; background:#FFF; color:#374151;
       font-size:15px; font-weight:500; cursor:pointer;
-      text-decoration:none; transition:all .15s ease;
+      text-decoration:none; transition: border-color .15s, color .15s;
       box-shadow:0 1px 3px rgba(0,0,0,0.08);
     " onmouseover="this.style.borderColor='#1C3D5A55';this.style.background='#F5F3EC'"
        onmouseout="this.style.borderColor='#D8D4CA';this.style.background='#FFF'">
@@ -903,7 +903,7 @@
       <button class="btn btn-outline" onclick="reset()">{{ t.done_reset_btn }}</button>
 
       <button onclick="_showCoffeeModal()"
-         style="display:block; width:100%; text-align:center; margin-top:12px; padding:10px 24px; background:#F5E6D3; border:1px solid #E8D5BF; border-radius:10px; color:#6B4C30; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;"
+         style="display:block; width:100%; text-align:center; margin-top:12px; padding:10px 24px; background:#F5E6D3; border:1px solid #E8D5BF; border-radius:10px; color:#6B4C30; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.2s, border-color 0.2s;"
          onmouseover="this.style.background='#EDD9C2';this.style.transform='translateY(-1px)'"
          onmouseout="this.style.background='#F5E6D3';this.style.transform='none'">
         {{ t.done_coffee_btn }}
@@ -5114,7 +5114,7 @@
           s.addImage({ data: bgData, x: imgX, y: 0, w: imgW, h: H,
             sizing: { type: 'cover', w: imgW, h: H } });
           s.addShape('rect', { x: imgX, y: 0, w: imgW, h: H,
-            fill: { color: '000000', transparency: 40 }, line: { type: 'none' } });
+            fill: { color: '000000', transparency: 32 }, line: { type: 'none' } });
         } else {
           // 이미지 없을 때: 워터마크 + 글로우 장식
           // 중앙 대형 ellipse (밝은 흰색 계열 — 어두운 bgDark 위에 가시성 확보)
@@ -5172,7 +5172,7 @@
         if (sub) {
           s.addText(sub, {
             x: cX, y: contentY, w: cW, h: H * 0.09,
-            fontSize: 15, color: C.primary,
+            fontSize: 14, bold: true, color: C.primary,
             wrap: true, valign: 'top', lineSpacingMultiple: 1.3, fontFace: F });
           contentY += H * 0.10;
         }
@@ -5180,7 +5180,7 @@
         if (body.length > 0) {
           s.addText(body.slice(0, 5).map(b => '·  ' + b.replace(/^\[[a-z][a-z0-9-]*\]\s*/i, '')).join('\n'), {
             x: cX, y: contentY, w: cW, h: H - contentY - H * 0.08,
-            fontSize: 16, color: C.textSecondary,
+            fontSize: 12.5, color: C.textSecondary,
             wrap: true, align: 'left', valign: 'top',
             lineSpacingMultiple: 1.9, fontFace: F });
         }
@@ -5533,7 +5533,7 @@
             fill: { color: C.accentLight }, line: { type: 'none' } });
           let _pfY = H * 0.65;
           if (sub) { s.addText(sub, { x: cntTxtX, y: _pfY, w: cntTxtW, h: H * 0.11,
-            fontSize: 15, color: _pf.subClr, wrap: true, align: 'left', valign: 'top', fontFace: F });
+            fontSize: 14, bold: true, color: _pf.subClr, wrap: true, align: 'left', valign: 'top', fontFace: F });
             _pfY += H * 0.12; }
           body.slice(0, 3).forEach(b => {
             if (_pfY + H * 0.09 > H * 0.92) return;
@@ -6325,7 +6325,7 @@
           s.addImage({ data: bgData, x: 0, y: 0, w: tW, h: tH,
             sizing: { type: 'cover', w: tW, h: tH } });
           s.addShape('rect', { x: 0, y: 0, w: tW, h: tH,
-            fill: { color: '000000', transparency: 38 }, line: { type: 'none' } });
+            fill: { color: '000000', transparency: 32 }, line: { type: 'none' } });
         }
 
         // [0,1] 브랜드 컬러 타일 (우상단) — 헤드라인
