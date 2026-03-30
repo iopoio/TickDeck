@@ -269,6 +269,13 @@ def extract_brand_assets(url):
     logo_url = None
     colors = []
     footer_contact = {}
+    explicit_primary = ''
+    hero_colors = []
+    elementor_colors = {}
+    css_freq_colors = []
+    favicon_url = ''
+    favicon_colors = []
+    site_bg_color = ''
     try:
         resp = _session.get(base_url, timeout=10)
         if resp.status_code != 200:

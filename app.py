@@ -96,10 +96,11 @@ if os.environ.get('FLASK_ENV') == 'production' or os.environ.get('USE_CELERY'):
 
 app.jinja_env.auto_reload = True
 
-# S4: Rate Limiter 초기화
+# S4: Rate Limiter 초기화 (Redis 사용 — Gunicorn 멀티 워커에서도 공유)
+_limiter_storage = os.environ.get('REDIS_URL', 'memory://')
 if _has_limiter:
     limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"],
-                      storage_uri="memory://")
+                      storage_uri=_limiter_storage)
 else:
     # flask-limiter 미설치 시 no-op 데코레이터
     class _NoopLimiter:
@@ -832,9 +833,14 @@ def admin_required(f):
         from flask import session
         user_id = session.get('user_id')
         if not user_id:
+            # HTML 요청이면 리다이렉트, API면 JSON
+            if request.path == '/admin':
+                return redirect('/app')
             return jsonify({'error': '로그인이 필요합니다'}), 401
         user = get_user_by_id(user_id)
         if not user or user['email'].lower() not in ADMIN_EMAILS:
+            if request.path == '/admin':
+                return redirect('/app')
             return jsonify({'error': '관리자 권한이 필요합니다'}), 403
         return f(*args, **kwargs)
     return decorated
