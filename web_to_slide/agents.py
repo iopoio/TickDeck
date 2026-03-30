@@ -257,6 +257,22 @@ def agent_strategist(factbook: str, company_name: str, progress_fn=None,
     def _p(m):
         if progress_fn: progress_fn(str(m))
 
+    # A2: 데이터 충실도 측정
+    _nfo_count = factbook.lower().count('정보 없음') + factbook.lower().count('데이터 없음')
+    _total_lines = max(len([l for l in factbook.split('\n') if l.strip()]), 1)
+    _data_sufficiency = max(0.0, 1.0 - (_nfo_count * 3 / _total_lines))  # 0.0~1.0
+    if _data_sufficiency < 0.3:
+        _min_slides = 5
+        _sufficiency_hint = "\n\n⚠️ 데이터 부족 — 슬라이드 5~6개로 축소하세요. 추론/업종 일반 콘텐츠는 최소화."
+        _p(f"  ⚠ 데이터 충실도 낮음({_data_sufficiency:.0%}) → 5~6개 슬라이드로 축소")
+    elif _data_sufficiency < 0.6:
+        _min_slides = 7
+        _sufficiency_hint = "\n\n⚠️ 데이터 보통 — 선택 슬라이드(key_metrics, why_us 등)는 데이터가 있을 때만 포함."
+        _p(f"  → 데이터 충실도 보통({_data_sufficiency:.0%}) → 7~8개 슬라이드")
+    else:
+        _min_slides = 7
+        _sufficiency_hint = ""
+
     forced_str = (
         f"\n\n[사용자 지정] 내러티브 타입: {forced_narrative}\n"
         f"반드시 TYPE {forced_narrative} 흐름을 사용하세요. 다른 타입으로 변경 금지."
@@ -265,8 +281,8 @@ def agent_strategist(factbook: str, company_name: str, progress_fn=None,
         f"\n\n[발표 목적] {_PURPOSE_CONTEXT.get(purpose, '')}"
     ) if purpose and purpose not in ('brand', 'auto') else ""
     user_prompt = (
-        f"회사명: {company_name}{forced_str}{purpose_str}\n\n"
-        f"⚠️ 반드시 slides 배열에 7개 이상의 슬라이드 객체를 포함해서 JSON을 반환하세요.\n\n"
+        f"회사명: {company_name}{forced_str}{purpose_str}{_sufficiency_hint}\n\n"
+        f"⚠️ 반드시 slides 배열에 {_min_slides}개 이상의 슬라이드 객체를 포함해서 JSON을 반환하세요.\n\n"
         f"[FACTBOOK]\n{factbook}"
     )
     _detected_nt = None  # Gemini 파싱 성공 시 저장, 폴백에서 사용
@@ -310,7 +326,12 @@ def agent_strategist(factbook: str, company_name: str, progress_fn=None,
                     raise
             narrative_type = result.get("narrative_type", "A")
             if forced_narrative and forced_narrative != 'auto':
-                narrative_type = forced_narrative  # Gemini 응답 무시, 강제 타입 적용
+                if narrative_type != forced_narrative:
+                    logger.warning(
+                        f"[A3 TYPE OVERRIDE] 자동감지: TYPE {narrative_type} → 사용자 강제: TYPE {forced_narrative}"
+                    )
+                    _p(f"  ⚠ 타입 변경: 자동감지 {narrative_type} → 강제 {forced_narrative}")
+                narrative_type = forced_narrative
             _detected_nt = narrative_type  # 예외 경로에서도 사용
             slides = result.get("slides", [])
             if len(slides) >= 5:
@@ -632,6 +653,19 @@ No vivid color found → industry default:
 
                 # 빈 body 항목 제거
                 slide['body'] = [b for b in slide.get('body', []) if b and str(b).strip()]
+
+                # A4: CTA RULE F — 시간/수치 약속 검증
+                if slide.get('type') in ('cta_session', 'contact'):
+                    all_text = ' '.join([headline, slide.get('subheadline', '')] + body).lower()
+                    # 시간 약속 패턴
+                    time_patterns = re.findall(r'\d+\s*(?:분|시간|일|주|개월)\s*(?:안에|내에|이내|내)', all_text)
+                    if time_patterns:
+                        logger.warning(f"[A4] CTA RULE F 위반 — 시간 약속 감지: {time_patterns}")
+                        # body에서 해당 항목 수정 (시간 약속 제거)
+                        slide['body'] = [
+                            re.sub(r'\d+\s*(?:분|시간|일|주|개월)\s*(?:안에|내에|이내|내)', '빠르게', b)
+                            for b in slide.get('body', [])
+                        ]
 
             return result
 
