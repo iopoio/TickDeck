@@ -22,7 +22,7 @@ from .prompts import (
     RESEARCHER_USER_TEMPLATE_C,
     STRATEGIST_SYSTEM_PROMPT,
     SLIDE_SYSTEM_PROMPT,
-    MOOD_TONE,
+    MOOD_TONE, MOOD_TONE_EN,
     _PURPOSE_CONTEXT,
 )
 
@@ -424,7 +424,11 @@ def generate_slide_json(factbook: str, storyline: list, narrative_type: str,
     colors = brand_assets.get('colors', [])
     logo_url = brand_assets.get('logo_url', '')
     accent = next((c for c in colors if _color_vibrancy(c) >= 0.1), '#1A1A1A')
-    tone_instruction = MOOD_TONE.get(mood, MOOD_TONE['professional'])
+    # M12: 영문 슬라이드면 영문 톤 가이드 사용
+    if slide_lang == 'en':
+        tone_instruction = MOOD_TONE_EN.get(mood, MOOD_TONE_EN['professional'])
+    else:
+        tone_instruction = MOOD_TONE.get(mood, MOOD_TONE['professional'])
 
     # 아티스트 페이지 전용 주의사항
     _subject_hint = ''
@@ -666,6 +670,16 @@ No vivid color found → industry default:
                             re.sub(r'\d+\s*(?:분|시간|일|주|개월)\s*(?:안에|내에|이내|내)', '빠르게', b)
                             for b in slide.get('body', [])
                         ]
+
+            # M15: 품질 메트릭 수집
+            slide_count = len(result.get('slides', []))
+            empty_body = sum(1 for s in result.get('slides', []) if not s.get('body'))
+            result['_quality'] = {
+                'slide_count': slide_count,
+                'empty_body_slides': empty_body,
+                'data_sufficiency': round(_data_sufficiency, 2) if '_data_sufficiency' in dir() else None,
+            }
+            logger.info(f"[M15] 품질: {slide_count}슬라이드, 빈body {empty_body}개")
 
             return result
 

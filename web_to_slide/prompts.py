@@ -859,6 +859,13 @@ MOOD_TONE = {
     'minimal':      "톤앤매너: 간결하고 여백 있는 표현. 핵심만 담고 군더더기 없이.",
 }
 
+# M12: 영문 슬라이드용 톤 가이드
+MOOD_TONE_EN = {
+    'trendy':       "Tone: energetic, outcome-focused. Active voice, concrete metrics, forward momentum. Write like a pitch deck, not a report.",
+    'professional': "Tone: authoritative, trustworthy. Emphasize proven methodology and client outcomes. Precise language, no fluff.",
+    'minimal':      "Tone: refined, clarity-first. One idea per sentence. Let white space do the work. Avoid jargon.",
+}
+
 
 # ── 5. 발표 목적별 컨텍스트 ──────────────────────────────────────────────────
 
