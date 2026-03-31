@@ -5241,15 +5241,15 @@
           if (_cdp.h) _cdp.h = _cdp.h.replace(/^\[[^\]]+\]\s*/, '');
           if (_cdp.b) _cdp.b = _cdp.b.replace(/^\[[^\]]+\]\s*/, '');
           if (_cdp.h) {
-            const hH = 0.44;
+            const hH = 0.36;
             s.addText(_cdp.h, { x: txtX2, y: txtY, w: txtW2, h: hH,
               fontFace: F, fontSize: 14, bold: true,
               color: useColorCard ? 'FFFFFF' : '111111',
               wrap: true, valign: 'top', lineSpacingMultiple: 1.2 });
-            s.addShape('rect', { x: txtX2, y: txtY + hH + 0.04, w: txtW2 * 0.55, h: 0.015,
+            s.addShape('rect', { x: txtX2, y: txtY + hH + 0.02, w: txtW2 * 0.55, h: 0.015,
               fill: { color: useColorCard ? 'FFFFFF' : C.lineColor,
                       transparency: useColorCard ? 55 : 0 }, line: { type: 'none' } });
-            const descY = txtY + hH + 0.10;
+            const descY = txtY + hH + 0.06;
             s.addText(_cdp.b, { x: txtX2, y: descY, w: txtW2,
               h: Math.max(cy + cardH + topOff - descY - 0.16, 0.3),
               fontFace: F, fontSize: 12, color: cardTextColor,
