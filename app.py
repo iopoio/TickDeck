@@ -580,7 +580,7 @@ def app_page_en():
 
 
 @app.route("/generate", methods=["POST"])
-@limiter.limit("10 per hour")
+@limiter.limit("30 per hour")
 @login_required
 def generate():
     from flask import session

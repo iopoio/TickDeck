@@ -1330,6 +1330,11 @@
         slide_lang: _selectedLang,
       }),
     });
+    // Rate Limit (429) 또는 서버 에러 처리
+    if (res.status === 429) {
+      showError(T.js_error_rate_limit || '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
     const data = await res.json();
 
     if (data.error) {
