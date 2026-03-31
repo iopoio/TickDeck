@@ -2425,10 +2425,20 @@
     // 우상단 대형 데코 원 (Glassmorphic 레퍼런스)
     s.addShape('ellipse', {
       x: W * 0.72, y: -H * 0.20, w: H * 0.82, h: H * 0.82,
-      fill: { color: C.primary, transparency: 94 }, line: { type: 'none' }
+      fill: { color: C.primary, transparency: 88 }, line: { type: 'none' }
     });
     // 좌 primary 수직 accent bar (브랜드 일관성 — PDF2 레퍼런스)
     s.addShape('rect', { x: 0, y: 0, w: PM.ACCENT_BAR_W, h: H, fill: { color: C.primary }, line: { type: 'none' } });
+
+    // ── Subtle Grid Texture (2-3 lines as requested by Manager Keul) ──
+    const gridLines = [0.20, 0.50, 0.82];
+    gridLines.forEach(ratio => {
+        s.addShape('rect', {
+            x: 0, y: H * ratio, w: W, h: 0.005,
+            fill: { color: C.primary, transparency: 92 },
+            line: { type: 'none' }
+        });
+    });
 
     // 본문 콘텐츠 시작 X와 동일하게 정렬 (eyebrow·타이틀·구분선 모두 같은 X)
     const aX = 0.533;
@@ -6281,7 +6291,7 @@
 
           // 은은한 데코 (질감만 살림)
           s.addShape('ellipse', { x: W * 0.15, y: -H * 0.40, w: H * 1.80, h: H * 1.80,
-            fill: { color: C.primary, transparency: 96 }, line: { type: 'none' } });
+            fill: { color: C.primary, transparency: 88 }, line: { type: 'none' } });
 
           // 1. 브랜드/로고 (중앙 대형)
           if (showLogo && logoAspect && logoAspect >= 1.0) {
@@ -6293,8 +6303,8 @@
                          x: (W - lgW) / 2, y: H * 0.22, w: lgW, h: lgH });
           } else {
             s.addText((companyName || '').toUpperCase(), {
-              x: W * 0.10, y: H * 0.20, w: W * 0.80, h: 1.2,
-              fontSize: 58, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle',
+              x: W * 0.10, y: H * 0.22, w: W * 0.80, h: 1.2,
+              fontSize: 60, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle',
               fontFace: FH, charSpacing: 4 });
           }
 
@@ -6344,7 +6354,7 @@
 
           // 은은한 데코
           s.addShape('ellipse', { x: -W * 0.15, y: -H * 0.20, w: H * 1.2, h: H * 1.2,
-            fill: { color: C.primary, transparency: 97 }, line: { type: 'none' } });
+            fill: { color: C.primary, transparency: 88 }, line: { type: 'none' } });
 
           // 1. Eyebrow
           if (eyebrow) {
@@ -6377,17 +6387,25 @@
             
             ctaItems.forEach((item, idx) => {
               const cx = startX + idx * (cardW + cardGap);
-              const cy = H * 0.55;
-              const ch = 1.40;
+              const cy = H * 0.54;
+              const ch = 1.62;
+
+              // Card background (transparency 90, 0.5px border)
+              s.addShape('roundRect', {
+                x: cx, y: cy, w: cardW, h: ch,
+                fill: { color: 'FFFFFF', transparency: 90 },
+                line: { color: C.primary, transparency: 30, width: 0.5 },
+                rectRadius: 0.12
+              });
 
               // Number (01, 02, 03)
               s.addText(String(idx + 1).padStart(2, '0'), {
-                x: cx, y: cy, w: cardW, h: 0.35,
+                x: cx, y: cy + 0.12, w: cardW, h: 0.35,
                 fontSize: 14, bold: true, color: C.primary, align: 'center', fontFace: F });
 
               // Item Text
               s.addText(item.replace(/^\[[a-z][a-z0-9-]*\]\s*/i, ''), {
-                x: cx, y: cy + 0.40, w: cardW, h: ch - 0.40,
+                x: cx + 0.12, y: cy + 0.48, w: cardW - 0.24, h: ch - 0.60,
                 fontSize: 13, color: 'FFFFFF', align: 'center', valign: 'top',
                 fontFace: F, wrap: true, lineSpacingMultiple: 1.3 });
             });
