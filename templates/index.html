@@ -2036,10 +2036,93 @@
 
   // [Phase H-3] Canvas PDF code removed - see git history
 
+  const LAYOUT_MAP = {
+    corporate_overview:       () => 'split',
+    market_shock:             (hasBg) => hasBg ? 'portfolio' : 'comparison',
+    market_problem:           (hasBg, n) => n >= 5 ? 'comparison' : 'cards',
+    brand_story:              (hasBg, n) => hasBg ? 'portfolio' : (n >= 3 ? 'cards' : 'split'),
+    creative_approach:        (hasBg, n) => hasBg ? 'split' : (n >= 3 ? 'two_col_text' : 'split'),
+    creative_philosophy:      (hasBg) => hasBg ? 'split' : 'two_col_text',
+    market_impact:            (hasBg) => hasBg ? 'portfolio' : 'cards',
+    proof_of_concept:         (hasBg) => hasBg ? 'portfolio' : 'cards',
+    results:                  (hasBg) => hasBg ? 'portfolio' : 'cards',
+    impact:                   (hasBg) => hasBg ? 'portfolio' : 'cards',
+    showcase:                 (hasBg) => hasBg ? 'portfolio' : 'split',
+    flagship_experience:      (hasBg) => hasBg ? 'portfolio' : 'split',
+    case_study:               (hasBg, n) => n >= 5 ? 'comparison' : 'split',
+    governance:               () => 'split',
+    team_intro:               () => 'cards',
+    target_audience:          () => 'cards',
+    market_insights:          () => 'split',
+    infrastructure_and_scale: (hasBg) => hasBg ? 'portfolio' : 'cards',
+    client_list:              () => 'cards',
+    service_pillar_1:         () => 'split',
+    service_pillar_2:         () => 'cards',
+    service_pillar_3:         () => 'portfolio',
+    core_business_1:          () => 'split',
+    core_business_2:          () => 'cards',
+    core_business_3:          () => 'portfolio',
+    showcase_work:            (hasBg) => hasBg ? 'portfolio' : 'cards',
+    showcase_work_1:          (hasBg) => hasBg ? 'portfolio' : 'cards',
+    showcase_work_2:          (hasBg) => hasBg ? 'split' : 'two_col_text',
+    showcase_work_3:          () => 'cards',
+    key_metrics:              () => 'stat_3col',
+    our_process:              () => 'numbered_process',
+    company_history:          () => 'timeline_h',
+    team_credibility:         (hasBg) => hasBg ? 'portfolio' : 'split',
+    curriculum_structure:     () => 'numbered_process',
+    how_it_works:             () => 'numbered_process',
+    solution_overview:        (hasBg, n) => hasBg ? 'split' : (n >= 3 ? 'two_col_text' : 'cards'),
+    pain_analysis:            () => 'numbered_process',
+    market_challenge:         (hasBg) => hasBg ? 'portfolio' : 'split',
+    proof_results:            (hasBg) => hasBg ? 'portfolio' : 'cards',
+    why_us:                   () => 'cards',
+    scale_proof:              (hasBg, n) => n >= 3 ? 'stat_3col' : 'split',
+    scalability_proof:        (hasBg, n) => n >= 3 ? 'stat_3col' : 'split',
+    delivery_model:           () => 'numbered_process',
+    ecosystem_partners:       () => 'cards',
+    dual_sided_value:         () => 'cards',
+  };
+
+  function _handleCTypeLayout(nt, stype, hasBg) {
+    if (nt && nt.toUpperCase() === 'C') {
+      if (['showcase_work_1','showcase_work_2','showcase_work_3',
+           'showcase','flagship_experience','brand_story'].includes(stype))
+        return hasBg ? 'portfolio' : 'cards';
+    }
+    return null;
+  }
+
+  function _applyLayoutRotationRule(layout, prevLayout, layoutCount) {
+    let finalLayout = layout;
+    if (prevLayout && finalLayout === prevLayout
+        && !['radial','4step','timeline','section','mosaic'].includes(finalLayout)) {
+      const rot = ['split','cards','two_col_text','portfolio','comparison'];
+      finalLayout = rot[(rot.indexOf(finalLayout) + 1) % rot.length];
+    }
+    const _numFamily = ['numbered_process','process_cards'];
+    if (_numFamily.includes(finalLayout) && _numFamily.includes(prevLayout) && finalLayout !== prevLayout) {
+      finalLayout = (layoutCount['split'] || 0) <= (layoutCount['cards'] || 0) ? 'split' : 'cards';
+    }
+    const _FIXED = ['cover','cta','toc','section','radial','4step','timeline','mosaic',
+                    'timeline_h','circle4','converge4','linked4','gear','swot4',
+                    'kpi_cards','timeline_bars','ruled_list',
+                    'numbered_process','process_cards','data_table',
+                    'stat_3col','stat_grid','timeline_v','comparison_vs',
+                    'matrix_2x2','bar_chart',
+                    'pull_quote','big_statement','two_col_text','problem_solution',
+                    'market_circles','checklist_pills','asymmetric_1_3'];
+    const MAX_USE = 2;
+    if (!_FIXED.includes(finalLayout) && (layoutCount[finalLayout] || 0) >= MAX_USE) {
+      const rot = ['split','cards','two_col_text','portfolio','comparison'];
+      const sorted = rot.filter(l => l !== finalLayout)
+                        .sort((a, b) => (layoutCount[a] || 0) - (layoutCount[b] || 0));
+      if (sorted.length) finalLayout = sorted[0];
+    }
+    return finalLayout;
+  }
+
   // getSlideLayout(slideOrType, nt, prevLayout, layoutCount)
-  // - slideOrType: 슬라이드 객체 또는 타입 문자열
-  // - prevLayout: 직전 슬라이드 레이아웃 (연속 중복 방지)
-  // - layoutCount: {layout: 사용횟수} 객체 (빈도 캡)
   function getSlideLayout(slideOrType, nt, prevLayout, layoutCount = {}) {
     const stype  = typeof slideOrType === 'string' ? slideOrType : (slideOrType?.type || '');
     const body   = (typeof slideOrType === 'object' && slideOrType !== null)
@@ -2057,318 +2140,86 @@
     if (['mosaic','service_overview','product_overview','features_overview',
          'showcase_overview','business_areas','service_matrix'].includes(stype)) return 'mosaic';
 
-    // ── C-type (Creative/Entertainment): showcase 슬라이드 → 항상 portfolio ──
-    if (nt && nt.toUpperCase() === 'C') {
-      if (['showcase_work_1','showcase_work_2','showcase_work_3',
-           'showcase','flagship_experience','brand_story'].includes(stype))
-        return hasBg ? 'portfolio' : 'cards';  // 이미지 없으면 cards (빈 패널 방지)
-    }
+    // ── C-type 전용 ──
+    const cTypeLayout = _handleCTypeLayout(nt, stype, hasBg);
+    if (cTypeLayout) return cTypeLayout;
 
-    // ── PPTMON 구조형 (타입으로만, 연속 방지 불필요) ──
+    // ── 신규 구조형 (조기 반환) ──
+    if (['problem_solution','before_after_compare','asis_tobe','problem_vs_solution'].includes(stype)) return 'problem_solution';
+    if (['pull_quote','key_insight','big_insight','testimonial','quote_slide','insight'].includes(stype)) return 'pull_quote';
+    if (!hasBg && n === 0 && ['market_shock','impact'].includes(stype)) return 'pull_quote';
+    if (['big_statement','impact_statement','key_message','bold_claim','brand_statement'].includes(stype)) return 'big_statement';
 
-    // ── 신규 3종 레이아웃 early return ──
-
-    // [NEW] 문제-해결 대조 슬라이드 (before/after 1:1 대응 쌍이 있을 때)
-    if (['problem_solution','before_after_compare','asis_tobe',
-         'problem_vs_solution'].includes(stype))
-      return 'problem_solution';
-
-    // Pull Quote: body 없고 headline이 길면 (인용구/인사이트 강조)
-    if (['pull_quote','key_insight','big_insight','testimonial',
-         'quote_slide','insight'].includes(stype))
-      return 'pull_quote';
-    // 텍스트만 있고 body 없는 슬라이드 → pull_quote
-    if (!hasBg && n === 0 && ['market_shock','impact'].includes(stype))
-      return 'pull_quote';
-
-    // Big Statement: 핵심 선언 (이미지 없음, 짧고 강렬한 메시지)
-    if (['big_statement','impact_statement','key_message',
-         'bold_claim','brand_statement'].includes(stype))
-      return 'big_statement';
-
-    // Two Col Text: 어젠다/목표/이슈 등 텍스트 중심 2열
-    if (['agenda','toc_detail','objectives','goals','issues_risks',
-         'mitigation_plan','action_items','next_steps_detail',
-         'comparison_text','two_col'].includes(stype))
-      return 'two_col_text';
+    if (['agenda','toc_detail','objectives','goals','issues_risks','mitigation_plan','action_items','next_steps_detail','comparison_text','two_col'].includes(stype)) return 'two_col_text';
     if (['why_us'].includes(stype)) {
       const _whyBase = (layoutCount['two_col_text'] || 0) >= 1 ? 'cards' : 'two_col_text';
-      if (_whyBase === prevLayout) {
-        return (layoutCount['numbered_process'] || 0) >= 1 ? 'split' : 'numbered_process';
-      }
+      if (_whyBase === prevLayout) return (layoutCount['numbered_process'] || 0) >= 1 ? 'split' : 'numbered_process';
       return _whyBase;
     }
-    // G-1: asymmetric_1_3 — 5~6개 body + 특정 타입에서만 활성화 (4개는 two_col_text가 더 밀도 높음)
-    if (!hasBg && n >= 5 && n <= 6 && ['platform_overview','product_suite','service_breakdown'].includes(stype))
-      return 'asymmetric_1_3';
-    // 이미지 없고 body 4개+ → two_col_text (텍스트로 꽉 채우기)
-    // pain_analysis는 제외 — 별도 !hasBg 블록에서 numbered_process로 처리
-    if (!hasBg && n >= 4 && ['solution_overview',
-         'team_intro','client_list'].includes(stype))
-      return 'two_col_text';
+    
+    if (!hasBg && n >= 5 && n <= 6 && ['platform_overview','product_suite','service_breakdown'].includes(stype)) return 'asymmetric_1_3';
+    if (!hasBg && n >= 4 && ['solution_overview','team_intro','client_list'].includes(stype)) return 'two_col_text';
     if (!hasBg && n >= 4 && ['why_us'].includes(stype)) {
       const _whyBase4 = (layoutCount['two_col_text'] || 0) >= 1 ? 'cards' : 'two_col_text';
-      if (_whyBase4 === prevLayout) {
-        return (layoutCount['numbered_process'] || 0) >= 1 ? 'split' : 'numbered_process';
-      }
+      if (_whyBase4 === prevLayout) return (layoutCount['numbered_process'] || 0) >= 1 ? 'split' : 'numbered_process';
       return _whyBase4;
     }
 
-    // [NEW] Market Circles: TAM/SAM/SOM 크기 차등 원 (Business Blue 레퍼런스)
-    if (['market_size','tam_sam_som','addressable_market','market_sizing',
-         'target_market_size'].includes(stype))
-      return 'market_circles';
+    if (['market_size','tam_sam_som','addressable_market','market_sizing','target_market_size'].includes(stype)) return 'market_circles';
+    if (['metrics','kpi','statistics','impact_numbers','results_overview','performance_metrics','growth_metrics','financial_highlights','business_results'].includes(stype)) return 'kpi_cards';
+    if (['evolution','annual_progress','growth_history','year_over_year','performance_timeline','annual_comparison','bar_timeline'].includes(stype)) return 'timeline_bars';
+    if (['principles','guidelines','policy','core_principles','guiding_principles','our_principles','commitments','manifesto','framework_items','rules','standards'].includes(stype)) return 'ruled_list';
+    if (['process_steps','implementation_steps','workflow_steps','action_plan','execution_steps','how_it_works','our_process','methodology','approach','step_by_step','onboarding_steps','delivery_process','work_process'].includes(stype)) return (layoutCount['numbered_process'] || 0) >= 1 ? 'process_cards' : 'numbered_process';
 
-    // [NEW] KPI 대형 숫자 카드 (이미지 불필요)
-    if (['metrics','kpi','statistics','impact_numbers',
-         'results_overview','performance_metrics','growth_metrics',
-         'financial_highlights','business_results'].includes(stype))
-      return 'kpi_cards';
-
-    // [NEW] 연도별 수평 바 타임라인 (이미지 불필요)
-    if (['evolution','annual_progress','growth_history','year_over_year',
-         'performance_timeline','annual_comparison','bar_timeline'].includes(stype))
-      return 'timeline_bars';
-
-    // [NEW] 수평 구분선 목록 (이미지 불필요)
-    if (['principles','guidelines','policy','core_principles','guiding_principles',
-         'our_principles','commitments','manifesto','framework_items',
-         'rules','standards'].includes(stype))
-      return 'ruled_list';
-
-    // [NEW-F] 번호 체브론 프로세스 (01→02→03→04)
-    if (['process_steps','implementation_steps','workflow_steps','action_plan',
-         'execution_steps','how_it_works','our_process','methodology','approach',
-         'step_by_step','onboarding_steps','delivery_process','work_process'].includes(stype))
-      return (layoutCount['numbered_process'] || 0) >= 1 ? 'process_cards' : 'numbered_process';
-
-    // [NEW] proof_results + infographic.data.stats → kpi_cards (대형 숫자 카드 우선)
-    if (['proof_results','case_study_result'].includes(stype)
-        && typeof slideOrType === 'object'
-        && (slideOrType?.infographic?.data?.stats || []).length >= 2)
-      return 'kpi_cards';
-    // G-1: proof_results 숫자 없이 텍스트만 → checklist pill (Brandlogy 참고)
-    if (['proof_results','case_study_result'].includes(stype)
-        && typeof slideOrType === 'object'
-        && (slideOrType?.infographic?.data?.stats || []).length < 2
-        && n >= 2 && n <= 8)
-      return 'checklist_pills';
-
-    // [NEW] 3열 대형 통계 (n≤4일 때)
-    // proof_results는 제외 — kpi_cards 검사 통과 실패 시 cards 레이아웃으로 분기
-    if (['market_impact','scale_proof','case_study',
-         'scalability_proof','performance_data'].includes(stype) && n > 0 && n <= 4)
-      return 'stat_3col';
-
-    // [NEW] 숫자 그리드 (n≥5일 때)
-    if (['proof_results','scale_proof','metrics','performance_metrics',
-         'business_results','financial_highlights'].includes(stype) && n >= 5)
-      return 'stat_grid';
-
-    // [NEW] 수평 타임라인 — 연혁/마일스톤 (company_history 포함)
-    if (['company_history','growth_story','our_story','brand_history',
-         'milestones','achievements'].includes(stype))
-      return 'timeline_h';
-
-    // [NEW] 수직 교차 타임라인 — 로드맵
-    if (['roadmap'].includes(stype))
-      return 'timeline_v';
-
-    // [NEW] VS 2열 비교 (items가 딱 2개 그룹)
-    if (['competitive_analysis','market_comparison',
-         'before_after','solution_comparison'].includes(stype))
-      return 'comparison_vs';
-
-    // [NEW-G] 데이터 테이블 (기능 비교 / 가격표 / 스펙 매트릭스)
-    if (['feature_comparison','comparison_table','pricing_table','feature_matrix',
-         'specs_comparison','product_comparison','option_matrix','tier_comparison',
-         'service_tiers','plan_comparison'].includes(stype))
-      return 'data_table';
-
-    // [NEW-F] SWOT 2×2 그리드
+    if (['proof_results','case_study_result'].includes(stype) && typeof slideOrType === 'object' && (slideOrType?.infographic?.data?.stats || []).length >= 2) return 'kpi_cards';
+    if (['proof_results','case_study_result'].includes(stype) && typeof slideOrType === 'object' && (slideOrType?.infographic?.data?.stats || []).length < 2 && n >= 2 && n <= 8) return 'checklist_pills';
+    if (['market_impact','scale_proof','case_study','scalability_proof','performance_data'].includes(stype) && n > 0 && n <= 4) return 'stat_3col';
+    if (['proof_results','scale_proof','metrics','performance_metrics','business_results','financial_highlights'].includes(stype) && n >= 5) return 'stat_grid';
+    
+    if (['company_history','growth_story','our_story','brand_history','milestones','achievements'].includes(stype)) return 'timeline_h';
+    if (['roadmap'].includes(stype)) return 'timeline_v';
+    if (['competitive_analysis','market_comparison','before_after','solution_comparison'].includes(stype)) return 'comparison_vs';
+    if (['feature_comparison','comparison_table','pricing_table','feature_matrix','specs_comparison','product_comparison','option_matrix','tier_comparison','service_tiers','plan_comparison'].includes(stype)) return 'data_table';
     if (['swot_analysis','swot'].includes(stype)) return 'swot4';
+    if (['positioning_matrix','matrix_2x2','bcg_matrix','ansoff_matrix','competitive_matrix','comparison_matrix','risk_impact_matrix'].includes(stype)) return 'matrix_2x2';
+    
+    if (typeof slideOrType === 'object' && slideOrType !== null && Array.isArray(slideOrType?.chart_data?.values) && slideOrType.chart_data.values.length >= 2) return 'bar_chart';
+    if (['competitive_analysis','risk_matrix','risk_assessment','interdependencies','mutual_factors','competitive_matrix','four_forces'].includes(stype)) return 'linked4';
+    if (['gear_process','operations_cycle','platform_ecosystem','service_ecosystem','circular_process','flywheel','ecosystem'].includes(stype)) return 'gear';
+    if (['schedule','project_plan','project_timeline','quarterly_plan','annual_plan','delivery_schedule','implementation_schedule','sprint_plan','phased_rollout'].includes(stype)) return 'timeline_h';
+    if (['convergence_model','strategic_convergence','four_pillars_model','value_creation','success_factors'].includes(stype)) return 'converge4';
+    if (['value_proposition','brand_pillars','four_pillars','strategic_pillars','value_stack','framework'].includes(stype)) return n === 4 ? 'converge4' : 'radial';
+    
+    if (['timeline','roadmap','history','milestones','journey','company_history','growth_story','evolution','trajectory','our_story','brand_history','achievements'].includes(stype)) return 'timeline';
+    if (['our_process','how_it_works','service_workflow','implementation','onboarding','delivery_process','workflow','proprietary_methodology','approach','methodology','solution_approach','how_we_work','process','steps'].includes(stype)) return '4step';
+    
+    if (n === 4 && ['key_features','service_features','product_benefits','market_segments','client_types','key_differentiators','four_elements','core_capabilities','product_features'].includes(stype)) return 'circle4';
+    if (['core_values','pillars','core_philosophy','creative_philosophy','our_values','brand_values','philosophy','competitive_advantage','differentiators','key_strengths'].includes(stype)) return 'radial';
 
-    // [NEW] 2×2 포지셔닝 매트릭스 (McKinsey/BCG 스타일)
-    if (['positioning_matrix','matrix_2x2','bcg_matrix','ansoff_matrix',
-         'competitive_matrix','comparison_matrix','risk_impact_matrix'].includes(stype))
-      return 'matrix_2x2';
-
-    // [NEW] 막대 차트 — chart_data가 있는 슬라이드에만 적용
-    if (typeof slideOrType === 'object' && slideOrType !== null
-        && Array.isArray(slideOrType?.chart_data?.values)
-        && slideOrType.chart_data.values.length >= 2)
-      return 'bar_chart';
-
-    // [NEW] 4개가 서로 연결·영향 (15p)
-    if (['competitive_analysis','risk_matrix',
-         'risk_assessment','interdependencies','mutual_factors',
-         'competitive_matrix','four_forces'].includes(stype))
-      return 'linked4';
-
-    // [NEW] 유기적 기어 프로세스 (18p)
-    if (['gear_process','operations_cycle','platform_ecosystem','service_ecosystem',
-         'circular_process','flywheel','ecosystem'].includes(stype))
-      return 'gear';
-
-    // [NEW] 수평 일정/타임라인 흐름 (10p)
-    if (['schedule','project_plan','project_timeline','quarterly_plan',
-         'annual_plan','delivery_schedule','implementation_schedule',
-         'sprint_plan','phased_rollout'].includes(stype))
-      return 'timeline_h';
-
-    // [NEW] 4개 수렴 다이어그램 (13p) — 특정 수렴형 타입
-    if (['convergence_model','strategic_convergence','four_pillars_model',
-         'value_creation','success_factors'].includes(stype))
-      return 'converge4';
-    // value_proposition 계열 n===4 → converge4, 그 외 → radial
-    if (['value_proposition','brand_pillars','four_pillars','strategic_pillars',
-         'value_stack','framework'].includes(stype))
-      return n === 4 ? 'converge4' : 'radial';
-
-    if (['timeline','roadmap','history','milestones','journey',
-         'company_history','growth_story','evolution','trajectory',
-         'our_story','brand_history','achievements'].includes(stype))
-      return 'timeline';
-    if (['our_process','how_it_works','service_workflow','implementation',
-         'onboarding','delivery_process','workflow',
-         'proprietary_methodology','approach','methodology',
-         'solution_approach','how_we_work','process','steps'].includes(stype))
-      return '4step';
-
-    // [NEW] 4개 병렬 원 묶음 (8p) — n===4 시 circle4
-    if (n === 4 && ['key_features','service_features','product_benefits',
-         'market_segments','client_types','key_differentiators',
-         'four_elements','core_capabilities','product_features'].includes(stype))
-      return 'circle4';
-
-    if (['core_values','pillars','core_philosophy','creative_philosophy',
-         'our_values','brand_values','philosophy',
-         'competitive_advantage','differentiators','key_strengths'].includes(stype))
-      return 'radial';
-
-    // ── 이미지 없는 슬라이드 → PPTMON 구조 레이아웃 우선 ──
+    // ── 배경 없는 슬라이드 ──
     if (!hasBg) {
-      // 시장 위기/문제 제시 → 구분선 목록 (ruled_list)
-      if (['market_challenge','market_problem',
-           'problem_statement','challenge','market_shock'].includes(stype))
-        return 'ruled_list';
-      // 고객 Pain 진단 → 번호 프로세스 (numbered_process) — ruled_list와 연속 중복 방지
-      if (['pain_analysis','pain_points'].includes(stype))
-        return (layoutCount['numbered_process'] || 0) >= 1 ? 'process_cards' : 'numbered_process';
-      // 시장/트렌드 분석 → 연도별 바 타임라인
-      if (['market_insights','market_analysis','industry_trends',
-           'market_overview','competitive_landscape'].includes(stype))
-        return 'timeline_bars';
-      // 성과/수치 → 숫자 레이아웃 (n에 따라)
-      if (['proof_of_concept','results','impact','market_impact',
-           'performance_data','infrastructure_and_scale'].includes(stype))
-        return n <= 3 ? 'stat_3col' : 'kpi_cards';
-      // 기업 개요 → 방사형
-      if (['corporate_overview','company_overview','about_us'].includes(stype))
-        return 'radial';
-      // 솔루션/방법론 → 번호 프로세스 (solution_overview는 제외 — how_it_works와 연속 중복 방지)
-      if (['our_solution','proprietary_methodology',
-           'methodology','solution'].includes(stype))
-        return n >= 4 ? 'numbered_process' : 'radial';
-      // solution_overview: 서비스 목록 특성상 two_col_text로 표현
-      if (['solution_overview'].includes(stype))
-        return n >= 4
-          ? ((layoutCount['two_col_text'] || 0) >= 1 ? 'cards' : 'two_col_text')
-          : 'split';
-      // 거버넌스/케이스스터디 → 구분선 목록
-      if (['governance','compliance','trust','case_study'].includes(stype))
-        return 'ruled_list';
+      if (['market_challenge','market_problem','problem_statement','challenge','market_shock'].includes(stype)) return 'ruled_list';
+      if (['pain_analysis','pain_points'].includes(stype)) return (layoutCount['numbered_process'] || 0) >= 1 ? 'process_cards' : 'numbered_process';
+      if (['market_insights','market_analysis','industry_trends','market_overview','competitive_landscape'].includes(stype)) return 'timeline_bars';
+      if (['proof_of_concept','results','impact','market_impact','performance_data','infrastructure_and_scale'].includes(stype)) return n <= 3 ? 'stat_3col' : 'kpi_cards';
+      if (['corporate_overview','company_overview','about_us'].includes(stype)) return 'radial';
+      if (['our_solution','proprietary_methodology','methodology','solution'].includes(stype)) return n >= 4 ? 'numbered_process' : 'radial';
+      if (['solution_overview'].includes(stype)) return n >= 4 ? ((layoutCount['two_col_text'] || 0) >= 1 ? 'cards' : 'two_col_text') : 'split';
+      if (['governance','compliance','trust','case_study'].includes(stype)) return 'ruled_list';
     }
 
-    // ── 타입 기반 기본값 (콘텐츠 인식 포함) ──
-    const typeBase = {
-      corporate_overview:       'split',
-      market_shock:             hasBg ? 'portfolio' : 'comparison',  // 이미지 있으면 풀스크린, 없으면 대비
-      market_problem:           n >= 5 ? 'comparison' : 'cards',     // 항목 충분할 때만 comparison
-      brand_story:              hasBg ? 'portfolio' : (n >= 3 ? 'cards' : 'split'),
-      creative_approach:        hasBg ? 'split' : (n >= 3 ? 'two_col_text' : 'split'),
-      creative_philosophy:      hasBg ? 'split' : 'two_col_text',
-      market_impact:            hasBg ? 'portfolio' : 'cards',
-      proof_of_concept:         hasBg ? 'portfolio' : 'cards',
-      results:                  hasBg ? 'portfolio' : 'cards',
-      impact:                   hasBg ? 'portfolio' : 'cards',
-      showcase:                 hasBg ? 'portfolio' : 'split',
-      flagship_experience:      hasBg ? 'portfolio' : 'split',
-      case_study:               n >= 5 ? 'comparison' : 'split',     // 항목 충분할 때만 comparison
-      governance:               'split',
-      team_intro:               'cards',
-      target_audience:          'cards',
-      market_insights:          'split',
-      infrastructure_and_scale: hasBg ? 'portfolio' : 'cards',
-      client_list:              'cards',
-      service_pillar_1:         'split',
-      service_pillar_2:         'cards',
-      service_pillar_3:         'portfolio',
-      core_business_1:          'split',
-      core_business_2:          'cards',
-      core_business_3:          'portfolio',
-      showcase_work:            hasBg ? 'portfolio' : 'cards',
-      showcase_work_1:          hasBg ? 'portfolio' : 'cards',
-      showcase_work_2:          hasBg ? 'split' : 'two_col_text',
-      showcase_work_3:          'cards',
-      // ── 신규 슬라이드 타입 → 레이아웃 매핑 ──
-      key_metrics:              'stat_3col',         // 핵심 KPI → 대형 숫자 카드
-      our_process:              'numbered_process',  // 협업 절차 → 번호 체인
-      company_history:          'timeline_h',        // 연혁 → 수평 타임라인
-      team_credibility:         hasBg ? 'portfolio' : 'split',  // 팀 신뢰도 → 분할 or 풀배경
-      curriculum_structure:     'numbered_process',  // 커리큘럼 구조 → 번호 체인
-      how_it_works:             'numbered_process',  // 작동 방식 → 번호 체인
-      solution_overview:        hasBg ? 'split' : (n >= 3 ? 'two_col_text' : 'cards'), // 이미지 없으면 split 사용 안 함
-      pain_analysis:            'numbered_process',  // Pain 진단 → 번호 프로세스
-      market_challenge:         hasBg ? 'portfolio' : 'split',  // 시장 도전 → 이미지 유무로 분기
-      proof_results:            hasBg ? 'portfolio' : 'cards',  // 성과 → 카드 (kpi_cards 조건 불충족 시)
-      why_us:                   'cards',             // 차별화 → 카드 그리드
-      scale_proof:              n >= 3 ? 'stat_3col' : 'split', // 규모 증명 → 수치 있으면 stat
-      scalability_proof:        n >= 3 ? 'stat_3col' : 'split', // 확장성 → 수치 있으면 stat
-      delivery_model:           'numbered_process',  // 납품 방식 → 번호 체인
-      ecosystem_partners:       'cards',             // 파트너 생태계 → 카드
-      dual_sided_value:         'cards',             // 양면 가치 → 카드
-      // (중복 키 제거됨 — pain_analysis/why_us는 위에서 정의)
-    };
-
-    let layout = typeBase[stype];
-    if (!layout) {
-      // 미매핑 타입 → 콘텐츠 기반 fallback
+    // ── 기본값 (LAYOUT_MAP 활용) ──
+    let layout = '';
+    const mapFn = LAYOUT_MAP[stype];
+    if (mapFn) {
+      layout = mapFn(hasBg, n);
+    } else {
       if (n >= 4)     layout = 'cards';
       else if (n <= 1) layout = hasBg ? 'portfolio' : 'split';
       else             layout = hasBg ? 'split' : 'cards';
     }
 
-    // ── 연속 동일 레이아웃 방지 (section은 독립 구분자이므로 제외) ──
-    if (prevLayout && layout === prevLayout
-        && !['radial','4step','timeline','section','mosaic'].includes(layout)) {
-      const rot = ['split','cards','two_col_text','portfolio','comparison'];
-      layout = rot[(rot.indexOf(layout) + 1) % rot.length];
-    }
-    // ── 번호 목록 패밀리 연속 배치 방지 (numbered_process ↔ process_cards) ──
-    const _numFamily = ['numbered_process','process_cards'];
-    if (_numFamily.includes(layout) && _numFamily.includes(prevLayout) && layout !== prevLayout) {
-      layout = (layoutCount['split'] || 0) <= (layoutCount['cards'] || 0) ? 'split' : 'cards';
-    }
-
-    // ── 빈도 캡: 동일 레이아웃 2회 초과 시 가장 덜 쓰인 레이아웃으로 교체 ──
-    const _FIXED = ['cover','cta','toc','section','radial','4step','timeline','mosaic',
-                    'timeline_h','circle4','converge4','linked4','gear','swot4',
-                    'kpi_cards','timeline_bars','ruled_list',
-                    'numbered_process','process_cards','data_table',
-                    'stat_3col','stat_grid','timeline_v','comparison_vs',
-                    'matrix_2x2','bar_chart',
-                    'pull_quote','big_statement','two_col_text','problem_solution',
-                    'market_circles','checklist_pills','asymmetric_1_3'];
-    const MAX_USE = 2;
-    if (!_FIXED.includes(layout) && (layoutCount[layout] || 0) >= MAX_USE) {
-      const rot = ['split','cards','two_col_text','portfolio','comparison'];
-      const sorted = rot.filter(l => l !== layout)
-                        .sort((a, b) => (layoutCount[a] || 0) - (layoutCount[b] || 0));
-      if (sorted.length) layout = sorted[0];
-    }
-
-    return layout;
+    return _applyLayoutRotationRule(layout, prevLayout, layoutCount);
   }
 
   // ════════════════════════════════════════════════════════

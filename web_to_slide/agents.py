@@ -63,22 +63,35 @@ _NT_C_KEYWORDS = {
     '스포츠', '패션', '미디어',
 }
 
-# B-type 키워드 — 제조·인프라·부품 업종 감지 (C-type 이후 체크)
+# B-type 키워드 — 제조·인프라·부품·건설 업종 감지 (C-type 이후 체크)
 _NT_B_KEYWORDS = {
-    # 한국어 제조/부품 업종
+    # 한국어 제조/부품/건설 업종
     '전자부품', '정밀부품', '중공업', '플랜트', '산업기계', '자동화설비',
     'mlcc', '적층세라믹', '인쇄회로기판', '전자재료', '반도체장비',
-    '부품제조', '소재기업', '제조전문', '설비제조',
-    # 영문 제조/부품 업종
+    '부품제조', '소재기업', '제조전문', '설비제조', '건설', '시공', '건축',
+    '종합건설', '토목', '건자재',
+    # 영문 제조/부품/건설 업종
     'electronic components', 'precision parts', 'heavy industry',
     'industrial machinery', 'semiconductor equipment', 'printed circuit board',
     'electronic materials', 'components manufacturer', 'parts manufacturer',
+    'construction', 'architecture', 'civil engineering', 'building materials',
 }
 
-# D-type 키워드 — 럭셔리/프리미엄 브랜드 감지 (C/B 이후 체크)
+# D-type 키워드 — 럭셔리/프리미엄/B2C 브랜드 감지 (C/B 이후 체크)
 _NT_D_KEYWORDS = {
     'luxury', 'premium', 'haute couture', 'fine dining', 'bespoke', 'prestige',
     '럭셔리', '프리미엄', '하이엔드', '파인다이닝', '명품', '고급',
+    # B2C 헬스케어/건기식
+    '건강기능식품', '이너뷰티', '다이어트', '영양제', 'diet', 'health supplement',
+}
+
+# A-type 명시적 키워드 — 핀테크 / B2B 솔루션 (명시적 감지용, 매칭 안되면 기본이 A이긴 함)
+_NT_A_KEYWORDS = {
+    # 핀테크
+    'fintech', '핀테크', '결제 솔루션', 'payment gateway', '간편결제',
+    # B2B 헬스케어 / 의료 솔루션
+    '의료 인프라', '병원 솔루션', '의료기기', '의료 ai', '의료 데이터',
+    'medical equipment', 'healthcare solution', 'digital healthcare',
 }
 
 # 도메인/회사명 기반 감지 — URL에 포함되면 factbook 내용과 무관하게 C타입 적용
@@ -200,6 +213,8 @@ def _detect_auto_narrative(factbook, company_name, url=None):
             return 'B'
         if any(k in text for k in _NT_D_KEYWORDS):
             return 'D'
+        if any(k in text for k in _NT_A_KEYWORDS):
+            return 'A'
     except Exception as e:
         logger.debug(f"내러티브 타입 자동 감지 오류: {e}")
     return None
