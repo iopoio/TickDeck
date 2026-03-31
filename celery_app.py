@@ -125,9 +125,8 @@ def run_pipeline_task(self, job_id, url, company, narrative_type, mood, purpose,
         return
     except Exception as e:
         import traceback as _tb
-        for _tl in _tb.format_exc().splitlines():
-            on_progress(f"  TB| {_tl}")
-        on_progress(f"  ⚠ 오류 발생: {e}")
+        logger.error(f"파이프라인 오류:\n{_tb.format_exc()}")  # 서버 로그에만
+        on_progress(f"  ⚠ 오류 발생: 잠시 후 재시도합니다")
 
         # 캐시 삭제 후 재시도
         _slug = company or url.split('//')[-1].split('/')[0].replace('.', '')

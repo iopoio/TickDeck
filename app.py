@@ -297,11 +297,20 @@ def auth_logout():
 
 
 @app.route("/api/token/free-charge", methods=["POST"])
+@limiter.limit("2 per day")
 @login_required
 def free_charge():
-    """무료 토큰 2개 충전 (테스트/이벤트용 — 나중에 설문 연동)"""
+    """무료 토큰 2개 충전 (1일 2회 제한)"""
     from flask import session
     user_id = session['user_id']
+    # 오늘 이미 충전했는지 DB 체크
+    db = get_db()
+    today_count = db.execute(
+        "SELECT COUNT(*) c FROM token_history WHERE user_id = ? AND reason = 'free_charge' AND DATE(created_at) = DATE('now')",
+        (user_id,)
+    ).fetchone()['c']
+    if today_count >= 2:
+        return jsonify({"ok": False, "error": "오늘 충전 횟수를 초과했습니다."}), 429
     add_tokens(user_id, 2, 'free_charge')
     user = get_user_by_id(user_id)
     return jsonify({"ok": True, "tokens": user['tokens']})
@@ -497,9 +506,8 @@ def _run(job_id: str, url: str, company: str,
     except Exception as e:
         import traceback as _tb
         err_str = str(e)
-        for _tl in _tb.format_exc().splitlines():
-            on_progress(f"  TB| {_tl}")
-        on_progress(f"  ⚠ 오류 발생: {err_str}")
+        _log("=== TRACEBACK ===\n" + _tb.format_exc() + "=================")  # 서버 로그에만
+        on_progress(f"  ⚠ 오류 발생: 잠시 후 재시도합니다")
         _slug = company or url.split('//')[-1].split('/')[0].replace('.', '')
         clear_slide_cache(_slug, on_progress)
         on_progress("  → 캐시 삭제 후 재시도 중...")
@@ -829,7 +837,7 @@ def submit_feedback():
 
 # ── 관리자 ─────────────────────────────────────────────────────────────────
 ADMIN_EMAILS = set(
-    e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', 'chaejenn@gmail.com').split(',') if e.strip()
+    e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', '').split(',') if e.strip()
 )
 
 def admin_required(f):
