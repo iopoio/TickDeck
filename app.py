@@ -445,9 +445,10 @@ def api_generations():
         "FROM generations WHERE user_id = ? ORDER BY created_at DESC LIMIT 20",
         (user_id,)
     ).fetchall()
-    # 직전 PDF 존재 여부 확인
+    # 직전 PDF 존재 여부 확인 (파일명이 다양할 수 있으므로 *.pdf로 체크)
+    import glob as _glob
     pdf_dir = os.path.join(BASE_DIR, 'user_pdfs', str(user_id))
-    has_pdf = os.path.exists(os.path.join(pdf_dir, 'latest.pdf'))
+    has_pdf = bool(_glob.glob(os.path.join(pdf_dir, '*.pdf')))
     return jsonify({
         "ok": True,
         "generations": [dict(r) for r in rows],
