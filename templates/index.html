@@ -6269,336 +6269,137 @@
 
       // ════════════════════════════════════════════════
       } else {
-        // ── CTA / Thank you (마지막 슬라이드) ────────────────
+        // ── 마지막 슬라이드 (Contact) 또는 CTA 슬라이드 ──
         if (isLastSlide) {
-          // ── Contact page — narrative_type 기반 이미지 없는 디자인 ──
-          const _NT = narrativeType;
-          const _addEwPill = (x, y, clr) => {
-            if (!eyebrow) return;
-            const es = eyebrow.toUpperCase();
-            const ew = Math.min(es.length * 0.11 + 0.50, 5.0), eh = 0.28;
-            s.addShape('roundRect', { x, y, w: ew, h: eh, fill: { color: clr }, line: { type: 'none' }, rectRadius: eh / 2 });
-            s.addText(es, { x, y, w: ew, h: eh, fontSize: 9, bold: true, color: 'FFFFFF', charSpacing: 2, align: 'center', valign: 'middle', fontFace: F });
-          };
+          // ── Contact page (Last Slide) — Redesigned ──
+          s.background = { color: C.tintedDark || '111111' };
 
-          if (_NT === 'C') {
-            // FINALE: 풀다크 + 아티스트명 대형 중앙 + 하단 정보
-            s.background = { color: '111111' };
-            // 데코 대형 원 (배경 깊이감) — 흰색 기반으로 어두운 바탕에서 보이게
-            s.addShape('ellipse', { x: W * 0.18, y: -H * 0.35, w: H * 1.70, h: H * 1.70,
-              fill: { color: 'FFFFFF', transparency: 93 }, line: { type: 'none' } });
-            // 상단 thin accent 라인
-            s.addShape('rect', { x: 0, y: 0, w: W, h: 0.04, fill: { color: 'FFFFFF', transparency: 40 }, line: { type: 'none' } });
-            // 하단 thick accent 바
-            s.addShape('rect', { x: 0, y: H - 0.08, w: W, h: 0.08, fill: { color: 'FFFFFF', transparency: 40 }, line: { type: 'none' } });
-            // 아티스트명 초대형 중앙 — 로고 있으면 이미지, 없으면 텍스트
-            // 세로형 이미지(aspect < 1.2)는 사진이 로고로 오감지된 것 → 텍스트 폴백
-            if (showLogo && logoAspect && logoAspect >= 1.2) {
-              // 로고 중앙 대형 배치 (최대 5" × 2.5" 박스 내 비율 보존)
-              const _lgMaxW = 5.0, _lgMaxH = 2.5;
-              let _lgW, _lgH;
-              if (logoAspect >= _lgMaxW / _lgMaxH) { _lgW = _lgMaxW; _lgH = _lgMaxW / logoAspect; }
-              else { _lgH = _lgMaxH; _lgW = _lgMaxH * logoAspect; }
-              const _lgX = (W - _lgW) / 2;
-              const _lgY = H * 0.17 + (_lgMaxH - _lgH) / 2;
-              s.addImage({ data: `data:image/${logoMime};base64,${logoB64}`,
-                           x: _lgX, y: _lgY, w: _lgW, h: _lgH });
-            } else {
-              s.addText((brand.name || '').toUpperCase(), { x: W * 0.05, y: H * 0.15, w: W * 0.90, h: H * 0.48,
-                fontSize: 68, bold: true, color: 'FFFFFF', wrap: true,
-                align: 'center', valign: 'middle', lineSpacingMultiple: 1.10, fontFace: FD, charSpacing: 6 });
-            }
-            // 구분 가는 선
-            s.addShape('rect', { x: W * 0.35, y: H * 0.63, w: W * 0.30, h: 0.03,
-              fill: { color: 'FFFFFF', transparency: 50 }, line: { type: 'none' } });
-            // 헤드라인 (closing message)
-            if (hl) s.addText(hl, { x: W * 0.10, y: H * 0.65, w: W * 0.80, h: H * 0.13,
-              fontSize: 14, color: 'CCCCCC', wrap: true,
-              align: 'center', valign: 'middle', fontFace: F });
-            // 연락처/링크
-            if (body.length > 0) s.addText(body.slice(0, 3).join('  ·  '), {
-              x: W * 0.10, y: H * 0.78, w: W * 0.80, h: H * 0.10,
-              fontSize: 11, color: '777777', align: 'center', valign: 'middle', fontFace: F, wrap: true });
-            addCopyright('555555');
-            addPageNum('555555');
+          // 은은한 데코 (질감만 살림)
+          s.addShape('ellipse', { x: W * 0.15, y: -H * 0.40, w: H * 1.80, h: H * 1.80,
+            fill: { color: C.primary, transparency: 96 }, line: { type: 'none' } });
 
-          } else if (_NT === 'D') {
-            // Luxury: A-type 기반, bg 07070D, 극세선 primary, 비bold 텍스트
-            s.background = { color: '07070D' };
-            s.addShape('rect', { x: 0, y: 0, w: 0.04, h: H, fill: { color: C.primary }, line: { type: 'none' } });
-            s.addShape('rect', { x: 0, y: 0, w: W, h: 0.03, fill: { color: C.primary }, line: { type: 'none' } });
-            s.addShape('rect', { x: 0, y: H - 0.03, w: W, h: 0.03, fill: { color: C.primary }, line: { type: 'none' } });
-            const _ctBodyD = body.filter(b => !/사업자|등록번호|business.*reg|tax.*num/i.test(b));
-            // 로고 (우상단)
-            if (showLogo && logoAspect && logoAspect >= 1.0 && logoAspect <= 4.0) {
-              const _lgMW = 1.8, _lgMH = 0.50;
-              let _lgW3, _lgH3;
-              if (logoAspect >= _lgMW / _lgMH) { _lgW3 = _lgMW; _lgH3 = _lgMW / logoAspect; }
-              else { _lgH3 = _lgMH; _lgW3 = _lgMH * logoAspect; }
-              s.addImage({ data: `data:image/${logoMime};base64,${logoB64}`,
-                           x: W - _lgW3 - W * 0.06, y: H * 0.10, w: _lgW3, h: _lgH3 });
-            }
-            s.addText(brand.name || '', { x: W * 0.08, y: H * 0.10, w: W * 0.55, h: H * 0.10,
-              fontSize: 12, color: C.primary, charSpacing: 4, align: 'left', valign: 'middle', fontFace: F });
-            s.addShape('rect', { x: W * 0.08, y: H * 0.24, w: W * 0.12, h: 0.03,
-              fill: { color: C.primary, transparency: 30 }, line: { type: 'none' } });
-            s.addText(hl || 'Thank you.', { x: W * 0.08, y: H * 0.27, w: W * 0.84, h: H * 0.44,
-              fontSize: 32, bold: false, color: 'FFFFFF', wrap: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.35, fontFace: FD });
-            s.addShape('rect', { x: W * 0.08, y: H * 0.50, w: W * 0.84, h: 0.01,
-              fill: { color: C.primary, transparency: 50 }, line: { type: 'none' } });
-            if (_ctBodyD.length > 0) s.addText(_ctBodyD.slice(0, 5).map((b, bi, arr) => ({ text: b + (bi < arr.length - 1 ? '\n' : ''), options: {} })), {
-              x: W * 0.08, y: H * 0.53, w: W * 0.84, h: H * 0.35,
-              fontSize: 14, color: '777777', align: 'left', valign: 'top', lineSpacingMultiple: 1.9, fontFace: F, wrap: true });
-            addCopyright('999999');
-            addPageNum('999999');
-
-          } else if (_NT === 'F') {
-            // Education: 좌 Primary + 우 흰 배경 (명함 스타일)
-            s.background = { color: 'FFFFFF' };
-            s.addShape('rect', { x: 0, y: 0, w: W * 0.38, h: H, fill: { color: C.primary }, line: { type: 'none' } });
-            s.addShape('ellipse', { x: -W * 0.22, y: H * 0.55, w: W * 0.54, h: W * 0.54, fill: { color: 'FFFFFF', transparency: 90 }, line: { type: 'none' } });
-            s.addText(brand.name || '', { x: W * 0.04, y: H * 0.10, w: W * 0.30, h: H * 0.12,
-              fontSize: 13, color: 'FFFFFF', charSpacing: 1, align: 'left', valign: 'middle', fontFace: F });
-            s.addShape('rect', { x: W * 0.04, y: H * 0.25, w: W * 0.14, h: 0.04, fill: { color: 'FFFFFF', transparency: 50 }, line: { type: 'none' } });
-            s.addText(hl || 'Thank you.', { x: W * 0.04, y: H * 0.28, w: W * 0.30, h: H * 0.40,
-              fontSize: 24, bold: true, color: 'FFFFFF', wrap: true, align: 'left', valign: 'middle', lineSpacingMultiple: 1.3, fontFace: FD });
-            // 로고 (좌측 패널 하단)
-            if (showLogo && logoAspect && logoAspect >= 1.0 && logoAspect <= 4.0) {
-              const _lgMW4 = W * 0.28, _lgMH4 = 0.45;
-              let _lgW4, _lgH4;
-              if (logoAspect >= _lgMW4 / _lgMH4) { _lgW4 = _lgMW4; _lgH4 = _lgMW4 / logoAspect; }
-              else { _lgH4 = _lgMH4; _lgW4 = _lgMH4 * logoAspect; }
-              s.addImage({ data: `data:image/${logoMime};base64,${logoB64}`,
-                           x: W * 0.04, y: H * 0.78 - _lgH4 / 2, w: _lgW4, h: _lgH4 });
-            }
-            s.addShape('rect', { x: W * 0.42, y: H * 0.20, w: W * 0.55 * 0.50, h: 0.04, fill: { color: C.primary }, line: { type: 'none' } });
-            if (body.length > 0) s.addText(body.slice(0, 5).map(b => ({ text: b + '\n', options: {} })), {
-              x: W * 0.42, y: H * 0.26, w: W * 0.52, h: H * 0.60,
-              fontSize: 14, color: C.textSecondary, align: 'left', valign: 'top', lineSpacingMultiple: 1.9, fontFace: F, wrap: true });
-            addCopyright(C.primary);
-            addPageNum(C.primary);
-
+          // 1. 브랜드/로고 (중앙 대형)
+          if (showLogo && logoAspect && logoAspect >= 1.0) {
+            const maxLgW = 5.0, maxLgH = 1.2;
+            let lgW, lgH;
+            if (logoAspect >= maxLgW / maxLgH) { lgW = maxLgW; lgH = maxLgW / logoAspect; }
+            else { lgH = maxLgH; lgW = maxLgH * logoAspect; }
+            s.addImage({ data: `data:image/${logoMime};base64,${logoB64}`,
+                         x: (W - lgW) / 2, y: H * 0.22, w: lgW, h: lgH });
           } else {
-            // A / B: config-based (bg color only differs)
-            const _ctLS = ({ B: { bg: '08080E' } })[_NT] || { bg: '090912' };
-            s.background = { color: _ctLS.bg };
-            const lpW = W * 0.38;
-
-            // 연락처 필터링: 사업자번호 + LinkedIn URL + 내비게이션 잔류 텍스트 제거
-            const _ctBody = body.filter(b => {
-              if (/사업자|등록번호|business.*reg|tax.*num/i.test(b)) return false;
-              if (/linkedin\.com|instagram\.com|facebook\.com|twitter\.com|youtube\.com/i.test(b)) return false;
-              if (/닫기|인증기관|안내|알림|팝업|레이어/i.test(b)) return false;
-              if (b.trim().length > 120) return false;
-              if (b.trim().length < 5 && !/\d/.test(b)) return false; // "웹와치" 등 의미 없는 짧은 텍스트 제거
-              if (/^웹와치|^웹 와치|^webwatch/i.test(b.trim())) return false;
-              return true;
-            });
-            const _ctFoot = _ctBody.slice(0, 3);
-
-            // ── 좌 Primary 패널 ──
-            s.addShape('rect', { x: 0, y: 0, w: lpW, h: H, fill: { color: C.primary }, line: { type: 'none' } });
-            s.addShape('ellipse', { x: -lpW * 0.35, y: H * 0.52, w: lpW * 1.05, h: lpW * 1.05, fill: { color: 'FFFFFF', transparency: 92 }, line: { type: 'none' } });
-            s.addText(brand.name || '', { x: W * 0.05, y: H * 0.12, w: lpW - W * 0.06, h: H * 0.10,
-              fontSize: 16, bold: true, color: 'FFFFFF', charSpacing: 2, align: 'left', valign: 'middle', fontFace: FH });
-            s.addShape('rect', { x: W * 0.05, y: H * 0.22, w: lpW * 0.30, h: 0.04, fill: { color: 'FFFFFF', transparency: 50 }, line: { type: 'none' } });
-            s.addText(hl || 'Thank you.', { x: W * 0.05, y: H * 0.27, w: lpW - W * 0.06, h: H * 0.50,
-              fontSize: 28, bold: true, color: 'FFFFFF', wrap: true, shrinkText: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FD });
-
-            // ── 우 연락처 본문 ──
-            const rX = lpW + W * 0.05;
-            const rW2 = W - rX - W * 0.04;
-            // 한글 사명 + 대표명 헤더 (스크래핑 잔류 텍스트 필터)
-            const _rawNameKo  = (brand.nameKo  || '').trim();
-            const _rawCeoName = (brand.ceoName || '').trim();
-            // 한국어 사명: 내비게이션 잔류 텍스트("닫기", "|", 2단어 이상 이상한 텍스트) 제거
-            const _nameKo = /닫기|인증기관|안내|\|/.test(_rawNameKo) ? '' : _rawNameKo;
-            // 대표명: 한국어 이름 패턴(2~4자 한자/한글)만 허용, 이상 문자 포함 시 제거
-            const _ceoName = /^[가-힣一-龯]{2,4}$/.test(_rawCeoName) ? _rawCeoName : '';
-            if (_nameKo || _ceoName) {
-              const _hdrParts = [_nameKo, _ceoName ? `대표 ${_ceoName}` : ''].filter(Boolean);
-              s.addText(_hdrParts.join('  |  '), {
-                x: rX, y: H * 0.10, w: rW2, h: 0.32,
-                fontSize: 11, color: 'FFFFFF', bold: false, align: 'left', valign: 'middle',
-                transparency: 20, fontFace: F, wrap: false });
-            }
-            // 상단 accent 라인
-            s.addShape('rect', { x: rX, y: H * 0.24, w: rW2 * 0.55, h: 0.04, fill: { color: C.primary }, line: { type: 'none' } });
-            // 장식 원 (우측 배경 깊이감)
-            const _ctDecoD = H * 1.25;
-            s.addShape('ellipse', { x: rX + rW2 * 0.25, y: H * 0.50 - _ctDecoD / 2, w: _ctDecoD, h: _ctDecoD,
-              fill: { color: C.primary, transparency: 93 }, line: { type: 'none' } });
-            // ── 연락처 아이템: 수직 스택, 우측 중앙 배치 ──
-            if (_ctFoot.length > 0) {
-              const _ctStartY = H * 0.32;
-              const _ctItemH = H * 0.50 / _ctFoot.length;
-              _ctFoot.forEach((item, ci) => {
-                const _iY = _ctStartY + _ctItemH * ci;
-                const _raw = item.replace(/^[^\w\d@가-힣a-zA-Z]+/, '').trim();
-                const _isEmail = /@/.test(_raw);
-                const _isPhone = /^[\d\s\-\+\(\)\.]{7,}$/.test(_raw);
-                const _isAddr = /[시구동로길]\s|[Ff]loor|[Ss]t\.|층|호|번지/.test(_raw);
-                const _isCeo = /CEO|대표|대표이사|Representative/i.test(_raw);
-                const _isWeb = /www\.|\.com|\.co\.kr|\.net|http/i.test(_raw);
-                const _lbl = _isEmail ? 'EMAIL' : _isPhone ? 'PHONE' : _isAddr ? 'ADDRESS' : _isCeo ? 'CEO' : _isWeb ? 'WEBSITE' : 'INFO';
-                s.addText(_lbl, { x: rX, y: _iY, w: rW2, h: 0.24,
-                  fontSize: 8, bold: true, color: C.primary, charSpacing: 2,
-                  align: 'left', valign: 'middle', fontFace: F });
-                const _valFs = _raw.length > 34 ? 11 : 13.5;
-                s.addText(_raw, { x: rX, y: _iY + 0.26, w: rW2, h: 0.40,
-                  fontSize: _valFs, color: 'CCCCCC', align: 'left', valign: 'middle', fontFace: F, wrap: false });
-                if (ci < _ctFoot.length - 1) {
-                  s.addShape('rect', { x: rX, y: _iY + _ctItemH - 0.05, w: rW2 * 0.70, h: 0.012,
-                    fill: { color: 'FFFFFF', transparency: 82 }, line: { type: 'none' } });
-                }
-              });
-            }
-            // 로고 (좌측 패널 하단)
-            if (showLogo && logoAspect && logoAspect >= 1.0 && logoAspect <= 4.0) {
-              const _lgMaxW2 = lpW * 0.55, _lgMaxH2 = 0.50;
-              let _lgW2, _lgH2;
-              if (logoAspect >= _lgMaxW2 / _lgMaxH2) { _lgW2 = _lgMaxW2; _lgH2 = _lgMaxW2 / logoAspect; }
-              else { _lgH2 = _lgMaxH2; _lgW2 = _lgMaxH2 * logoAspect; }
-              s.addImage({ data: `data:image/${logoMime};base64,${logoB64}`,
-                           x: W * 0.05, y: H * 0.80 - _lgH2 / 2, w: _lgW2, h: _lgH2 });
-            }
-            s.addShape('rect', { x: 0, y: H - 0.06, w: W, h: 0.06, fill: { color: C.primary }, line: { type: 'none' } });
-            addCopyright('AAAAAA');
-            addPageNum('AAAAAA');
+            s.addText((companyName || '').toUpperCase(), {
+              x: W * 0.10, y: H * 0.20, w: W * 0.80, h: 1.2,
+              fontSize: 58, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle',
+              fontFace: FH, charSpacing: 4 });
           }
 
+          // 2. 헤드라인 (Closing Message)
+          s.addText(hl || 'Thank you.', {
+            x: W * 0.10, y: H * 0.44, w: W * 0.80, h: 0.60,
+            fontSize: 22, color: C.tintedGray || 'CCCCCC', align: 'center', valign: 'top',
+            fontFace: F });
+
+          // 3. 연락처 정보 (2열 레이아웃)
+          const contactItems = body.filter(b => {
+              if (/사업자|등록번호|business.*reg|tax.*num/i.test(b)) return false;
+              if (b.trim().length > 120) return false;
+              if (b.trim().length < 2) return false;
+              return true;
+          }).slice(0, 4);
+
+          if (contactItems.length > 0) {
+            const ctrlW = W * 0.70;
+            const ctrlX = (W - ctrlW) / 2;
+            const colW  = ctrlW / 2;
+            contactItems.forEach((item, idx) => {
+              const ix = ctrlX + (idx % 2) * colW;
+              const iy = H * 0.62 + Math.floor(idx / 2) * 0.50;
+              s.addText(item, {
+                x: ix, y: iy, w: colW, h: 0.40,
+                fontSize: 12.5, color: 'FFFFFF', align: 'center', valign: 'middle',
+                fontFace: F, transparency: 15 });
+            });
+          }
+
+          // 4. 하단 그라데이션 바
+          try {
+            s.addShape('rect', { x: 0, y: H - 0.08, w: W, h: 0.08,
+              fill: { type: 'gradient', color: [C.primary, C.accentLight], angle: 0 }, line: { type: 'none' } });
+          } catch(e) {
+            s.addShape('rect', { x: 0, y: H - 0.08, w: W, h: 0.08,
+              fill: { color: C.primary }, line: { type: 'none' } });
+          }
+
+          addCopyright('888888', (W - 6) / 2);
+          addPageNum('888888');
 
         } else {
-          // ── CTA page — narrative_type 기반 이미지 없는 디자인 ──
-          const _NT = narrativeType;
-          const _addEwPill2 = (x, y, fillClr, textClr) => {
-            if (!eyebrow) return;
-            const es = eyebrow.toUpperCase();
-            const ew = Math.min(es.length * 0.11 + 0.50, 5.5), eh = 0.30;
-            s.addShape('roundRect', { x, y, w: ew, h: eh, fill: { color: fillClr }, line: { type: 'none' }, rectRadius: eh / 2 });
-            s.addText(es, { x, y, w: ew, h: eh, fontSize: 9, bold: true, color: textClr || 'FFFFFF', charSpacing: 2, align: 'center', valign: 'middle', fontFace: F });
-          };
+          // ── CTA Slide — Redesigned ──
+          s.background = { color: C.tintedDark || '111111' };
 
-          if (_NT === 'D') {
-            // Luxury: A-type 기반, bg 07070D, 극세선 accent, 비bold 센터 텍스트
-            s.background = { color: '07070D' };
-            s.addShape('rect', { x: 0, y: 0, w: W, h: 0.03, fill: { color: C.primary }, line: { type: 'none' } });
-            s.addShape('rect', { x: 0, y: H - 0.03, w: W, h: 0.03, fill: { color: C.primary }, line: { type: 'none' } });
-            s.addShape('rect', { x: W * 0.20, y: H * 0.60, w: W * 0.60, h: 0.01,
-              fill: { color: C.primary, transparency: 40 }, line: { type: 'none' } });
-            // 회사명 (상단 좌)
-            if (brand.name) s.addText(brand.name, { x: W * 0.08, y: H * 0.05, w: W * 0.50, h: 0.28,
-              fontSize: 10, color: C.primary, charSpacing: 3, align: 'left', valign: 'middle', fontFace: F });
-            if (eyebrow) { const _ewWD = Math.min(eyebrow.toUpperCase().length * 0.11 + 0.50, 5.5); _addEwPill2(W / 2 - _ewWD / 2, H * 0.13, C.primary, 'FFFFFF'); }
-            s.addText(hl, { x: W * 0.08, y: H * 0.24, w: W * 0.84, h: H * 0.35,
-              fontSize: 38, bold: false, color: 'FFFFFF', wrap: true, align: 'center', valign: 'top', lineSpacingMultiple: 1.30, fontFace: FD });
-            if (sub) {
-              const bWD = Math.min(W * 0.72, Math.max(sub.length * 0.195 + 1.0, 4.0));
-              s.addShape('roundRect', { x: W / 2 - bWD / 2, y: H * 0.62, w: bWD, h: H * 0.09,
-                fill: { color: '07070D' }, line: { color: C.primary, width: 0.5 }, rectRadius: 0.14 });
-              s.addText(sub, { x: W / 2 - bWD / 2, y: H * 0.62, w: bWD, h: H * 0.09,
-                fontSize: 17, bold: false, color: 'FFFFFF', align: 'center', valign: 'middle', fontFace: F, wrap: false });
-            }
-            if (body.length > 0) {
-              const bodyYD = sub ? H * 0.73 : H * 0.63;
-              s.addText(body.slice(0, 3).map(b => '·  ' + b.replace(/^\[[a-z][a-z0-9-]*\]\s*/i, '')).join('\n'), {
-                x: W * 0.12, y: bodyYD, w: W * 0.76, h: H - bodyYD - H * 0.07,
-                fontSize: 14, color: '666666', wrap: true, align: 'center', valign: 'top', lineSpacingMultiple: 1.6, fontFace: F });
-            }
+          // 은은한 데코
+          s.addShape('ellipse', { x: -W * 0.15, y: -H * 0.20, w: H * 1.2, h: H * 1.2,
+            fill: { color: C.primary, transparency: 97 }, line: { type: 'none' } });
 
-          } else if (_NT === 'C') {
-            // Creative CTA: 다크 풀배경 + 데코 원 + 좌 primary bar (커버와 동일 디자인)
-            s.background = { color: '0A0A14' };
-            // 우상단 대형 데코 원 (커버와 동일)
-            s.addShape('ellipse', { x: W * 0.52, y: -H * 0.30, w: H * 1.15, h: H * 1.15,
-              fill: { color: C.primary, transparency: 85 }, line: { type: 'none' } });
-            // 우하단 소형 데코 원
-            s.addShape('ellipse', { x: W * 0.82, y: H * 0.62, w: H * 0.55, h: H * 0.55,
-              fill: { color: C.primary, transparency: 90 }, line: { type: 'none' } });
-            // 좌 primary bar (커버와 동일)
-            s.addShape('rect', { x: 0, y: 0, w: W * 0.028, h: H,
-              fill: { color: C.primary }, line: { type: 'none' } });
-            // 상단/하단 primary band
-            s.addShape('rect', { x: 0, y: 0, w: W, h: H * 0.012,
-              fill: { color: C.primary }, line: { type: 'none' } });
-            s.addShape('rect', { x: 0, y: H - 0.06, w: W, h: 0.06,
-              fill: { color: C.primary }, line: { type: 'none' } });
-            // 회사명 (우상단)
-            if (brand.name) s.addText(brand.name, { x: W * 0.50, y: H * 0.04, w: W * 0.44, h: 0.28,
-              fontSize: 9, color: 'FFFFFF', charSpacing: 2, transparency: 40, align: 'right', valign: 'middle', fontFace: F });
-            // eyebrow
-            if (eyebrow) s.addText(eyebrow.toUpperCase(), { x: W * 0.07, y: H * 0.11, w: W * 0.60, h: H * 0.08,
-              fontSize: 11, bold: true, color: 'FFFFFF', charSpacing: 5, align: 'left', valign: 'middle', fontFace: F });
-            // 헤드라인
-            const _ctaCHlFs = hl.length > 22 ? 30 : hl.length > 14 ? 38 : 46;
-            s.addText(hl, { x: W * 0.07, y: H * 0.22, w: W * 0.76, h: H * 0.46,
-              fontSize: _ctaCHlFs, bold: true, color: 'FFFFFF',
-              wrap: true, align: 'left', valign: 'middle', lineSpacingMultiple: 1.25, fontFace: FD });
-            // body (연락처 등)
-            if (body.length > 0) s.addText(body.slice(0, 3).map(b => '·  ' + b.replace(/^\[[a-z][a-z0-9-]*\]\s*/i, '')).join('\n'), {
-              x: W * 0.07, y: H * 0.70, w: W * 0.86, h: H * 0.22,
-              fontSize: 15, color: 'CCCCCC', wrap: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.6, fontFace: F });
-
-          } else if (_NT === 'F') {
-            // Education: 흰 배경 + 좌 primary accent bar + 다크 텍스트
-            s.background = { color: 'FAFAFA' };
-            s.addShape('rect', { x: 0, y: 0, w: W * 0.008, h: H, fill: { color: C.primary }, line: { type: 'none' } });
-            s.addShape('rect', { x: 0, y: 0, w: W, h: 0.06, fill: { color: C.primary }, line: { type: 'none' } });
-            s.addShape('rect', { x: 0, y: H - 0.06, w: W, h: 0.06, fill: { color: C.primary }, line: { type: 'none' } });
-            // 회사명 (상단 우)
-            if (brand.name) s.addText(brand.name, { x: W * 0.50, y: H * 0.01, w: W * 0.44, h: 0.04,
-              fontSize: 8, color: 'FFFFFF', charSpacing: 1, align: 'right', valign: 'middle', fontFace: F });
-            _addEwPill2(W * 0.06, H * 0.12, C.primary, 'FFFFFF');
-            s.addText(hl, { x: W * 0.06, y: H * 0.25, w: W * 0.80, h: H * 0.35,
-              fontSize: 36, bold: true, color: C.textPrimary, wrap: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FD });
-            if (body.length > 0) s.addText(body.slice(0, 3).map(b => '·  ' + b.replace(/^\[[a-z][a-z0-9-]*\]\s*/i, '')).join('\n'), {
-              x: W * 0.06, y: H * 0.62, w: W * 0.86, h: H * 0.26,
-              fontSize: 15, color: C.textSecondary, wrap: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.5, fontFace: F });
-
-          } else {
-            // A (default) / B: config-based 통합 렌더
-            const _ctR = ({
-              B: {
-                bg: '08080E',
-                decoClr: C.primary, decoTr1: 88, decoTr2: 90,
-                topBarClr: C.primary, topBarTr: 50, botBarClr: C.primary, botBarTr: 0,
-                ewFill: C.primary, ewText: 'FFFFFF',
-                subFill: C.primary, subText: 'FFFFFF', bodyClr: 'BBBBBB'
-              }
-            })[_NT] || {
-              bg: C.primary,
-              decoClr: 'FFFFFF', decoTr1: 88, decoTr2: 92,
-              topBarClr: 'FFFFFF', topBarTr: 60, botBarClr: 'FFFFFF', botBarTr: 60,
-              ewFill: 'FFFFFF', ewText: C.primary,
-              subFill: 'FFFFFF', subText: C.primary, bodyClr: 'FFFFFF'
-            };
-            s.background = { color: _ctR.bg };
-            s.addShape('ellipse', { x: W * 0.68, y: -H * 0.22, w: H * 1.02, h: H * 1.02, fill: { color: _ctR.decoClr, transparency: _ctR.decoTr1 }, line: { type: 'none' } });
-            s.addShape('ellipse', { x: -W * 0.07, y: H * 0.58, w: W * 0.24, h: W * 0.24, fill: { color: _ctR.decoClr, transparency: _ctR.decoTr2 }, line: { type: 'none' } });
-            s.addShape('rect', { x: 0, y: 0, w: W, h: 0.05, fill: { color: _ctR.topBarClr, transparency: _ctR.topBarTr }, line: { type: 'none' } });
-            s.addShape('rect', { x: 0, y: H - 0.05, w: W, h: 0.05, fill: { color: _ctR.botBarClr, transparency: _ctR.botBarTr }, line: { type: 'none' } });
-            // 회사명 (상단 바 내)
-            if (brand.name) s.addText(brand.name, { x: W * 0.08, y: 0, w: W * 0.84, h: 0.05,
-              fontSize: 8, color: 'FFFFFF', charSpacing: 1, transparency: 30, align: 'center', valign: 'middle', fontFace: F });
-            if (eyebrow) { const _ewWR = Math.min(eyebrow.toUpperCase().length * 0.11 + 0.50, 5.5); _addEwPill2(W / 2 - _ewWR / 2, H * 0.13, _ctR.ewFill, _ctR.ewText); }
-            s.addText(hl, { x: W * 0.08, y: H * 0.24, w: W * 0.84, h: H * 0.35,
-              fontSize: 36, bold: true, color: 'FFFFFF', wrap: true, align: 'center', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FD });
-            if (sub) {
-              const bW = Math.min(W * 0.72, Math.max(sub.length * 0.195 + 1.0, 4.0));
-              s.addShape('roundRect', { x: W / 2 - bW / 2, y: H * 0.62, w: bW, h: H * 0.09, fill: { color: _ctR.subFill }, line: { type: 'none' }, rectRadius: 0.14 });
-              s.addText(sub, { x: W / 2 - bW / 2, y: H * 0.62, w: bW, h: H * 0.09, fontSize: 17, bold: true, color: _ctR.subText, align: 'center', valign: 'middle', fontFace: F, wrap: false });
-            }
-            if (body.length > 0) {
-              const bodyY = sub ? H * 0.73 : H * 0.63;
-              s.addText(body.slice(0, 3).map(b => '·  ' + b.replace(/^\[[a-z][a-z0-9-]*\]\s*/i, '')).join('\n'), {
-                x: W * 0.12, y: bodyY, w: W * 0.76, h: H - bodyY - H * 0.07,
-                fontSize: 15, color: _ctR.bodyClr, wrap: true, align: 'center', valign: 'top', lineSpacingMultiple: 1.5, fontFace: F });
-            }
+          // 1. Eyebrow
+          if (eyebrow) {
+            s.addText(eyebrow.toUpperCase(), {
+              x: 0, y: H * 0.14, w: W, h: 0.30,
+              fontSize: 11, bold: true, color: C.primary, charSpacing: 4, align: 'center', fontFace: F });
           }
 
-          addCopyright(_NT === 'C' || _NT === 'F' ? (_NT === 'F' ? C.textSecondary : C.primary) : 'FFFFFF');
+          // 2. Headline
+          s.addText(hl, {
+            x: W * 0.10, y: H * 0.22, w: W * 0.80, h: 1.0,
+            fontSize: 42, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle',
+            fontFace: FD, lineSpacingMultiple: 1.2 });
+
+          // 3. Subheadline (No Box)
+          if (sub) {
+            s.addText(sub, {
+              x: W * 0.10, y: H * 0.40, w: W * 0.80, h: 0.50,
+              fontSize: 18, color: C.tintedGray || 'CCCCCC', align: 'center', valign: 'top',
+              fontFace: F });
+          }
+
+          // 4. 3-Column Cards with Numbers
+          const ctaItems = body.slice(0, 3);
+          if (ctaItems.length > 0) {
+            const gridW = W * 0.85;
+            const cardGap = 0.40;
+            const cardW = (gridW - cardGap * (ctaItems.length - 1)) / ctaItems.length;
+            const startX = (W - gridW) / 2;
+            
+            ctaItems.forEach((item, idx) => {
+              const cx = startX + idx * (cardW + cardGap);
+              const cy = H * 0.55;
+              const ch = 1.40;
+
+              // Number (01, 02, 03)
+              s.addText(String(idx + 1).padStart(2, '0'), {
+                x: cx, y: cy, w: cardW, h: 0.35,
+                fontSize: 14, bold: true, color: C.primary, align: 'center', fontFace: F });
+
+              // Item Text
+              s.addText(item.replace(/^\[[a-z][a-z0-9-]*\]\s*/i, ''), {
+                x: cx, y: cy + 0.40, w: cardW, h: ch - 0.40,
+                fontSize: 13, color: 'FFFFFF', align: 'center', valign: 'top',
+                fontFace: F, wrap: true, lineSpacingMultiple: 1.3 });
+            });
+          }
+
+          // 5. 하단 그라데이션 바
+          try {
+            s.addShape('rect', { x: 0, y: H - 0.08, w: W, h: 0.08,
+              fill: { type: 'gradient', color: [C.primary, C.accentLight], angle: 0 }, line: { type: 'none' } });
+          } catch(e) {
+            s.addShape('rect', { x: 0, y: H - 0.08, w: W, h: 0.08,
+              fill: { color: C.primary }, line: { type: 'none' } });
+          }
+
+          addCopyright('888888', (W - 6) / 2);
           addFavicon();
-          addPageNum(_NT === 'C' || _NT === 'F' ? (_NT === 'F' ? C.textSecondary : C.primary) : 'FFFFFF');
+          addPageNum('888888');
         } // end else (CTA, not last)
       }
 
