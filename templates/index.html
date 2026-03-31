@@ -1218,6 +1218,8 @@
     await fetch('/api/auth/logout', { method: 'POST' });
     _currentUser = null;
     _showAuthForm();
+    // 페이지 새로고침으로 모든 상태 완전 초기화
+    location.reload();
   }
 
   // 페이지 로드 시 인증 확인
