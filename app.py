@@ -583,7 +583,12 @@ def generate():
         _parsed = urlparse(url)
         _host = (_parsed.hostname or '').lower()
         _blocked = ('localhost', '127.0.0.1', '0.0.0.0', '[::1]', 'metadata.google.internal')
-        if _host in _blocked or _host.startswith('10.') or _host.startswith('192.168.') or _host.startswith('172.'):
+        if (_host in _blocked
+            or _host.startswith('10.') or _host.startswith('192.168.') or _host.startswith('172.')
+            or _host.startswith('169.254.')  # 링크-로컬 (AWS 메타데이터 등)
+            or _host.startswith('224.')      # 멀티캐스트
+            or _host.startswith('240.')      # 예약 주소
+        ):
             return jsonify({"error": "내부 네트워크 URL은 사용할 수 없습니다."}), 400
         if not _parsed.scheme in ('http', 'https'):
             return jsonify({"error": "http/https URL만 지원합니다."}), 400
