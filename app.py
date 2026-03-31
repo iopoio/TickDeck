@@ -804,6 +804,8 @@ def _cleanup_stale_processing():
 @login_required
 def active_job():
     """현재 사용자의 진행 중인 작업 복원 — 새로고침 시 SSE 재연결"""
+    # 디버그: 강제 비활성화하여 항상 폼 표시
+    return jsonify({"active": False})
     _cleanup_stale_processing()
     user_id = session['user_id']
     db = get_db()
