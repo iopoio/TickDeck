@@ -25,7 +25,7 @@ celery.conf.update(
     worker_prefetch_multiplier=1,
 )
 
-JOB_TTL = 7200  # 2시간
+JOB_TTL = 21600  # 6시간
 
 # ── Redis 클라이언트 (lazy init) ──────────────────────────────────────────
 _redis = None
