@@ -644,11 +644,11 @@
       <span style="font-size:9px;background:#1C3D5A;color:#fff;padding:2px 6px;border-radius:4px;margin-left:6px;font-weight:600;letter-spacing:0;">Beta</span>
     </a>
     <div id="user-bar" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
-      <a href="{{ t.nav_lang_href }}" style="font-size:11px;color:#7a7e85;text-decoration:none;">{{ t.nav_lang_label }}</a>
+      <a href="{{ t.nav_lang_href }}" style="font-size:11px;color:#7a7e85;text-decoration:none;padding:6px 10px;">{{ t.nav_lang_label }}</a>
       <span id="user-tokens" style="font-size:12px;color:#1C3D5A;font-weight:600;">🎫 2{{ t.nav_tokens_suffix }}</span>
       <span id="user-email" style="font-size:11px;color:#6B7685;"></span>
-      <button onclick="_showHistory()" style="font-size:10px;color:#1C3D5A;background:#F5F3EC;border:1px solid #D8D4CA;border-radius:5px;padding:3px 10px;cursor:pointer;font-weight:500;">{{ t.nav_history_btn }}</button>
-      <button id="logout-btn" onclick="_doLogout()" style="font-size:10px;color:#9E9A90;background:none;border:none;cursor:pointer;text-decoration:underline;">{{ t.nav_logout_btn }}</button>
+      <button onclick="_showHistory()" style="font-size:10px;color:#1C3D5A;background:#F5F3EC;border:1px solid #D8D4CA;border-radius:5px;padding:6px 12px;cursor:pointer;font-weight:500;">{{ t.nav_history_btn }}</button>
+      <button id="logout-btn" onclick="_doLogout()" style="font-size:10px;color:#9E9A90;background:none;border:none;cursor:pointer;text-decoration:underline;padding:6px 8px;">{{ t.nav_logout_btn }}</button>
     </div>
   </div>
 </nav>
@@ -1309,7 +1309,9 @@
       return;
     }
 
-    document.getElementById('btn-generate').disabled = true;
+    const _genBtn = document.getElementById('btn-generate');
+    _genBtn.disabled = true;
+    _genBtn.textContent = '⏳ ' + T.js_generating_btn;
     showPhase('running');
     lastDot = 0;
     setDot(1, 'active');
@@ -2396,14 +2398,16 @@
     // 프리미엄 베리에이션: HSL 기반으로 채도 유지하면서 밝기 조절
     // accentLight: 밝기 +0.22, 채도 -15% → 탁해지지 않는 rich tint
     // accentDeep:  밝기 -0.22, 채도 +8% → 깊고 풍부한 shade
+    const _accentLight = _pm_hslShift(primary, 0.22, -0.15);
     return {
       primary, bg,
       textPrimary:   L ? '111111' : 'F5F5F5',
       textSecondary: L ? '444455' : 'BBBBBB',
       textMuted:     L ? 'AAAAAA' : '777777',
       textOnPrimary: _pm_light(primary) ? '111111' : 'FFFFFF',
-      accentLight:   _pm_hslShift(primary,  0.22, -0.15),  // 채도유지 밝은 틴트
-      accentDark:    _pm_hslShift(primary, -0.22,  0.08),  // 채도강화 깊은 셰이드
+      textOnAccentLight: _pm_light(_accentLight) ? '111111' : 'FFFFFF',  // D14: accentLight 대비 보장
+      accentLight:   _accentLight,
+      accentDark:    _pm_hslShift(primary, -0.22,  0.08),
       lineColor:     L ? _pm_bright(bg,-0.15) : _pm_bright(bg,0.20),
       headerBarBg:   L ? _pm_bright(bg, -0.07) : _pm_bright(bg, 0.18),
     };
@@ -2660,7 +2664,7 @@
       // 카드 배경 (흰 roundRect, G-1: soft shadow)
       s.addShape('roundRect', { x: cx, y: cy, w: cardW, h: cardH,
         fill: { color: 'FFFFFF' },
-        line: { color: C.lineColor, width: 0.75 },
+        line: { color: C.lineColor, width: 0.5 },
         rectRadius: CARD_R, shadow: PM_CARD_SHADOW });
 
       if (isHoriz) {
@@ -3038,7 +3042,7 @@
       }
       // 상단 구분선 (첫 항목 포함)
       s.addShape('line', { x: aX, y: ry, w: aW, h: 0,
-        line: { color: C.lineColor, width: 0.75 } });
+        line: { color: C.lineColor, width: 0.5 } });
 
       // Pill 레이블 (번호 배지)
       const pillW = 0.62, pillH = 0.32;
@@ -3290,7 +3294,7 @@
     const ratios = [1.0, 0.72, 0.50];
     const maxD = Math.min(H - divY - 0.40, 3.80);
     const fills = [C.primary, C.accentLight, 'FFFFFF'];
-    const textColors = [C.textOnPrimary, C.textOnPrimary, C.primary];
+    const textColors = [C.textOnPrimary, C.textOnAccentLight, C.primary];
     const borderColors = [null, null, C.primary];
 
     // 원들을 오른쪽 절반에 배치
@@ -3649,9 +3653,9 @@
 
     // 격자 구분선 (먼저 그림)
     s.addShape('line', { x: areaX + cellW, y: areaY + 0.08, w: 0, h: cellH * 2 - 0.16,
-      line: { color: C.lineColor, width: 0.75 } });
+      line: { color: C.lineColor, width: 0.5 } });
     s.addShape('line', { x: areaX + 0.08, y: areaY + cellH, w: cellW * 2 - 0.16, h: 0,
-      line: { color: C.lineColor, width: 0.75 } });
+      line: { color: C.lineColor, width: 0.5 } });
 
     items.slice(0, 4).forEach((item, idx) => {
       const col = idx % 2, row = idx >> 1;
@@ -3813,7 +3817,7 @@
       // 카드 배경
       s.addShape('roundRect', { x, y, w: qW, h: qH,
         fill: { color: _pm_bright(C.primary, 0.91) },
-        line: { color: C.lineColor, width: 0.75 }, rectRadius: 0.14, shadow: PM_CARD_SHADOW });
+        line: { color: C.lineColor, width: 0.5 }, rectRadius: 0.14, shadow: PM_CARD_SHADOW });
       // 헤더 (primary 텍스트)
       s.addText(labels[i], { x: x+0.18, y: y+0.10, w: qW-0.36, h: hdrH,
         fontFace: FH, fontSize: 14, bold: true, color: C.primary,
@@ -4410,7 +4414,7 @@
 
       // 카드 배경 (흰 roundRect + 테두리)
       s.addShape('roundRect', { x: aX, y: cy, w: aW, h: cardH,
-        fill: { color: 'FFFFFF' }, line: { color: C.lineColor, width: 0.75 },
+        fill: { color: 'FFFFFF' }, line: { color: C.lineColor, width: 0.5 },
         rectRadius: r });
       // 좌측 accent 바 (개별 카드 느낌 강화)
       s.addShape('rect', { x: aX, y: cy + r, w: 0.05, h: cardH - r * 2,
@@ -6797,6 +6801,7 @@
     _showErrorHint(msg || '');
     showPhase('error');
     document.getElementById('btn-generate').disabled = false;
+    document.getElementById('btn-generate').textContent = T.js_generate_btn;
   }
 
   function showPhase(name) {
@@ -6811,6 +6816,7 @@
     currentJobId = null;
     _slideData   = null;
     document.getElementById('btn-generate').disabled = false;
+    document.getElementById('btn-generate').textContent = T.js_generate_btn;
     document.getElementById('terminal').innerHTML     = '';
     document.getElementById('current-step').textContent = '';
     document.getElementById('slide-grid').innerHTML   = '';
