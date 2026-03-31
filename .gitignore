@@ -10,3 +10,6 @@ node_modules/
 instance/
 user_pdfs/
 reference/
+node_modules/
+test-results/
+playwright-report/

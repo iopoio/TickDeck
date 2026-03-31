@@ -2,5 +2,30 @@
   "dependencies": {
     "@google/stitch-sdk": "^0.0.3",
     "node-fetch": "^3.3.2"
-  }
+  },
+  "name": "webtoslide",
+  "version": "1.0.0",
+  "description": "홈페이지 URL 하나면 브랜드 맞춤형 프레젠테이션이 완성됩니다.",
+  "main": "playwright.config.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iopoio/tickdeck.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/iopoio/tickdeck/issues"
+  },
+  "homepage": "https://github.com/iopoio/tickdeck#readme"
 }
