@@ -1,10 +1,2 @@
 User-agent: *
-Allow: /
-Disallow: /app
-Disallow: /admin
-Disallow: /api/
-Disallow: /generate
-Disallow: /stream/
-Disallow: /result/
-
-Sitemap: https://tickdeck.site/sitemap.xml
+Disallow: /

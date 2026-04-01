@@ -554,13 +554,14 @@ def _run(job_id: str, url: str, company: str,
 # ── 라우트 ──────────────────────────────────────────────────────────────────
 @app.route("/")
 def landing():
-    """랜딩 페이지 (서비스 소개)"""
-    return render_template("landing.html", lang="ko", t=T_LANDING_KO)
+    """준비 중 페이지 (일반 공개)"""
+    return render_template("coming_soon.html")
 
 
 @app.route("/app")
+@admin_required
 def app_page():
-    """앱 페이지 (슬라이드 생성)"""
+    """앱 페이지 — 관리자만 접근 가능"""
     resp = make_response(render_template("index.html", lang="ko", t=T_KO))
     resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
     resp.headers["Pragma"] = "no-cache"
@@ -569,17 +570,21 @@ def app_page():
 
 @app.route("/en")
 def landing_en():
-    """English landing page"""
-    return render_template("landing.html", lang="en", t=T_LANDING_EN)
+    """EN 준비 중"""
+    return render_template("coming_soon.html")
 
 
 @app.route("/en/app")
+@admin_required
 def app_page_en():
-    """English app page"""
+    """EN 앱 — 관리자만"""
     resp = make_response(render_template("index.html", lang="en", t=T_EN))
     resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
     resp.headers["Pragma"] = "no-cache"
     return resp
+
+
+## 기존 /en/app은 위에서 @admin_required로 통합됨
 
 
 @app.route("/generate", methods=["POST"])

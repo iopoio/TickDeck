@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TickDeck — 준비 중</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml" />
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: #fbf9f2;
+      color: #1b1c18;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      text-align: center;
+      padding: 40px 24px;
+      max-width: 480px;
+    }
+    .logo {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 40px;
+    }
+    .logo .t { color: #1C3D5A; }
+    .logo .d { color: #5A9E86; }
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      background: #1C3D5A;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-left: 8px;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+    h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 800;
+      color: #1C3D5A;
+      margin-bottom: 16px;
+      line-height: 1.2;
+      text-wrap: balance;
+    }
+    p {
+      font-size: 16px;
+      color: #7a7e85;
+      line-height: 1.7;
+      margin-bottom: 32px;
+      text-wrap: pretty;
+    }
+    .dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5A9E86;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.3s; }
+    .dot:nth-child(3) { animation-delay: 0.6s; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+    .footer {
+      font-size: 12px;
+      color: #9E9A90;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <span class="t">Tick</span><span class="d">Deck</span>
+      <span class="badge">Coming Soon</span>
+    </div>
+    <h1>더 나은 서비스를 준비하고 있어요</h1>
+    <p>
+      URL 하나로 브랜드 맞춤형 프레젠테이션을 만드는<br>
+      AI 슬라이드 생성기, TickDeck이 곧 돌아옵니다.
+    </p>
+    <div class="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="footer">© 2026 TickDeck</div>
+  </div>
+</body>
+</html>
