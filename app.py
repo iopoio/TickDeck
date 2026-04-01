@@ -804,8 +804,6 @@ def _cleanup_stale_processing():
 @login_required
 def active_job():
     """현재 사용자의 진행 중인 작업 복원 — 새로고침 시 SSE 재연결"""
-    # 디버그: 강제 비활성화하여 항상 폼 표시
-    return jsonify({"active": False})
     _cleanup_stale_processing()
     user_id = session['user_id']
     db = get_db()
@@ -816,12 +814,14 @@ def active_job():
     if not row or not row['job_id']:
         return jsonify({"active": False})
     job_id = row['job_id']
-    # Redis에서 실제 상태 확인
+    # Redis에서 실제 상태 확인 (result가 있을 때만 done 반환)
     if USE_CELERY:
         r = _redis_client
         status = r.get(f'job:{job_id}:status')
         if status == 'done':
             result_raw = r.get(f'job:{job_id}:result')
+            if not result_raw:
+                return jsonify({"active": False})  # Redis TTL 만료 → 폼 표시
             return jsonify({"active": True, "job_id": job_id, "status": "done", "url": row['url']})
         elif status == 'error':
             return jsonify({"active": True, "job_id": job_id, "status": "error", "url": row['url']})
