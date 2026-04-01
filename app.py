@@ -20,7 +20,7 @@ try:
 except ImportError:
     pass  # python-dotenv 없으면 os.environ만 사용
 from pathlib import Path
-from i18n import T_KO, T_EN
+from i18n import T_KO, T_EN, T_LANDING_KO, T_LANDING_EN
 
 # Windows cp949 환경에서 이모지·유니코드 출력 오류 방지
 if hasattr(sys.stdout, 'reconfigure'):
@@ -555,7 +555,7 @@ def _run(job_id: str, url: str, company: str,
 @app.route("/")
 def landing():
     """랜딩 페이지 (서비스 소개)"""
-    return render_template("landing.html")
+    return render_template("landing.html", lang="ko", t=T_LANDING_KO)
 
 
 @app.route("/app")
@@ -570,7 +570,7 @@ def app_page():
 @app.route("/en")
 def landing_en():
     """English landing page"""
-    return render_template("landing_en.html")
+    return render_template("landing.html", lang="en", t=T_LANDING_EN)
 
 
 @app.route("/en/app")
@@ -824,7 +824,38 @@ def preview_cover():
         )
     except Exception as e:
         _log(f"[preview-cover] Error: {e}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "커버 생성 중 오류가 발생했습니다."}), 500
+
+
+@app.route("/api/merge-cover", methods=["POST"])
+def merge_cover_api():
+    """Phase 1.5: PptxGenJS PPTX의 커버를 python-pptx 커버로 교체 (로컬 테스트용)"""
+    try:
+        pptx_file = request.files.get('file')
+        brand_json = request.form.get('brand', '{}')
+        headline = request.form.get('headline', '')
+        sub = request.form.get('sub', '')
+        logo_b64 = request.form.get('logo_b64')
+
+        if not pptx_file:
+            return jsonify({"error": "PPTX 파일이 필요합니다."}), 400
+
+        import json
+        brand = json.loads(brand_json)
+        pptx_bytes = pptx_file.read()
+
+        from web_to_slide.pptx_builder import merge_cover
+        merged = merge_cover(pptx_bytes, brand, headline, sub, logo_b64)
+
+        return send_file(
+            io.BytesIO(merged),
+            mimetype='application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            as_attachment=True,
+            download_name='merged_slides.pptx'
+        )
+    except Exception as e:
+        _log(f"[merge-cover] Error: {e}")
+        return jsonify({"error": "커버 병합 중 오류가 발생했습니다."}), 500
 
 
 @app.route("/api/active-job")

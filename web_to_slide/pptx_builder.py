@@ -141,3 +141,73 @@ def build_cover(brand, headline, sub, logo_b64=None):
     output = io.BytesIO()
     prs.save(output)
     return output.getvalue()
+
+
+def merge_cover(pptx_bytes, brand, headline, sub, logo_b64=None):
+    """
+    Phase 1.5: PptxGenJS가 만든 PPTX에서 slide[0]을 python-pptx 커버로 교체.
+    Returns: bytes (병합된 PPTX)
+    """
+    from pptx.opc.constants import RELATIONSHIP_TYPE as RT
+    from copy import deepcopy
+    from lxml import etree
+
+    # 1. PptxGenJS PPTX 열기
+    src_stream = io.BytesIO(pptx_bytes)
+    prs = Presentation(src_stream)
+
+    # 2. python-pptx로 커버 PPTX 생성
+    cover_bytes = build_cover(brand, headline, sub, logo_b64)
+    cover_stream = io.BytesIO(cover_bytes)
+    cover_prs = Presentation(cover_stream)
+    cover_slide = cover_prs.slides[0]
+
+    # 3. 기존 slide[0] 삭제
+    if len(prs.slides) > 0:
+        first_slide = prs.slides[0]
+        rId = None
+        for rel in prs.part.rels.values():
+            if rel.target_part == first_slide.part:
+                rId = rel.rId
+                break
+        if rId:
+            # XML에서 슬라이드 참조 제거
+            sldIdLst = prs.presentation.sldIdLst
+            for sldId in sldIdLst:
+                if sldId.get('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id') == rId:
+                    sldIdLst.remove(sldId)
+                    break
+            # relationship 제거
+            del prs.part.rels[rId]
+
+    # 4. 커버 슬라이드의 XML과 리소스를 복사해서 새 슬라이드로 추가
+    # 간단한 방식: 빈 슬라이드 추가 → XML 교체
+    slide_layout = prs.slide_layouts[6]  # blank layout
+    new_slide = prs.slides.add_slide(slide_layout)
+
+    # 새 슬라이드의 XML을 커버 슬라이드 XML로 교체
+    new_slide_elem = new_slide._element
+    cover_elem = cover_slide._element
+
+    # 기존 spTree 제거 → 커버의 spTree 복사
+    ns = '{http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing}'
+    sp_tree_tag = '{http://schemas.openxmlformats.org/presentationml/2006/main}cSld'
+
+    old_cSld = new_slide_elem.find(sp_tree_tag)
+    new_cSld = deepcopy(cover_elem.find(sp_tree_tag))
+    if old_cSld is not None and new_cSld is not None:
+        parent = new_slide_elem
+        parent.replace(old_cSld, new_cSld)
+
+    # 5. 새 슬라이드를 맨 앞으로 이동
+    sldIdLst = prs.presentation.sldIdLst
+    sldId_elements = list(sldIdLst)
+    if len(sldId_elements) >= 2:
+        last = sldId_elements[-1]  # 방금 추가한 슬라이드
+        sldIdLst.remove(last)
+        sldIdLst.insert(0, last)
+
+    # 6. 저장
+    output = io.BytesIO()
+    prs.save(output)
+    return output.getvalue()
