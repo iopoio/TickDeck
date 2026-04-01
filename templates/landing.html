@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{{ lang }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0TN6W0NHQX"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0TN6W0NHQX');</script>
-  <title>TickDeck — 당신의 웹사이트를 PPT로</title>
-  <meta name="description" content="URL만 입력하면 AI가 브랜드 맞춤형 프레젠테이션을 자동으로 만들어드립니다. 5분 이내 완성." />
-  <link rel="canonical" href="https://tickdeck.site/" />
+  <title>{{ t.landing_title }}</title>
+  <meta name="description" content="{{ t.landing_description }}" />
+  <link rel="canonical" href="{{ t.landing_meta_canonical }}" />
   <link rel="alternate" hreflang="ko" href="https://tickdeck.site/" />
   <link rel="alternate" hreflang="en" href="https://tickdeck.site/en" />
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://tickdeck.site/" />
-  <meta property="og:title" content="TickDeck — 당신의 웹사이트를 PPT로" />
-  <meta property="og:description" content="복잡한 도구나 디자인 스킬 없이, URL 하나면 전문가 수준의 PPT가 완성됩니다." />
+  <meta property="og:url" content="{{ t.landing_og_url }}" />
+  <meta property="og:title" content="{{ t.landing_og_title }}" />
+  <meta property="og:description" content="{{ t.landing_og_description }}" />
   <meta property="og:image" content="https://tickdeck.site/static/img/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:locale" content="{{ t.landing_og_locale }}" />
   <meta property="og:site_name" content="TickDeck" />
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="TickDeck — 당신의 웹사이트를 PPT로" />
-  <meta name="twitter:description" content="URL 하나면 AI가 브랜드 맞춤형 PPT를 5분 이내에 완성합니다." />
+  <meta name="twitter:title" content="{{ t.landing_twitter_title }}" />
+  <meta name="twitter:description" content="{{ t.landing_twitter_description }}" />
   <meta name="twitter:image" content="https://tickdeck.site/static/img/og-image.png" />
   <!-- SEO -->
   <meta name="robots" content="index, follow" />
-  <meta name="keywords" content="PPT 자동생성, 회사소개서, AI PPT, 웹사이트 PPT, 프레젠테이션 자동화, TickDeck" />
+  <meta name="keywords" content="{{ t.landing_keywords }}" />
   <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -295,13 +295,13 @@
 
 <nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="/">
+    <a class="nav-logo" href="{{ t.landing_nav_logo_href }}">
       <span class="t">Tick</span><span class="d">Deck</span>
       <span style="font-size:9px;background:#1C3D5A;color:#fff;padding:2px 7px;border-radius:4px;margin-left:6px;font-weight:600;letter-spacing:0;">Beta</span>
     </a>
     <div style="display:flex;align-items:center;gap:12px;">
-      <a href="/en" style="font-size:12px;color:#7a7e85;text-decoration:none;padding:6px 10px;">🌐 EN</a>
-      <a class="nav-cta" href="/app">시작하기</a>
+      <a href="{{ t.landing_nav_lang_href }}" style="font-size:12px;color:#7a7e85;text-decoration:none;padding:6px 10px;">{{ t.landing_nav_lang_label }}</a>
+      <a class="nav-cta" href="{{ t.landing_app_href }}">{{ t.landing_nav_cta }}</a>
     </div>
   </div>
 </nav>
@@ -311,16 +311,14 @@
     <div>
       <div class="hero-badge">
         <div class="hero-badge-dot"></div>
-        <span class="hero-badge-text">AI 프레젠테이션 생성기</span>
+        <span class="hero-badge-text">{{ t.landing_hero_badge }}</span>
       </div>
-      <h1>당신의 웹사이트를<br><em>PPT로</em> 만들어드립니다</h1>
+      <h1>{{ t.landing_hero_h1 | safe }}</h1>
       <p class="hero-sub">
-        복잡한 도구나 디자인 스킬이 필요 없습니다.<br>
-        URL 하나면 AI가 알아서 브랜드에 맞는<br>
-        프레젠테이션을 <strong>5분 이내에</strong> 완성합니다.
+        {{ t.landing_hero_sub | safe }}
       </p>
-      <a href="/app" class="hero-cta">무료로 시작하기</a>
-      <span class="hero-token">가입 시 <strong>무료 토큰 2개</strong> 제공 · 추가 충전 가능</span>
+      <a href="{{ t.landing_app_href }}" class="hero-cta">{{ t.landing_hero_cta }}</a>
+      <span class="hero-token">{{ t.landing_hero_token | safe }}</span>
     </div>
     <div class="hero-mockup" style="display:none;" id="hero-mockup">
       <div class="hero-mockup-bar"></div>
@@ -348,27 +346,27 @@
 
 <section class="steps">
   <div class="sh">
-    <h2><span>3단계</span>면 충분합니다</h2>
-    <p>복잡한 과정은 없습니다</p>
+    <h2>{{ t.landing_steps_h2 | safe }}</h2>
+    <p>{{ t.landing_steps_p }}</p>
   </div>
   <div class="sg">
     <div class="sc">
       <span class="sc-num">01</span>
       <span class="sc-icon">🔗</span>
-      <h3>URL 입력</h3>
-      <p>홈페이지 주소를 입력하면<br>AI가 자동으로 사이트를 분석합니다</p>
+      <h3>{{ t.landing_step1_h3 }}</h3>
+      <p>{{ t.landing_step1_p | safe }}</p>
     </div>
     <div class="sc">
       <span class="sc-num">02</span>
       <span class="sc-icon">✨</span>
-      <h3>AI 슬라이드 제작</h3>
-      <p>브랜드 컬러, 로고, 핵심 정보를<br>바탕으로 슬라이드를 구성합니다</p>
+      <h3>{{ t.landing_step2_h3 }}</h3>
+      <p>{{ t.landing_step2_p | safe }}</p>
     </div>
     <div class="sc">
       <span class="sc-num">03</span>
       <span class="sc-icon">📥</span>
-      <h3>PPT 다운로드</h3>
-      <p>PPTX 또는 PDF로<br>바로 다운로드할 수 있습니다</p>
+      <h3>{{ t.landing_step3_h3 }}</h3>
+      <p>{{ t.landing_step3_p | safe }}</p>
     </div>
   </div>
 </section>
@@ -376,20 +374,20 @@
 <section class="value">
   <div class="value-inner">
     <div class="vt">
-      <h2>AI를 몰라도,<br>디자인을 몰라도</h2>
-      <p>TickDeck은 당신의 웹사이트에서 브랜드 정체성을 읽어내고, 전문가 수준의 회사소개서를 자동으로 완성합니다.</p>
+      <h2>{{ t.landing_value_h2 | safe }}</h2>
+      <p>{{ t.landing_value_p }}</p>
       <div class="vf">
         <div class="vfi">
           <div class="vfi-icon">🎨</div>
-          <div><h4>브랜드 컬러 자동 추출</h4><p>웹사이트의 CSS, 로고, 파비콘에서 브랜드 컬러를 분석합니다</p></div>
+          <div><h4>{{ t.landing_vfi1_h4 }}</h4><p>{{ t.landing_vfi1_p }}</p></div>
         </div>
         <div class="vfi">
           <div class="vfi-icon">📊</div>
-          <div><h4>설득력 있는 구성</h4><p>문제 제기부터 해결책까지, 논리적인 흐름으로 구성됩니다</p></div>
+          <div><h4>{{ t.landing_vfi2_h4 }}</h4><p>{{ t.landing_vfi2_p }}</p></div>
         </div>
         <div class="vfi">
           <div class="vfi-icon">⚡</div>
-          <div><h4>5분 이내 완성</h4><p>URL 입력부터 PPT 다운로드까지, 기다리는 동안 커피 한 잔이면 됩니다</p></div>
+          <div><h4>{{ t.landing_vfi3_h4 }}</h4><p>{{ t.landing_vfi3_p }}</p></div>
         </div>
       </div>
     </div>
@@ -403,23 +401,23 @@
 
 <section class="aud">
   <div class="aud-inner">
-    <h2><span class="g">이런 분들</span><span class="b">이 사용합니다</span></h2>
-    <p>IT에 익숙하지 않아도, 디자인을 못 해도 괜찮습니다</p>
+    <h2>{{ t.landing_audience_h2 | safe }}</h2>
+    <p>{{ t.landing_audience_p }}</p>
     <div class="ag">
       <div class="ac">
         <span class="ac-emoji">🏢</span>
-        <h4>중소기업 대표님</h4>
-        <p>투자자, 파트너에게 보여줄 회사소개서가 급하게 필요할 때. 디자인 외주 없이 바로 완성합니다.</p>
+        <h4>{{ t.landing_ac1_h4 }}</h4>
+        <p>{{ t.landing_ac1_p }}</p>
       </div>
       <div class="ac">
         <span class="ac-emoji">💼</span>
-        <h4>영업·사업개발 담당자</h4>
-        <p>고객사마다 다른 제안서를 빠르게 만들어야 할 때. URL만 바꾸면 맞춤 자료가 됩니다.</p>
+        <h4>{{ t.landing_ac2_h4 }}</h4>
+        <p>{{ t.landing_ac2_p }}</p>
       </div>
       <div class="ac">
         <span class="ac-emoji">🚀</span>
-        <h4>스타트업 팀</h4>
-        <p>IR 자료, 브랜드 소개, 서비스 설명이 동시에 필요할 때. 용도별로 키만 바꿔 생성합니다.</p>
+        <h4>{{ t.landing_ac3_h4 }}</h4>
+        <p>{{ t.landing_ac3_p }}</p>
       </div>
     </div>
   </div>
@@ -427,9 +425,9 @@
 
 <section class="bcta">
   <div class="bcta-inner">
-    <h2>지금 바로 시작하세요</h2>
-    <p>URL 하나로 전문가 수준의 프레젠테이션을 만들어 보세요</p>
-    <a href="/app" class="bcta-btn">무료로 시작하기</a>
+    <h2>{{ t.landing_bcta_h2 }}</h2>
+    <p>{{ t.landing_bcta_p }}</p>
+    <a href="{{ t.landing_app_href }}" class="bcta-btn">{{ t.landing_bcta_btn }}</a>
   </div>
 </section>
 
@@ -437,12 +435,12 @@
 <div class="footer-inner" style="flex-direction:column;gap:16px;padding:40px 40px;">
   <div style="font-size:18px;font-weight:800;color:var(--primary);letter-spacing:-0.02em;">TickDeck</div>
   <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:center;align-items:center;">
-    <a href="#" style="color:var(--on-surface-muted);">이용약관</a>
-    <a href="#" style="color:var(--on-surface-muted);">개인정보처리방침</a>
-    <a href="mailto:chaejenn@gmail.com" style="color:var(--on-surface-muted);">문의하기</a>
+    <a href="#" style="color:var(--on-surface-muted);">{{ t.landing_footer_terms }}</a>
+    <a href="#" style="color:var(--on-surface-muted);">{{ t.landing_footer_privacy }}</a>
+    <a href="mailto:chaejenn@gmail.com" style="color:var(--on-surface-muted);">{{ t.landing_footer_contact }}</a>
   </div>
   <button onclick="document.getElementById('coffee-modal-landing').style.display='flex'"
-     style="margin-top:12px;padding:6px 16px;background:#F5E6D3;border:1px solid #E8D5BF;border-radius:6px;color:#6B4C30;font-size:12px;font-weight:600;cursor:pointer;">☕ 커피 한 잔 후원하기</button>
+     style="margin-top:12px;padding:6px 16px;background:#F5E6D3;border:1px solid #E8D5BF;border-radius:6px;color:#6B4C30;font-size:12px;font-weight:600;cursor:pointer;">{{ t.landing_footer_coffee_btn }}</button>
   <p style="font-size:11px;color:var(--on-surface-muted);opacity:0.6;">© 2026 TickDeck. All rights reserved. v11.0</p>
 </div>
 </footer>
@@ -451,17 +449,17 @@
 <div id="coffee-modal-landing" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1200;align-items:center;justify-content:center;padding:16px;"
      onclick="if(event.target===this)this.style.display='none'">
   <div id="coffee-modal-inner" style="background:#fff;border-radius:14px;padding:32px;width:calc(100% - 32px);max-width:380px;text-align:center;box-shadow:0 8px 32px rgba(28,61,90,0.15);">
-    <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">☕ 커피 한 잔 후원하기</h3>
-    <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:12px;">서비스 유지비로 소중히 사용됩니다</p>
+    <h3 style="font-size:16px;font-weight:700;color:#1C3D5A;margin-bottom:4px;">{{ t.landing_modal_coffee_title }}</h3>
+    <p style="font-size:12px;color:#374151;line-height:1.5;margin-bottom:12px;">{{ t.landing_modal_coffee_desc }}</p>
     <a href="https://qr.kakaopay.com/Ej7jwjA5a9c406915" target="_blank">
-      <img src="/static/img/coffee_qr.png" alt="카카오페이 QR" style="width:240px;max-width:85%;border-radius:10px;margin-bottom:8px;">
+      <img src="/static/img/coffee_qr.png" alt="{{ t.landing_modal_coffee_alt }}" style="width:240px;max-width:85%;border-radius:10px;margin-bottom:8px;">
     </a>
-    <p style="font-size:10px;color:#9E9A90;margin-bottom:12px;">모바일: 이미지 클릭 · PC: QR 스캔</p>
+    <p style="font-size:10px;color:#9E9A90;margin-bottom:12px;">{{ t.landing_modal_coffee_qr_hint }}</p>
     <div style="border-top:1px solid #F0EDE6;padding-top:12px;margin-top:4px;">
-      <p style="font-size:10px;color:#9E9A90;margin-bottom:8px;">해외 결제</p>
+      <p style="font-size:10px;color:#9E9A90;margin-bottom:8px;">{{ t.landing_modal_coffee_intl }}</p>
       <div id="kofi-btn-landing"></div>
     </div>
-    <button onclick="document.getElementById('coffee-modal-landing').style.display='none'" style="background:none;border:none;color:#9E9A90;font-size:12px;cursor:pointer;margin-top:10px;">닫기</button>
+    <button onclick="document.getElementById('coffee-modal-landing').style.display='none'" style="background:none;border:none;color:#9E9A90;font-size:12px;cursor:pointer;margin-top:10px;">{{ t.landing_modal_coffee_close }}</button>
   </div>
   <script type="text/javascript" src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
   <script>
