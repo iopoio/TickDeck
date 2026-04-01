@@ -158,6 +158,23 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
+ADMIN_EMAILS = set(
+    e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', '').split(',') if e.strip()
+)
+
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        from flask import session
+        user_id = session.get('user_id')
+        if not user_id:
+            return redirect('/')
+        user = get_user_by_id(user_id)
+        if not user or user['email'].lower() not in ADMIN_EMAILS:
+            return redirect('/')
+        return f(*args, **kwargs)
+    return decorated
+
 
 # ── Google OAuth 설정 ────────────────────────────────────────────────────────
 GOOGLE_CLIENT_ID     = os.environ.get('GOOGLE_CLIENT_ID', '')
@@ -917,26 +934,7 @@ def submit_feedback():
     return jsonify({"ok": True})
 
 
-# ── 관리자 ─────────────────────────────────────────────────────────────────
-ADMIN_EMAILS = set(
-    e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', '').split(',') if e.strip()
-)
-
-def admin_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        from flask import session
-        user_id = session.get('user_id')
-        if not user_id:
-            # HTML 요청이면 리다이렉트, API면 JSON
-            if request.path == '/admin':
-                return redirect('/app')
-            return jsonify({'error': '로그인이 필요합니다'}), 401
-        user = get_user_by_id(user_id)
-        if not user or user['email'].lower() not in ADMIN_EMAILS:
-            if request.path == '/admin':
-                return redirect('/app')
-            return jsonify({'error': '관리자 권한이 필요합니다'}), 403
+# ── 관리자 (admin_required는 상단에서 정의됨) ────────────────────────────────
         return f(*args, **kwargs)
     return decorated
 
