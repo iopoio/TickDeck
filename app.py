@@ -11,6 +11,7 @@ import tempfile
 import threading
 import time
 import uuid
+import io
 
 # .env 파일 로드 (SECRET_KEY, GEMINI_API_KEY 등)
 try:
@@ -75,6 +76,7 @@ from web_to_slide.database import (
     update_last_login, check_and_deduct_token, refund_token,
     create_generation, complete_generation, add_tokens,
 )
+from web_to_slide.pptx_builder import build_cover
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -798,6 +800,31 @@ def _cleanup_stale_processing():
             db.commit()
     except Exception:
         pass
+
+
+@app.route("/api/preview-cover", methods=["POST"])
+def preview_cover():
+    """
+    Phase 1: 서버사이드 커버 생성 미리보기 API (토큰 소모 없음)
+    """
+    data = request.get_json(force=True) or {}
+    brand = data.get('brand', {})
+    headline = data.get('headline', '')
+    sub = data.get('sub', '')
+    logo_b64 = data.get('logo_b64')
+
+    try:
+        from web_to_slide.pptx_builder import build_cover
+        pptx_bytes = build_cover(brand, headline, sub, logo_b64)
+        return send_file(
+            io.BytesIO(pptx_bytes),
+            mimetype='application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            as_attachment=True,
+            download_name='cover_preview.pptx'
+        )
+    except Exception as e:
+        _log(f"[preview-cover] Error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/active-job")
