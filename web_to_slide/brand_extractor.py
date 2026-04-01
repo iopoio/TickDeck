@@ -1012,6 +1012,15 @@ def download_image_b64(img_url):
     try:
         r = _session.get(img_url, timeout=8)
         if r.status_code == 200:
+            # [검증] 다운로드된 데이터가 실제 이미지인지 확인 (HTML 봇 차단 페이지 등 방지)
+            _c = r.content
+            if _c.startswith((b'<html', b'<!doc', b'<!DOC', b'<HTML')):
+                return None, None, 0, 0
+            # 매직 넘버 확인: PNG(\x89PNG), JPEG(\xff\xd8), GIF(GIF8), WebP(RIFF)
+            if not (_c.startswith(b'\x89PNG') or _c.startswith(b'\xff\xd8') or 
+                    _c.startswith(b'GIF8') or _c.startswith(b'RIFF') or b'<svg' in _c[:500].lower()):
+                return None, None, 0, 0
+
             ct = r.headers.get('content-type', '').split(';')[0].strip()
             if 'image' in ct and 'svg' not in ct:
                 if HAS_PIL:
@@ -1129,6 +1138,16 @@ def capture_logo_transparent(url, logo_url=None):
             r = _session.get(target_url, timeout=12)
             if r.status_code != 200:
                 return None
+            
+            # [검증] 다운로드된 데이터가 실제 이미지인지 확인 (HTML 봇 차단 페이지 등 방지)
+            _c = r.content
+            if _c.startswith((b'<html', b'<!doc', b'<!DOC', b'<HTML')):
+                return None
+            # 매직 넘버 확인: PNG(\x89PNG), JPEG(\xff\xd8), GIF(GIF8), WebP(RIFF)
+            if not (_c.startswith(b'\x89PNG') or _c.startswith(b'\xff\xd8') or 
+                    _c.startswith(b'GIF8') or _c.startswith(b'RIFF') or b'<svg' in _c[:500].lower()):
+                return None
+
             ct = r.headers.get('content-type', '')
             is_svg = target_url.lower().endswith('.svg') or 'svg' in ct
 

@@ -27,7 +27,14 @@
   - feedback_universal.md — 범용적 수정 원칙
   - feedback_no_mckinsey.md — 외부 텍스트 금지
 
-## 5. 배포 규칙
+## 5. 무한루프 방지 (제대리 필독)
+- 같은 에러가 **2회 연속** 나오면 → 멈추고 "어디서 막혔는지" 보고
+- 같은 파일을 **3회 이상** 수정하고 있으면 → 멈추고 접근 방법 재검토 보고
+- 테스트 실패 시 → 같은 fix를 반복하지 말고 원인부터 분석해서 보고
+- 출력이 길어지면 → 핵심만 간결하게. 코드 전문 붙여넣기 금지
+- **"안 되면 멈추고 보고"가 기본 원칙**
+
+## 6. 배포 규칙
 - 서버: `ssh root@146.190.95.11`
 - 배포: `cd /opt/tickdeck/app && git pull origin main && sudo systemctl restart tickdeck && sudo systemctl restart tickdeck-worker`
 - 배포 전 Playwright 테스트 권장: `npx playwright test`

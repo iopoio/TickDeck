@@ -780,6 +780,10 @@ COPY:
    예시: "[rocket] 런칭 단계: 배포 및 모니터링", "[trending-up] 연매출 35% 성장"
    - 아이콘 없이도 정상 동작 (접두사 없으면 아이콘 미표시)
    - 모든 슬라이드에 강제 적용하지 말 것 — 프로세스/KPI 슬라이드에만 사용
+8. [EYEBROW]: The 'eyebrow' field is a short label (2-4 words) above the headline to categorize the slide.
+   It MUST be in the same language as the rest of the slide.
+   GOOD (EN): "SOLUTION", "SERVICE OVERVIEW", "SUCCESS STORY"
+   GOOD (KO): "솔루션", "서비스 개요", "성공 사례"
 
 INFOGRAPHIC SCHEMAS:
 - flowchart : {"steps":  [{"label": "단계명"}, ...]}                         ← 3-5 steps (how_it_works, delivery_model)
@@ -853,6 +857,7 @@ JSON Schema (STRICT — slides array length = your chosen count, 7-10):
       "type": "cover" | "market_challenge" | "pain_analysis" | "solution_overview" | "problem_solution" | "how_it_works" | "proof_results" | "why_us" | "case_study" | "cta_session" | "contact" | "scale_proof" | "delivery_model" | "core_business_1" | "core_business_2" | "creative_approach" | "showcase_work_1" | "showcase_work_2" | "client_list" | "flagship_experience" | "brand_story" | "dual_sided_value" | "scalability_proof" | "ecosystem_partners" | "key_metrics" | "our_process" | "company_history" | "team_credibility" | "curriculum_structure" | "pull_quote" | "big_statement" | "two_col_text" | "positioning_matrix",
       "headline": string,
       "subheadline": string,
+      "eyebrow": string,
       "body": string[],
       "infographic": {"type": string, "data": object},
       "chart_data": {"title": string, "labels": string[], "values": number[], "unit": string},

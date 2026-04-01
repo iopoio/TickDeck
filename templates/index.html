@@ -1958,6 +1958,7 @@
 
   // ── PPTX 생성 ────────────────────────────────────
   async function onClickPptx() {
+    console.log('PPTX START');
     if (!_slideData) return;
     const btn  = document.getElementById('btn-pptx');
     const txt  = document.getElementById('pptx-btn-text');
@@ -4925,7 +4926,7 @@
         s.addText(hl || '목차', {
           x: W * 0.06, y: H * 0.16, w: W * 0.55, h: H * 0.20,
           fontSize: 32, bold: true, color: 'FFFFFF',
-          wrap: true, align: 'left', valign: 'top',
+          wrap: true, shrinkText: true, align: 'left', valign: 'top',
           lineSpacingMultiple: 1.2, fontFace: FH });
 
         // ── 하단 카드 영역 ──
@@ -5047,7 +5048,7 @@
         s.addText(hl, {
           x: cX, y: H * 0.13, w: cW, h: hlH,
           fontSize: hlFsSplit, bold: true, color: splitHlColor,
-          wrap: true, align: 'left', valign: 'top',
+          wrap: true, shrinkText: true, align: 'left', valign: 'top',
           lineSpacingMultiple: 1.25, fontFace: FH });
 
         // PPTMON 포인트 언더라인 (헤드라인 바로 아래)
@@ -5144,7 +5145,7 @@
         s.addText(hl, {
           x: cX, y: H * 0.14, w: cW, h: H * 0.20,
           fontSize: hlFsCards, bold: true, color: isCenter ? 'FFFFFF' : C.textPrimary,
-          wrap: true, align: 'left', valign: 'top',
+          wrap: true, shrinkText: true, align: 'left', valign: 'top',
           lineSpacingMultiple: 1.25, fontFace: FH });
         s.addShape('rect', { x: cX, y: H * 0.36, w: cW * 0.18, h: 0.05,
           fill: { color: C.primary }, line: { type: 'none' } });
@@ -5297,7 +5298,7 @@
             // 헤드라인
             s.addText(hl, { x: W * 0.06, y: H * 0.58, w: W * 0.88, h: H * 0.22,
               fontSize: 32, bold: true, color: 'FFFFFF',
-              wrap: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.2, fontFace: FH });
+              wrap: true, shrinkText: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.2, fontFace: FH });
             // 구분선
             s.addShape('rect', { x: W * 0.06, y: H * 0.80, w: W * 0.12, h: 0.025,
               fill: { color: 'FFFFFF', transparency: 40 }, line: { type: 'none' } });
@@ -5341,7 +5342,7 @@
             const litTxtW2 = litW * 0.87;
             s.addText(hl, { x: litTxtX2, y: H * 0.24, w: litTxtW2, h: H * 0.33,
               fontSize: 30, bold: true, color: '111111',
-              wrap: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FH });
+              wrap: true, shrinkText: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FH });
             s.addShape('rect', { x: litTxtX2, y: H * 0.59, w: litTxtW2 * 0.30, h: 0.025,
               fill: { color: C.primary }, line: { type: 'none' } });
             let pfY3 = H * 0.63;
@@ -5415,7 +5416,7 @@
               align: 'center', valign: 'middle', fontFace: F, wrap: false }); }
           s.addText(hl, { x: cntTxtX, y: H * 0.24, w: cntTxtW, h: H * 0.35,
             fontSize: 30, bold: _pf.hlBold, color: 'FFFFFF',
-            wrap: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FH });
+            wrap: true, shrinkText: true, align: 'left', valign: 'top', lineSpacingMultiple: 1.25, fontFace: FH });
           s.addShape('rect', { x: cntTxtX, y: H * 0.61, w: cntTxtW * 0.35, h: 0.022,
             fill: { color: C.accentLight }, line: { type: 'none' } });
           let _pfY = H * 0.65;
@@ -5489,7 +5490,7 @@
         s.addText(hl, {
           x: W * 0.04, y: H * 0.47, w: secPanW - W * 0.06, h: H * 0.36,
           fontSize: 26, bold: true, color: 'FFFFFF',
-          wrap: true, align: 'left', valign: 'top',
+          wrap: true, shrinkText: true, align: 'left', valign: 'top',
           lineSpacingMultiple: 1.25, fontFace: FH });
 
         // 서브 또는 body pill 태그 (하단)

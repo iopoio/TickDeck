@@ -460,7 +460,7 @@ def generate_slide_json(factbook: str, storyline: list, narrative_type: str,
     _lang_override = ''
     if slide_lang == 'en':
         _lang_override = """⚠️ CRITICAL LANGUAGE OVERRIDE ⚠️
-ALL slide text (headline, subheadline, body[]) MUST be written in ENGLISH.
+ALL slide text (headline, subheadline, eyebrow, body[]) MUST be written in ENGLISH.
 Do NOT write in Korean. Every single text field must be in English.
 Company name (brand.name) should use the original name from the website.
 This is a non-negotiable requirement.

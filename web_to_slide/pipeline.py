@@ -860,7 +860,7 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
 
     # ── 슬라이드 품질 자동 채점 + 규칙 기반 보완 ────────────────────────
     _p("\n[품질 검사] 슬라이드 품질 채점 중...")
-    _slide_scores = [_score_slide(s, slides[i-1] if i > 0 else None) for i, s in enumerate(slides)]
+    _slide_scores = [_score_slide(s, slides[i-1] if i > 0 else None, slide_lang=slide_lang) for i, s in enumerate(slides)]
     _avg = sum(r['total'] for r in _slide_scores) / len(_slide_scores) if slides else 0
     for _i, (_s, _r) in enumerate(zip(slides, _slide_scores)):
         _p(f"  [{_i+1:>2}] {_s.get('type',''):<30} {_r['total']:>4.1f}점  {_r['breakdown']}")
@@ -873,9 +873,9 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
     if _low:
         _p(f"  → 낮은 슬라이드 {len(_low)}개 보완 시도...")
         for _idx, _sl, _sc in _low:
-            _improved = _improve_slide(_sl, _sc)
+            _improved = _improve_slide(_sl, _sc, slide_lang=slide_lang)
             if _improved:
-                _new_sc = _score_slide(_improved, slides[_idx-1] if _idx > 0 else None)
+                _new_sc = _score_slide(_improved, slides[_idx-1] if _idx > 0 else None, slide_lang=slide_lang)
                 if _new_sc['total'] > _sc['total']:
                     slides[_idx] = _improved
                     # 어떤 항목이 개선됐는지 표시
@@ -887,7 +887,7 @@ def run_pipeline(url: str, company_name: str = None, progress_fn=None,
             else:
                 _p(f"    [{_idx+1}] 보완 규칙 없음 — 원본 유지")
         # 재채점
-        _slide_scores = [_score_slide(s, slides[i-1] if i > 0 else None) for i, s in enumerate(slides)]
+        _slide_scores = [_score_slide(s, slides[i-1] if i > 0 else None, slide_lang=slide_lang) for i, s in enumerate(slides)]
         _avg = sum(r['total'] for r in _slide_scores) / len(_slide_scores) if slides else 0
         _p(f"  → 보완 후 평균: {_avg:.1f} / 10.0")
 

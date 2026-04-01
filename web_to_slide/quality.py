@@ -6,7 +6,7 @@ import re
 import copy
 
 
-def _score_slide(slide: dict, prev_slide: dict = None) -> dict:
+def _score_slide(slide: dict, prev_slide: dict = None, slide_lang: str = 'ko') -> dict:
     """슬라이드 품질 채점 — 5개 항목 각 0~10점, 평균 반환
 
     설계 원칙: 올바르게 구성된 슬라이드는 자연스럽게 7.5 이상을 받아야 한다.
@@ -20,18 +20,25 @@ def _score_slide(slide: dict, prev_slide: dict = None) -> dict:
     # 길어질수록 슬라이드에서 가독성 저하 → 엄격하게 감점
     hl_text = (slide.get('headline') or '').strip()
     hl_len = len(hl_text)
+    
+    # 영문/한글 임합 길이 기준 조정
+    _MAX_HL = 22 if slide_lang == 'ko' else 45
+    
     _VAGUE_HL = ['좋은', '최고의', '다양한', '훌륭한', '뛰어난', '혁신적', '전문적',
-                 '맞춤형', '최적화된', '특별한', '더 나은', '새로운 시대', '가능성']
+                 '맞춤형', '최적화된', '특별한', '더 나은', '새로운 시대', '가능성',
+                 'good', 'best', 'various', 'excellent', 'outstanding', 'innovative',
+                 'professional', 'customized', 'optimized', 'special', 'better']
+                 
     if hl_len == 0:
         scores['headline'] = 10
-    elif hl_len <= 22:
+    elif hl_len <= _MAX_HL:
         _hl_base = 10
-        if any(kw in hl_text for kw in _VAGUE_HL):
+        if any(kw in hl_text.lower() for kw in _VAGUE_HL):
             _hl_base = max(_hl_base - 2, 4)
         scores['headline'] = _hl_base
     else:
-        _hl_base = max(4, 10 - (hl_len - 22) // 3)
-        if any(kw in hl_text for kw in _VAGUE_HL):
+        _hl_base = max(4, 10 - (hl_len - _MAX_HL) // 4)
+        if any(kw in hl_text.lower() for kw in _VAGUE_HL):
             _hl_base = max(_hl_base - 2, 4)
         scores['headline'] = _hl_base
 
@@ -86,7 +93,7 @@ def _score_slide(slide: dict, prev_slide: dict = None) -> dict:
 
     # ── 5. 헤드라인-바디 수량 일관성 ──────────────────────────
     # "5단계", "3가지", "4개" 등 숫자 언급이 실제 body 수와 일치하는지 검사
-    _num_match = re.search(r'([2-9]|1[0-2])\s*(단계|가지|개|종|항목|스텝|step)', hl_text, re.IGNORECASE)
+    _num_match = re.search(r'([2-9]|1[0-2])\s*(단계|가지|개|종|항목|스텝|step|Ways|Steps|Key)', hl_text, re.IGNORECASE)
     if _num_match:
         claimed_n = int(_num_match.group(1))
         if nb >= claimed_n:
@@ -111,7 +118,7 @@ def _score_slide(slide: dict, prev_slide: dict = None) -> dict:
     return {'breakdown': scores, 'total': total}
 
 
-def _improve_slide(slide: dict, score: dict):
+def _improve_slide(slide: dict, score: dict, slide_lang: str = 'ko'):
     """점수 낮은 항목을 규칙 기반으로 보완 — 변경 없으면 None 반환"""
     bd = score['breakdown']
     improved = copy.deepcopy(slide)
@@ -125,12 +132,13 @@ def _improve_slide(slide: dict, score: dict):
                 improved['headline'] = hl.split(sep)[0].strip()
                 changed = True; break
         else:
-            improved['headline'] = hl[:22].strip()
+            _cut_len = 22 if slide_lang == 'ko' else 45
+            improved['headline'] = hl[:_cut_len].strip()
             changed = True
 
     # eyebrow 없으면 슬라이드 타입에서 자동 생성
     if bd.get('hierarchy', 10) < 8 and not (improved.get('eyebrow') or '').strip():
-        _ew_map = {
+        _ew_map_ko = {
             'service_pillar': '핵심 서비스', 'problem': '문제 인식',
             'solution': '솔루션',            'benefit': '주요 이점',
             'feature': '주요 기능',          'case_study': '성공 사례',
@@ -141,6 +149,20 @@ def _improve_slide(slide: dict, score: dict):
             'key_metric': '핵심 지표',       'overview': '솔루션 개요',
             'challenge': '시장 현황',        'cta': '지금 시작하기',
         }
+        _ew_map_en = {
+            'service_pillar': 'CORE SERVICES', 'problem': 'THE PROBLEM',
+            'solution': 'SOLUTION',            'benefit': 'KEY BENEFITS',
+            'feature': 'KEY FEATURES',         'case_study': 'CASE STUDY',
+            'team': 'OUR TEAM',                'contact': 'CONTACT',
+            'toc': 'CONTENTS',                 'market': 'MARKET ANALYSIS',
+            'pain': 'PAIN POINTS',             'proof': 'OUR SUCCESS',
+            'why': 'WHY US',                   'how': 'HOW IT WORKS',
+            'key_metric': 'KEY METRICS',       'overview': 'OVERVIEW',
+            'challenge': 'THE CHALLENGE',      'cta': 'GET STARTED',
+        }
+        
+        _ew_map = _ew_map_en if slide_lang == 'en' else _ew_map_ko
+        
         stype2 = improved.get('type', '')
         for key, label in _ew_map.items():
             if key in stype2 and label:
@@ -173,7 +195,7 @@ def _improve_slide(slide: dict, score: dict):
             if '→' in _sub_cand:
                 _sub_cand = _sub_cand.split('→')[-1].strip()
             # 25자 이내로 자르기
-            _sub_cand = _sub_cand[:30].strip()
+            _sub_cand = _sub_cand[:45].strip()
             if len(_sub_cand) >= 8:
                 improved['sub'] = _sub_cand
                 changed = True
@@ -183,7 +205,7 @@ def _improve_slide(slide: dict, score: dict):
     if bd.get('consistency', 10) < 8:
         hl = improved.get('headline', '')
         hl_fixed = re.sub(
-            r'\s*([2-9]|1[0-2])\s*(단계|가지|개|종|항목|스텝|step)\s*',
+            r'\s*([2-9]|1[0-2])\s*(단계|가지|개|종|항목|스텝|step|Ways|Steps|Key)\s*',
             ' ', hl, flags=re.IGNORECASE
         ).strip()
         if hl_fixed != hl and len(hl_fixed) > 3:
@@ -191,3 +213,4 @@ def _improve_slide(slide: dict, score: dict):
             changed = True
 
     return improved if changed else None
+
