@@ -935,9 +935,6 @@ def submit_feedback():
 
 
 # ── 관리자 (admin_required는 상단에서 정의됨) ────────────────────────────────
-        return f(*args, **kwargs)
-    return decorated
-
 
 @app.route("/admin")
 @admin_required
