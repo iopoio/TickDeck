@@ -20,7 +20,8 @@ try:
 except ImportError:
     pass  # python-dotenv 없으면 os.environ만 사용
 from pathlib import Path
-from i18n import T_KO, T_EN, T_LANDING_KO, T_LANDING_EN
+from i18n import T_KO, T_EN
+# T_LANDING_KO/EN은 coming_soon 전환으로 불필요 (랜딩 복원 시 다시 import)
 
 # Windows cp949 환경에서 이모지·유니코드 출력 오류 방지
 if hasattr(sys.stdout, 'reconfigure'):
