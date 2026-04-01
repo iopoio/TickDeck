@@ -240,16 +240,35 @@
 
 ---
 
+## ✅ 추가 완료 (2026-04-02) — python-pptx + 서비스 정리
+
+### python-pptx 서버사이드 생성
+- ✅ **Phase 1: 커버 빌더** — build_cover() 코드 빌드 방식 (v4: flat + 컬러 패널)
+- ✅ **Phase 1.5: merge-cover API** — PptxGenJS PPTX의 커버를 python-pptx로 교체
+- ✅ **PPTX 스킬 설치** — Anthropic 공식 디자인 가이드라인
+- ✅ **MCP 서버 3개 등록** — Office-PowerPoint, ppt-simple, pptx-xlsx
+- ✅ **패키지 설치** — pandas, openpyxl, plotly, markitdown, pptxgenjs(npm)
+- ✅ **디자이너 포트폴리오 학습** — BX/그래픽/회사소개서 패턴
+- ✅ **Interbrand 100대 브랜드 PPT** — 템플릿+데이터 주입 패턴 검증
+
+### 서비스 정리
+- ✅ **"준비 중" 페이지** — tickdeck.site → coming_soon.html
+- ✅ **/app 관리자 전용** — @admin_required (후추님만 접근)
+- ✅ **SEO 전체 차단** — robots.txt Disallow: /
+- ✅ **랜딩 i18n 통합** — landing_en.html 삭제 (제대리)
+
+---
+
 ## 🟡 다음 세션 — 예정 작업
 
-### 슬라이드 품질
-1. **커버 헤드라인 = 회사명 문제** — AI 카피가 가치 제안 대신 회사명을 넣음
-2. **primaryColor 점수 기반 리팩토링** — 로직 설계 + 구현
+### python-pptx Phase 2~3
+1. **커버 디자인 마무리** — pill 크기, 저작권 텍스트, 전체 밸런스
+2. **Phase 2: CTA + Contact** — python-pptx 템플릿
+3. **Phase 3: 콘텐츠 슬라이드 전환** — 전체 서버사이드 (1~2주)
 
 ### 아키텍처 (제대리 적합)
-3. **index.html → pptmon.js 분리** — PPT 엔진 4,500줄 별도 JS (캐싱 가능)
-4. **landing KO/EN i18n 통합** — 랜딩도 app처럼 단일 파일로
-5. **app.py Blueprint 분리** — auth/api/admin/pages 모듈화
+4. **app.py Blueprint 분리** — auth/api/admin/pages 모듈화
+5. **primaryColor 점수 기반 리팩토링** — 로직 설계 + 구현
 
 ### QA
 6. **Playwright 테스트 확장** — 로그인 플로우, 슬라이드 생성 플로우 추가

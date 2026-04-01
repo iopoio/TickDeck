@@ -82,10 +82,13 @@ app.py 전체에 `if USE_CELERY` 분기 산재.
 단계별 캐싱으로 실패 지점부터 재시도 가능.
 **상태: 미착수**
 
-### 🟡 클라이언트 PPTX 렌더링 — 현상 유지 (장기)
+### 🟡 클라이언트 → 서버 PPTX 전환 — 진행 중
 
-서버사이드 python-pptx 이전은 대규모 작업. 당장은 OK.
-**상태: 현상 유지**
+- ✅ Phase 1: python-pptx 커버 빌더 완료
+- ✅ Phase 1.5: merge-cover API 완료
+- ✅ pptmon.js 분리 완료 (index.html -4,261줄)
+- □ Phase 2: CTA + Contact
+- □ Phase 3: 전체 전환
 
 ### ✅ pipeline.py 오케스트레이션 — 양호
 
