@@ -204,15 +204,55 @@
 
 ---
 
+## ✅ 추가 완료 (2026-04-01) — 디자인 리디자인 + QA + 보안 + 아키텍처
+
+### 슬라이드 디자인 리디자인
+- ✅ **틴티드 뉴트럴 컬러 시스템** — tintedDark/tintedLight/tintedGray 자동 생성
+- ✅ **커버 리디자인** — 데코 6→2개, 헤드라인 UP(80px), pill badge, 여백 확대
+- ✅ **CTA 리디자인** — 중앙 정렬 + 01/02/03 카드형 (제대리)
+- ✅ **Contact 리디자인** — 회사명 60px 중앙 + 2열 연락처 (제대리)
+- ✅ **텍스처 보강** — 미세 그리드 라인 3개 + 데코 원 투명도 88% (제대리)
+- ✅ **카드 간격 타이트화** — heading-body 간격 hH 0.44→0.28
+- ✅ **로고 검증** — HTML 봇 차단 페이지 감지 + 매직넘버 체크 (제대리)
+- ✅ **EN eyebrow 한글 수정** — quality.py 영문 폴백 라벨 + 프롬프트 강화 (제대리)
+- ✅ **shrinkText 일괄 적용** — split/cards/toc/portfolio/section 헤드라인 (제대리)
+
+### QA 자동화
+- ✅ **Playwright 30개 테스트** — i18n, 보안, 디자인, 반응형
+- ✅ **QA 시나리오 8개** — 크롬 플러그인 + Playwright 병행
+
+### 보안 추가 (7건)
+- ✅ **OWASP 보안 헤더 6종** — X-Frame-Options, HSTS, nosniff 등
+- ✅ **세션 만료 30일** — PERMANENT_SESSION_LIFETIME
+- ✅ **SSRF 169.254 추가** — 링크-로컬+멀티캐스트+예약 차단
+- ✅ **Rate Limit Redis** — memory:// → Redis 스토리지
+- ✅ **free_charge 1일 2회** — Rate Limit + DB 체크
+- ✅ **TB 로그 서버만** — 프론트 미전달
+- ✅ **429 에러 프론트 표시** — 사용자 친화적 메시지
+
+### 아키텍처 정리
+- ✅ **레거시 삭제** — v4_backup.py(-310KB) + diff/log/stitch 4파일
+- ✅ **KO/EN i18n 통합** — index_en.html 삭제 (-6,330줄)
+- ✅ **M3 getSlideLayout 리팩토링** — LAYOUT_MAP + 헬퍼 함수 분리 (제대리)
+- ✅ **M13 업종별 프롬프트** — 헬스케어/핀테크/건설 (제대리)
+- ✅ **active-job 자동 복원 개선** — Redis TTL 만료 시 폼 표시
+- ✅ **CLAUDE.md 팀 규칙** — 무한루프 방지 + 핸드오프 규칙
+
+---
+
 ## 🟡 다음 세션 — 예정 작업
 
-### 제대리(Gemini) 작업 → 클과장 리뷰
-1. **M3 getSlideLayout 리팩토링** — 180줄 단일 함수 → 모듈화 (대규모, 제대리 적합)
-2. **M13 업종별 프롬프트 변형** — 헬스케어/핀테크/건설 3개 특화 프롬프트
+### 슬라이드 품질
+1. **커버 헤드라인 = 회사명 문제** — AI 카피가 가치 제안 대신 회사명을 넣음
+2. **primaryColor 점수 기반 리팩토링** — 로직 설계 + 구현
 
-### 클과장(Claude) 직접 처리
-3. **primaryColor 점수 기반 리팩토링** — 로직 설계 + 구현
-4. **Playwright 테스트 확장** — 로그인 플로우, 슬라이드 생성 플로우 추가
+### 아키텍처 (제대리 적합)
+3. **index.html → pptmon.js 분리** — PPT 엔진 4,500줄 별도 JS (캐싱 가능)
+4. **landing KO/EN i18n 통합** — 랜딩도 app처럼 단일 파일로
+5. **app.py Blueprint 분리** — auth/api/admin/pages 모듈화
+
+### QA
+6. **Playwright 테스트 확장** — 로그인 플로우, 슬라이드 생성 플로우 추가
 
 ## 🟢 추후 — 스케일업 + 수익화
 
