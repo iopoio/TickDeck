@@ -22,7 +22,8 @@ test.describe('시나리오 6: 디자인 폴리시', () => {
     expect(styles).not.toMatch(/transition\s*:\s*all\b/);
   });
 
-  test('D3. CTA 버튼 active scale 존재 (랜딩)', async ({ page }) => {
+  // SKIP: coming_soon 모드에서는 랜딩 페이지 미노출. 서비스 재오픈 시 test.skip 제거
+  test.skip('D3. CTA 버튼 active scale 존재 (랜딩)', async ({ page }) => {
     await page.goto('/');
     const styles = await page.evaluate(() => {
       const allStyles = [];
@@ -53,7 +54,8 @@ test.describe('시나리오 6: 디자인 폴리시', () => {
     }
   });
 
-  test('D6. 이미지 outline 적용됨 (랜딩)', async ({ page }) => {
+  // SKIP: coming_soon 모드에서는 랜딩 페이지 미노출 (이미지 없음). 서비스 재오픈 시 test.skip 제거
+  test.skip('D6. 이미지 outline 적용됨 (랜딩)', async ({ page }) => {
     await page.goto('/');
     const styles = await page.evaluate(() => {
       const allStyles = [];
@@ -90,7 +92,8 @@ test.describe('시나리오 6: 디자인 폴리시', () => {
     await expect(modal).toHaveAttribute('aria-modal', 'true');
   });
 
-  test('D1. 동심원 border-radius (랜딩)', async ({ page }) => {
+  // SKIP: coming_soon 모드에서는 랜딩 페이지 미노출 (동심원 Mockup 없음). 서비스 재오픈 시 test.skip 제거
+  test.skip('D1. 동심원 border-radius (랜딩)', async ({ page }) => {
     await page.goto('/');
     const styles = await page.evaluate(() => {
       const allStyles = [];

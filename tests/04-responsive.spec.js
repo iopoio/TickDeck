@@ -48,7 +48,8 @@ test.describe('시나리오 7: 반응형', () => {
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
     // TODO: 랜딩 모바일 가로 오버플로우 수정 필요 (scrollWidth 688 > clientWidth 375)
     // 현재는 nav 가시성만 확인
-    await expect(page.locator('nav')).toBeVisible();
+    // SKIP: coming_soon 모드에서는 랜딩 페이지에 nav가 없음. 서비스 재오픈 시 주석 해제 필요
+    // await expect(page.locator('nav')).toBeVisible();
 
     await context.close();
   });

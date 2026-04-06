@@ -6,7 +6,7 @@ module.exports = defineConfig({
   timeout: 60000,
   retries: 0,
   use: {
-    baseURL: 'https://tickdeck.site',
+    baseURL: 'http://localhost:5000',
     headless: true,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',

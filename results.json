@@ -1,0 +1,1317 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\playwright.config.js",
+    "rootDir": "C:/Users/chaej/OneDrive - 성신여자대학교/문서/Automation/WebToSlide/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/chaej/OneDrive - 성신여자대학교/문서/Automation/WebToSlide/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/chaej/OneDrive - 성신여자대학교/문서/Automation/WebToSlide/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 8,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "01-access-i18n.spec.js",
+      "file": "01-access-i18n.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "시나리오 1: 기본 접근 + i18n",
+          "file": "01-access-i18n.spec.js",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "1-1. KO 랜딩 페이지 접근",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1085,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:04.750Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d0bab6b38fde68fd8a43-5eef71e77158826cdcc1",
+              "file": "01-access-i18n.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "1-1. KO 앱 페이지 접근",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2048,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:06.107Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d0bab6b38fde68fd8a43-4e67185e4cd1b3a98c0b",
+              "file": "01-access-i18n.spec.js",
+              "line": 12,
+              "column": 3
+            },
+            {
+              "title": "1-1. KO 텍스트 검증",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1111,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:08.176Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d0bab6b38fde68fd8a43-64d4204f4c45d349400a",
+              "file": "01-access-i18n.spec.js",
+              "line": 18,
+              "column": 3
+            },
+            {
+              "title": "1-1. KO Jinja2 변수 미노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1082,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:09.300Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d0bab6b38fde68fd8a43-e41bf7dc13c72ac2d2e7",
+              "file": "01-access-i18n.spec.js",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "1-2. EN 랜딩 페이지 접근",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 515,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:10.398Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d0bab6b38fde68fd8a43-a804e32f3fb5fd4f9141",
+              "file": "01-access-i18n.spec.js",
+              "line": 45,
+              "column": 3
+            },
+            {
+              "title": "1-2. EN 앱 페이지 접근",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1004,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:10.933Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d0bab6b38fde68fd8a43-72984d0417aaaca367d0",
+              "file": "01-access-i18n.spec.js",
+              "line": 50,
+              "column": 3
+            },
+            {
+              "title": "1-2. EN 텍스트 검증",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1152,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:11.954Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d0bab6b38fde68fd8a43-d9d37b44dab31d8f2186",
+              "file": "01-access-i18n.spec.js",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "1-2. EN 한글 미혼입 (편집 모달 라벨)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1137,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:13.124Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d0bab6b38fde68fd8a43-6ddb67c8737e5be9fcb5",
+              "file": "01-access-i18n.spec.js",
+              "line": 69,
+              "column": 3
+            },
+            {
+              "title": "1-2. EN Jinja2 변수 미노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1050,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:14.281Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d0bab6b38fde68fd8a43-5cacd8f52d95b967b2f5",
+              "file": "01-access-i18n.spec.js",
+              "line": 90,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "02-security.spec.js",
+      "file": "02-security.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "시나리오 3: 보안",
+          "file": "02-security.spec.js",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "3-1. SSRF — localhost 차단",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 389,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:04.727Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "867ec917906cc4590263-5d9a0b51fe04a69b5cef",
+              "file": "02-security.spec.js",
+              "line": 7,
+              "column": 3
+            },
+            {
+              "title": "3-1. SSRF — private IP 차단",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 332,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:05.152Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "867ec917906cc4590263-4ffbd23c16b6a192ff61",
+              "file": "02-security.spec.js",
+              "line": 14,
+              "column": 3
+            },
+            {
+              "title": "3-1. SSRF — 169.254 메타데이터 차단",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 331,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:05.503Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "867ec917906cc4590263-74e67b2d7f9d4532f80a",
+              "file": "02-security.spec.js",
+              "line": 21,
+              "column": 3
+            },
+            {
+              "title": "3-1. SSRF — 10.x.x.x 차단",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 324,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:05.849Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "867ec917906cc4590263-fd4e0d63332fd0824d2a",
+              "file": "02-security.spec.js",
+              "line": 28,
+              "column": 3
+            },
+            {
+              "title": "3-2. Rate Limit — signup 6회 시 429",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2231,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:06.187Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "867ec917906cc4590263-8bbf949a9998b1054a42",
+              "file": "02-security.spec.js",
+              "line": 35,
+              "column": 3
+            },
+            {
+              "title": "3-3. Admin — 비인증 접근 차단",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 317,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"/app\"\u001b[39m\nReceived string:    \u001b[31m\"http://localhost:5000/admin\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"/app\"\u001b[39m\nReceived string:    \u001b[31m\"http://localhost:5000/admin\"\u001b[39m\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\02-security.spec.js:57:25",
+                        "location": {
+                          "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\02-security.spec.js",
+                          "column": 25,
+                          "line": 57
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 55 |\u001b[39m     \u001b[90m// 200이면 /app으로 리다이렉트된 것\u001b[39m\n \u001b[90m 56 |\u001b[39m     \u001b[36mif\u001b[39m (res\u001b[33m.\u001b[39mstatus() \u001b[33m===\u001b[39m \u001b[35m200\u001b[39m) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 57 |\u001b[39m       expect(res\u001b[33m.\u001b[39murl())\u001b[33m.\u001b[39mtoContain(\u001b[32m'/app'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 58 |\u001b[39m     }\n \u001b[90m 59 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 60 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\02-security.spec.js",
+                            "column": 25,
+                            "line": 57
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"/app\"\u001b[39m\nReceived string:    \u001b[31m\"http://localhost:5000/admin\"\u001b[39m\n\n  55 |     // 200이면 /app으로 리다이렉트된 것\n  56 |     if (res.status() === 200) {\n> 57 |       expect(res.url()).toContain('/app');\n     |                         ^\n  58 |     }\n  59 |   });\n  60 |\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\02-security.spec.js:57:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:08.435Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\02-security.spec.js",
+                        "column": 25,
+                        "line": 57
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "867ec917906cc4590263-85185eee5ea3a9ebb19a",
+              "file": "02-security.spec.js",
+              "line": 51,
+              "column": 3
+            },
+            {
+              "title": "3-4. OAuth — state 파라미터 존재",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2046,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:10.585Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "867ec917906cc4590263-88a65a1189dca5334df6",
+              "file": "02-security.spec.js",
+              "line": 61,
+              "column": 3
+            },
+            {
+              "title": "3-5. 에러 메시지 — 시스템 정보 미노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 382,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:12.840Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "867ec917906cc4590263-dd4c5476e1e6da16848c",
+              "file": "02-security.spec.js",
+              "line": 69,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "03-design-polish.spec.js",
+      "file": "03-design-polish.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "시나리오 6: 디자인 폴리시",
+          "file": "03-design-polish.spec.js",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "D2. transition: all 미사용",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1873,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:04.762Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-5dad7c2d199a8539af8b",
+              "file": "03-design-polish.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "D2. 랜딩 transition: all 미사용",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 585,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:06.890Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-b426584ff0bbf3a069da",
+              "file": "03-design-polish.spec.js",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "D3. CTA 버튼 active scale 존재 (랜딩)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 531,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"scale(0.96)\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[39m\n\u001b[31m    * { margin: 0; padding: 0; box-sizing: border-box; }\u001b[39m\n\u001b[31m    body {\u001b[39m\n\u001b[31m      font-family: 'Pretendard', -apple-system, sans-serif;\u001b[39m\n\u001b[31m      background: #fbf9f2;\u001b[39m\n\u001b[31m      color: #1b1c18;\u001b[39m\n\u001b[31m      min-height: 100vh;\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      align-items: center;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      -webkit-font-smoothing: antialiased;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .container {\u001b[39m\n\u001b[31m      text-align: center;\u001b[39m\n\u001b[31m      padding: 40px 24px;\u001b[39m\n\u001b[31m      max-width: 480px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo {\u001b[39m\n\u001b[31m      font-size: 32px;\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      letter-spacing: -0.04em;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo .t { color: #1C3D5A; }\u001b[39m\n\u001b[31m    .logo .d { color: #5A9E86; }\u001b[39m\n\u001b[31m    .badge {\u001b[39m\n\u001b[31m      display: inline-block;\u001b[39m\n\u001b[31m      font-size: 10px;\u001b[39m\n\u001b[31m      background: #1C3D5A;\u001b[39m\n\u001b[31m      color: #fff;\u001b[39m\n\u001b[31m      padding: 3px 8px;\u001b[39m\n\u001b[31m      border-radius: 4px;\u001b[39m\n\u001b[31m      margin-left: 8px;\u001b[39m\n\u001b[31m      font-weight: 600;\u001b[39m\n\u001b[31m      vertical-align: middle;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    h1 {\u001b[39m\n\u001b[31m      font-size: clamp(28px, 5vw, 40px);\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      color: #1C3D5A;\u001b[39m\n\u001b[31m      margin-bottom: 16px;\u001b[39m\n\u001b[31m      line-height: 1.2;\u001b[39m\n\u001b[31m      text-wrap: balance;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    p {\u001b[39m\n\u001b[31m      font-size: 16px;\u001b[39m\n\u001b[31m      color: #7a7e85;\u001b[39m\n\u001b[31m      line-height: 1.7;\u001b[39m\n\u001b[31m      margin-bottom: 32px;\u001b[39m\n\u001b[31m      text-wrap: pretty;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dots {\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      gap: 8px;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot {\u001b[39m\n\u001b[31m      width: 8px;\u001b[39m\n\u001b[31m      height: 8px;\u001b[39m\n\u001b[31m      border-radius: 50%;\u001b[39m\n\u001b[31m      background: #5A9E86;\u001b[39m\n\u001b[31m      animation: pulse 1.5s ease-in-out infinite;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot:nth-child(2) { animation-delay: 0.3s; }\u001b[39m\n\u001b[31m    .dot:nth-child(3) { animation-delay: 0.6s; }\u001b[39m\n\u001b[31m    @keyframes pulse {\u001b[39m\n\u001b[31m      0%, 100% { opacity: 0.3; transform: scale(0.8); }\u001b[39m\n\u001b[31m      50% { opacity: 1; transform: scale(1); }\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .footer {\u001b[39m\n\u001b[31m      font-size: 12px;\u001b[39m\n\u001b[31m      color: #9E9A90;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m  \"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"scale(0.96)\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[39m\n\u001b[31m    * { margin: 0; padding: 0; box-sizing: border-box; }\u001b[39m\n\u001b[31m    body {\u001b[39m\n\u001b[31m      font-family: 'Pretendard', -apple-system, sans-serif;\u001b[39m\n\u001b[31m      background: #fbf9f2;\u001b[39m\n\u001b[31m      color: #1b1c18;\u001b[39m\n\u001b[31m      min-height: 100vh;\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      align-items: center;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      -webkit-font-smoothing: antialiased;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .container {\u001b[39m\n\u001b[31m      text-align: center;\u001b[39m\n\u001b[31m      padding: 40px 24px;\u001b[39m\n\u001b[31m      max-width: 480px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo {\u001b[39m\n\u001b[31m      font-size: 32px;\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      letter-spacing: -0.04em;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo .t { color: #1C3D5A; }\u001b[39m\n\u001b[31m    .logo .d { color: #5A9E86; }\u001b[39m\n\u001b[31m    .badge {\u001b[39m\n\u001b[31m      display: inline-block;\u001b[39m\n\u001b[31m      font-size: 10px;\u001b[39m\n\u001b[31m      background: #1C3D5A;\u001b[39m\n\u001b[31m      color: #fff;\u001b[39m\n\u001b[31m      padding: 3px 8px;\u001b[39m\n\u001b[31m      border-radius: 4px;\u001b[39m\n\u001b[31m      margin-left: 8px;\u001b[39m\n\u001b[31m      font-weight: 600;\u001b[39m\n\u001b[31m      vertical-align: middle;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    h1 {\u001b[39m\n\u001b[31m      font-size: clamp(28px, 5vw, 40px);\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      color: #1C3D5A;\u001b[39m\n\u001b[31m      margin-bottom: 16px;\u001b[39m\n\u001b[31m      line-height: 1.2;\u001b[39m\n\u001b[31m      text-wrap: balance;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    p {\u001b[39m\n\u001b[31m      font-size: 16px;\u001b[39m\n\u001b[31m      color: #7a7e85;\u001b[39m\n\u001b[31m      line-height: 1.7;\u001b[39m\n\u001b[31m      margin-bottom: 32px;\u001b[39m\n\u001b[31m      text-wrap: pretty;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dots {\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      gap: 8px;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot {\u001b[39m\n\u001b[31m      width: 8px;\u001b[39m\n\u001b[31m      height: 8px;\u001b[39m\n\u001b[31m      border-radius: 50%;\u001b[39m\n\u001b[31m      background: #5A9E86;\u001b[39m\n\u001b[31m      animation: pulse 1.5s ease-in-out infinite;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot:nth-child(2) { animation-delay: 0.3s; }\u001b[39m\n\u001b[31m    .dot:nth-child(3) { animation-delay: 0.6s; }\u001b[39m\n\u001b[31m    @keyframes pulse {\u001b[39m\n\u001b[31m      0%, 100% { opacity: 0.3; transform: scale(0.8); }\u001b[39m\n\u001b[31m      50% { opacity: 1; transform: scale(1); }\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .footer {\u001b[39m\n\u001b[31m      font-size: 12px;\u001b[39m\n\u001b[31m      color: #9E9A90;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m  \"\u001b[39m\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js:32:20",
+                        "location": {
+                          "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js",
+                          "column": 20,
+                          "line": 32
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 30 |\u001b[39m       \u001b[36mreturn\u001b[39m allStyles\u001b[33m.\u001b[39mjoin(\u001b[32m'\\n'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m     expect(styles)\u001b[33m.\u001b[39mtoContain(\u001b[32m'scale(0.96)'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 34 |\u001b[39m\n \u001b[90m 35 |\u001b[39m   test(\u001b[32m'D4. text-wrap: balance 적용됨 (랜딩)'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js",
+                            "column": 20,
+                            "line": 32
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"scale(0.96)\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[39m\n\u001b[31m    * { margin: 0; padding: 0; box-sizing: border-box; }\u001b[39m\n\u001b[31m    body {\u001b[39m\n\u001b[31m      font-family: 'Pretendard', -apple-system, sans-serif;\u001b[39m\n\u001b[31m      background: #fbf9f2;\u001b[39m\n\u001b[31m      color: #1b1c18;\u001b[39m\n\u001b[31m      min-height: 100vh;\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      align-items: center;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      -webkit-font-smoothing: antialiased;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .container {\u001b[39m\n\u001b[31m      text-align: center;\u001b[39m\n\u001b[31m      padding: 40px 24px;\u001b[39m\n\u001b[31m      max-width: 480px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo {\u001b[39m\n\u001b[31m      font-size: 32px;\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      letter-spacing: -0.04em;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo .t { color: #1C3D5A; }\u001b[39m\n\u001b[31m    .logo .d { color: #5A9E86; }\u001b[39m\n\u001b[31m    .badge {\u001b[39m\n\u001b[31m      display: inline-block;\u001b[39m\n\u001b[31m      font-size: 10px;\u001b[39m\n\u001b[31m      background: #1C3D5A;\u001b[39m\n\u001b[31m      color: #fff;\u001b[39m\n\u001b[31m      padding: 3px 8px;\u001b[39m\n\u001b[31m      border-radius: 4px;\u001b[39m\n\u001b[31m      margin-left: 8px;\u001b[39m\n\u001b[31m      font-weight: 600;\u001b[39m\n\u001b[31m      vertical-align: middle;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    h1 {\u001b[39m\n\u001b[31m      font-size: clamp(28px, 5vw, 40px);\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      color: #1C3D5A;\u001b[39m\n\u001b[31m      margin-bottom: 16px;\u001b[39m\n\u001b[31m      line-height: 1.2;\u001b[39m\n\u001b[31m      text-wrap: balance;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    p {\u001b[39m\n\u001b[31m      font-size: 16px;\u001b[39m\n\u001b[31m      color: #7a7e85;\u001b[39m\n\u001b[31m      line-height: 1.7;\u001b[39m\n\u001b[31m      margin-bottom: 32px;\u001b[39m\n\u001b[31m      text-wrap: pretty;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dots {\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      gap: 8px;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot {\u001b[39m\n\u001b[31m      width: 8px;\u001b[39m\n\u001b[31m      height: 8px;\u001b[39m\n\u001b[31m      border-radius: 50%;\u001b[39m\n\u001b[31m      background: #5A9E86;\u001b[39m\n\u001b[31m      animation: pulse 1.5s ease-in-out infinite;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot:nth-child(2) { animation-delay: 0.3s; }\u001b[39m\n\u001b[31m    .dot:nth-child(3) { animation-delay: 0.6s; }\u001b[39m\n\u001b[31m    @keyframes pulse {\u001b[39m\n\u001b[31m      0%, 100% { opacity: 0.3; transform: scale(0.8); }\u001b[39m\n\u001b[31m      50% { opacity: 1; transform: scale(1); }\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .footer {\u001b[39m\n\u001b[31m      font-size: 12px;\u001b[39m\n\u001b[31m      color: #9E9A90;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m  \"\u001b[39m\n\n  30 |       return allStyles.join('\\n');\n  31 |     });\n> 32 |     expect(styles).toContain('scale(0.96)');\n     |                    ^\n  33 |   });\n  34 |\n  35 |   test('D4. text-wrap: balance 적용됨 (랜딩)', async ({ page }) => {\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js:32:20"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:07.494Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\test-results\\03-design-polish-시나리오-6-디자-e71d7--CTA-버튼-active-scale-존재-랜딩--chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\test-results\\03-design-polish-시나리오-6-디자-e71d7--CTA-버튼-active-scale-존재-랜딩--chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js",
+                        "column": 20,
+                        "line": 32
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-fb4ed5fad105fadd41e6",
+              "file": "03-design-polish.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "D4. text-wrap: balance 적용됨 (랜딩)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 596,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:10.518Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-38662321cea55ff21dca",
+              "file": "03-design-polish.spec.js",
+              "line": 35,
+              "column": 3
+            },
+            {
+              "title": "D5. 언어 전환 버튼 히트 영역 >= 32px",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1042,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:11.319Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-175a73df9dc2cc9986fe",
+              "file": "03-design-polish.spec.js",
+              "line": 46,
+              "column": 3
+            },
+            {
+              "title": "D6. 이미지 outline 적용됨 (랜딩)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 603,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"outline-offset: -1px\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[39m\n\u001b[31m    * { margin: 0; padding: 0; box-sizing: border-box; }\u001b[39m\n\u001b[31m    body {\u001b[39m\n\u001b[31m      font-family: 'Pretendard', -apple-system, sans-serif;\u001b[39m\n\u001b[31m      background: #fbf9f2;\u001b[39m\n\u001b[31m      color: #1b1c18;\u001b[39m\n\u001b[31m      min-height: 100vh;\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      align-items: center;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      -webkit-font-smoothing: antialiased;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .container {\u001b[39m\n\u001b[31m      text-align: center;\u001b[39m\n\u001b[31m      padding: 40px 24px;\u001b[39m\n\u001b[31m      max-width: 480px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo {\u001b[39m\n\u001b[31m      font-size: 32px;\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      letter-spacing: -0.04em;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo .t { color: #1C3D5A; }\u001b[39m\n\u001b[31m    .logo .d { color: #5A9E86; }\u001b[39m\n\u001b[31m    .badge {\u001b[39m\n\u001b[31m      display: inline-block;\u001b[39m\n\u001b[31m      font-size: 10px;\u001b[39m\n\u001b[31m      background: #1C3D5A;\u001b[39m\n\u001b[31m      color: #fff;\u001b[39m\n\u001b[31m      padding: 3px 8px;\u001b[39m\n\u001b[31m      border-radius: 4px;\u001b[39m\n\u001b[31m      margin-left: 8px;\u001b[39m\n\u001b[31m      font-weight: 600;\u001b[39m\n\u001b[31m      vertical-align: middle;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    h1 {\u001b[39m\n\u001b[31m      font-size: clamp(28px, 5vw, 40px);\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      color: #1C3D5A;\u001b[39m\n\u001b[31m      margin-bottom: 16px;\u001b[39m\n\u001b[31m      line-height: 1.2;\u001b[39m\n\u001b[31m      text-wrap: balance;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    p {\u001b[39m\n\u001b[31m      font-size: 16px;\u001b[39m\n\u001b[31m      color: #7a7e85;\u001b[39m\n\u001b[31m      line-height: 1.7;\u001b[39m\n\u001b[31m      margin-bottom: 32px;\u001b[39m\n\u001b[31m      text-wrap: pretty;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dots {\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      gap: 8px;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot {\u001b[39m\n\u001b[31m      width: 8px;\u001b[39m\n\u001b[31m      height: 8px;\u001b[39m\n\u001b[31m      border-radius: 50%;\u001b[39m\n\u001b[31m      background: #5A9E86;\u001b[39m\n\u001b[31m      animation: pulse 1.5s ease-in-out infinite;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot:nth-child(2) { animation-delay: 0.3s; }\u001b[39m\n\u001b[31m    .dot:nth-child(3) { animation-delay: 0.6s; }\u001b[39m\n\u001b[31m    @keyframes pulse {\u001b[39m\n\u001b[31m      0%, 100% { opacity: 0.3; transform: scale(0.8); }\u001b[39m\n\u001b[31m      50% { opacity: 1; transform: scale(1); }\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .footer {\u001b[39m\n\u001b[31m      font-size: 12px;\u001b[39m\n\u001b[31m      color: #9E9A90;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m  \"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"outline-offset: -1px\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[39m\n\u001b[31m    * { margin: 0; padding: 0; box-sizing: border-box; }\u001b[39m\n\u001b[31m    body {\u001b[39m\n\u001b[31m      font-family: 'Pretendard', -apple-system, sans-serif;\u001b[39m\n\u001b[31m      background: #fbf9f2;\u001b[39m\n\u001b[31m      color: #1b1c18;\u001b[39m\n\u001b[31m      min-height: 100vh;\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      align-items: center;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      -webkit-font-smoothing: antialiased;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .container {\u001b[39m\n\u001b[31m      text-align: center;\u001b[39m\n\u001b[31m      padding: 40px 24px;\u001b[39m\n\u001b[31m      max-width: 480px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo {\u001b[39m\n\u001b[31m      font-size: 32px;\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      letter-spacing: -0.04em;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo .t { color: #1C3D5A; }\u001b[39m\n\u001b[31m    .logo .d { color: #5A9E86; }\u001b[39m\n\u001b[31m    .badge {\u001b[39m\n\u001b[31m      display: inline-block;\u001b[39m\n\u001b[31m      font-size: 10px;\u001b[39m\n\u001b[31m      background: #1C3D5A;\u001b[39m\n\u001b[31m      color: #fff;\u001b[39m\n\u001b[31m      padding: 3px 8px;\u001b[39m\n\u001b[31m      border-radius: 4px;\u001b[39m\n\u001b[31m      margin-left: 8px;\u001b[39m\n\u001b[31m      font-weight: 600;\u001b[39m\n\u001b[31m      vertical-align: middle;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    h1 {\u001b[39m\n\u001b[31m      font-size: clamp(28px, 5vw, 40px);\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      color: #1C3D5A;\u001b[39m\n\u001b[31m      margin-bottom: 16px;\u001b[39m\n\u001b[31m      line-height: 1.2;\u001b[39m\n\u001b[31m      text-wrap: balance;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    p {\u001b[39m\n\u001b[31m      font-size: 16px;\u001b[39m\n\u001b[31m      color: #7a7e85;\u001b[39m\n\u001b[31m      line-height: 1.7;\u001b[39m\n\u001b[31m      margin-bottom: 32px;\u001b[39m\n\u001b[31m      text-wrap: pretty;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dots {\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      gap: 8px;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot {\u001b[39m\n\u001b[31m      width: 8px;\u001b[39m\n\u001b[31m      height: 8px;\u001b[39m\n\u001b[31m      border-radius: 50%;\u001b[39m\n\u001b[31m      background: #5A9E86;\u001b[39m\n\u001b[31m      animation: pulse 1.5s ease-in-out infinite;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot:nth-child(2) { animation-delay: 0.3s; }\u001b[39m\n\u001b[31m    .dot:nth-child(3) { animation-delay: 0.6s; }\u001b[39m\n\u001b[31m    @keyframes pulse {\u001b[39m\n\u001b[31m      0%, 100% { opacity: 0.3; transform: scale(0.8); }\u001b[39m\n\u001b[31m      50% { opacity: 1; transform: scale(1); }\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .footer {\u001b[39m\n\u001b[31m      font-size: 12px;\u001b[39m\n\u001b[31m      color: #9E9A90;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m  \"\u001b[39m\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js:63:20",
+                        "location": {
+                          "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js",
+                          "column": 20,
+                          "line": 63
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 61 |\u001b[39m       \u001b[36mreturn\u001b[39m allStyles\u001b[33m.\u001b[39mjoin(\u001b[32m'\\n'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 62 |\u001b[39m     })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 63 |\u001b[39m     expect(styles)\u001b[33m.\u001b[39mtoContain(\u001b[32m'outline-offset: -1px'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 64 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 65 |\u001b[39m\n \u001b[90m 66 |\u001b[39m   test(\u001b[32m'D10. ESC 키로 모달 닫기 가능'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js",
+                            "column": 20,
+                            "line": 63
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"outline-offset: -1px\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[39m\n\u001b[31m    * { margin: 0; padding: 0; box-sizing: border-box; }\u001b[39m\n\u001b[31m    body {\u001b[39m\n\u001b[31m      font-family: 'Pretendard', -apple-system, sans-serif;\u001b[39m\n\u001b[31m      background: #fbf9f2;\u001b[39m\n\u001b[31m      color: #1b1c18;\u001b[39m\n\u001b[31m      min-height: 100vh;\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      align-items: center;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      -webkit-font-smoothing: antialiased;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .container {\u001b[39m\n\u001b[31m      text-align: center;\u001b[39m\n\u001b[31m      padding: 40px 24px;\u001b[39m\n\u001b[31m      max-width: 480px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo {\u001b[39m\n\u001b[31m      font-size: 32px;\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      letter-spacing: -0.04em;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo .t { color: #1C3D5A; }\u001b[39m\n\u001b[31m    .logo .d { color: #5A9E86; }\u001b[39m\n\u001b[31m    .badge {\u001b[39m\n\u001b[31m      display: inline-block;\u001b[39m\n\u001b[31m      font-size: 10px;\u001b[39m\n\u001b[31m      background: #1C3D5A;\u001b[39m\n\u001b[31m      color: #fff;\u001b[39m\n\u001b[31m      padding: 3px 8px;\u001b[39m\n\u001b[31m      border-radius: 4px;\u001b[39m\n\u001b[31m      margin-left: 8px;\u001b[39m\n\u001b[31m      font-weight: 600;\u001b[39m\n\u001b[31m      vertical-align: middle;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    h1 {\u001b[39m\n\u001b[31m      font-size: clamp(28px, 5vw, 40px);\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      color: #1C3D5A;\u001b[39m\n\u001b[31m      margin-bottom: 16px;\u001b[39m\n\u001b[31m      line-height: 1.2;\u001b[39m\n\u001b[31m      text-wrap: balance;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    p {\u001b[39m\n\u001b[31m      font-size: 16px;\u001b[39m\n\u001b[31m      color: #7a7e85;\u001b[39m\n\u001b[31m      line-height: 1.7;\u001b[39m\n\u001b[31m      margin-bottom: 32px;\u001b[39m\n\u001b[31m      text-wrap: pretty;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dots {\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      gap: 8px;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot {\u001b[39m\n\u001b[31m      width: 8px;\u001b[39m\n\u001b[31m      height: 8px;\u001b[39m\n\u001b[31m      border-radius: 50%;\u001b[39m\n\u001b[31m      background: #5A9E86;\u001b[39m\n\u001b[31m      animation: pulse 1.5s ease-in-out infinite;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot:nth-child(2) { animation-delay: 0.3s; }\u001b[39m\n\u001b[31m    .dot:nth-child(3) { animation-delay: 0.6s; }\u001b[39m\n\u001b[31m    @keyframes pulse {\u001b[39m\n\u001b[31m      0%, 100% { opacity: 0.3; transform: scale(0.8); }\u001b[39m\n\u001b[31m      50% { opacity: 1; transform: scale(1); }\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .footer {\u001b[39m\n\u001b[31m      font-size: 12px;\u001b[39m\n\u001b[31m      color: #9E9A90;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m  \"\u001b[39m\n\n  61 |       return allStyles.join('\\n');\n  62 |     });\n> 63 |     expect(styles).toContain('outline-offset: -1px');\n     |                    ^\n  64 |   });\n  65 |\n  66 |   test('D10. ESC 키로 모달 닫기 가능', async ({ page }) => {\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js:63:20"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:12.376Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\test-results\\03-design-polish-시나리오-6-디자인-폴리시-D6-이미지-outline-적용됨-랜딩--chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\test-results\\03-design-polish-시나리오-6-디자인-폴리시-D6-이미지-outline-적용됨-랜딩--chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js",
+                        "column": 20,
+                        "line": 63
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-f4b361ea90a44ef0c3cc",
+              "file": "03-design-polish.spec.js",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "D10. ESC 키로 모달 닫기 가능",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1141,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:15.153Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-6bc4bae15e0228c48d48",
+              "file": "03-design-polish.spec.js",
+              "line": 66,
+              "column": 3
+            },
+            {
+              "title": "M8. ARIA nav label 존재",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1034,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:16.486Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-4c35c7ec8e3eb7434811",
+              "file": "03-design-polish.spec.js",
+              "line": 80,
+              "column": 3
+            },
+            {
+              "title": "M8. 편집 모달 role=\"dialog\"",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 993,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:17.537Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-0b46f9152b52fd492439",
+              "file": "03-design-polish.spec.js",
+              "line": 86,
+              "column": 3
+            },
+            {
+              "title": "D1. 동심원 border-radius (랜딩)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 529,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"border-radius: 24px\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[39m\n\u001b[31m    * { margin: 0; padding: 0; box-sizing: border-box; }\u001b[39m\n\u001b[31m    body {\u001b[39m\n\u001b[31m      font-family: 'Pretendard', -apple-system, sans-serif;\u001b[39m\n\u001b[31m      background: #fbf9f2;\u001b[39m\n\u001b[31m      color: #1b1c18;\u001b[39m\n\u001b[31m      min-height: 100vh;\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      align-items: center;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      -webkit-font-smoothing: antialiased;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .container {\u001b[39m\n\u001b[31m      text-align: center;\u001b[39m\n\u001b[31m      padding: 40px 24px;\u001b[39m\n\u001b[31m      max-width: 480px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo {\u001b[39m\n\u001b[31m      font-size: 32px;\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      letter-spacing: -0.04em;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo .t { color: #1C3D5A; }\u001b[39m\n\u001b[31m    .logo .d { color: #5A9E86; }\u001b[39m\n\u001b[31m    .badge {\u001b[39m\n\u001b[31m      display: inline-block;\u001b[39m\n\u001b[31m      font-size: 10px;\u001b[39m\n\u001b[31m      background: #1C3D5A;\u001b[39m\n\u001b[31m      color: #fff;\u001b[39m\n\u001b[31m      padding: 3px 8px;\u001b[39m\n\u001b[31m      border-radius: 4px;\u001b[39m\n\u001b[31m      margin-left: 8px;\u001b[39m\n\u001b[31m      font-weight: 600;\u001b[39m\n\u001b[31m      vertical-align: middle;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    h1 {\u001b[39m\n\u001b[31m      font-size: clamp(28px, 5vw, 40px);\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      color: #1C3D5A;\u001b[39m\n\u001b[31m      margin-bottom: 16px;\u001b[39m\n\u001b[31m      line-height: 1.2;\u001b[39m\n\u001b[31m      text-wrap: balance;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    p {\u001b[39m\n\u001b[31m      font-size: 16px;\u001b[39m\n\u001b[31m      color: #7a7e85;\u001b[39m\n\u001b[31m      line-height: 1.7;\u001b[39m\n\u001b[31m      margin-bottom: 32px;\u001b[39m\n\u001b[31m      text-wrap: pretty;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dots {\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      gap: 8px;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot {\u001b[39m\n\u001b[31m      width: 8px;\u001b[39m\n\u001b[31m      height: 8px;\u001b[39m\n\u001b[31m      border-radius: 50%;\u001b[39m\n\u001b[31m      background: #5A9E86;\u001b[39m\n\u001b[31m      animation: pulse 1.5s ease-in-out infinite;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot:nth-child(2) { animation-delay: 0.3s; }\u001b[39m\n\u001b[31m    .dot:nth-child(3) { animation-delay: 0.6s; }\u001b[39m\n\u001b[31m    @keyframes pulse {\u001b[39m\n\u001b[31m      0%, 100% { opacity: 0.3; transform: scale(0.8); }\u001b[39m\n\u001b[31m      50% { opacity: 1; transform: scale(1); }\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .footer {\u001b[39m\n\u001b[31m      font-size: 12px;\u001b[39m\n\u001b[31m      color: #9E9A90;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m  \"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"border-radius: 24px\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[39m\n\u001b[31m    * { margin: 0; padding: 0; box-sizing: border-box; }\u001b[39m\n\u001b[31m    body {\u001b[39m\n\u001b[31m      font-family: 'Pretendard', -apple-system, sans-serif;\u001b[39m\n\u001b[31m      background: #fbf9f2;\u001b[39m\n\u001b[31m      color: #1b1c18;\u001b[39m\n\u001b[31m      min-height: 100vh;\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      align-items: center;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      -webkit-font-smoothing: antialiased;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .container {\u001b[39m\n\u001b[31m      text-align: center;\u001b[39m\n\u001b[31m      padding: 40px 24px;\u001b[39m\n\u001b[31m      max-width: 480px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo {\u001b[39m\n\u001b[31m      font-size: 32px;\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      letter-spacing: -0.04em;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo .t { color: #1C3D5A; }\u001b[39m\n\u001b[31m    .logo .d { color: #5A9E86; }\u001b[39m\n\u001b[31m    .badge {\u001b[39m\n\u001b[31m      display: inline-block;\u001b[39m\n\u001b[31m      font-size: 10px;\u001b[39m\n\u001b[31m      background: #1C3D5A;\u001b[39m\n\u001b[31m      color: #fff;\u001b[39m\n\u001b[31m      padding: 3px 8px;\u001b[39m\n\u001b[31m      border-radius: 4px;\u001b[39m\n\u001b[31m      margin-left: 8px;\u001b[39m\n\u001b[31m      font-weight: 600;\u001b[39m\n\u001b[31m      vertical-align: middle;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    h1 {\u001b[39m\n\u001b[31m      font-size: clamp(28px, 5vw, 40px);\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      color: #1C3D5A;\u001b[39m\n\u001b[31m      margin-bottom: 16px;\u001b[39m\n\u001b[31m      line-height: 1.2;\u001b[39m\n\u001b[31m      text-wrap: balance;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    p {\u001b[39m\n\u001b[31m      font-size: 16px;\u001b[39m\n\u001b[31m      color: #7a7e85;\u001b[39m\n\u001b[31m      line-height: 1.7;\u001b[39m\n\u001b[31m      margin-bottom: 32px;\u001b[39m\n\u001b[31m      text-wrap: pretty;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dots {\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      gap: 8px;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot {\u001b[39m\n\u001b[31m      width: 8px;\u001b[39m\n\u001b[31m      height: 8px;\u001b[39m\n\u001b[31m      border-radius: 50%;\u001b[39m\n\u001b[31m      background: #5A9E86;\u001b[39m\n\u001b[31m      animation: pulse 1.5s ease-in-out infinite;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot:nth-child(2) { animation-delay: 0.3s; }\u001b[39m\n\u001b[31m    .dot:nth-child(3) { animation-delay: 0.6s; }\u001b[39m\n\u001b[31m    @keyframes pulse {\u001b[39m\n\u001b[31m      0%, 100% { opacity: 0.3; transform: scale(0.8); }\u001b[39m\n\u001b[31m      50% { opacity: 1; transform: scale(1); }\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .footer {\u001b[39m\n\u001b[31m      font-size: 12px;\u001b[39m\n\u001b[31m      color: #9E9A90;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m  \"\u001b[39m\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js:101:20",
+                        "location": {
+                          "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js",
+                          "column": 20,
+                          "line": 101
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  99 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 100 |\u001b[39m     \u001b[90m// 외부 24px, 내부 8px 확인\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 101 |\u001b[39m     expect(styles)\u001b[33m.\u001b[39mtoContain(\u001b[32m'border-radius: 24px'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 102 |\u001b[39m     expect(styles)\u001b[33m.\u001b[39mtoContain(\u001b[32m'border-radius: 8px'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 103 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 104 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js",
+                            "column": 20,
+                            "line": 101
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"border-radius: 24px\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[39m\n\u001b[31m    * { margin: 0; padding: 0; box-sizing: border-box; }\u001b[39m\n\u001b[31m    body {\u001b[39m\n\u001b[31m      font-family: 'Pretendard', -apple-system, sans-serif;\u001b[39m\n\u001b[31m      background: #fbf9f2;\u001b[39m\n\u001b[31m      color: #1b1c18;\u001b[39m\n\u001b[31m      min-height: 100vh;\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      align-items: center;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      -webkit-font-smoothing: antialiased;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .container {\u001b[39m\n\u001b[31m      text-align: center;\u001b[39m\n\u001b[31m      padding: 40px 24px;\u001b[39m\n\u001b[31m      max-width: 480px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo {\u001b[39m\n\u001b[31m      font-size: 32px;\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      letter-spacing: -0.04em;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .logo .t { color: #1C3D5A; }\u001b[39m\n\u001b[31m    .logo .d { color: #5A9E86; }\u001b[39m\n\u001b[31m    .badge {\u001b[39m\n\u001b[31m      display: inline-block;\u001b[39m\n\u001b[31m      font-size: 10px;\u001b[39m\n\u001b[31m      background: #1C3D5A;\u001b[39m\n\u001b[31m      color: #fff;\u001b[39m\n\u001b[31m      padding: 3px 8px;\u001b[39m\n\u001b[31m      border-radius: 4px;\u001b[39m\n\u001b[31m      margin-left: 8px;\u001b[39m\n\u001b[31m      font-weight: 600;\u001b[39m\n\u001b[31m      vertical-align: middle;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    h1 {\u001b[39m\n\u001b[31m      font-size: clamp(28px, 5vw, 40px);\u001b[39m\n\u001b[31m      font-weight: 800;\u001b[39m\n\u001b[31m      color: #1C3D5A;\u001b[39m\n\u001b[31m      margin-bottom: 16px;\u001b[39m\n\u001b[31m      line-height: 1.2;\u001b[39m\n\u001b[31m      text-wrap: balance;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    p {\u001b[39m\n\u001b[31m      font-size: 16px;\u001b[39m\n\u001b[31m      color: #7a7e85;\u001b[39m\n\u001b[31m      line-height: 1.7;\u001b[39m\n\u001b[31m      margin-bottom: 32px;\u001b[39m\n\u001b[31m      text-wrap: pretty;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dots {\u001b[39m\n\u001b[31m      display: flex;\u001b[39m\n\u001b[31m      gap: 8px;\u001b[39m\n\u001b[31m      justify-content: center;\u001b[39m\n\u001b[31m      margin-bottom: 40px;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot {\u001b[39m\n\u001b[31m      width: 8px;\u001b[39m\n\u001b[31m      height: 8px;\u001b[39m\n\u001b[31m      border-radius: 50%;\u001b[39m\n\u001b[31m      background: #5A9E86;\u001b[39m\n\u001b[31m      animation: pulse 1.5s ease-in-out infinite;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .dot:nth-child(2) { animation-delay: 0.3s; }\u001b[39m\n\u001b[31m    .dot:nth-child(3) { animation-delay: 0.6s; }\u001b[39m\n\u001b[31m    @keyframes pulse {\u001b[39m\n\u001b[31m      0%, 100% { opacity: 0.3; transform: scale(0.8); }\u001b[39m\n\u001b[31m      50% { opacity: 1; transform: scale(1); }\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m    .footer {\u001b[39m\n\u001b[31m      font-size: 12px;\u001b[39m\n\u001b[31m      color: #9E9A90;\u001b[39m\n\u001b[31m    }\u001b[39m\n\u001b[31m  \"\u001b[39m\n\n   99 |     });\n  100 |     // 외부 24px, 내부 8px 확인\n> 101 |     expect(styles).toContain('border-radius: 24px');\n      |                    ^\n  102 |     expect(styles).toContain('border-radius: 8px');\n  103 |   });\n  104 |\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js:101:20"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:18.548Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\test-results\\03-design-polish-시나리오-6-디자인-폴리시-D1-동심원-border-radius-랜딩--chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\test-results\\03-design-polish-시나리오-6-디자인-폴리시-D1-동심원-border-radius-랜딩--chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\03-design-polish.spec.js",
+                        "column": 20,
+                        "line": 101
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b4353e22aac29d5cc66f-19be54b68c668249332f",
+              "file": "03-design-polish.spec.js",
+              "line": 93,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "04-responsive.spec.js",
+      "file": "04-responsive.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "시나리오 7: 반응형",
+          "file": "04-responsive.spec.js",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "7-1. 모바일 375px 레이아웃",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1833,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:04.723Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7875888c12b19e622c20-b88209a5f3755797a1aa",
+              "file": "04-responsive.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "7-1. 태블릿 768px 레이아웃",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1136,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:06.903Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7875888c12b19e622c20-5e796f160239f912c503",
+              "file": "04-responsive.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "7-1. 모바일 랜딩 페이지",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 5484,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('nav')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('nav')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav')\u001b[22m\n\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\04-responsive.spec.js:51:39",
+                        "location": {
+                          "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\04-responsive.spec.js",
+                          "column": 39,
+                          "line": 51
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 49 |\u001b[39m     \u001b[90m// TODO: 랜딩 모바일 가로 오버플로우 수정 필요 (scrollWidth 688 > clientWidth 375)\u001b[39m\n \u001b[90m 50 |\u001b[39m     \u001b[90m// 현재는 nav 가시성만 확인\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m\n \u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m context\u001b[33m.\u001b[39mclose()\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\04-responsive.spec.js",
+                            "column": 39,
+                            "line": 51
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('nav')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav')\u001b[22m\n\n\n  49 |     // TODO: 랜딩 모바일 가로 오버플로우 수정 필요 (scrollWidth 688 > clientWidth 375)\n  50 |     // 현재는 nav 가시성만 확인\n> 51 |     await expect(page.locator('nav')).toBeVisible();\n     |                                       ^\n  52 |\n  53 |     await context.close();\n  54 |   });\n    at C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\04-responsive.spec.js:51:39"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-06T16:51:08.056Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\test-results\\04-responsive-시나리오-7-반응형-7-1-모바일-랜딩-페이지-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\test-results\\04-responsive-시나리오-7-반응형-7-1-모바일-랜딩-페이지-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\chaej\\OneDrive - 성신여자대학교\\문서\\Automation\\WebToSlide\\tests\\04-responsive.spec.js",
+                        "column": 39,
+                        "line": 51
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7875888c12b19e622c20-5cda62dce325488ba308",
+              "file": "04-responsive.spec.js",
+              "line": 39,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-04-06T16:51:02.900Z",
+    "duration": 16396.653,
+    "expected": 25,
+    "skipped": 0,
+    "unexpected": 5,
+    "flaky": 0
+  }
+}
