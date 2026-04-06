@@ -9,6 +9,7 @@ from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 import io
 import base64
 import colorsys
+import datetime
 
 # ── 컬러 유틸 ──────────────────────────────────────────
 
@@ -147,34 +148,8 @@ def build_cover(brand, headline, sub, logo_b64=None):
     p.font.color.rgb = gray
     p.alignment = PP_ALIGN.LEFT
 
-    # ── 7. 하단 bar (primary — 얇게) ──
-    bar_h = int(H * 0.03)
-    bar = slide.shapes.add_shape(
-        1, 0, int(H - bar_h), W, bar_h
-    )
-    bar.fill.solid()
-    bar.fill.fore_color.rgb = primary
-    bar.line.fill.background()
-
-    # ── 8. 저작권 ──
-    copy_box = slide.shapes.add_textbox(
-        int(W * 0.04), int(H * 0.92), int(W * 0.40), Inches(0.25)
-    )
-    p = copy_box.text_frame.paragraphs[0]
-    import datetime
-    p.text = f"© {datetime.datetime.now().year} {company_name}. All Rights Reserved."
-    p.font.size = Pt(7)
-    p.font.color.rgb = gray
-
-    # ── 9. 페이지 번호 ──
-    pn_box = slide.shapes.add_textbox(
-        int(W * 0.85), int(H * 0.92), int(W * 0.12), Inches(0.25)
-    )
-    p = pn_box.text_frame.paragraphs[0]
-    p.text = "1 / 9"
-    p.font.size = Pt(9)
-    p.font.color.rgb = RGBColor(255, 255, 255)
-    p.alignment = PP_ALIGN.RIGHT
+    # ── 7. 하단 공통 (Bar, Copyright, Page) ──
+    _add_common_elements(slide, primary, gray, company_name, "1 / 9")
 
     # ── 10. 로고 (있으면) ──
     if logo_b64:
@@ -202,10 +177,220 @@ def build_cover(brand, headline, sub, logo_b64=None):
         except Exception:
             pass
 
-    # 저장
     output = io.BytesIO()
     prs.save(output)
     return output.getvalue()
+
+
+def build_cta(brand, headline, sub, steps=None):
+    """
+    CTA 슬라이드를 코드로 빌드.
+    Returns: bytes (PPTX)
+    """
+    prs = Presentation()
+    prs.slide_width = W
+    prs.slide_height = H
+    slide_layout = prs.slide_layouts[6]
+    slide = prs.slides.add_slide(slide_layout)
+
+    primary_hex = brand.get('primaryColor', '#1C3D5A')
+    primary = RGBColor(*_hex_to_rgb(primary_hex))
+    bg_color = _tinted_dark(primary_hex)
+    gray = _tinted_gray(primary_hex)
+    company_name = brand.get('name', 'Company')
+
+    # 1. 배경
+    bg = slide.shapes.add_shape(1, 0, 0, W, H)
+    bg.fill.solid()
+    bg.fill.fore_color.rgb = bg_color
+    bg.line.fill.background()
+
+    # 2. 헤드라인 (중앙 정렬)
+    hl_text = headline or "Next Steps"
+    hl_font_size = _headline_font_size(hl_text)
+    if hl_font_size > Pt(64): hl_font_size = Pt(64) # CTA는 최대 64pt 제한 지침
+
+    hl_w = int(W * 0.8)
+    hl_h = int(H * 0.2)
+    hl_x = int((W - hl_w) / 2)
+    hl_y = int(H * 0.20)
+    
+    hl_box = slide.shapes.add_textbox(hl_x, hl_y, hl_w, hl_h)
+    tf = hl_box.text_frame
+    tf.word_wrap = True
+    p = tf.paragraphs[0]
+    p.text = hl_text
+    p.font.size = hl_font_size
+    p.font.bold = True
+    p.font.color.rgb = RGBColor(255, 255, 255)
+    p.alignment = PP_ALIGN.CENTER
+
+    # 3. 서브텍스트
+    if sub:
+        sub_w = int(W * 0.7)
+        sub_h = int(H * 0.1)
+        sub_x = int((W - sub_w) / 2)
+        sub_y = hl_y + hl_h + Pt(10)
+        sub_box = slide.shapes.add_textbox(sub_x, sub_y, sub_w, sub_h)
+        p = sub_box.text_frame.paragraphs[0]
+        p.text = sub
+        p.font.size = Pt(18)
+        p.font.color.rgb = gray
+        p.alignment = PP_ALIGN.CENTER
+
+    # 4. Steps 카드 (3열)
+    if steps and len(steps) > 0:
+        card_count = min(len(steps), 3)
+        card_w = int(W * 0.26)
+        card_h = int(H * 0.24)
+        gap = int(W * 0.03)
+        total_w = (card_w * card_count) + (gap * (card_count - 1))
+        start_x = int((W - total_w) / 2)
+        card_y = int(H * 0.52)
+
+        for i in range(card_count):
+            x = start_x + (card_w + gap) * i
+            # 카드 배경 (ROUNDED_RECTANGLE)
+            card = slide.shapes.add_shape(5, x, card_y, card_w, card_h)
+            card.fill.solid()
+            card.fill.fore_color.rgb = bg_color # 배경색과 동일하게 (또는 아주 약간 밝게)
+            card.line.color.rgb = gray
+            card.line.width = Pt(0.5)
+
+            # 번호 (01, 02, 03)
+            num_box = slide.shapes.add_textbox(x + Pt(15), card_y + Pt(15), card_w - Pt(30), Pt(25))
+            p = num_box.text_frame.paragraphs[0]
+            p.text = f"{i+1:02d}"
+            p.font.size = Pt(14)
+            p.font.bold = True
+            p.font.color.rgb = primary
+            p.alignment = PP_ALIGN.LEFT
+
+            # 텍스트
+            txt_box = slide.shapes.add_textbox(x + Pt(15), card_y + Pt(50), card_w - Pt(30), card_h - Pt(65))
+            tf = txt_box.text_frame
+            tf.word_wrap = True
+            p = tf.paragraphs[0]
+            p.text = steps[i]
+            p.font.size = Pt(12)
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.alignment = PP_ALIGN.LEFT
+
+    # 5. 하단 공통 (Bar, Copyright, Page)
+    _add_common_elements(slide, primary, gray, company_name, "8 / 9")
+
+    output = io.BytesIO()
+    prs.save(output)
+    return output.getvalue()
+
+
+def build_contact(brand, headline, contact_info=None):
+    """
+    Contact 슬라이드를 코드로 빌드.
+    Returns: bytes (PPTX)
+    """
+    prs = Presentation()
+    prs.slide_width = W
+    prs.slide_height = H
+    slide_layout = prs.slide_layouts[6]
+    slide = prs.slides.add_slide(slide_layout)
+
+    primary_hex = brand.get('primaryColor', '#1C3D5A')
+    primary = RGBColor(*_hex_to_rgb(primary_hex))
+    bg_color = _tinted_dark(primary_hex)
+    gray = _tinted_gray(primary_hex)
+    company_name = brand.get('name', 'Company')
+
+    # 1. 배경
+    bg = slide.shapes.add_shape(1, 0, 0, W, H)
+    bg.fill.solid()
+    bg.fill.fore_color.rgb = bg_color
+    bg.line.fill.background()
+
+    # 2. 회사명 (중앙 대형)
+    name_w = int(W * 0.8)
+    name_h = int(H * 0.2)
+    name_x = int((W - name_w) / 2)
+    name_y = int(H * 0.3)
+    
+    name_box = slide.shapes.add_textbox(name_x, name_y, name_w, name_h)
+    p = name_box.text_frame.paragraphs[0]
+    p.text = company_name
+    p.font.size = Pt(60)
+    p.font.bold = True
+    p.font.color.rgb = RGBColor(255, 255, 255)
+    p.alignment = PP_ALIGN.CENTER
+
+    # 3. 구분선
+    line_y = name_y + name_h + Pt(10)
+    line = slide.shapes.add_connector(1, int(W*0.3), int(line_y), int(W*0.7), int(line_y))
+    line.line.color.rgb = primary
+    line.line.width = Pt(1.5)
+
+    # 4. 연락처 정보 (2열)
+    if contact_info:
+        info_y = line_y + Pt(30)
+        items = []
+        if contact_info.get('email'): items.append(("EMAIL", contact_info['email']))
+        if contact_info.get('phone'): items.append(("PHONE", contact_info['phone']))
+        if contact_info.get('address'): items.append(("ADDRESS", contact_info['address']))
+        if contact_info.get('website'): items.append(("WEBSITE", contact_info['website']))
+
+        if items:
+            col_w = int(W * 0.35)
+            start_x = int((W - col_w * 2) / 2)
+            for i, (label, val) in enumerate(items):
+                col = i % 2
+                row = i // 2
+                x = start_x + (col_w + Inches(0.5)) * col
+                y = info_y + Pt(row * 40)
+                
+                info_box = slide.shapes.add_textbox(x, y, col_w, Pt(35))
+                p = info_box.text_frame.paragraphs[0]
+                # Label
+                run = p.add_run()
+                run.text = f"{label}  "
+                run.font.size = Pt(9)
+                run.font.bold = True
+                run.font.color.rgb = primary
+                # Value
+                run = p.add_run()
+                run.text = val
+                run.font.size = Pt(11)
+                run.font.color.rgb = RGBColor(200, 200, 200)
+                p.alignment = PP_ALIGN.LEFT
+
+    # 5. 하단 공통
+    _add_common_elements(slide, primary, gray, company_name, "9 / 9")
+
+    output = io.BytesIO()
+    prs.save(output)
+    return output.getvalue()
+
+
+def _add_common_elements(slide, primary, gray, company_name, page_num):
+    """하단 Bar, 저작권, 페이지 번호 등 공통 요소 추가"""
+    # 하단 bar
+    bar_h = int(H * 0.03)
+    bar = slide.shapes.add_shape(1, 0, int(H - bar_h), W, bar_h)
+    bar.fill.solid()
+    bar.fill.fore_color.rgb = primary
+    bar.line.fill.background()
+
+    # 저작권
+    copy_box = slide.shapes.add_textbox(int(W * 0.04), int(H * 0.92), int(W * 0.40), Inches(0.25))
+    p = copy_box.text_frame.paragraphs[0]
+    p.text = f"© {datetime.datetime.now().year} {company_name}. All Rights Reserved."
+    p.font.size = Pt(7)
+    p.font.color.rgb = gray
+
+    # 페이지 번호
+    pn_box = slide.shapes.add_textbox(int(W * 0.85), int(H * 0.92), int(W * 0.12), Inches(0.25))
+    p = pn_box.text_frame.paragraphs[0]
+    p.text = page_num
+    p.font.size = Pt(9)
+    p.font.color.rgb = RGBColor(255, 255, 255)
+    p.alignment = PP_ALIGN.RIGHT
 
 
 def merge_cover(pptx_bytes, brand, headline, sub, logo_b64=None):

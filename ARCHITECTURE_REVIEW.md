@@ -45,10 +45,11 @@ PPT 렌더링 엔진 ~4,500줄이 HTML 안에 인라인.
 제안: `static/js/pptmon.js`로 분리 → 캐싱 가능 + 수정 범위 명확.
 **상태: 미착수 — 제대리 작업으로 예정**
 
-### 🟡 app.py = 1,046줄 — 미해결 (중기 예정)
+### ✅ app.py Blueprint 분리 — 완료 (4/07)
 
-Blueprint 분리 필요 (auth, api, admin, pages).
-**상태: 미착수**
+1,046줄 → 158줄. routes/ 폴더에 auth/api/admin/pages 4개 Blueprint 분리.
+extensions.py 패턴으로 순환 참조 해결. 테스트 27 pass / 3 skip.
+**상태: 완료 — 제대리 구현, 클과장 리뷰**
 
 ### 🟡 brand_extractor.py = 1,237줄 — 미해결 (장기)
 
@@ -136,14 +137,14 @@ app.py 전체에 `if USE_CELERY` 분기 산재.
 | 4 | getSlideLayout 리팩토링 (M3) | 3/31 |
 | 5 | 업종별 프롬프트 (M13) | 3/31 |
 | 6 | Playwright E2E 30개 테스트 | 3/31 |
+| 7 | index.html → pptmon.js 분리 | 4/02 |
+| 8 | landing KO/EN i18n 통합 | 4/02 |
+| 9 | app.py Blueprint 분리 (1046→158줄) | 4/07 |
 
 ### 다음 (중기 1~2주)
 
 | # | 항목 | 담당 | 작업량 |
 |---|------|------|--------|
-| 7 | index.html → pptmon.js 분리 | 제대리 | 2~3시간 |
-| 8 | landing KO/EN i18n 통합 | 제대리 | 1시간 |
-| 9 | app.py Blueprint 분리 | 제대리 | 2시간 |
 
 ### 장기 (1~3개월)
 
