@@ -15,3 +15,7 @@ test-results/
 playwright-report/
 .claude/
 test_cover_*.pptx
+test_*.pptx
+preview_*.pptx
+debug_*.png
+~$*.pptx
