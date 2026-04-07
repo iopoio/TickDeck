@@ -6,10 +6,35 @@ from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pptx.oxml.ns import qn
+from lxml import etree
 import io
 import base64
 import colorsys
 import datetime
+
+# ── 폰트 설정 ──────────────────────────────────────────
+# Windows 기본: Noto Sans KR (Pretendard 깔려있으면 우선)
+FONT_HEAD = "Pretendard"   # 헤드라인 (없으면 PowerPoint가 fallback)
+FONT_BODY = "Pretendard"   # 본문
+FONT_FALLBACK_KR = "Noto Sans KR"  # PPTX East Asian fallback
+
+def _apply_font(paragraph, latin_name=FONT_HEAD, ea_name=FONT_FALLBACK_KR):
+    """paragraph의 모든 run에 한글(EastAsian)+영문(Latin) 폰트 적용.
+    PowerPoint는 latin과 ea(East Asian)를 분리해서 처리하므로 둘 다 지정해야 함.
+    """
+    for run in paragraph.runs:
+        rPr = run._r.get_or_add_rPr()
+        # latin
+        for el in rPr.findall(qn('a:latin')):
+            rPr.remove(el)
+        latin = etree.SubElement(rPr, qn('a:latin'))
+        latin.set('typeface', latin_name)
+        # east asian (한글)
+        for el in rPr.findall(qn('a:ea')):
+            rPr.remove(el)
+        ea = etree.SubElement(rPr, qn('a:ea'))
+        ea.set('typeface', ea_name)
 
 # ── 컬러 유틸 ──────────────────────────────────────────
 
@@ -40,18 +65,23 @@ def _headline_font_size(text):
     else: return Pt(80)
 
 def _set_shape_transparency(shape, alpha_pct):
-    """도형 fill에 투명도 적용 (0=불투명, 100=완전투명)"""
-    from lxml import etree
-    ns = 'http://schemas.openxmlformats.org/drawingml/2006/main'
-    spPr = shape._element.find(f'{{{ns}}}spPr') or shape._element.find('.//{{{ns}}}spPr'.format(ns=ns))
+    """도형 fill에 투명도 적용 (0=불투명, 100=완전투명).
+    spPr는 presentationml namespace, 그 안의 fill 요소들은 drawingml namespace.
+    """
+    p_ns = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+    a_ns = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+    spPr = shape._element.find(f'{{{p_ns}}}spPr')
     if spPr is None:
         return
-    solidFill = spPr.find(f'{{{ns}}}solidFill')
+    solidFill = spPr.find(f'{{{a_ns}}}solidFill')
     if solidFill is None:
         return
-    srgb = solidFill.find(f'{{{ns}}}srgbClr')
+    srgb = solidFill.find(f'{{{a_ns}}}srgbClr')
     if srgb is not None:
-        alpha = etree.SubElement(srgb, f'{{{ns}}}alpha')
+        # 기존 alpha 제거 (재호출 시 중복 방지)
+        for old in srgb.findall(f'{{{a_ns}}}alpha'):
+            srgb.remove(old)
+        alpha = etree.SubElement(srgb, f'{{{a_ns}}}alpha')
         alpha.set('val', str(int((100 - alpha_pct) * 1000)))
 
 # ── 슬라이드 사이즈 ──────────────────────────────────────
@@ -60,7 +90,7 @@ H = Inches(7.5)
 
 # ── 커버 빌더 (코드 빌드) ──────────────────────────────────
 
-def build_cover(brand, headline, sub, logo_b64=None):
+def build_cover(brand, headline, sub, logo_b64=None, background_image_bytes=None):
     """
     커버 슬라이드 1장을 처음부터 코드로 빌드.
     Returns: bytes (PPTX)
@@ -85,6 +115,23 @@ def build_cover(brand, headline, sub, logo_b64=None):
     bg.fill.solid()
     bg.fill.fore_color.rgb = bg_color
     bg.line.fill.background()
+
+    # ── 1.1 Gemini 이미지 배경 (있으면) ──
+    if background_image_bytes:
+        try:
+            img_stream = io.BytesIO(background_image_bytes)
+            # 전체 슬라이드 크기로 이미지 삽입
+            slide.shapes.add_picture(img_stream, 0, 0, width=W, height=H)
+            
+            # 이미지 위에 tintedDark 색상으로 60% 투명 오버레이 추가 (텍스트 가독성 확보)
+            overlay = slide.shapes.add_shape(1, 0, 0, W, H)
+            overlay.fill.solid()
+            overlay.fill.fore_color.rgb = bg_color
+            overlay.line.fill.background()
+            _set_shape_transparency(overlay, 60)
+        except Exception:
+            pass # 이미지 삽입 실패 시 기본 배경 유지
+
 
     # ── 2. 좌측 primary 컬러 패널 (패턴1: Color Panel Split — 슬라이드 좌 8%) ──
     panel = slide.shapes.add_shape(
@@ -116,6 +163,7 @@ def build_cover(brand, headline, sub, logo_b64=None):
     p.alignment = PP_ALIGN.CENTER
     tf.paragraphs[0].space_before = Pt(0)
     tf.paragraphs[0].space_after = Pt(0)
+    _apply_font(p)
 
     # ── 4. 헤드라인 (오버사이즈 타이포 — 패턴2) ──
     hl_x = int(W * 0.12)
@@ -131,6 +179,7 @@ def build_cover(brand, headline, sub, logo_b64=None):
     p.font.bold = True
     p.font.color.rgb = RGBColor(255, 255, 255)
     p.alignment = PP_ALIGN.LEFT
+    _apply_font(p)
 
     # ── 5. Accent line 제거 (PPTX 스킬: "AI 슬라이드의 특징" → 여백으로 대체) ──
 
@@ -147,6 +196,7 @@ def build_cover(brand, headline, sub, logo_b64=None):
     p.font.size = Pt(18)
     p.font.color.rgb = gray
     p.alignment = PP_ALIGN.LEFT
+    _apply_font(p)
 
     # ── 7. 하단 공통 (Bar, Copyright, Page) ──
     _add_common_elements(slide, primary, gray, company_name, "1 / 9")
@@ -224,6 +274,7 @@ def build_cta(brand, headline, sub, steps=None):
     p.font.bold = True
     p.font.color.rgb = RGBColor(255, 255, 255)
     p.alignment = PP_ALIGN.CENTER
+    _apply_font(p)
 
     # 3. 서브텍스트
     if sub:
@@ -237,6 +288,7 @@ def build_cta(brand, headline, sub, steps=None):
         p.font.size = Pt(18)
         p.font.color.rgb = gray
         p.alignment = PP_ALIGN.CENTER
+        _apply_font(p)
 
     # 4. Steps 카드 (3열)
     if steps and len(steps) > 0:
@@ -265,6 +317,7 @@ def build_cta(brand, headline, sub, steps=None):
             p.font.bold = True
             p.font.color.rgb = primary
             p.alignment = PP_ALIGN.LEFT
+            _apply_font(p)
 
             # 텍스트
             txt_box = slide.shapes.add_textbox(x + Pt(15), card_y + Pt(50), card_w - Pt(30), card_h - Pt(65))
@@ -275,6 +328,7 @@ def build_cta(brand, headline, sub, steps=None):
             p.font.size = Pt(12)
             p.font.color.rgb = RGBColor(255, 255, 255)
             p.alignment = PP_ALIGN.LEFT
+            _apply_font(p)
 
     # 5. 하단 공통 (Bar, Copyright, Page)
     _add_common_elements(slide, primary, gray, company_name, "8 / 9")
@@ -320,6 +374,7 @@ def build_contact(brand, headline, contact_info=None):
     p.font.bold = True
     p.font.color.rgb = RGBColor(255, 255, 255)
     p.alignment = PP_ALIGN.CENTER
+    _apply_font(p)
 
     # 3. 구분선
     line_y = name_y + name_h + Pt(10)
@@ -359,6 +414,7 @@ def build_contact(brand, headline, contact_info=None):
                 run.font.size = Pt(11)
                 run.font.color.rgb = RGBColor(200, 200, 200)
                 p.alignment = PP_ALIGN.LEFT
+                _apply_font(p)
 
     # 5. 하단 공통
     _add_common_elements(slide, primary, gray, company_name, "9 / 9")
@@ -383,6 +439,7 @@ def _add_common_elements(slide, primary, gray, company_name, page_num):
     p.text = f"© {datetime.datetime.now().year} {company_name}. All Rights Reserved."
     p.font.size = Pt(7)
     p.font.color.rgb = gray
+    _apply_font(p)
 
     # 페이지 번호
     pn_box = slide.shapes.add_textbox(int(W * 0.85), int(H * 0.92), int(W * 0.12), Inches(0.25))
@@ -391,6 +448,7 @@ def _add_common_elements(slide, primary, gray, company_name, page_num):
     p.font.size = Pt(9)
     p.font.color.rgb = RGBColor(255, 255, 255)
     p.alignment = PP_ALIGN.RIGHT
+    _apply_font(p)
 
 
 def merge_cover(pptx_bytes, brand, headline, sub, logo_b64=None):

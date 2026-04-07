@@ -46,9 +46,14 @@ def validate_config():
         raise ValueError("환경 변수 누락: GEMINI_API_KEY")
 
 
-from google import genai
+try:
+    from google import genai
+    _client = genai.Client(api_key=GEMINI_API_KEY)
+except ImportError:
+    genai = None
+    _client = None
+    logger.warning("google-genai 패키지가 설치되지 않았습니다. Gemini 기능이 비활성화됩니다.")
 
-_client = genai.Client(api_key=GEMINI_API_KEY)
 
 # ── Timeout 상수 ─────────────────────────────────────────────────────────────
 SCRAPER_TIMEOUT = 15000      # Playwright 기본 timeout (ms)
