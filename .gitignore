@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+env/
+dist/
+build/
+
+# Environment
+.env
+.env.*
+*.env
+
+# Node.js / Vite
+node_modules/
+dist/
+.vite/
+.cache/
+npm-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Generated files
+*.pptx
+*.pdf
+tmp/
+*.log
+*.tmp
+*.bak
