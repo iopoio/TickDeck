@@ -1,0 +1,63 @@
+아래 사양에 맞는 Python 파일 코드를 작성해줘. 파일명: shared/shared/pptx_builder.py
+
+## 역할
+SlideContent JSON을 받아 python-pptx로 .pptx 파일을 생성하는 빌더.
+TickDeck(URL → PPT 생성 서비스)의 shared 패키지 모듈이다.
+
+## 슬라이드 타입별 레이아웃
+
+### SlideData 구조 (입력)
+```python
+{
+  "slides": [
+    {
+      "type": str,           # 슬라이드 타입 (아래 목록)
+      "headline": str,       # 제목
+      "subheadline": str,    # 부제목 (optional)
+      "body": list[str],     # 본문 bullet 목록
+      "eyebrow": str,        # 상단 작은 텍스트 (optional)
+    }
+  ],
+  "brand": {
+    "primaryColor": str,     # 예: "#2563EB"
+    "companyName": str,
+  }
+}
+```
+
+### 슬라이드 타입 목록
+- cover: 표지 (headline 크게, subheadline, 회사명)
+- section_intro: 섹션 구분 (eyebrow + headline)
+- content: 일반 내용 (headline + body bullets)
+- key_metrics: 지표 (headline + body: "지표명: 값" 형식)
+- cta: 마무리 (headline + subheadline)
+
+### 디자인 규칙
+- 슬라이드 크기: 33.87cm × 19.05cm (16:9 와이드)
+- 폰트: "Malgun Gothic" (한글), "Calibri" (영문) — 시스템 기본
+- cover: 배경 primaryColor, 흰 텍스트, headline Pt(54), subheadline Pt(24)
+- section_intro: 배경 primaryColor 20% opacity 회색, headline Pt(48)
+- content: 흰 배경, headline Pt(36), body Pt(18), bullet 기호 "•"
+- key_metrics: 흰 배경, headline Pt(36), 각 body 항목을 컬럼 형태로 배치
+- cta: 배경 primaryColor, 흰 텍스트, headline Pt(48), subheadline Pt(22)
+- 모든 텍스트 박스: 좌측 여백 Inches(0.8), 상단 여백 Inches(0.6)
+- body 영역: top Inches(2.0), height Inches(5.0)
+
+### 함수 시그니처
+```python
+def build_pptx(slide_data: dict) -> bytes:
+    """SlideData dict를 받아 pptx 파일의 bytes 반환"""
+    ...
+```
+
+### 의존성
+- python-pptx (pip: python-pptx, import: pptx)
+
+### 추가 규칙
+- 색상 헬퍼 함수 _hex_to_rgb(hex_str) -> RGBColor 포함
+- 알 수 없는 타입은 content 타입으로 처리
+- 에러 발생 시 exception 전파 (호출자가 처리)
+- logging은 표준 logging 모듈 사용
+- 타입 힌트 필수
+
+전체 파일 코드를 출력해줘. 마크다운 코드블록 없이 순수 Python 코드만.

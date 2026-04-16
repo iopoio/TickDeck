@@ -1,0 +1,48 @@
+아래 사양에 맞는 Python 파일 코드를 작성해줘. 파일명: shared/shared/crawler.py
+
+## 역할
+URL을 받아 웹페이지 텍스트 콘텐츠를 추출하는 async 크롤러.
+TickDeck(URL → PPT 생성 서비스)의 shared 패키지 모듈이다.
+
+## 스펙
+
+### 함수 시그니처
+```python
+async def crawl(url: str) -> CrawlResult:
+    ...
+```
+
+### CrawlResult (dataclass)
+```python
+@dataclass
+class CrawlResult:
+    url: str
+    text: str          # 정제된 본문 텍스트 (최대 8000자)
+    title: str         # <title> 또는 og:title
+    image_urls: list[str]  # 발견된 이미지 URL (최대 10개)
+    error: str | None  # 실패 시 에러 메시지
+```
+
+### 크롤링 전략 (순서대로)
+1. httpx.AsyncClient로 GET 요청 (timeout=15s, headers: Chrome UA)
+2. BeautifulSoup으로 HTML 파싱
+3. 텍스트가 500자 미만이면 → playwright (async_playwright) 로 JS 렌더링 재시도
+4. Playwright 사용 시: headless=True, wait_for_load_state('networkidle', timeout=10000)
+5. script/style/nav/footer/header 태그 제거 후 텍스트 추출
+6. og:title → <title> 순으로 제목 추출
+7. <img src> 수집 (data:, svg, icon, favicon 제외)
+8. 텍스트 정제: 연속 공백/줄바꿈 압축, 8000자 초과 시 절단
+
+### 의존성 (requirements.txt에 이미 있음)
+- httpx
+- beautifulsoup4 (pip에서는 beautifulsoup4, import는 bs4)
+- playwright (async_playwright)
+
+### 추가 규칙
+- playwright import는 try/except로 감싸서 없어도 에러 안 남 (optional)
+- 모든 에러는 CrawlResult(error=str(e))로 반환 (exception 전파 금지)
+- logging은 표준 logging 모듈 사용 (logger = logging.getLogger(__name__))
+- 타입 힌트 필수
+- docstring 최소화 (함수 한 줄 설명만)
+
+전체 파일 코드를 출력해줘. 마크다운 코드블록 없이 순수 Python 코드만.
