@@ -11,6 +11,10 @@ class Generation(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     url: Mapped[str] = mapped_column(String(2048), nullable=False)
     language: Mapped[str] = mapped_column(String(2), default="ko")  # ko / en
+    
+    # 토큰 차감 트랜잭션 수동 링크 (환불용)
+    lock_tx_id: Mapped[int | None] = mapped_column(ForeignKey("token_transactions.id"), nullable=True)
+
     # 상태: pending / crawling / structuring / ready_to_edit / building_pptx / converting_pdf / done / failed
     status: Mapped[str] = mapped_column(String(30), default="pending", index=True)
     pptx_path: Mapped[str | None] = mapped_column(String(500), nullable=True)

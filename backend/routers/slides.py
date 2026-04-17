@@ -4,7 +4,7 @@ import uuid
 import logging
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, HTTPException, Header, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
@@ -21,7 +21,7 @@ from shared.pptx_builder import build_pptx
 router = APIRouter(prefix="/api/slides", tags=["slides"])
 logger = logging.getLogger(__name__)
 
-PPTX_DIR = Path("tmp/pptx")
+PPTX_DIR = Path(__file__).parent.parent / "tmp" / "pptx"
 PPTX_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -66,6 +66,7 @@ async def generate_slide(
         note=f"생성 Lock: {req.url[:100]}",
     )
     db.add(lock_tx)
+    await db.flush()  # ID 생성을 위해 flush
 
     # Generation 레코드 생성
     generation_id = str(uuid.uuid4())
@@ -75,6 +76,7 @@ async def generate_slide(
         url=req.url,
         language=req.language,
         status="pending",
+        lock_tx_id=lock_tx.id,  # 환불용 트랜잭션 ID 기록
     )
     db.add(generation)
     await db.commit()
@@ -138,11 +140,21 @@ async def get_status(
 @router.post("/{generation_id}/confirm")
 async def confirm_generation(
     generation_id: str,
-    slide_content: SlideContent,
+    request: Request,
     authorization: str = Header(""),
     db: AsyncSession = Depends(get_db),
 ):
     """편집된 슬라이드 확정 → PPTX 빌드"""
+    import json as _json
+
+    # Pydantic 우회: raw body → dict → surrogate 제거 → 사용
+    raw_body = await request.body()
+    raw_str = raw_body.decode('utf-8', errors='replace')
+    try:
+        slide_dict = _json.loads(raw_str)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=f"슬라이드 JSON 파싱 실패: {e}")
+
     user = await _get_current_user(authorization, db)
 
     result = await db.execute(
@@ -161,14 +173,31 @@ async def confirm_generation(
     generation.status = "building_pptx"
     await db.commit()
 
+    def _clean(obj):
+        if isinstance(obj, str):
+            return obj.encode('utf-8', errors='ignore').decode('utf-8')
+        if isinstance(obj, list):
+            return [_clean(i) for i in obj]
+        if isinstance(obj, dict):
+            return {k: _clean(v) for k, v in obj.items()}
+        return obj
+
+    clean_dict = _clean(slide_dict)
+
     try:
-        pptx_bytes = build_pptx(slide_content.model_dump())
+        try:
+            pptx_bytes = build_pptx(clean_dict)
+        except Exception as e:
+            raise RuntimeError(f"[build_pptx 실패] {e}") from e
         pptx_path = PPTX_DIR / f"{generation_id}.pptx"
         pptx_path.write_bytes(pptx_bytes)
 
         generation.status = "done"
         generation.pptx_path = str(pptx_path)
-        generation.slide_json = slide_content.model_dump_json()
+        try:
+            generation.slide_json = _json.dumps(clean_dict, ensure_ascii=True)
+        except Exception as e:
+            raise RuntimeError(f"[json.dumps 실패] {e}") from e
 
         # 토큰 Confirm 기록
         confirm_tx = TokenTransaction(
@@ -204,16 +233,12 @@ async def confirm_generation(
 @router.get("/{generation_id}/download")
 async def download_pptx(
     generation_id: str,
-    authorization: str = Header(""),
     db: AsyncSession = Depends(get_db),
 ):
-    """생성된 PPTX 다운로드"""
-    user = await _get_current_user(authorization, db)
-
+    """생성된 PPTX 다운로드 (auth 불필요 — UUID가 접근 제어)"""
     result = await db.execute(
         select(Generation).where(
             Generation.id == generation_id,
-            Generation.user_id == user.id,
         )
     )
     generation = result.scalar_one_or_none()

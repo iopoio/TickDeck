@@ -3,6 +3,7 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import httpx
+import logging
 
 from backend.core.config import settings
 from backend.core.database import get_db
@@ -12,6 +13,7 @@ from backend.models.token import TokenBalance, TokenTransaction
 from backend.schemas.auth import TokenResponse, UserResponse
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+logger = logging.getLogger(__name__)
 
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
@@ -32,9 +34,9 @@ async def google_login():
     return RedirectResponse(f"{GOOGLE_AUTH_URL}?{query}")
 
 
-@router.get("/callback", response_model=TokenResponse)
+@router.get("/callback")
 async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
-    """Google 콜백: code → 유저 정보 → JWT 발급"""
+    """Google 콜백: code → 유저 정보 → JWT 발급 → 프론트 리다이렉트"""
     async with httpx.AsyncClient() as client:
         token_resp = await client.post(GOOGLE_TOKEN_URL, data={
             "code": code,
@@ -44,6 +46,10 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
             "grant_type": "authorization_code",
         })
         token_data = token_resp.json()
+
+        if "access_token" not in token_data:
+            logger.error(f"Google Token Error: {token_data}")
+            return RedirectResponse(f"{settings.frontend_url}/login?error=token_exchange_failed")
 
         userinfo_resp = await client.get(
             GOOGLE_USERINFO_URL,
@@ -80,9 +86,11 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
         await db.commit()
 
     payload = {"sub": str(user.id), "email": user.email}
-    return TokenResponse(
-        access_token=create_access_token(payload),
-        refresh_token=create_refresh_token(payload),
+    access_token = create_access_token(payload)
+    refresh_token = create_refresh_token(payload)
+    
+    return RedirectResponse(
+        f"{settings.frontend_url}/auth/callback?access_token={access_token}&refresh_token={refresh_token}"
     )
 
 

@@ -1,0 +1,11 @@
+{
+  "folders": [
+    {
+      "name": "TickDeck",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true
+  }
+}
