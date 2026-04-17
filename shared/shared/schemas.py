@@ -1,10 +1,17 @@
 """TickDeck 공유 Pydantic 스키마"""
-from typing import Any
+from typing import Any, Literal
 from pydantic import BaseModel, Field
+
+SlideType = Literal[
+    "cover", "problem", "solution", "how_it_works",
+    "key_metrics", "proof", "why_us", "cta",
+    # 레거시 타입 (하위호환)
+    "section_intro", "content",
+]
 
 
 class SlideItem(BaseModel):
-    type: str
+    type: str  # SlideType — 유연하게 str 유지 (Gemini 출력 다양)
     headline: str = ""
     subheadline: str = ""
     eyebrow: str = ""
@@ -13,8 +20,9 @@ class SlideItem(BaseModel):
 
 class BrandInfo(BaseModel):
     companyName: str = ""
-    primaryColor: str = "#1A1A1A"
+    primaryColor: str = "#2563EB"
     industry: str = ""
+    narrative_type: str = "A"  # A/B/C/D — 내러티브 타입
 
 
 class SlideContent(BaseModel):
