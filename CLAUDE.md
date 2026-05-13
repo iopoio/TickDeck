@@ -21,7 +21,7 @@
 - Backend: FastAPI + SQLAlchemy(asyncpg) + PostgreSQL
 - Frontend: React + Vite + TypeScript + Tailwind CSS
 - Worker: Celery + Redis (Windows: `--pool=solo --concurrency=1` 필수)
-- AI: Gemini `gemini-3.1-flash-lite-preview` (2.5 Flash 초과 사용 금지)
+- AI: Gemini `gemini-3.1-flash-lite` (GA, 2026-05-13 preview→GA 전환·메일 공지. 2.5 Flash 초과 사용 금지)
 - PPTX: python-pptx (shared/pptx_builder.py)
 
 ## 실행 명령

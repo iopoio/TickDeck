@@ -9,7 +9,7 @@ from shared.schemas import SlideContent, SlideItem, BrandInfo
 
 logger = logging.getLogger(__name__)
 
-_MODEL = "gemini-3.1-flash-lite-preview"
+_MODEL = "gemini-3.1-flash-lite"
 
 _DEFAULT_STORYLINE = [
     {"slide_num": 1, "type": "cover", "topic": "브랜드 소개"},
