@@ -1,7 +1,7 @@
 {
-  "version": "0.3-draft",
-  "generated": "2026-05-15 04:55 KST",
-  "generated_by": "본진 클차장 (Ralph P3-T6) — templates v0.7 정합·19 sample + 추가 2 sample (스케일업·마크로젠 IR) 영역",
+  "version": "0.3.1-cross-validated",
+  "generated": "2026-05-15 05:30 KST",
+  "generated_by": "본진 클차장 (Ralph P3-T6 cycle 2) — 0.3 base + Gemini 제대리 cross-validation 통합·v0_4_plan section 신설",
   "purpose": "URL·텍스트 의도 인지 → 적합 slide_type·narrative_arc·color_system 매핑·PPTX export 영역 backbone",
 
   "url_domain_classifier": [
@@ -316,5 +316,22 @@
     "ir_annual_report 카테고리 추가 (IR·연차 보고서·DART·기업 공시·투자자 자료)",
     "selection_137 영역 영역 영역 영역 영역 영역 19 categories 도달·saturation 가까움",
     "다음 cycle 추가 candidate: design_system_lecture (3-4·4-1 영역)·market_research_dmc (1인가구)·saas_service_intro (SCORDI)·trend_report (2025 trend)"
-  ]
+  ],
+  "v0_4_plan": {
+    "source": "Gemini 제대리 cross-validation (P3-T6 cycle 2·2026-05-15 05:18 KST)",
+    "structural_changes": [
+      "url_domain_classifier 영역 영역 industry vs format 이원화·예: {industry: medical, format: ir_annual_report}",
+      "Information Density 변수 추가 (low·medium·high·extreme) — slide_type 영역 영역 영역 layout 영역 영역 차별점 영역",
+      "vertical_industry_tag 추가 (medical·fintech·realestate·fnb·edutech·legaltech 등) — 산업별 영역 영역 영역",
+      "advanced_data_viz 변수 추가 (waterfall·sankey·spider_web·heatmap·tree_map) — slide_type 영역 정의·고급 데이터 시각화",
+      "format vs industry 매핑 표 영역 영역 (예: medical_ir·medical_lecture·medical_pitch 영역 영역 영역 분리)"
+    ],
+    "industry_vertical_priority": [
+      {"vertical": "Medical & Bio-Tech", "sample_pool": "M18 마크로젠 IR + 잡솔트/EatScan 영역 영역", "priority": "high"},
+      {"vertical": "FinTech & Traditional Finance", "sample_pool": "0건·새 read 필요", "priority": "medium"},
+      {"vertical": "Real Estate & PropTech", "sample_pool": "inbox-pdf 영역 영역 부동산 PDF 다수 영역 영역 read X·1차 read 가치 ↑", "priority": "medium"},
+      {"vertical": "F&B & Franchise", "sample_pool": "0건·인디해커 영역 영역 영역 가까운 영역", "priority": "low-medium"}
+    ],
+    "expected_release": "P4 단계 영역 영역 또는 실 PDF read 영역 영역 cycle 영역 영역"
+  }
 }

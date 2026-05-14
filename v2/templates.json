@@ -1,7 +1,7 @@
 {
-  "version": "0.7-draft",
-  "generated": "2026-05-15 04:42 KST",
-  "generated_by": "본진 클차장 (Ralph P3-T6) — 19 PDF·83 PNG·58 page read + selection_137 분포 분석 + 추가 2 PDF read (스케일업·마크로젠 IR) → M17·M18 신설",
+  "version": "0.7.1-cross-validated",
+  "generated": "2026-05-15 05:25 KST",
+  "generated_by": "본진 클차장 (Ralph P3-T6 cycle 2) — 0.7 base + Gemini 제대리 cross-validation 통합 (M19~M22·고급 slide_type·산업별 vertical gap 식별)",
   "score_target": 85,
   "score_axes": ["다양성 (25)", "매핑 정합 (25)", "샘플 근거 (25)", "활용성 (25)"],
   "selection_137_coverage": {
@@ -671,11 +671,63 @@
     "2 신규 utility_spec 추가 (contest_pitch_deck·ir_annual_report)",
     "다음 cycle 영역 read 후보 5건 명시: 디자인 시스템 강의 3-3/3-4/4-1·dmc 1인가구 보고서·SCORDI 서비스소개서"
   ],
+  "v0_7_1_changes": [
+    "Gemini (제대리) cross-validation 결과 통합 — 본진과 다른 view 영역 gap 식별",
+    "gemini_cross_validation_v0_7 section 신설 (4 master candidate + 4 slide_type candidate + 4 industry vertical gap)",
+    "v0_4_plan section 신설 (mapping_rules 이원화·information_density 변수 도입 안)",
+    "다음 cycle priority 갱신 — Gemini 권고 (M19 trend report·M20 design system·M21 B2C user flow·M22 policy/compliance)"
+  ],
+  "gemini_cross_validation_v0_7": {
+    "reviewer": "제대리 (Gemini 0.41.2 CLI)",
+    "review_date": "2026-05-15 05:18 KST",
+    "review_method": "본진 클차장 영역 templates.json v0.7 + master_layouts v0.3 + mapping_rules v0.3 영역 영역 영역 cross-validation 의뢰",
+    "summary": "Standardization은 우수하나 High-Density & Vertical Specialization 영역에서 Gap 발견",
+    "master_frame_recommendations": [
+      {"id": "M19", "name": "Insight-Heavy Trend Report (Data-First)", "why": "DMC·샘앤파커스 등 시장 보고서 영역 텍스트+차트 혼합형 고밀도 레이아웃 대응", "expected_pdf": "[dmc] 2018 1인가구·2025 trend·기타 trend report"},
+      {"id": "M20", "name": "Component-Based Design System (Documentation)", "why": "Wireframe 영역 영역 UI Kit·명세서 (Specs) 영역 영역 구조적 frame", "expected_pdf": "3-4 디자인 시스템 설계·4-1 디자인시스템"},
+      {"id": "M21", "name": "B2C Service/App User Flow (Step-by-Step)", "why": "SaaS(B2B) 영역 영역 사용자 여정 영역 시각적 추적·Mobile-First 레이아웃", "expected_pdf": "[SCORDI] 스코디 서비스소개서·기타 B2C app 영역"},
+      {"id": "M22", "name": "Policy & Compliance (Text-Centric)", "why": "정부 과제·법인 가이드라인 영역 영역 조항(Article) 중심 엄격한 그리드 시스템", "expected_pdf": "(제2026-208호) 모두의 창업 프로젝트·기타 정부 공고"}
+    ],
+    "slide_type_recommendations": [
+      {"id": "timeline_milestone_parallel_workstream", "name": "Timeline & Roadmap (Advanced)", "why": "선형 영역 영역 Parallel Workstream 또는 Milestone Highlight 영역 영역 영역 영역 영역 약함", "sample_basis": "마크로젠 IR M18·KPMG·KIEP"},
+      {"id": "comparison_matrix_pricing_5col", "name": "Comparison & Pricing (Complex)", "why": "2분할 영역 영역 3~5 plan + Feature Check-list Matrix 영역 영역 의사결정 지원 영역 영역 영역 영역", "sample_basis": "SaaS pitch deck·SCORDI 후보"},
+      {"id": "map_data_overlay_global_local", "name": "Global/Local Map & Logistics", "why": "지리적 확장·Data-over-Map 시각화 레이아웃 영역 영역 영역", "sample_basis": "KPMG·KIEP·기타 지역 통계"},
+      {"id": "executive_summary_top_down_1page", "name": "Executive Summary (The 'So What')", "why": "전체 장표 핵심 인사이트 영역 1Page 영역 영역 Top-Down Summary 구조 영역 영역", "sample_basis": "공모전 pitch deck·IR·연구 보고서 영역 영역 영역 빈도 높음"}
+    ],
+    "industry_vertical_gaps": [
+      {"vertical": "Medical & Bio-Tech", "current_coverage": "M18 마크로젠 IR 1건만", "gap": "임상 데이터·논문 인용·복잡한 메커니즘 시각화 룰 영역 영역 부족", "priority": "high (잡솔트·EatScan 영역 영역 도움)"},
+      {"vertical": "FinTech & Traditional Finance", "current_coverage": "0건", "gap": "공시자료 표 시스템·Compliance 폰트·컬러 룰 영역", "priority": "medium"},
+      {"vertical": "Real Estate & PropTech", "current_coverage": "0건 (inbox-pdf 영역 영역 부동산 PDF 다수 영역 영역 영역 영역 read X)", "gap": "매물 정보·입지 분석·조감도 배치 Photo-Grid Priority 영역 영역 영역 영역", "priority": "medium"},
+      {"vertical": "F&B & Franchise", "current_coverage": "0건", "gap": "메뉴판·가맹 구조·QSC 지표 시각 체계 영역 영역", "priority": "low-medium"}
+    ],
+    "actionable_recommendations": [
+      {"step": 1, "action": "Refine Mapping Rules", "detail": "url_domain_classifier 영역 영역 Industry(산업) vs Format(형식) 이원화 영역 영역 매핑 정밀도 향상"},
+      {"step": 2, "action": "Add M19~M22", "detail": "4 master frame 영역 master_layouts.json 영역 영역 추가 정의 (실 PDF read 후·다음 cycle)"},
+      {"step": 3, "action": "Table/Chart Detail", "detail": "slide_types 안 Waterfall·Sankey·Spider Web 등 난이도 높은 데이터 시각화 타입 추가"},
+      {"step": 4, "action": "Information Density 변수", "detail": "mapping_rules v0.5 영역 Information Density(정보 밀도) 변수 추가 — TickDeck 차별점 영역"}
+    ],
+    "본진_검토": {
+      "수용_가능": "M19~M22 master 후보·4 advanced slide_type·4 industry vertical gap·이원화·Information Density 변수 모두 actionable·근거 합리",
+      "유보": "M19~M22 신설 = 실 PDF read 영역 영역 (5/15 cycle 영역 read 영역 X·다음 cycle 영역). cross-validation 결과 영역 영역 영역 stub 등록·실 sample 영역 영역 영역 영역 영역 영역",
+      "다음_cycle_액션": "디자인 시스템 강의 3-4·dmc 1인가구·SCORDI 서비스소개서·2025 trend·정부 공고 영역 영역 영역 read → M19~M22 영역 영역 영역 영역 신설"
+    }
+  },
+  "v0_4_plan": {
+    "trigger": "mapping_rules.json 영역 영역 영역 영역",
+    "changes": [
+      "url_domain_classifier 영역 영역 industry vs format 이원화 (예: industry=medical·format=ir_annual_report)",
+      "information_density 변수 추가 (low/medium/high/extreme) — slide_type 영역 영역 영역 layout 영역 영역",
+      "advanced_data_viz 변수 추가 (waterfall·sankey·spider_web·heatmap·tree_map) — slide_type 영역 정의",
+      "vertical_industry_tag 추가 (medical·fintech·realestate·fnb·edutech·legaltech 등)"
+    ],
+    "expected_release": "P4 또는 다음 cycle 영역 영역 영역 (실 sample 영역 영역 영역 영역)"
+  },
   "next_cycle_read_priority": [
-    {"file": "3-4 디자인 시스템 설계.pdf", "size_mb": 7.4, "domain": "design_system_lecture", "expected": "M19 후보·UI guide·design system 강의 영역 master"},
-    {"file": "4-1 디자인시스템.pdf", "size_mb": 7.4, "domain": "design_system_lecture", "expected": "M19 cross-check sample"},
-    {"file": "[dmc] 2018 1인가구 시장 규모 및 마케팅 현황.pdf", "size_mb": 3.8, "domain": "market_research_dmc", "expected": "M03 cross-check or M20 후보 (consumer research)"},
-    {"file": "[SCORDI] 스코디 서비스소개서_ver.1.pdf", "size_mb": 13.1, "domain": "saas_service_intro", "expected": "M04 cross-check·서비스 소개서 영역 영역"},
-    {"file": "2025 trend.pdf", "size_mb": "various", "domain": "trend_report", "expected": "M03·M06 cross-check or M21 후보 (trend report)"}
+    {"file": "3-4 디자인 시스템 설계.pdf", "size_mb": 7.4, "domain": "design_system_lecture", "expected": "M20 후보·UI guide·design system 강의 영역 master", "gemini_recommended": true},
+    {"file": "4-1 디자인시스템.pdf", "size_mb": 7.4, "domain": "design_system_lecture", "expected": "M20 cross-check sample", "gemini_recommended": true},
+    {"file": "[dmc] 2018 1인가구 시장 규모 및 마케팅 현황.pdf", "size_mb": 3.8, "domain": "market_research_dmc", "expected": "M19 후보 (trend report·data-first)", "gemini_recommended": true},
+    {"file": "[SCORDI] 스코디 서비스소개서_ver.1.pdf", "size_mb": 13.1, "domain": "saas_service_intro", "expected": "M21 후보 (B2C app user flow)", "gemini_recommended": true},
+    {"file": "2025 trend.pdf", "size_mb": "various", "domain": "trend_report", "expected": "M19 cross-check (trend report data-first)", "gemini_recommended": true},
+    {"file": "(제2026-208호) 「모두의 창업 프로젝트」 통합 모집공고.pdf", "size_mb": "various", "domain": "government_announcement", "expected": "M22 후보 (policy & compliance text-centric)", "gemini_recommended": true}
   ]
 }
