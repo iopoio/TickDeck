@@ -3,6 +3,7 @@
 > 작성: 2026-05-12 21:00 KST
 > 영역: 후추님 내일 시작 영역 정리 (PRD 5/13 7단계 정합·5/12 살짝 1단계 user_flow 완료 영역 후)
 > 기준: `TickDeck/v2/PRD_v2.md` line 250~262
+> ⚠️ 갱신 layer: 본 PLAN = 5/12 PRD v2.0 기준. 5/13 PRD v2.1 (wedge 재정의·B2B Primary·5 Named Agents·Asia-first·1회 5천원) + v2.2 (claude-for-legal·Cold-start interview·practice_areas·guardrails) 영역 정합은 `PLAN_5-14.md` 영역 참조.
 
 ## 시작 영역 점검 (5/13 첫 영역)
 
