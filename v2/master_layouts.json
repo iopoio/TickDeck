@@ -1,0 +1,411 @@
+{
+  "version": "0.3-draft",
+  "generated": "2026-05-15 04:50 KST",
+  "generated_by": "본진 클차장 (Ralph P3-T6) — 19+2 PDF read 결과·M17·M18 신설·selection_137 영역 영역 18 master 영역 80%+ coverage 도달",
+  "purpose": "후추님 5/13 명시: '레이아웃이 파일 전체적으로 본다면 크게 변하지 않는 양식들이 꽤 있다'. 1 PDF 안 모든 page는 master frame 공유·콘텐츠만 다양. master 추출 = 진짜 재사용 가능 template 단위.",
+
+  "structure_definition": {
+    "master_layout": "1 PDF 영역 일관 frame (header·footer·grid·color·typography). 각 page = 이 frame 위 콘텐츠만 변경.",
+    "content_slot": "master 영역 채우는 콘텐츠 단위 (hero·text_block·photo·chart·wireframe·diagram 등). master_layout과 분리.",
+    "deck_generation": "URL → master_layout 1개 선택 → content_slot 영역 순차 채움 → PPTX export"
+  },
+
+  "master_layouts": [
+    {
+      "id": "M01_automotive_event_dark",
+      "domain": "automotive_event_proposal",
+      "source_pdf": "A7 National Launching Training (GMS)",
+      "header": {
+        "top_left": "model_name_red_bold (예: 'Audi A7')",
+        "top_left_sub": "subtitle_thin_below ('Create & Sale')",
+        "top_center_or_left": "section_label (예: 'Display - Day 1')"
+      },
+      "footer": {
+        "bottom_right": "Audi rings logo small + page_number",
+        "background": "minimal·no bar"
+      },
+      "grid": "full bleed·1 hero photo or rendering center·overlay cards",
+      "color_base": {"bg": "#000000~#1a1a1a", "text": "#FFFFFF", "accent": "Audi red·pink lighting overlay"},
+      "typography": "sans bold (Audi Type)·model name = 28pt+·body = 10~12pt thin",
+      "consistency_observed": "p1·p10·p20·p40·p50 다 model name top left·section label·dark luxury 유지"
+    },
+    {
+      "id": "M02_brand_visual_guide_dark",
+      "domain": "brand_visual_guide",
+      "source_pdf": "PROOF Visual Languages (HYBE)",
+      "header": {
+        "top_left": "section_name_thin_caps ('PROOF VISUAL LANGUAGES')",
+        "top_right": "current_section_name_thin_with_horizontal_line ('LOGO'·'COLOR'·'VISUAL MOTIF'·'CONCEPT')"
+      },
+      "footer": {
+        "bottom_left": "brand_name_repeat (또는 watermark)",
+        "bottom_right": "page_number or section repeat"
+      },
+      "grid": "section header 좌상단 + 콘텐츠 area (centered hero·또는 2~3 col)",
+      "color_base": {"bg": "#000000~#050505", "text": "#FFFFFF", "accent": "PROOF Red #BE1E3C·PROOF Blue #00195F·Silver"},
+      "typography": "sans bold + thin caps·section title = 28pt bold·subtitle = 12pt thin",
+      "consistency_observed": "p1·p5·p10·p15·p20 다 same header line + section navigation 유지"
+    },
+    {
+      "id": "M03_kpmg_research_light",
+      "domain": "corporate_research_report",
+      "source_pdf": "삼정 KPMG 2024 국내 주요 산업 전망",
+      "header": {
+        "top_left": "chapter_indicator_small (예: 'II. 2024년 경제 전망')",
+        "top_left_below": "section_subtitle_pink_or_color"
+      },
+      "footer": {
+        "bottom_full_width": "KPMG copyright bar + 영역 footer",
+        "bottom_right": "page_number"
+      },
+      "grid": "headline top·1~3 col chart grid·intro paragraph below·source 하단 footnote",
+      "color_base": {"bg": "#FFFFFF", "text": "#1A1A1A", "navy_chart": "#1F3864", "muted_blue": "#5B9BD5", "accent_pink": "#E91E63"},
+      "typography": "sans bold + body·headline = 28~36pt bold·body = 10~12pt regular",
+      "consistency_observed": "p1·p9·p10·p20 다 chapter indicator + headline + chart grid + source footer 유지"
+    },
+    {
+      "id": "M04_saas_pitch_deck",
+      "domain": "saas_pitch_deck",
+      "source_pdf": "Buildy Pitch Deck (Younghwa Chae)",
+      "header": {
+        "top_left": "section_title_bold (예: 'INTRODUCTION'·'PRODUCT'·'경쟁사')",
+        "top_left_below": "subtitle_blue_accent_optional"
+      },
+      "footer": {
+        "minimal": "page_number or none"
+      },
+      "grid": "split or full·brand color gradient blob accent·wave line·talk bubble",
+      "color_base": {"bg": "#FFFFFF", "text": "#000000", "primary_blue": "#1976D2~#4FC3F7", "accent_secondary": "purple"},
+      "typography": "sans modern·section title = 36~48pt bold·body = 14~16pt regular",
+      "consistency_observed": "p1·p3·p7·p10·p13 다 brand gradient block + section title left + minimal footer"
+    },
+    {
+      "id": "M05_lecture_dark_with_light_examples",
+      "domain": "lecture_deck",
+      "source_pdf": "장선애 KDT 사업개발 GPTs·사업개발자과정 (GritBD)",
+      "header": {
+        "top_left": "section_title_bold (예: 'GPTs 사례 1 – 사업기획 초안 작성 GPT')",
+        "or": "centered_hero_for_dividers"
+      },
+      "footer": {
+        "bottom_left": "GritBD brand + copyright (© 2024 GritBD)",
+        "bottom_right": "page X / Y"
+      },
+      "grid": "section title 좌상단 + white card 영역 (screenshot left·text right) 또는 hero centered",
+      "color_base": {"bg_section_divider": "#000000~#0a0a0a", "bg_examples": "#FFFFFF or 라이트 그라데이션", "accent": "#4FC3F7 blue"},
+      "typography": "sans bold·section title = 32pt+·body = 14~16pt",
+      "consistency_observed": "p1·p3·p10·p17·p22 다 같은 footer·page format·section header"
+    },
+    {
+      "id": "M06_government_research_serif",
+      "domain": "government_research",
+      "source_pdf": "2020 문화예술 트렌드 (한국문화관광연구원)·KIEP 2025 세계경제",
+      "header": {
+        "top_left": "chapter_section_number_serif (예: '2020 문화예술 트렌드 / 2025년 세계경제 전망')",
+        "top_right": "chapter_indicator_box_pink_optional (KIEP)"
+      },
+      "footer": {
+        "bottom_left": "source_footnote_serif (자료: IMF·세계은행)",
+        "bottom_center": "publisher_logo",
+        "bottom_right": "page_number"
+      },
+      "grid": "chapter title top·body paragraph serif + chart table mix·source footnote bottom",
+      "color_base": {"bg": "#FFFFFF", "text": "#1A1A1A", "chart_navy": "#1F3864", "accent_pink_indicator": "#E91E63"},
+      "typography": "serif (Noto Serif KR·Batang)·chapter = 36~40pt·body = 10~12pt",
+      "consistency_observed": "p1·p5·p30·p80 다 chapter indicator + serif body + source footer 유지"
+    },
+    {
+      "id": "M07_yearbook_directory_playful",
+      "domain": "yearbook_directory",
+      "source_pdf": "서울 AI 스타트업 백서",
+      "header": {
+        "cover": "split left illustration·right white text label",
+        "spread": "company_chapter_indicator_top_left + summary_top_right_pink"
+      },
+      "footer": {
+        "bottom_corners": "page numbers (158·159 spread)"
+      },
+      "grid": "2 page spread = left metadata column (기업·대표자·제품·URL)·right narrative paragraph + photo",
+      "color_base": {"bg": "#FFFFFF", "cover_accent": "#A4D65E lime + #E91E63 pink + #FFC107 yellow + #4FC3F7 blue", "text": "#1A1A1A"},
+      "typography": "sans bold·company name = 20~28pt·metadata label = 10pt bold·body = 11~13pt",
+      "consistency_observed": "p1 cover spread·p40·p80·p120 다 동일 spread frame 유지·colorful playful 일관"
+    },
+    {
+      "id": "M08_automotive_brochure_premium",
+      "domain": "automotive_brochure",
+      "source_pdf": "Jaguar F-PACE·Mercedes E-Class·Lexus RX",
+      "header": {
+        "top_left": "model_name_minimal (예: 'E-Class Saloon'·'RX')",
+        "top_right": "chip_menu (Save·Share·Print) or brand_logo"
+      },
+      "footer": {
+        "bottom_center_or_corner": "brand logo + tagline·page number"
+      },
+      "grid": "full bleed photo dominant or minimal typography frame·feature callouts overlay",
+      "color_base": {"bg": "#FFFFFF or full photo background", "text": "#1A1A1A or #FFFFFF on photo", "accent": "brand specific"},
+      "typography": "minimal sans·model name = 16~24pt·minimal body text",
+      "consistency_observed": "표지·인테리어·spec page 다 photo dominant + minimal typography 유지"
+    },
+    {
+      "id": "M09_info_marketing_ebook_warm",
+      "domain": "info_marketing_ebook",
+      "source_pdf": "공유숙박업 마스터북",
+      "header": {
+        "cover": "ebook 3d mockup + bold headline orange + proof chips",
+        "narrative_pages": "minimal·section break with pink chapter title (예: '#14. 결국 브랜딩이 된 숙소가 살아남는다')"
+      },
+      "footer": {
+        "minimal_or_none": "narrative 영역 footer X·centered text full"
+      },
+      "grid": "centered narrative paragraphs·generous vertical spacing·section break with chapter number",
+      "color_base": {"bg": "#FFFFFF", "primary_orange": "#FF6F00~#F57C00", "highlight_red": "#D32F2F", "section_pink": "#E91E63", "text": "#1A1A1A"},
+      "typography": "sans bold + body·cover headline = 60~80pt·section pink = 24~32pt·body = 14~18pt centered",
+      "consistency_observed": "p1 cover ebook + p30·p60·p90 narrative pages 다 centered text + pink section breaks 일관"
+    },
+    {
+      "id": "M10_huchu_web_design_proposal",
+      "domain": "web_design_proposal",
+      "source_pdf": "롯데푸드 홈페이지 구축 포트폴리오 (NC3·후추님 작업)",
+      "header": {
+        "top_left_full_width": "section_title_bold + horizontal_line_below (모든 page 통일)",
+        "top_left_examples": "'요구사항명세서'·'관리자 메뉴구조도 개선'·'메인화면 WireFrame'·'Admin SB(1/2)'"
+      },
+      "footer": {
+        "bottom_center_thin_text": "'LOTTEFOODS Homepage reconstruction Portfolio' (모든 page 통일)",
+        "bottom_right": "page_number (모든 page)"
+      },
+      "grid": "section header top·content area 1~2 col (wireframe + explanation pair)·footer center brand",
+      "color_base": {"bg": "#FFFFFF", "text": "#1A1A1A or 진한 gray", "brand_red": "#FF1744 or 롯데푸드 red", "monochrome_gray_borders": "#E0E0E0"},
+      "typography": "sans bold·section title = 24~28pt bold·body = 10~12pt regular·영문+한글 mixed labels",
+      "consistency_observed": "11 page 다 같은 header (section title + line) + footer (center brand + page right) 통일·진짜 master example",
+      "huchu_signature": true
+    },
+    {
+      "id": "M11_huchu_app_design_guide",
+      "domain": "app_design_guide",
+      "source_pdf": "트래버 디자인 가이드 (시스루·후추님 작업)",
+      "header": {
+        "top_left": "double_pipe_section_label_pink (예: 'AUTH | SIGN UP - STEP 2 / ME | MODIFY' / 'ME | ME - BOOKMARKS, HISTORY, MY TRAVES')"
+      },
+      "footer": {
+        "minimal_or_none": "footer 영역 X·전체 흰 배경"
+      },
+      "grid": "section label top·1~3 mobile mockups centered·dotted annotation arrows + spec text right",
+      "color_base": {"bg": "#FFFFFF", "text": "#1A1A1A", "brand_pink_magenta": "#E91E63", "mock_gray": "#F5F5F5"},
+      "typography": "sans bold + thin sublabel·section label = 22~28pt bold·spec annotation = 11~13pt regular",
+      "consistency_observed": "3 page 다 분홍 double pipe + mobile mockups + annotation 유지",
+      "huchu_signature": true
+    },
+    {
+      "id": "M12_huchu_music_release_dark_navy",
+      "domain": "music_album_landing",
+      "source_pdf": "TXT 미니4집 컨셉포토 홈페이지 (HYBE·시스루·후추님 작업)",
+      "header": {
+        "top_center_thin": "band_logo_thin_caps (예: '+OMORROW × +OGETHER')"
+      },
+      "footer": {
+        "bottom_center_credits": "'DESIGN & PRODUCTION PART·© BIGHIT MUSIC / HYBE. ALL RIGHTS RESERVED.' (모든 page)"
+      },
+      "grid": "dark navy full·hero center varies (logo·1 word grunge·END OF DOCUMENT 등)·band + credits 일관",
+      "color_base": {"bg": "#0F1419 (dark navy)", "text": "#FFFFFF", "accent_red_grunge": "#BE1E3C·붉은 십자/X symbol", "accent_beige": "#F4E8D0"},
+      "typography": "sans bold + grunge display·band logo = 12pt·hero center = 80~120pt·credits = 10pt thin",
+      "consistency_observed": "13 page 다 top band + bottom credits + dark navy bg 일관·content_slot만 변경",
+      "huchu_signature": true
+    },
+    {
+      "id": "M13_resume_portfolio_deck",
+      "domain": "resume_portfolio",
+      "source_pdf": "sample_M13_resume_deck.html (claude.design sample)",
+      "header": {
+        "top_left_thin": "이름 (eyebrow caps)·all-page 동일",
+        "top_right_thin": "page indicator (01·02··08) + 'Resume Deck' 라벨"
+      },
+      "footer": {
+        "bottom_left": "section_name (CAREER·PROJECT·SKILLS·KPI·VALUES)",
+        "bottom_right": "이메일·전화 등 contact micro"
+      },
+      "grid": "표지 = serif display 거대 이름 + clay accent block·내부 page = title top + 1~2col body·KPI page = 정량 grid",
+      "color_base": {"bg": "#FBF9F3 (warm paper)", "text": "#0A0D14", "primary": "#A8482A clay", "deep": "#7A3119"},
+      "typography": "Pretendard sans + EB Garamond serif display·title = 28~36pt·body = 18pt·display 표지 = 100~120pt serif",
+      "consistency_observed": "8 page 다 같은 header·footer·paper bg·clay accent 1색 일관",
+      "default_theme": "T01_huchu_clay",
+      "compatible_themes": ["T01", "T02", "T07", "T08", "T10"]
+    },
+    {
+      "id": "M14_academic_presentation_serif",
+      "domain": "academic_presentation",
+      "source_pdf": "sample_M14_academic_presentation.html (claude.design sample)",
+      "header": {
+        "top_left": "논문 제목 짧게 (eyebrow·all-page)",
+        "top_right": "발표자 성 + page number"
+      },
+      "footer": {
+        "bottom_left": "학회 약어 + 일자",
+        "bottom_right": "page indicator 'p / total'"
+      },
+      "grid": "표지 = 가운데 정렬 거대 title + sub·내부 = 좌측 section_num + title + body + reference footnote 하단·그래프/표 = SVG 또는 HTML/CSS",
+      "color_base": {"bg": "#FAFAF6 cream", "text": "#131A2E navy ink", "accent": "#8B1A1A wine", "tint": "#EFD9D9"},
+      "typography": "Pretendard sans + EB Garamond serif·cover title = 50pt·section title = 36pt·body = 18pt·foot = 12pt",
+      "consistency_observed": "10 page 다 학회 톤·여백 풍부·각주 위치 일관·serif display + sans body 조합",
+      "default_theme": "T02_academic_wine",
+      "compatible_themes": ["T02", "T07", "T09"]
+    },
+    {
+      "id": "M15_student_assignment_warm",
+      "domain": "student_assignment",
+      "source_pdf": "sample_M15_student_assignment.html (claude.design sample)",
+      "header": {
+        "top_left": "과목명 + 조 번호 (eyebrow)",
+        "top_right": "page label '0X / 08'"
+      },
+      "footer": {
+        "bottom_left_or_center": "조원 이름·발표일"
+      },
+      "grid": "표지 = 거대 title + sub + accent green·내부 = section label + 가운데 정렬 narrative·발견 page = 1 발견 = 1 page (number + title + body)",
+      "color_base": {"bg": "#F4F2EA warm paper", "text": "#1F2937", "accent": "#3D7A57 green", "soft": "#D8E7D6"},
+      "typography": "Pretendard + Gowun Dodum accent·display = 76pt·title = 52pt·body = 30pt (발표 청중용 큰 글자)",
+      "consistency_observed": "8 page 다 따뜻한 paper bg + green accent + 큰 body + Gowun Dodum accent 일관",
+      "default_theme": "T03_student_green",
+      "compatible_themes": ["T03", "T08", "T09", "T10"]
+    },
+    {
+      "id": "M16_meeting_memo_corporate",
+      "domain": "meeting_memo",
+      "source_pdf": "sample_M16_meeting_memo.html (claude.design sample)",
+      "header": {
+        "top_left": "회의 제목 + 일자 (eyebrow caps)",
+        "top_right": "진행자 + page badge"
+      },
+      "footer": {
+        "bottom_thin_line": "참석자 names·page indicator"
+      },
+      "grid": "표지 = 회의 제목 거대 + agenda 미리보기·어젠다 = numbered list + 예상 시간·결정안건 = 배경/옵션/추천 3 split·action items = 표 (담당·기한·산출물·status badge)",
+      "color_base": {"bg": "#FFFFFF", "text": "#0B1220", "accent": "#2A4BD0 corporate blue", "soft": "#E8ECFB"},
+      "typography": "Pretendard 단일·display = 52pt·title = 32pt·body = 18pt·table = 17pt·badge = 14pt",
+      "consistency_observed": "7 page 다 정보 밀도 우선·꾸밈 X·표·badge·체크리스트 활용·실무 톤",
+      "default_theme": "T04_meeting_blue",
+      "compatible_themes": ["T04", "T07", "T11", "T06"]
+    },
+    {
+      "id": "M17_contest_pitch_deck",
+      "domain": "contest_pitch_deck",
+      "source_pdf": "스케일업 최종 발표 (엘엔디씨·L&DC·KDT 2기·정부 사업 결과 발표)",
+      "header": {
+        "top_left": "page_indicator + section_name ('1 / Scale up 최종 발표')",
+        "top_right_or_center": "date_label ('2025.02.28')"
+      },
+      "footer": {
+        "minimal_or_none": "footer 영역 영역 X·번호 영역 영역 top_left 영역 통일"
+      },
+      "grid": "표지 = centered title + date·내부 = chapter number + horizontal line + content (table·timeline·diagram)·정량 표 영역 영역 영역 영역·schedule chapter 영역 break page·thank you minimal red 영역 영역",
+      "color_base": {"bg": "#FFFFFF", "text": "#1A1A1A", "chapter_accent": "#1976D2 or 브랜드 컬러", "table_border": "#E0E0E0", "table_header_bg": "#F5F5F5"},
+      "typography": "sans bold·cover title = 44~60pt·chapter number = 20~28pt·metadata label = 10pt bold·metadata value = 12pt regular·body = 11~13pt",
+      "consistency_observed": "24 page 다 chapter number + horizontal line top + minimal footer 영역 일관·정량 표 영역 영역 영역 영역",
+      "default_theme": "T11_contest_blue",
+      "compatible_themes": ["T11", "T04", "T07"],
+      "added_v0_3": true,
+      "use_case": "공모전 결과 발표·정부 사업 영역 영역 영역·창업 발표·KDT 결과 보고·정량 영역 영역 영역 영역"
+    },
+    {
+      "id": "M18_ir_annual_report",
+      "domain": "ir_annual_report",
+      "source_pdf": "마크로젠 24년5월 IR자료",
+      "header": {
+        "top_horizontal_tabs": "section_tabs_top ('회사개요 / 신성장 비즈니스 / 재무사항 / 부록')",
+        "active_tab_color": "현재 영역 영역 색 강조 (orange or brand color)",
+        "inactive_tab_color": "회색 영역 영역"
+      },
+      "footer": {
+        "bottom_full_width": "회사 영문명 + © year + page_number"
+      },
+      "grid": "표지 = 영문 month + year (minimal)·DISCLAIMER 영역 영역 영역 long legal paragraph·내부 = section tabs top + 영역 영역 영역 (timeline·card·chart·table)·milestone timeline = 1990~2023 영역 영역 영역 정량 통화 영역·business area = 2~3col card",
+      "color_base": {"bg": "#FFFFFF", "section_header_navy": "#0F2F5C", "tab_active_orange": "#FF9800 or 브랜드", "tab_inactive_gray": "#999999", "data_chart_blue": "#5B9BD5", "table_navy_header": "#0F2F5C"},
+      "typography": "sans bold + body·section header = 20~24pt bold·tab navigation = 12~14pt·milestone year = 16pt bold·body = 10~12pt·footer = 8~10pt thin",
+      "consistency_observed": "37 page 다 section tabs top + 영역 영역 영역 영역 통일·DISCLAIMER p2 영역 영역 표준·milestone timeline 영역 영역 정량 영역",
+      "default_theme": "T12_ir_navy",
+      "compatible_themes": ["T12", "T04", "T07"],
+      "added_v0_3": true,
+      "use_case": "IR·연차 보고서·기업 공시·반기 보고서·투자자 영역 영역 영역 영역 영역 영역 영역"
+    }
+  ],
+
+  "content_slots": [
+    {"id": "S01_hero_center_1word", "use": "section divider·1 메시지·focus", "fits_masters": ["M01", "M02", "M05", "M09", "M12"]},
+    {"id": "S02_split_brand_left_product_right", "use": "표지·intro", "fits_masters": ["M04", "M07"]},
+    {"id": "S03_chart_grid_2_or_3col", "use": "data·insight", "fits_masters": ["M03", "M06"]},
+    {"id": "S04_chart_with_text_callout", "use": "data + narrative", "fits_masters": ["M03", "M06"]},
+    {"id": "S05_wireframe_left_explanation_right", "use": "web/app design spec", "fits_masters": ["M10", "M11"]},
+    {"id": "S06_mobile_mockups_with_annotation", "use": "app design spec", "fits_masters": ["M11"]},
+    {"id": "S07_4step_flow_horizontal", "use": "process·use case", "fits_masters": ["M04", "M10"]},
+    {"id": "S08_company_metadata_left_narrative_right", "use": "yearbook entry", "fits_masters": ["M07"]},
+    {"id": "S09_photo_dominant_full_bleed", "use": "automotive·product hero", "fits_masters": ["M08"]},
+    {"id": "S10_centered_narrative_paragraphs", "use": "story·sales letter", "fits_masters": ["M09"]},
+    {"id": "S11_3d_isometric_map_zone", "use": "venue·event layout", "fits_masters": ["M01"]},
+    {"id": "S12_color_palette_with_spec", "use": "brand guide", "fits_masters": ["M02"]},
+    {"id": "S13_concept_logo_evolution", "use": "brand storytelling", "fits_masters": ["M02"]},
+    {"id": "S14_table_excel_requirements", "use": "spec document", "fits_masters": ["M10"]},
+    {"id": "S15_before_after_diagram_metric", "use": "improvement narrative", "fits_masters": ["M10"]},
+    {"id": "S16_white_card_screenshot_text", "use": "case example", "fits_masters": ["M05"]},
+    {"id": "S17_thank_you_minimal_brand_color", "use": "결말", "fits_masters": ["M10", "M11", "M12"]},
+    {"id": "S18_end_of_document_dark", "use": "결말 minimal dark", "fits_masters": ["M01", "M02", "M12"]},
+    {"id": "S19_career_timeline", "use": "이력 7~10년 timeline + 핵심 성과 3~4개", "fits_masters": ["M13"]},
+    {"id": "S20_project_card_role_metric", "use": "대표 프로젝트 1장 = 역할·기여·결과 수치", "fits_masters": ["M13", "M04"]},
+    {"id": "S21_skill_stack_category_chip", "use": "언어·도구·역량 카테고리별 chip grid", "fits_masters": ["M13"]},
+    {"id": "S22_kpi_quant_grid", "use": "정량 성과 그래프·수치·전후 비교", "fits_masters": ["M13", "M03", "M04"]},
+    {"id": "S23_values_keyword_brief", "use": "가치관·일하는 방식 3~4 keyword + 짧은 설명", "fits_masters": ["M13"]},
+    {"id": "S24_problem_statement_paragraph", "use": "연구 배경·문제 정의 narrative", "fits_masters": ["M14", "M04"]},
+    {"id": "S25_reference_list_compact", "use": "선행 연구 3~5개 reference + 한 줄 요약", "fits_masters": ["M14"]},
+    {"id": "S26_methodology_diagram", "use": "방법론 flow chart·다이어그램", "fits_masters": ["M14", "M04"]},
+    {"id": "S27_data_finding_chart_text", "use": "결과 = 그래프 + 핵심 발견 한 줄", "fits_masters": ["M14", "M03", "M13"]},
+    {"id": "S28_discussion_limit_future", "use": "논의·한계·향후 연구 3 split", "fits_masters": ["M14"]},
+    {"id": "S29_conclusion_3lines", "use": "결론 = 3줄 요약·중앙 정렬", "fits_masters": ["M14", "M15"]},
+    {"id": "S30_topic_motivation_2cases", "use": "주제 선정 이유 + 일상 사례 1~2개", "fits_masters": ["M15"]},
+    {"id": "S31_research_method_icon_grid", "use": "조사 방법 (인터뷰·설문·문헌·관찰) icon grid", "fits_masters": ["M15", "M14"]},
+    {"id": "S32_finding_one_per_page", "use": "발견 1 page = 발견 번호 + title + body 큰 글자", "fits_masters": ["M15"]},
+    {"id": "S33_implication_to_life", "use": "시사점 = 우리 생활 적용 narrative", "fits_masters": ["M15", "M09"]},
+    {"id": "S34_agenda_numbered_with_time", "use": "어젠다 list + 예상 시간 분배", "fits_masters": ["M16"]},
+    {"id": "S35_action_items_status_table", "use": "지난 결정 review = action items 표 + status badge (완료/지연/취소)", "fits_masters": ["M16"]},
+    {"id": "S36_decision_bg_options_recommend", "use": "결정 안건 = 배경 + 옵션 list + 추천 3 split", "fits_masters": ["M16", "M03"]},
+    {"id": "S37_next_action_table_owner_due", "use": "다음 action items = 표 (담당·기한·산출물)", "fits_masters": ["M16"]},
+    {"id": "S38_next_meeting_closing", "use": "다음 회의 일정 + closing", "fits_masters": ["M16"]},
+    {"id": "S39_contest_company_overview_table", "use": "공모전·IR 회사 개요 영역 영역 표 (기업명·대표자·종업원수·서비스·핵심기술)", "fits_masters": ["M17", "M18"]},
+    {"id": "S40_history_timeline_year_month_bullet", "use": "회사 히스토리·인증·투자 영역 timeline (year_month + event)", "fits_masters": ["M17", "M18"]},
+    {"id": "S41_schedule_chapter_break", "use": "프로젝트 일정·작업 계획·chapter break page (centered)", "fits_masters": ["M17", "M14"]},
+    {"id": "S42_disclaimer_legal_dense", "use": "IR·연차 보고서 영역 영역 영역 disclaimer·법적 고지·long legal paragraph", "fits_masters": ["M18"]},
+    {"id": "S43_section_tab_navigation_top", "use": "IR·연차 보고서 영역 top section tabs (회사개요/신성장/재무사항)", "fits_masters": ["M18"]},
+    {"id": "S44_milestone_horizontal_timeline_quant", "use": "산업 영역 영역 horizontal timeline + 정량 통화 영역 ($1000·$599·$299 영역)", "fits_masters": ["M18", "M17"]},
+    {"id": "S45_business_area_2col_card_acronym", "use": "사업영역 2~3col card·약어 강조 (NGS·CES·바이오인포메틱스)", "fits_masters": ["M18", "M04"]}
+  ],
+
+  "deck_generation_flow": [
+    "1. URL → text scrape",
+    "2. text classifier → category → master_layout 1개 선택 (M01~M12)",
+    "3. text section → content_slot 영역 순차 매핑",
+    "4. master.header + master.footer + master.grid 영역 frame 적용",
+    "5. content_slot 영역 콘텐츠 채움",
+    "6. PPTX export (python-pptx 영역) 또는 HTML→PDF"
+  ],
+
+  "next_steps_v0_2": [
+    "M01~M16 CSS frame 정의 (header·footer·grid·color·typography 정량) — themes.json과 cross-apply 가능 구조",
+    "각 master demo deck (1 master + 4~6 content_slot + 2~3 theme variation 시연)",
+    "master/content_slot 중복 dedup 점검 (M03 vs M06·S17 vs S18·S05 vs S06 등)",
+    "글로벌 활용 axis 명시 (is_huchu_signature·is_global_template flag)"
+  ],
+
+  "v0_2_changes": [
+    "M13_resume_portfolio_deck 추가 (sample_M13_resume_deck.html 분석)",
+    "M14_academic_presentation_serif 추가 (sample_M14_academic_presentation.html)",
+    "M15_student_assignment_warm 추가 (sample_M15_student_assignment.html)",
+    "M16_meeting_memo_corporate 추가 (sample_M16_meeting_memo.html)",
+    "S19~S38 content_slot 20개 추가 (4 신규 master 영역 콘텐츠 단위)",
+    "default_theme + compatible_themes 필드 추가 (themes.json cross-reference)"
+  ],
+  "v0_3_changes": [
+    "M17_contest_pitch_deck 추가 (스케일업 최종 발표·엘엔디씨·KDT 2기·정부 사업 결과 발표 read)",
+    "M18_ir_annual_report 추가 (마크로젠 24년5월 IR 자료 read·section tabs top 패턴)",
+    "S39~S45 content_slot 7개 추가 (M17·M18 영역 영역 영역 영역)",
+    "selection_137 영역 영역 18 master 영역 80%+ coverage 도달·saturation 가까움",
+    "다음 cycle 영역 read 후보 5건 (디자인 시스템 강의·dmc 보고서·SCORDI 서비스소개서·trend report)"
+  ]
+}

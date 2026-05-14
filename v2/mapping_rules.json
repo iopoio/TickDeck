@@ -1,0 +1,320 @@
+{
+  "version": "0.3-draft",
+  "generated": "2026-05-15 04:55 KST",
+  "generated_by": "본진 클차장 (Ralph P3-T6) — templates v0.7 정합·19 sample + 추가 2 sample (스케일업·마크로젠 IR) 영역",
+  "purpose": "URL·텍스트 의도 인지 → 적합 slide_type·narrative_arc·color_system 매핑·PPTX export 영역 backbone",
+
+  "url_domain_classifier": [
+    {
+      "category": "automotive_event_proposal",
+      "url_signals": ["motor·자동차·차량·dealer·launch·training·proposal·brand_event"],
+      "content_signals": ["model name·spec·dealer·런칭·이벤트·테스트 드라이브"],
+      "default_arc": "automotive_event",
+      "default_color": "luxury_dark",
+      "default_cover": "cover_dark_minimal_center",
+      "example_pdf": "A7 National Launching"
+    },
+    {
+      "category": "brand_visual_guide",
+      "url_signals": ["brand·visual·guideline·BI·CI·design system"],
+      "content_signals": ["logo·typography·color palette·motif·usage·do/don't"],
+      "default_arc": "brand_guide",
+      "default_color": "luxury_dark",
+      "default_cover": "cover_brand_visual_emboss",
+      "example_pdf": "PROOF Visual Languages (HYBE)"
+    },
+    {
+      "category": "corporate_research_report",
+      "url_signals": ["KPMG·Deloitte·PwC·McKinsey·BCG·전망·outlook·industry·연구원·institute"],
+      "content_signals": ["macro economy·industry analysis·chart·forecast·source citation"],
+      "default_arc": "research_report",
+      "default_color": "formal_corporate_light",
+      "default_cover": "cover_photo_corporate",
+      "example_pdf": "KPMG 2024 국내 주요 산업 전망"
+    },
+    {
+      "category": "saas_pitch_deck",
+      "url_signals": ["pitch·deck·saas·startup·seed·series·indie hacker·YC"],
+      "content_signals": ["problem·solution·market size·MRR·team·ask·traction"],
+      "default_arc": "saas_pitch",
+      "default_color": "saas_brand_gradient",
+      "default_cover": "cover_split_brand_product",
+      "example_pdf": "Buildy Pitch Deck"
+    },
+    {
+      "category": "lecture_deck",
+      "url_signals": ["강의·강좌·course·lecture·K-Digital·KDT·교육"],
+      "content_signals": ["agenda·learning point·case study·exercise·summary"],
+      "default_arc": "lecture_deck",
+      "default_color": "luxury_dark",
+      "default_cover": "cover_dark_minimal_center",
+      "example_pdf": "장선애 KDT·사업개발자과정"
+    },
+    {
+      "category": "government_research",
+      "url_signals": ["연구원·institute·정부·gov·관광·문화·KIEP·KOSIS·통계"],
+      "content_signals": ["기초연구·정책·표 + 차트·자료 출처·각주·세리프 본문"],
+      "default_arc": "government_research",
+      "default_color": "formal_academic_serif",
+      "default_cover": "cover_serif_academic",
+      "example_pdf": "2020 문화예술 트렌드"
+    },
+    {
+      "category": "yearbook_directory",
+      "url_signals": ["yearbook·백서·directory·100·top·list of companies·hub·생태계"],
+      "content_signals": ["회사 list 반복·각 회사 metadata (CEO·제품·URL·summary)·case_card_repeat"],
+      "default_arc": "yearbook_directory",
+      "default_color": "playful_illustration_clean",
+      "default_cover": "cover_book_spread_illustration",
+      "example_pdf": "서울 AI 스타트업 백서"
+    },
+    {
+      "category": "automotive_brochure",
+      "url_signals": ["brochure·catalog·model·vehicle·spec sheet"],
+      "content_signals": ["full_bleed photo·model name·spec table·color variants·dealer info"],
+      "default_arc": "automotive_brochure",
+      "default_color": "premium_photo_dominant",
+      "default_cover": "cover_automotive_hero_photo",
+      "example_pdf": "Jaguar F-PACE"
+    },
+    {
+      "category": "info_marketing_ebook",
+      "url_signals": ["노하우·수익·월수익·이용자·강의·info marketing·sales letter"],
+      "content_signals": ["bold headline with numbers·proof chips·long narrative·CTA·구매 유도"],
+      "default_arc": "info_marketing_ebook",
+      "default_color": "warm_orange_marketing",
+      "default_cover": "cover_ebook_badge_sales",
+      "example_pdf": "공유숙박업 마스터북"
+    },
+    {
+      "category": "web_design_proposal",
+      "url_signals": ["홈페이지·웹사이트·web·site·portfolio·구축·재구축·design proposal"],
+      "content_signals": ["wireframe·As-IS/To-Be·요구사항·기획의도·화면구성·Admin SB"],
+      "default_arc": "web_design_proposal_huchu",
+      "default_color": "clean_red_accent_wireframe_dense",
+      "default_cover": "portfolio_cover_photo_brand_red",
+      "is_huchu_signature": true,
+      "example_pdf": "롯데푸드 포트폴리오 (NC3·후추님 작업)"
+    },
+    {
+      "category": "app_design_guide",
+      "url_signals": ["app·모바일·앱·design guide·디자인 가이드·UX·UI spec"],
+      "content_signals": ["AUTH·SIGN UP·STEP·MODIFY·mobile mockup·annotation·dotted arrow"],
+      "default_arc": "huchu_app_design_workflow",
+      "default_color": "clean_white_with_brand_accent",
+      "default_cover": "section_label_pink_top_mobile_mockup_below",
+      "is_huchu_signature": true,
+      "example_pdf": "트래버 디자인 가이드 (시스루·후추님)"
+    },
+    {
+      "category": "music_album_landing",
+      "url_signals": ["album·discography·music release·track list·concept photo·K-pop"],
+      "content_signals": ["MV·Photo·Archive·track list·brand logo·member·polaroid"],
+      "default_arc": "huchu_music_landing",
+      "default_color": "dark_navy_brand_accent_or_red_grunge",
+      "default_cover": "cover_dark_navy_brand_logo_release",
+      "is_huchu_signature": true,
+      "example_pdf": "PROOF Discography·TXT 미니4집 (HYBE·시스루·후추님)"
+    },
+    {
+      "category": "resume_portfolio",
+      "url_signals": ["이력서·resume·portfolio·CV·경력기술서·자기소개"],
+      "content_signals": ["경력·career·프로젝트·기여도·KPI·스킬·values·연락처"],
+      "default_arc": "resume_8page",
+      "default_color": "warm_clay_paper",
+      "default_cover": "cover_serif_display_name",
+      "default_master": "M13",
+      "default_theme": "T01_huchu_clay",
+      "is_global_template": true,
+      "example_pdf": "sample_M13_resume_deck.html"
+    },
+    {
+      "category": "academic_presentation",
+      "url_signals": ["학회·세미나·conference·academic·논문 발표·research·thesis"],
+      "content_signals": ["연구 배경·선행 연구·가설·방법론·결과·논의·각주·reference"],
+      "default_arc": "academic_10page",
+      "default_color": "academic_wine_cream",
+      "default_cover": "cover_centered_serif_title_with_sub",
+      "default_master": "M14",
+      "default_theme": "T02_academic_wine",
+      "is_global_template": true,
+      "example_pdf": "sample_M14_academic_presentation.html"
+    },
+    {
+      "category": "student_assignment",
+      "url_signals": ["과제·assignment·대학생·student·조모임·발표·course project"],
+      "content_signals": ["주제 선정·조사 방법·발견·시사점·결론·조원 이름"],
+      "default_arc": "student_8page",
+      "default_color": "student_green_warm_paper",
+      "default_cover": "cover_display_title_green_accent",
+      "default_master": "M15",
+      "default_theme": "T03_student_green",
+      "is_global_template": true,
+      "example_pdf": "sample_M15_student_assignment.html"
+    },
+    {
+      "category": "meeting_memo",
+      "url_signals": ["회의·미팅·meeting·sync·standup·weekly·기획·planning"],
+      "content_signals": ["어젠다·agenda·action items·status·결정안건·다음 회의"],
+      "default_arc": "meeting_7page",
+      "default_color": "corporate_blue_white",
+      "default_cover": "cover_title_with_agenda_preview",
+      "default_master": "M16",
+      "default_theme": "T04_meeting_blue",
+      "is_global_template": true,
+      "example_pdf": "sample_M16_meeting_memo.html"
+    },
+    {
+      "category": "contest_pitch_deck",
+      "url_signals": ["공모전·결과 발표·스케일업·KDT·결과 보고·창업 사업 결과·정부 사업 결과·예비창업패키지·중기부·창업진흥원"],
+      "content_signals": ["chapter 번호·회사 개요 표·히스토리·timeline·인증·투자유치·서비스·성과·일정·개선안·최종 발표"],
+      "default_arc": "contest_pitch_deck",
+      "default_color": "formal_chapter_numbered_quant",
+      "default_cover": "contest_cover_title_date_centered",
+      "default_master": "M17",
+      "default_theme": "T11_contest_blue",
+      "is_global_template": true,
+      "added_v0_3": true,
+      "example_pdf": "스케일업 최종 발표 (엘엔디씨·KDT 2기)"
+    },
+    {
+      "category": "ir_annual_report",
+      "url_signals": ["IR·연차 보고서·사업 보고서·반기 보고서·기업 공시·DART·투자자·investor relations·annual report·기업 공개"],
+      "content_signals": ["DISCLAIMER·회사개요·신성장 비즈니스·재무사항·milestone·timeline·산업 동향·사업영역·약어 (NGS·CES·SaaS·AI)"],
+      "default_arc": "ir_annual_report",
+      "default_color": "ir_corporate_dark_navy",
+      "default_cover": "cover_serif_academic",
+      "default_master": "M18",
+      "default_theme": "T12_ir_navy",
+      "is_global_template": true,
+      "added_v0_3": true,
+      "example_pdf": "마크로젠 24년5월 IR 자료"
+    }
+  ],
+
+  "content_section_to_slide_type": [
+    {
+      "intent_pattern": "표지·제목·brand·도입",
+      "candidate_slides": ["cover_*"],
+      "selection_rule": "category 영역 default_cover 우선·tone 일치 다른 cover 변형 OK"
+    },
+    {
+      "intent_pattern": "도입·what is·intro·why",
+      "candidate_slides": ["intro_headline_image"]
+    },
+    {
+      "intent_pattern": "data·chart·통계·전망",
+      "candidate_slides": ["data_visualization_3col_chart", "data_visualization_2col_chart_text", "government_data_chart_with_table"],
+      "selection_rule": "차트 3개+ = 3col_chart·1~2개 = 2col_chart_text·세리프 톤 = government_data_chart"
+    },
+    {
+      "intent_pattern": "사용 사례·flow·process·step",
+      "candidate_slides": ["product_use_case_4step"]
+    },
+    {
+      "intent_pattern": "분석 framework·문제 정의·솔루션 매트릭스",
+      "candidate_slides": ["workflow_table_3col"]
+    },
+    {
+      "intent_pattern": "venue·공간·zone·map",
+      "candidate_slides": ["venue_layout_3d", "map_route_satellite"],
+      "selection_rule": "공간 = 3D·경로 = satellite"
+    },
+    {
+      "intent_pattern": "brand·logo·typography·color 규정",
+      "candidate_slides": ["brand_guide_logo_hero", "brand_guide_motif_examples"]
+    },
+    {
+      "intent_pattern": "강의 learning point·dense text",
+      "candidate_slides": ["lecture_2col_label_dense"]
+    },
+    {
+      "intent_pattern": "case·예시·screenshot",
+      "candidate_slides": ["case_card_examples_pair", "yearbook_company_spread"]
+    },
+    {
+      "intent_pattern": "section 전환·focus message",
+      "candidate_slides": ["section_divider_hero_text"]
+    },
+    {
+      "intent_pattern": "product photo·spec",
+      "candidate_slides": ["automotive_full_bleed_product"]
+    },
+    {
+      "intent_pattern": "narrative·sales story·long copy",
+      "candidate_slides": ["narrative_centered_text_block"]
+    }
+  ],
+
+  "color_system_rules": [
+    {
+      "trigger": "luxury·prestige·brand_event·럭셔리·고급",
+      "color_system": "luxury_dark"
+    },
+    {
+      "trigger": "research·report·corporate·formal",
+      "color_system": "formal_corporate_light"
+    },
+    {
+      "trigger": "saas·pitch·startup·tech",
+      "color_system": "saas_brand_gradient"
+    },
+    {
+      "trigger": "government·academic·연구·정부",
+      "color_system": "formal_academic_serif"
+    },
+    {
+      "trigger": "yearbook·directory·playful·youth",
+      "color_system": "playful_illustration_clean"
+    },
+    {
+      "trigger": "automotive·vehicle·premium product",
+      "color_system": "premium_photo_dominant"
+    },
+    {
+      "trigger": "info_marketing·sales·노하우·money",
+      "color_system": "warm_orange_marketing"
+    }
+  ],
+
+  "typography_rules": [
+    {"if_color_system": "formal_academic_serif", "primary_font": "serif (Noto Serif·Batang)"},
+    {"if_color_system": "luxury_dark", "primary_font": "sans bold (Pretendard Bold·Inter Bold)"},
+    {"if_color_system": "saas_brand_gradient", "primary_font": "sans modern (Inter·Pretendard)"},
+    {"if_color_system": "warm_orange_marketing", "primary_font": "sans bold + highlight color"},
+    {"default": "sans (Pretendard·Noto Sans KR)"}
+  ],
+
+  "fallback_rule": {
+    "if_url_signal_ambiguous": "본진 클차장 (Claude) 텍스트 분석·1차 카테고리 추정·후추님 결재 후 진행",
+    "if_content_too_short": "intro_headline_image 1장 + cta 1장·minimal deck"
+  },
+
+  "next_phase_dev": [
+    "url → text scrape (Playwright·또는 readability API)",
+    "text → category classifier (LLM call·1 사이클)",
+    "category → narrative_arc + color_system + slide_types 매핑 (본 mapping_rules 영역)",
+    "slide_types → PPTX export (python-pptx 또는 markdown→pptx)",
+    "사용자 review·tweak·export"
+  ],
+
+  "limitations_v0_1": [
+    "10 PDF·20 page sample 영역만·patterns saturation 영역 도달 X 가능",
+    "후추님 직접 작업 (롯데푸드·시스루·HYBE 추가) 미read·tone 학습 영역 부족",
+    "이미지 PDF text 추출 X 영역 = OCR 영역 별도 처리 의무 (Vision 영역 본진이 직접 read)",
+    "narrative_arc 영역 = 카테고리당 1개 sample 영역만·다양성 X"
+  ],
+
+  "v0_2_changes": [
+    "resume_portfolio·academic_presentation·student_assignment·meeting_memo 4 카테고리 추가 (시장 demand 우선 ⭐⭐⭐)",
+    "default_master + default_theme 필드 추가 (master_layouts.json·themes.json cross-reference)",
+    "is_global_template flag 추가 (어떤 사용자도 쓸 수 있는 범용 vs is_huchu_signature 후추님 톤 보존)",
+    "다음 사이클 추가 candidate: business_plan_deck·lecture_general·workshop_deck·consulting_report·event_ops_deck"
+  ],
+  "v0_3_changes": [
+    "contest_pitch_deck 카테고리 추가 (공모전·정부 사업 결과 발표·KDT·창업 결과 보고)",
+    "ir_annual_report 카테고리 추가 (IR·연차 보고서·DART·기업 공시·투자자 자료)",
+    "selection_137 영역 영역 영역 영역 영역 영역 19 categories 도달·saturation 가까움",
+    "다음 cycle 추가 candidate: design_system_lecture (3-4·4-1 영역)·market_research_dmc (1인가구)·saas_service_intro (SCORDI)·trend_report (2025 trend)"
+  ]
+}
