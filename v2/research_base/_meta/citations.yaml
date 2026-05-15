@@ -1,0 +1,131 @@
+# Layer A 자료 citation map (SoT)
+# convert_pdfs_to_md.py가 본 파일 read·frontmatter 자동 박음(넣음)
+# 키 = research_base 기준 상대 경로
+
+"01_AI_반도체/pwcconsulting_semicon-trends-outlook-2026.pdf":
+  title: "Global Semiconductor Industry Outlook 2026 (Semiconductor and beyond)"
+  publisher: "PwC Global"
+  publication_date: "2026"
+  keywords: [반도체, AI 수요, 공급망, 기술 주권, 자동차 반도체, 헬스 반도체, 에너지 반도체, 지정학]
+  license: "PwC 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "PwC (2026). Global Semiconductor Industry Outlook 2026."
+
+"04_핀테크_금융IT/(하나Knowledge  9호) 2026년 자금흐름 전망과 개인투자자 주식투자 채널 변화.pdf":
+  title: "하나Knowledge 제9호 — 2026년 자금흐름 및 개인투자자의 자금운용 전망"
+  publisher: "하나금융경영연구소"
+  publication_date: "2026-03-13"
+  keywords: [자금흐름, 개인투자자, 주식투자 채널, ETF, ISA, 자금이동, 반도체 주가, 기관투자자]
+  license: "하나금융 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "하나금융경영연구소 (2026-03-13). 하나Knowledge 제9호."
+
+"04_핀테크_금융IT/2026 대한민국 웰스 리포트_하나금융연구소.pdf":
+  title: "2026 대한민국 웰스 리포트 (2026 Korean Wealth Report)"
+  publisher: "하나은행·하나금융연구소"
+  publication_date: "2026"
+  keywords: [자산가, 포트폴리오, 일상 속 백만장자, K-EMILLI, 자산 승계, 자산 관리, PB]
+  license: "하나금융 연간 발행 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "하나은행·하나금융연구소 (2026). 2026 대한민국 웰스 리포트."
+
+"04_핀테크_금융IT/삼정KPMG-글로벌-핀테크-투자-동향과-2026년-상반기-전망-20260316.pdf.coredownload.inline.pdf":
+  title: "글로벌 핀테크 투자 동향과 2026년 상반기 전망 (Pulse of Fintech H2 2025)"
+  publisher: "삼정KPMG 경제연구원"
+  publication_date: "2026-03"
+  keywords: [핀테크, 글로벌 투자 동향, M&A, 섹터별 투자, 지역별 투자, KPMG Global]
+  license: "삼정KPMG 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "삼정KPMG 경제연구원 (2026-03). 글로벌 핀테크 투자 동향과 2026년 상반기 전망."
+
+"09_부동산_PropTech/2026 KB부동산보고서.pdf":
+  title: "2026 KB부동산보고서"
+  publisher: "KB경영연구소 (KB금융)"
+  publication_date: "2026"
+  keywords: [주택시장, 초양극화, 월세화, 정비사업, 비수도권, 부동산 세제, 다주택자 양도세, 노후 아파트]
+  license: "KB금융 연간 발행 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "KB금융 (2026). 2026 KB부동산보고서. KB경영연구소."
+
+"_공통/01_macro/HRI_2026_글로벌_트렌드_25-22.pdf":
+  title: "2026년 글로벌 트렌드 (25-22 통권 1001호)"
+  publisher: "현대경제연구원 경제연구실"
+  publication_date: "2025-12-19"
+  keywords: [글로벌 트렌드, 매크로 경제, 세계경제, 주요 이슈]
+  license: "현대경제연구원 공개 자료 · 비상업 목적 인용 자유 · 출처 명시 의무 (HRI 명시)"
+  citation_short: "현대경제연구원 (2025-12-19). 2026년 글로벌 트렌드 (25-22 통권 1001호)."
+
+"_공통/01_macro/삼정KPMG_2026_경제_산업_전망_20251204.pdf":
+  title: "2026년 경제 및 산업 전망"
+  publisher: "삼정KPMG 경제연구원"
+  publication_date: "2025-12-04"
+  keywords: [한국 경제, 산업 전망, 매크로, 2026 전망]
+  license: "삼정KPMG 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "삼정KPMG 경제연구원 (2025-12-04). 2026년 경제 및 산업 전망."
+
+"_공통/01_macro/samilpwc_economic-outlook2026.pdf":
+  title: "Economic Outlook 2026"
+  publisher: "삼일PwC"
+  publication_date: "2026"
+  keywords: [한국 경제, 매크로 전망, 2026 outlook]
+  license: "삼일PwC 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "삼일PwC (2026). Economic Outlook 2026."
+
+"_공통/02_corporate/Deloitte_2026_글로벌_경제_산업_전망_CEO.pdf":
+  title: "2026년 딜로이트 글로벌 경제·산업 전망 — 국내·외 CEO들의 인사이트로 읽는 2026년 경제·산업의 방향성"
+  publisher: "한국 딜로이트 그룹·딜로이트 인사이트 (Deloitte Insights)"
+  publication_date: "2025-12-08"
+  keywords: [CEO 서베이, 글로벌 경제, 산업 전망, AI 도입, 인재 전략, 책임 있는 AI, 경제 불확실성, Deloitte-Fortune Survey]
+  license: "Deloitte 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "한국 딜로이트 그룹·딜로이트 인사이트 (2025-12). 2026년 딜로이트 글로벌 경제·산업 전망."
+
+"_공통/02_corporate/삼정KPMG_글로벌_MA_트렌드_20260415.pdf":
+  title: "글로벌 M&A 트렌드 및 전망"
+  publisher: "삼정KPMG"
+  publication_date: "2026-04-15"
+  keywords: [M&A, 자본시장, 글로벌 딜, 산업별 M&A 동향]
+  license: "삼정KPMG 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "삼정KPMG (2026-04-15). 글로벌 M&A 트렌드 및 전망."
+
+"_공통/03_ces/Deloitte_CES_2026_Preview.pdf":
+  title: "CES 2026 Preview — Deloitte's Must-See Strategy"
+  publisher: "딜로이트 인사이트 (Deloitte Insights)"
+  publication_date: "2025-12"
+  keywords: [CES 2026, 기술 전략, 기술 트렌드, 신기술 점검]
+  license: "Deloitte 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "Deloitte Insights (2025-12). CES 2026 Preview."
+
+"_공통/03_ces/삼일PwC_유니콘_CES2026.pdf":
+  title: "2026 CES를 다녀오다 (AI Lives with You)"
+  publisher: "삼일PwC 유니콘지원센터"
+  publication_date: "2026-01"
+  keywords: [CES 2026, AI 통합, 유니콘 분석, 기술 동향]
+  license: "삼일PwC 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "삼일PwC 유니콘지원센터 (2026-01). 2026 CES를 다녀오다 (AI Lives with You)."
+
+"_공통/04_wealth/2025 한국 부자 보고서.pdf":
+  title: "2025 한국 부자 보고서"
+  publisher: "KB금융 (KB경영연구소)"
+  publication_date: "2025-12"
+  keywords: [한국 부자, 47.6만 명, 금융자산 3066조, 수도권 거주, 자산가 분포]
+  license: "KB금융 연간 발행 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "KB금융 (2025-12). 2025 한국 부자 보고서. KB경영연구소."
+
+"_공통/04_wealth/AAW_Asset_Allocation_Weekly_20260204.pdf":
+  title: "2026 자산배분 전략"
+  publisher: "하나증권"
+  publication_date: "2026-02-04"
+  keywords: [자산배분, 국내 주식, 선진국 주식, 신흥국 주식, 채권, 투자 인사이트]
+  license: "하나증권 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "하나증권 (2026-02-04). 2026 자산배분 전략."
+
+"_공통/05_lifestyle/2025_우리금융_트렌드_AI시대_시니어라이프.pdf":
+  title: "2025 우리금융 트렌드 보고서 — AI시대의 시니어 라이프"
+  publisher: "우리금융지주·우리금융경영연구소"
+  publication_date: "2025"
+  keywords: [시니어 라이프, AI 시대, 고령화, 시니어 소비, 인구 변화]
+  license: "우리금융 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "우리금융경영연구소 (2025). 2025 우리금융 트렌드 보고서 — AI시대의 시니어 라이프."
+
+"_공통/06_hr/Deloitte_2026_Global_HR_Trend.pdf":
+  title: "딜로이트 2026 글로벌 인적자원 트렌드 — 전환의 순간, 인간 중심 경쟁력의 재발견"
+  publisher: "한국 딜로이트 그룹 (Human Capital)"
+  publication_date: "2026-04"
+  keywords: [인적자원, HR, AI 협업, 조직 설계, 인간 중심, 디지털 신뢰, 데이터 윤리]
+  license: "Deloitte 공개 자료 · 인용·요약·출처 명시 OK · 전체 복사 X"
+  citation_short: "한국 딜로이트 그룹 (2026-04). 딜로이트 2026 글로벌 인적자원 트렌드."
