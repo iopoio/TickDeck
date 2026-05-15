@@ -1,0 +1,45 @@
+# TickDeck Profile
+
+> 세션 임시 저장 · 종료 시 자동 삭제 · DB X · 계정 X
+> 6 인풋 = cold-start interview 결과. 다음 named agent 자동 read 영역.
+
+## 1. 산업 (industry)
+
+선택지: automotive · entertainment · food · education · brand_consulting · marketing · finance · 기타
+
+- 값: {industry}
+
+## 2. 청중 (audience)
+
+선택지: 임원 · 실무자 · 외부 클라이언트 · 투자자
+
+- 값: {audience}
+
+## 3. 톤 (tone)
+
+선택지: 정장 · 세미정장 · casual
+
+- 값: {tone}
+
+## 4. 출처 정책 (source_policy)
+
+선택지: 각주 strict · footer · 인용 자유
+
+- 값: {source_policy}
+
+## 5. 분량 (length)
+
+선택지: 8장 · 15장 · 30장 · 자유
+
+- 값: {length}
+
+## 6. 언어 (language)
+
+선택지: 한국어 · 영어 · 혼용
+
+- 값: {language}
+
+---
+
+작성 시각: {created_at}
+세션 ID: {session_id}
