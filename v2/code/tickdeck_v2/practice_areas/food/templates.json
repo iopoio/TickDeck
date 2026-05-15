@@ -1,0 +1,17 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "food",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상 + T31 (137개 B2B 패턴 추출)",
+    "note": "1단계 placeholder — 산업별 slide pattern 영역 base. 실 빌드 = T31 영역 후추님 자료 patterns 추출 후 5+ 패턴 누적.",
+    "expected_patterns": [
+      "메뉴 카드 영역 그리드",
+      "재료·원산지 트레이스 다이어그램",
+      "레시피 단계 비주얼",
+      "F&B 시장 영역 트렌드 차트",
+      "영양 성분 비교 표"
+    ]
+  },
+  "patterns": []
+}

@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "finance",
+    "language": "ko",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상 + 2.4 Industry Research Compiler",
+    "note": "1단계 placeholder — 5~10 산업 용어 base. 실 빌드 = T32 (ARK) + T33 (KPMG/BCG/Deloitte) patterns 추출 후 확장. 차별 layer 2번 ⭐ 가장 강한 영역."
+  },
+  "terms": {
+    "시장 규모": "TAM·SAM·SOM 영역",
+    "CAGR": "Compound Annual Growth Rate·연 평균 성장률",
+    "점유율": "market share 영역",
+    "전망": "outlook·forecast 영역",
+    "각주": "footnote·인용 출처 strict 영역",
+    "1차 자료": "정부·공식 보고서·원본 영역",
+    "2차 자료": "리서치 영역·요약·해석 영역",
+    "리스크": "downside·시장 영역 변동성"
+  },
+  "honorifics": {
+    "default": "정장 strict",
+    "audience_executive": "정중·1차 자료 인용 strict",
+    "audience_investor": "정중·수치 영역·1차 자료 각주 의무"
+  }
+}

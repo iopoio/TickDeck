@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "entertainment",
+    "language": "ko",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상",
+    "note": "1단계 placeholder — 5~10 산업 용어 base. 실 빌드 = T31 영역 후추님 137개 B2B 자료 patterns 추출 후 확장."
+  },
+  "terms": {
+    "라인업": "출연·콘텐츠 구성 영역",
+    "캐스팅": "출연자 섭외 영역",
+    "시즌": "방영 회차 묶음",
+    "시청률": "방송 영역 사용자 측정 지표",
+    "OTT": "Over-The-Top·스트리밍 영역",
+    "러닝타임": "콘텐츠 분량 (분 단위)",
+    "IP": "Intellectual Property·콘텐츠 자산",
+    "PPL": "Product Placement·간접 광고"
+  },
+  "honorifics": {
+    "default": "반말 X·존댓말 + casual 혼용",
+    "audience_executive": "정중·brand value 중심",
+    "audience_client": "casual·트렌드 영역"
+  }
+}

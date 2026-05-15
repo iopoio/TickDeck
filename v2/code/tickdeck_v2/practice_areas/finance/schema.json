@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "finance",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상 + 2.4 Industry Research Compiler + T10",
+    "note": "1단계 placeholder — 산업별 메타데이터 schema base. T10 영역 5 필드 strict 정합. 차별 layer 2번 ⭐ source_url 의무·각주 strict."
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tickdeck_v2/practice_areas/finance/schema.json",
+  "title": "FinanceSlidePattern",
+  "type": "object",
+  "required": ["country", "industry", "language", "license", "source_url"],
+  "properties": {
+    "country": {"type": "string", "enum": ["KR", "JP", "TW", "US", "EU"]},
+    "industry": {"const": "finance"},
+    "language": {"type": "string", "enum": ["ko", "ja", "zh-TW", "en"]},
+    "license": {"type": "string"},
+    "source_url": {"type": "string", "format": "uri"},
+    "pattern_id": {"type": "string"},
+    "tone_strength": {"type": "string", "enum": ["formal", "semi-formal", "casual"]},
+    "source_tier": {"type": "string", "enum": ["primary", "secondary", "tertiary"]},
+    "data_year": {"type": "integer", "minimum": 2020, "maximum": 2035}
+  }
+}

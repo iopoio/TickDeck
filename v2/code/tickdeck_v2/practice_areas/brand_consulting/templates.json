@@ -1,0 +1,17 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "brand_consulting",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상 + 2.2 Brand Guide Builder",
+    "note": "1단계 placeholder — 산업별 slide pattern 영역 base. 실 빌드 = brand 컨설팅 agency 자료 patterns 추출 후 5+ 패턴 누적.",
+    "expected_patterns": [
+      "로고 영역 + 응용 시나리오 그리드",
+      "color palette 칩 영역",
+      "typography 헤드·바디·캡션 sample",
+      "voice & tone do/don't 영역",
+      "design system 컴포넌트 카드"
+    ]
+  },
+  "patterns": []
+}

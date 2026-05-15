@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "brand_consulting",
+    "language": "ko",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상",
+    "note": "1단계 placeholder — 5~10 산업 용어 base. 실 빌드 = T31 영역 후추님 137개 B2B 자료 patterns 추출 후 확장."
+  },
+  "terms": {
+    "brand 가이드": "로고·color·typography·voice & tone 통합 영역",
+    "로고": "심볼·워드마크 영역",
+    "color palette": "primary·secondary·accent 영역",
+    "typography": "헤드·바디·캡션 폰트 영역",
+    "voice & tone": "말투·언어 정합 영역",
+    "brand identity": "BI·CI 통합 영역",
+    "design system": "컴포넌트·layout·spacing 영역",
+    "응용 영역": "명함·외부 자료 영역 적용"
+  },
+  "honorifics": {
+    "default": "정장·세미정장",
+    "audience_executive": "전략 영역·brand equity 강조",
+    "audience_client": "비주얼 영역·sample 자료 강조"
+  }
+}

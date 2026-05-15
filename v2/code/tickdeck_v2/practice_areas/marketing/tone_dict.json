@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "marketing",
+    "language": "ko",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상",
+    "note": "1단계 placeholder — 5~10 산업 용어 base. 실 빌드 = T31 영역 후추님 137개 B2B 자료 patterns 추출 후 확장."
+  },
+  "terms": {
+    "campaign": "1회 marketing 영역 단위",
+    "KPI": "Key Performance Indicator·정량 지표",
+    "CAC": "Customer Acquisition Cost·고객 획득 비용",
+    "LTV": "Life Time Value·고객 생애 가치",
+    "전환": "lead → customer 영역 비율",
+    "타깃 segmentation": "고객 영역 분류",
+    "퍼널": "AARRR·인지 → 전환 → 유지 영역",
+    "ROAS": "Return on Ad Spend·광고 효율"
+  },
+  "honorifics": {
+    "default": "세미정장",
+    "audience_executive": "정중·ROI·budget 영역 명시",
+    "audience_client": "casual·campaign 사례 영역"
+  }
+}

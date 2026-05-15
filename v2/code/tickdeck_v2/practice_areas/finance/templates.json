@@ -1,0 +1,17 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "finance",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상 + 2.4 Industry Research Compiler",
+    "note": "1단계 placeholder — 산업별 slide pattern 영역 base. 실 빌드 = T32 (ARK Big Ideas) + T33 (KPMG·BCG·Deloitte·증권사 200~300개) patterns 추출 후 5+ 패턴 누적. 차별 layer 2번 ⭐ 가장 강한 영역.",
+    "expected_patterns": [
+      "시장 규모 TAM·SAM·SOM 영역",
+      "CAGR 차트 + 각주 strict",
+      "경쟁 구도 3~7사 점유율",
+      "전망·트렌드 타임라인",
+      "리스크 영역 + 1차 자료 인용"
+    ]
+  },
+  "patterns": []
+}

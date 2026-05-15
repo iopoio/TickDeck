@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "automotive",
+    "language": "ko",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상",
+    "note": "1단계 placeholder — 5~10 산업 용어 base. 실 빌드 = T31 영역 후추님 137개 B2B 자료 patterns 추출 후 확장."
+  },
+  "terms": {
+    "시승": "차량 직접 운전·체험 영역",
+    "옵션": "차량 선택 사양·트림 영역",
+    "차종": "세단·SUV·해치백 등 분류",
+    "딜러": "차량 판매 영역 직원",
+    "트림": "동일 모델 안 사양 등급",
+    "하이브리드": "내연기관 + 전기 모터 차량",
+    "주행거리": "1회 충전·연료 시 운행 영역",
+    "안전 옵션": "에어백·ABS·자율주행 영역"
+  },
+  "honorifics": {
+    "default": "존댓말",
+    "audience_executive": "정중·간결",
+    "audience_client": "정중·detailed"
+  }
+}

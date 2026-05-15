@@ -1,0 +1,17 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "automotive",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상 + T31 (137개 B2B 패턴 추출)",
+    "note": "1단계 placeholder — 산업별 slide pattern 영역 base. 실 빌드 = T31 영역 후추님 자료 patterns 추출 후 5+ 패턴 누적.",
+    "expected_patterns": [
+      "신차 라인업 비교 표",
+      "트림별 사양 매트릭스",
+      "딜러 네트워크 지도",
+      "시승 후기·고객 사례",
+      "안전 옵션 비주얼 다이어그램"
+    ]
+  },
+  "patterns": []
+}

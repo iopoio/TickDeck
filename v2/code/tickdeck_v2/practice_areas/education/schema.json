@@ -1,0 +1,24 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "education",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상 + T10 (메타데이터 strict)",
+    "note": "1단계 placeholder — 산업별 메타데이터 schema base. T10 영역 5 필드 strict 정합."
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tickdeck_v2/practice_areas/education/schema.json",
+  "title": "EducationSlidePattern",
+  "type": "object",
+  "required": ["country", "industry", "language", "license", "source_url"],
+  "properties": {
+    "country": {"type": "string", "enum": ["KR", "JP", "TW", "US", "EU"]},
+    "industry": {"const": "education"},
+    "language": {"type": "string", "enum": ["ko", "ja", "zh-TW", "en"]},
+    "license": {"type": "string"},
+    "source_url": {"type": "string", "format": "uri"},
+    "pattern_id": {"type": "string"},
+    "tone_strength": {"type": "string", "enum": ["formal", "semi-formal", "casual"]},
+    "bloom_level": {"type": "string", "enum": ["remember", "understand", "apply", "analyze", "evaluate", "create"]}
+  }
+}

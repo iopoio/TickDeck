@@ -1,0 +1,17 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "industry": "education",
+    "created": "2026-05-15",
+    "source": "feature_spec.md 5. Practice Areas Plugin 사상 + 2.5 Curriculum Pack Designer",
+    "note": "1단계 placeholder — 산업별 slide pattern 영역 base. 실 빌드 = 교육 강사·HRD 자료 patterns 추출 후 5+ 패턴 누적.",
+    "expected_patterns": [
+      "Bloom's taxonomy 학습 목표 카드",
+      "차시별 진행 일정 표",
+      "교안·실습·평가 3단 영역",
+      "수강생 워크북 페이지 예시",
+      "커리큘럼 전체 영역 한 page"
+    ]
+  },
+  "patterns": []
+}
