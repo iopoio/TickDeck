@@ -1,0 +1,226 @@
+{
+  "version": "0.1-draft",
+  "generated": "2026-05-13 KST",
+  "generated_by": "본진 클차장 — M13~M16 sample 분석 + 후추님 컬러 다양성 신호 통합",
+  "purpose": "후추님 5/13 명시: '각 양식들은 컬러나 폰트 변경에 따라서 또 느낌이 달라질거라서 그건 고려하면서 만들어줘' + '컬러는 다양성을 좀 더 가졌으면 좋겠다'. master_layout (구조) ⊥ theme (색·폰트). 같은 master 위에 다른 theme 적용 가능.",
+
+  "structure_definition": {
+    "master_layout": "header·footer·grid·typography_size — 골격",
+    "theme": "color_palette + font_stack — 옷",
+    "deck": "master × theme × content_slot"
+  },
+
+  "themes": [
+    {
+      "id": "T01_huchu_clay",
+      "label": "후추 클레이 (이력서)",
+      "source": "sample_M13_resume_deck.html",
+      "mood": "따뜻·고급·종이 느낌·serif 액센트",
+      "palette": {
+        "primary": "#A8482A",
+        "primary_deep": "#7A3119",
+        "ink": "#0A0D14",
+        "mute": "#5A5E67",
+        "paper": "#FBF9F3",
+        "line": "#D4CFC2"
+      },
+      "fonts": {
+        "sans": "Pretendard, Pretendard Variable, -apple-system, system-ui, sans-serif",
+        "serif_display": "EB Garamond, Times New Roman, serif"
+      },
+      "fits_masters": ["M13", "M14", "M07", "M09"],
+      "ai_trap_check": "보라 그라디언트 X·이모지 도배 X·serif 액센트로 차별화"
+    },
+    {
+      "id": "T02_academic_wine",
+      "label": "학회 와인",
+      "source": "sample_M14_academic_presentation.html",
+      "mood": "진지·여백·monochrome 가까운 wine accent",
+      "palette": {
+        "primary": "#8B1A1A",
+        "primary_tint": "#EFD9D9",
+        "ink": "#131A2E",
+        "rule": "#131A2E",
+        "rule_soft": "#D9D6CC",
+        "bg": "#FAFAF6",
+        "bg_alt": "#F3F1EA"
+      },
+      "fonts": {
+        "sans": "Pretendard, sans-serif",
+        "serif_display": "EB Garamond, serif"
+      },
+      "fits_masters": ["M14", "M06", "M03", "M13"]
+    },
+    {
+      "id": "T03_student_green",
+      "label": "학생 그린",
+      "source": "sample_M15_student_assignment.html",
+      "mood": "친근·자연·따뜻한 종이",
+      "palette": {
+        "primary": "#3D7A57",
+        "primary_soft": "#D8E7D6",
+        "ink": "#1F2937",
+        "mute": "#6B7280",
+        "paper": "#F4F2EA",
+        "rule": "#DCDACD"
+      },
+      "fonts": {
+        "sans": "Pretendard Variable, Pretendard, sans-serif",
+        "accent": "Gowun Dodum, Pretendard, sans-serif"
+      },
+      "fits_masters": ["M15", "M07", "M16"]
+    },
+    {
+      "id": "T04_meeting_blue",
+      "label": "회의 코퍼레이트 블루",
+      "source": "sample_M16_meeting_memo.html",
+      "mood": "실무·단단·정보 밀도 우선",
+      "palette": {
+        "primary": "#2A4BD0",
+        "primary_soft": "#E8ECFB",
+        "ink": "#0B1220",
+        "bg": "#FFFFFF"
+      },
+      "fonts": {
+        "sans": "Pretendard, sans-serif"
+      },
+      "fits_masters": ["M16", "M04", "M03"]
+    },
+    {
+      "id": "T05_huchu_txt_dark_navy",
+      "label": "후추 TXT 다크 네이비",
+      "source": "M12 (TXT 미니4집·HYBE 후추님 작업)",
+      "mood": "음악·brand·grunge·붉은 십자",
+      "palette": {
+        "primary": "#0F1419",
+        "accent_red": "#BE1E3C",
+        "accent_beige": "#F4E8D0",
+        "ink_on_dark": "#FFFFFF"
+      },
+      "fonts": {
+        "sans_bold": "Pretendard, sans-serif",
+        "grunge_display": "Bebas Neue, Impact, sans-serif"
+      },
+      "fits_masters": ["M12", "M01", "M02"],
+      "huchu_signature": true
+    },
+    {
+      "id": "T06_huchu_traver_magenta",
+      "label": "후추 트래버 마젠타",
+      "source": "M11 (트래버 시스루 후추님 작업)",
+      "mood": "app·clean·brand pink",
+      "palette": {
+        "primary": "#E91E63",
+        "primary_soft": "#FCE4EC",
+        "ink": "#1A1A1A",
+        "bg": "#FFFFFF",
+        "mock_gray": "#F5F5F5"
+      },
+      "fonts": {
+        "sans": "Pretendard, sans-serif"
+      },
+      "fits_masters": ["M11", "M16"],
+      "huchu_signature": true
+    },
+    {
+      "id": "T07_mono_pure",
+      "label": "모노 퓨어",
+      "source": "default monochrome fallback",
+      "mood": "중립·인쇄 친화·어떤 master에도",
+      "palette": {
+        "primary": "#1A1A1A",
+        "ink": "#0A0A0A",
+        "mute": "#6B7280",
+        "bg": "#FFFFFF",
+        "line": "#E0E0E0"
+      },
+      "fonts": {
+        "sans": "Pretendard, sans-serif",
+        "serif": "Noto Serif KR, serif"
+      },
+      "fits_masters": ["M01", "M02", "M03", "M04", "M05", "M06", "M08", "M10", "M11", "M13", "M14", "M15", "M16"]
+    },
+    {
+      "id": "T08_sunset_orange",
+      "label": "선셋 오렌지",
+      "source": "M09 공유숙박업 마스터북 + IdalTrip 톤",
+      "mood": "따뜻·세일즈·열정",
+      "palette": {
+        "primary": "#FF6F00",
+        "primary_deep": "#D32F2F",
+        "section_pink": "#E91E63",
+        "ink": "#1A1A1A",
+        "bg": "#FFFFFF"
+      },
+      "fonts": {
+        "sans_bold": "Pretendard, sans-serif"
+      },
+      "fits_masters": ["M09", "M13", "M15"]
+    },
+    {
+      "id": "T09_forest_teal",
+      "label": "포레스트 틸",
+      "source": "T03 학생 그린 variation + 학술 톤",
+      "mood": "차분·생태·깊이",
+      "palette": {
+        "primary": "#0F766E",
+        "primary_soft": "#CCFBF1",
+        "ink": "#134E4A",
+        "bg": "#F0FDFA"
+      },
+      "fonts": {
+        "sans": "Pretendard, sans-serif",
+        "serif_display": "EB Garamond, serif"
+      },
+      "fits_masters": ["M14", "M15", "M06"]
+    },
+    {
+      "id": "T10_sakura_pink",
+      "label": "사쿠라 핑크",
+      "source": "T06 마젠타 light variation",
+      "mood": "부드러움·여성·라이프스타일",
+      "palette": {
+        "primary": "#EC4899",
+        "primary_soft": "#FCE7F3",
+        "ink": "#831843",
+        "bg": "#FFF1F2"
+      },
+      "fonts": {
+        "sans": "Pretendard, sans-serif"
+      },
+      "fits_masters": ["M11", "M13", "M15"]
+    },
+    {
+      "id": "T11_charcoal_amber",
+      "label": "차콜 앰버",
+      "source": "회의 variation + 럭셔리 어두운 톤",
+      "mood": "프리미엄·차분·집중",
+      "palette": {
+        "primary": "#F59E0B",
+        "primary_soft": "#FEF3C7",
+        "ink": "#1F2937",
+        "bg": "#FAFAF9",
+        "rule": "#374151"
+      },
+      "fonts": {
+        "sans": "Pretendard, sans-serif"
+      },
+      "fits_masters": ["M16", "M08", "M03"]
+    }
+  ],
+
+  "theme_application_rules": [
+    "1. master_layout 선택 → 적용 가능 themes 목록 확인 (themes[].fits_masters 기준)",
+    "2. 기본 theme = master 자체 source theme (예: M13 → T01_huchu_clay)",
+    "3. variation = 같은 master에 다른 theme 적용 가능 (예: M13 + T08_sunset_orange = warm 이력서)",
+    "4. huchu_signature theme은 후추님 작업 톤 보존 영역 (M10·M11·M12 우선)",
+    "5. T07_mono_pure = 어떤 master에도 fallback 가능 (모노 인쇄용)"
+  ],
+
+  "color_diversity_notes": [
+    "현재 11 themes = warm 5 (T01·T03·T08·T10·T11) + cool 4 (T02·T04·T05·T09) + neutral 2 (T07·T06)",
+    "후추님 작업 톤 보존 = T05 (TXT)·T06 (트래버) huchu_signature flag",
+    "추가 candidate (다음 사이클): T12_terracotta·T13_lavender_neutral·T14_olive_warm·T15_midnight_blue·T16_sand_gold",
+    "AI 디자인 함정 회피 = 무지개 그라디언트·보라/핑크 그라디언트 배경·이모지 도배 다 X"
+  ]
+}
