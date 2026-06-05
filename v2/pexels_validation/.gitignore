@@ -1,0 +1,11 @@
+# Pexels 다운로드 이미지 캐시 (저작권·용량 — git 추적 X)
+cache/
+# 산출 PDF (검증용·용량 — git 추적 X, 시동 메모 6 지시)
+output/*.pdf
+# 단, 검증 메트릭 JSON은 추적 (search_spec.json)
+!output/search_spec.json
+# 환경
+.env
+.env.*
+__pycache__/
+*.pyc

@@ -1,0 +1,758 @@
+{
+  "decks": {
+    "M01": {
+      "after_pdf": "/Users/hwa/Projects/Automation/TickDeck/v2/pexels_validation/output/M01_pexels_after.pdf",
+      "slots": [
+        {
+          "slot": "S01_cover_dark",
+          "page": 1,
+          "role": "hero",
+          "tone": "dark",
+          "orient": "landscape",
+          "pexels_suitable_apriori": null,
+          "query": null,
+          "note": "메인 hero 비주얼. 후추님 수동 안목 영역 → 자동화 제외(시동 메모 2-금지).",
+          "status": "EXCLUDED_HERO"
+        },
+        {
+          "slot": "S03_map_route_satellite",
+          "page": 3,
+          "role": "section_map",
+          "tone": "dark",
+          "orient": "landscape",
+          "pexels_suitable_apriori": false,
+          "query": "aerial city map satellite view night",
+          "note": "행사장 도착 경로 위성지도. 스톡 항공사진은 '그 장소'가 아님 → 마땅 불가 예상. 검증용으로만 채워봄.",
+          "total_results": 8000,
+          "candidates": [
+            {
+              "id": 33803466,
+              "wh": "10844x6100",
+              "avg_color": "#311A14",
+              "luma": 30.5,
+              "tone_score": 0.81,
+              "alt": "Stunning aerial view of Panama City's illuminated streets at night.",
+              "photographer": "K",
+              "url": "https://www.pexels.com/photo/aerial-night-view-of-panama-city-streets-33803466/"
+            },
+            {
+              "id": 34432880,
+              "wh": "12288x6912",
+              "avg_color": "#221E1B",
+              "luma": 30.6,
+              "tone_score": 0.809,
+              "alt": "Stunning aerial view of Istanbul at night with city lights illuminating the urba",
+              "photographer": "K",
+              "url": "https://www.pexels.com/photo/aerial-night-view-of-istanbul-cityscape-34432880/"
+            },
+            {
+              "id": 10630324,
+              "wh": "6000x4000",
+              "avg_color": "#28201D",
+              "luma": 33.5,
+              "tone_score": 0.791,
+              "alt": "A stunning aerial view of Bangkok's illuminated expressways at night.",
+              "photographer": "Tony  Wu",
+              "url": "https://www.pexels.com/photo/aerial-photography-of-roads-at-night-10630324/"
+            },
+            {
+              "id": 30320854,
+              "wh": "6240x4160",
+              "avg_color": "#332613",
+              "luma": 39.4,
+              "tone_score": 0.754,
+              "alt": "Aerial view of an urban rooftop at night with chairs and satellite dishes.",
+              "photographer": "Zeynep Sude  Emek",
+              "url": "https://www.pexels.com/photo/nighttime-rooftop-with-satellite-dishes-and-chairs-30320854/"
+            },
+            {
+              "id": 5893061,
+              "wh": "8000x6000",
+              "avg_color": "#292631",
+              "luma": 39.4,
+              "tone_score": 0.754,
+              "alt": "Overhead shot of a illuminated city intersection with bustling traffic and nearb",
+              "photographer": "Erwin Narvaez",
+              "url": "https://www.pexels.com/photo/aerial-shot-of-a-city-during-night-time-5893061/"
+            },
+            {
+              "id": 9541749,
+              "wh": "6000x4000",
+              "avg_color": "#082D71",
+              "luma": 42.0,
+              "tone_score": 0.737,
+              "alt": "Breathtaking aerial view of a cityscape illuminated by lights under a dark blue ",
+              "photographer": "Jose Manuel Gonzalez  Lupiañez Photography",
+              "url": "https://www.pexels.com/photo/an-aerial-view-of-a-city-illuminated-with-lights-under-the-blue-sky-9541749/"
+            },
+            {
+              "id": 37894521,
+              "wh": "12288x8192",
+              "avg_color": "#402E20",
+              "luma": 48.8,
+              "tone_score": 0.695,
+              "alt": "A stunning aerial view showcasing vibrant city streets illuminated at night with",
+              "photographer": "Yunus Tuğ",
+              "url": "https://www.pexels.com/photo/night-aerial-view-of-illuminated-city-streets-37894521/"
+            },
+            {
+              "id": 29188036,
+              "wh": "8192x4608",
+              "avg_color": "#38352E",
+              "luma": 53.1,
+              "tone_score": 0.668,
+              "alt": "A captivating aerial night view of bustling city streets in Busan, South Korea.",
+              "photographer": "Jhany Blue",
+              "url": "https://www.pexels.com/photo/aerial-night-view-of-busan-city-streets-29188036/"
+            }
+          ],
+          "status": "FILLED",
+          "chosen": {
+            "id": 33803466,
+            "wh": "10844x6100",
+            "avg_color": "#311A14",
+            "tone_score": 0.81,
+            "alt": "Stunning aerial view of Panama City's illuminated streets at night.",
+            "photographer": "K",
+            "url": "https://www.pexels.com/photo/aerial-night-view-of-panama-city-streets-33803466/"
+          }
+        }
+      ]
+    },
+    "M08": {
+      "after_pdf": "/Users/hwa/Projects/Automation/TickDeck/v2/pexels_validation/output/M08_pexels_after.pdf",
+      "slots": [
+        {
+          "slot": "S23_lifestyle_cover_photo",
+          "page": 1,
+          "role": "cover_background",
+          "tone": "light",
+          "orient": "landscape",
+          "pexels_suitable_apriori": true,
+          "query": "luxury car lifestyle elegant studio neutral background",
+          "note": "표지 라이프스타일 배경 사진. 보조/배경(hero 아님) → 자동화 대상.",
+          "total_results": 8000,
+          "candidates": [
+            {
+              "id": 21378563,
+              "wh": "6000x4800",
+              "avg_color": "#ABABAB",
+              "luma": 171.0,
+              "tone_score": 0.694,
+              "alt": "Sophisticated back view of a black Genesis G80 sports car in a studio setting.",
+              "photographer": "Hyundai Motor Group",
+              "url": "https://www.pexels.com/photo/genesis-g80-car-21378563/"
+            },
+            {
+              "id": 14696345,
+              "wh": "15521x7760",
+              "avg_color": "#4C5053",
+              "luma": 79.4,
+              "tone_score": 0.121,
+              "alt": "Modern Hyundai sedan showcased in a dark studio environment.",
+              "photographer": "Hyundai Motor Group",
+              "url": "https://www.pexels.com/photo/the-hyundai-avante-shining-through-the-dark-14696345/"
+            },
+            {
+              "id": 261985,
+              "wh": "6656x3744",
+              "avg_color": "#0B0B0B",
+              "luma": 11.0,
+              "tone_score": 0.0,
+              "alt": "Black luxury car photographed in studio with sleek design and chrome accents.",
+              "photographer": "Pixabay",
+              "url": "https://www.pexels.com/photo/black-coupe-on-black-surface-261985/"
+            },
+            {
+              "id": 261986,
+              "wh": "6656x3744",
+              "avg_color": "#131313",
+              "luma": 19.0,
+              "tone_score": 0.0,
+              "alt": "A side profile of a luxurious black coupe on a plain black background, showcasin",
+              "photographer": "Pixabay",
+              "url": "https://www.pexels.com/photo/black-coupe-on-black-surface-261986/"
+            },
+            {
+              "id": 33345481,
+              "wh": "7813x3907",
+              "avg_color": "#090909",
+              "luma": 9.0,
+              "tone_score": 0.0,
+              "alt": "Side profile of a luxury sports car against a dark background, showcasing sleek ",
+              "photographer": "Quentin Martinez",
+              "url": "https://www.pexels.com/photo/sleek-profile-of-a-luxury-sports-car-in-studio-lighting-33345481/"
+            },
+            {
+              "id": 33268786,
+              "wh": "8192x4608",
+              "avg_color": "#0E0E0E",
+              "luma": 14.0,
+              "tone_score": 0.0,
+              "alt": "A high-performance white sports car parked in a dark garage, showcasing luxury a",
+              "photographer": "Quentin Martinez",
+              "url": "https://www.pexels.com/photo/sleek-white-sports-car-in-dark-garage-setting-33268786/"
+            },
+            {
+              "id": 20894618,
+              "wh": "6000x4800",
+              "avg_color": "#1B1A18",
+              "luma": 26.1,
+              "tone_score": 0.0,
+              "alt": "A striking red luxury sedan showcased against a minimalist backdrop with modern ",
+              "photographer": "Hyundai Motor Group",
+              "url": "https://www.pexels.com/photo/red-luxury-genesis-g80-sport-20894618/"
+            },
+            {
+              "id": 8359715,
+              "wh": "8256x4644",
+              "avg_color": "#742366",
+              "luma": 57.1,
+              "tone_score": 0.0,
+              "alt": "A striking red classic sports car with open gullwing doors under vibrant studio ",
+              "photographer": "Animesh Srivastava",
+              "url": "https://www.pexels.com/photo/parked-classic-sports-car-8359715/"
+            }
+          ],
+          "status": "FILLED",
+          "chosen": {
+            "id": 21378563,
+            "wh": "6000x4800",
+            "avg_color": "#ABABAB",
+            "tone_score": 0.694,
+            "alt": "Sophisticated back view of a black Genesis G80 sports car in a studio setting.",
+            "photographer": "Hyundai Motor Group",
+            "url": "https://www.pexels.com/photo/genesis-g80-car-21378563/"
+          }
+        },
+        {
+          "slot": "S24_seat_photo_left",
+          "page": 3,
+          "role": "product_detail",
+          "tone": "dark",
+          "orient": "landscape",
+          "pexels_suitable_apriori": true,
+          "query": "carbon fiber bucket racing car seat dark studio",
+          "note": "R8 비전 시트 사진 (좌). 헤드라인 '원심력에 맞선다'·풀카본 시트.",
+          "total_results": 8000,
+          "candidates": [
+            {
+              "id": 6335879,
+              "wh": "7360x4912",
+              "avg_color": "#1C1B1E",
+              "luma": 27.4,
+              "tone_score": 0.829,
+              "alt": "Dark image highlighting the steering wheel of a Chevrolet Corvette, emphasizing ",
+              "photographer": "Jay Johnson",
+              "url": "https://www.pexels.com/photo/steering-wheel-of-a-sports-car-6335879/"
+            },
+            {
+              "id": 20354945,
+              "wh": "7957x5307",
+              "avg_color": "#1D1D1F",
+              "luma": 29.1,
+              "tone_score": 0.818,
+              "alt": "A modern black sports car showcased against a dark studio backdrop, highlighting",
+              "photographer": "Hyundai Motor Group",
+              "url": "https://www.pexels.com/photo/black-hyundai-npx1-20354945/"
+            },
+            {
+              "id": 13155783,
+              "wh": "8000x5333",
+              "avg_color": "#281E1F",
+              "luma": 32.2,
+              "tone_score": 0.799,
+              "alt": "Close-up of luxurious Lamborghini cockpit showcasing steering wheel and dashboar",
+              "photographer": "Gursher  Gill",
+              "url": "https://www.pexels.com/photo/interior-design-of-lamborghini-car-13155783/"
+            },
+            {
+              "id": 30985247,
+              "wh": "6000x4000",
+              "avg_color": "#4A1A28",
+              "luma": 37.2,
+              "tone_score": 0.767,
+              "alt": "Close-up of a sports car gearshift and red leather seats with carbon fiber detai",
+              "photographer": "shoreline vehicles",
+              "url": "https://www.pexels.com/photo/luxurious-red-leather-car-interior-with-gearshift-30985247/"
+            },
+            {
+              "id": 32725708,
+              "wh": "7008x4672",
+              "avg_color": "#2B2A26",
+              "luma": 41.9,
+              "tone_score": 0.738,
+              "alt": "Close-up view of a luxury convertible car interior focusing on the dashboard and",
+              "photographer": "Luke Miller",
+              "url": "https://www.pexels.com/photo/luxury-convertible-car-interior-with-dashboard-32725708/"
+            },
+            {
+              "id": 32725679,
+              "wh": "7008x4672",
+              "avg_color": "#3A352F",
+              "luma": 53.6,
+              "tone_score": 0.665,
+              "alt": "High-angle shot of a sleek sports car interior featuring a stylish steering whee",
+              "photographer": "Luke Miller",
+              "url": "https://www.pexels.com/photo/luxury-sports-car-interior-with-steering-wheel-and-dashboard-32725679/"
+            },
+            {
+              "id": 11845070,
+              "wh": "6000x4000",
+              "avg_color": "#3F4042",
+              "luma": 63.9,
+              "tone_score": 0.6,
+              "alt": "Close-up of a luxury car's carbon fiber console featuring sleek design and moder",
+              "photographer": "Mike Bird",
+              "url": "https://www.pexels.com/photo/mercedes-car-interior-11845070/"
+            },
+            {
+              "id": 17632113,
+              "wh": "6720x4200",
+              "avg_color": "#47403A",
+              "luma": 65.1,
+              "tone_score": 0.593,
+              "alt": "Luxurious interior of a Lamborghini sports car featuring sleek carbon fiber seat",
+              "photographer": "I'm Zion",
+              "url": "https://www.pexels.com/photo/seat-in-lamborghini-huracan-tecnica-17632113/"
+            }
+          ],
+          "status": "FILLED",
+          "chosen": {
+            "id": 6335879,
+            "wh": "7360x4912",
+            "avg_color": "#1C1B1E",
+            "tone_score": 0.829,
+            "alt": "Dark image highlighting the steering wheel of a Chevrolet Corvette, emphasizing luxury and",
+            "photographer": "Jay Johnson",
+            "url": "https://www.pexels.com/photo/steering-wheel-of-a-sports-car-6335879/"
+          }
+        },
+        {
+          "slot": "S24_seat_photo_right",
+          "page": 3,
+          "role": "product_detail",
+          "tone": "dark",
+          "orient": "landscape",
+          "pexels_suitable_apriori": true,
+          "query": "car sport seat detail leather dark",
+          "note": "R8 비전 시트 사진 (우).",
+          "total_results": 8000,
+          "candidates": [
+            {
+              "id": 15763805,
+              "wh": "6000x4000",
+              "avg_color": "#101010",
+              "luma": 16.0,
+              "tone_score": 0.9,
+              "alt": "Detailed close-up of a car's steering wheel and dashboard in low light.",
+              "photographer": "Abdulvahap Demir",
+              "url": "https://www.pexels.com/photo/close-up-photo-of-a-steering-wheel-in-a-car-15763805/"
+            },
+            {
+              "id": 14266457,
+              "wh": "6000x4000",
+              "avg_color": "#141311",
+              "luma": 19.1,
+              "tone_score": 0.881,
+              "alt": "Detailed view of a luxury car interior focusing on leather seats and steering wh",
+              "photographer": "Szymon Sas",
+              "url": "https://www.pexels.com/photo/black-car-seats-14266457/"
+            },
+            {
+              "id": 18198200,
+              "wh": "7360x4912",
+              "avg_color": "#1B2228",
+              "luma": 32.9,
+              "tone_score": 0.794,
+              "alt": "Close-up of a luxurious car interior with leather seating, showcasing style and ",
+              "photographer": "Александр Лич",
+              "url": "https://www.pexels.com/photo/leather-seats-in-a-car-interior-18198200/"
+            },
+            {
+              "id": 18536578,
+              "wh": "6720x4480",
+              "avg_color": "#2A211A",
+              "luma": 34.4,
+              "tone_score": 0.785,
+              "alt": "Close-up of a luxury Lamborghini seat interior design, featuring black and yello",
+              "photographer": "Radu Daniel ( MRD )",
+              "url": "https://www.pexels.com/photo/black-and-yellow-seat-of-lamborghini-18536578/"
+            },
+            {
+              "id": 30985247,
+              "wh": "6000x4000",
+              "avg_color": "#4A1A28",
+              "luma": 37.2,
+              "tone_score": 0.767,
+              "alt": "Close-up of a sports car gearshift and red leather seats with carbon fiber detai",
+              "photographer": "shoreline vehicles",
+              "url": "https://www.pexels.com/photo/luxurious-red-leather-car-interior-with-gearshift-30985247/"
+            },
+            {
+              "id": 34243853,
+              "wh": "6000x4000",
+              "avg_color": "#3D2827",
+              "luma": 44.4,
+              "tone_score": 0.723,
+              "alt": "Close-up of a luxury sports car interior showcasing red leather seats and steeri",
+              "photographer": "Nikola Kojević",
+              "url": "https://www.pexels.com/photo/sleek-sports-car-interior-with-red-leather-34243853/"
+            },
+            {
+              "id": 4141873,
+              "wh": "7815x5213",
+              "avg_color": "#363231",
+              "luma": 50.8,
+              "tone_score": 0.683,
+              "alt": "Stunning luxury car interior featuring red leather seats and a modern dashboard ",
+              "photographer": "Jae Park",
+              "url": "https://www.pexels.com/photo/interior-of-a-bmw-car-4141873/"
+            },
+            {
+              "id": 33145485,
+              "wh": "6240x4160",
+              "avg_color": "#3A3227",
+              "luma": 50.9,
+              "tone_score": 0.682,
+              "alt": "Luxury cars with leather seats in a sleek and modern design, highlighting comfor",
+              "photographer": "Ayyeee Ayyeee",
+              "url": "https://www.pexels.com/photo/close-up-of-luxury-car-leather-interior-seats-33145485/"
+            }
+          ],
+          "status": "FILLED",
+          "chosen": {
+            "id": 15763805,
+            "wh": "6000x4000",
+            "avg_color": "#101010",
+            "tone_score": 0.9,
+            "alt": "Detailed close-up of a car's steering wheel and dashboard in low light.",
+            "photographer": "Abdulvahap Demir",
+            "url": "https://www.pexels.com/photo/close-up-photo-of-a-steering-wheel-in-a-car-15763805/"
+          }
+        },
+        {
+          "slot": "S23_automotive_lifestyle_spread",
+          "page": 5,
+          "role": "lifestyle_spread",
+          "tone": "dark",
+          "orient": "portrait",
+          "pexels_suitable_apriori": true,
+          "query": "luxury sedan driving night city cinematic dark",
+          "note": "우측 전면 라이프스타일 스프레드. 헤드라인 'Refined motion, quiet confidence'.",
+          "total_results": 8000,
+          "candidates": [
+            {
+              "id": 31968469,
+              "wh": "4143x6214",
+              "avg_color": "#0D120E",
+              "luma": 16.6,
+              "tone_score": 0.896,
+              "alt": "A striking orange sports car with black stripes illuminated on a night road.",
+              "photographer": "Borta",
+              "url": "https://www.pexels.com/photo/sleek-orange-sports-car-at-night-31968469/"
+            },
+            {
+              "id": 27971542,
+              "wh": "4000x6000",
+              "avg_color": "#141412",
+              "luma": 19.9,
+              "tone_score": 0.876,
+              "alt": "Stylish woman seated in luxury vehicle at night, exuding glamour and sophisticat",
+              "photographer": "Ene Marius",
+              "url": "https://www.pexels.com/photo/a-woman-sitting-in-a-car-at-night-27971542/"
+            },
+            {
+              "id": 11561981,
+              "wh": "4000x6000",
+              "avg_color": "#08171E",
+              "luma": 20.3,
+              "tone_score": 0.873,
+              "alt": "High angle shot of a white Mercedes Benz parked in an indoor parking garage.",
+              "photographer": "Burak Evlivan",
+              "url": "https://www.pexels.com/photo/white-car-parked-on-parking-area-11561981/"
+            },
+            {
+              "id": 14773344,
+              "wh": "4672x7008",
+              "avg_color": "#071927",
+              "luma": 22.2,
+              "tone_score": 0.861,
+              "alt": "A car parked on a dark street at night with a city skyline and person nearby.",
+              "photographer": "Eko Agalarov",
+              "url": "https://www.pexels.com/photo/side-view-of-a-parked-car-14773344/"
+            },
+            {
+              "id": 9597178,
+              "wh": "4000x6000",
+              "avg_color": "#2C2723",
+              "luma": 39.8,
+              "tone_score": 0.751,
+              "alt": "Illuminated taxi moves through urban Moscow street at night with motion blur and",
+              "photographer": "Vitaliy Mitrofanenko",
+              "url": "https://www.pexels.com/photo/motor-vehicles-on-the-road-9597178/"
+            },
+            {
+              "id": 15394300,
+              "wh": "4000x6000",
+              "avg_color": "#27283D",
+              "luma": 41.3,
+              "tone_score": 0.742,
+              "alt": "A sleek silver car illuminated by neon lights on a quiet city street at night.",
+              "photographer": "Doci",
+              "url": "https://www.pexels.com/photo/honda-car-on-street-at-night-15394300/"
+            },
+            {
+              "id": 17716288,
+              "wh": "4000x6000",
+              "avg_color": "#283432",
+              "luma": 49.3,
+              "tone_score": 0.692,
+              "alt": "Black car speeding on a highway at night, captured from a front angle.",
+              "photographer": "Erik Mclean",
+              "url": "https://www.pexels.com/photo/a-black-car-driving-down-the-road-at-night-17716288/"
+            },
+            {
+              "id": 17716277,
+              "wh": "4000x6000",
+              "avg_color": "#283B3F",
+              "luma": 55.2,
+              "tone_score": 0.655,
+              "alt": "White sports car speeding down a highway at night, capturing the essence of spee",
+              "photographer": "Erik Mclean",
+              "url": "https://www.pexels.com/photo/a-white-car-driving-down-the-road-at-night-17716277/"
+            }
+          ],
+          "status": "FILLED",
+          "chosen": {
+            "id": 31968469,
+            "wh": "4143x6214",
+            "avg_color": "#0D120E",
+            "tone_score": 0.896,
+            "alt": "A striking orange sports car with black stripes illuminated on a night road.",
+            "photographer": "Borta",
+            "url": "https://www.pexels.com/photo/sleek-orange-sports-car-at-night-31968469/"
+          }
+        },
+        {
+          "slot": "S27_interior_detail_dark",
+          "page": 6,
+          "role": "interior_detail",
+          "tone": "dark",
+          "orient": "landscape",
+          "pexels_suitable_apriori": true,
+          "query": "luxury car interior detail ambient led dark leather",
+          "note": "인테리어 디테일. 헤드라인 'Where every touch becomes intention'·앰비언트 LED.",
+          "total_results": 8000,
+          "candidates": [
+            {
+              "id": 15763805,
+              "wh": "6000x4000",
+              "avg_color": "#101010",
+              "luma": 16.0,
+              "tone_score": 0.9,
+              "alt": "Detailed close-up of a car's steering wheel and dashboard in low light.",
+              "photographer": "Abdulvahap Demir",
+              "url": "https://www.pexels.com/photo/close-up-photo-of-a-steering-wheel-in-a-car-15763805/"
+            },
+            {
+              "id": 5288741,
+              "wh": "8000x5333",
+              "avg_color": "#251A16",
+              "luma": 28.0,
+              "tone_score": 0.825,
+              "alt": "Explore the luxurious interior of a Mercedes car, showcasing premium leather and",
+              "photographer": "Victoria Ouarets",
+              "url": "https://www.pexels.com/photo/mercedes-benz-car-interior-with-emblem-on-steering-wheel-5288741/"
+            },
+            {
+              "id": 5976778,
+              "wh": "6002x4005",
+              "avg_color": "#2B1A1E",
+              "luma": 29.9,
+              "tone_score": 0.813,
+              "alt": "Interior of contemporary car with glowing dashboard and computer behind steering",
+              "photographer": "Matúš Burian",
+              "url": "https://www.pexels.com/photo/car-cabin-of-modern-sport-automobile-5976778/"
+            },
+            {
+              "id": 6576597,
+              "wh": "6720x4480",
+              "avg_color": "#39124A",
+              "luma": 30.3,
+              "tone_score": 0.81,
+              "alt": "Luxury car interior with neon purple illuminated leather seats, creating a moder",
+              "photographer": "Tnarg",
+              "url": "https://www.pexels.com/photo/close-up-shot-of-a-car-interior-6576597/"
+            },
+            {
+              "id": 35449175,
+              "wh": "8160x4592",
+              "avg_color": "#1F1F21",
+              "luma": 31.1,
+              "tone_score": 0.805,
+              "alt": "Detailed view of a car door interior showcasing handle and stitching.",
+              "photographer": "Ivett M",
+              "url": "https://www.pexels.com/photo/close-up-of-car-door-interior-panel-35449175/"
+            },
+            {
+              "id": 19870007,
+              "wh": "6000x4000",
+              "avg_color": "#2C1C1D",
+              "luma": 31.5,
+              "tone_score": 0.803,
+              "alt": "Close-up of a luxury car's gear shift with ambient lighting in Dubai.",
+              "photographer": "Atul Mohan",
+              "url": "https://www.pexels.com/photo/baic-bj40-interior-19870007/"
+            },
+            {
+              "id": 28087314,
+              "wh": "8064x6048",
+              "avg_color": "#252120",
+              "luma": 33.8,
+              "tone_score": 0.789,
+              "alt": "Explore this sleek car interior featuring ambient lighting and digital dashboard",
+              "photographer": "Hakan Kayahan",
+              "url": "https://www.pexels.com/photo/the-interior-of-a-car-with-a-blue-light-28087314/"
+            },
+            {
+              "id": 6576596,
+              "wh": "6720x4480",
+              "avg_color": "#0A2D1C",
+              "luma": 36.3,
+              "tone_score": 0.773,
+              "alt": "Close-up of a car interior with green illuminated leather seats, emphasizing mod",
+              "photographer": "Tnarg",
+              "url": "https://www.pexels.com/photo/illuminated-car-interior-6576596/"
+            }
+          ],
+          "status": "FILLED",
+          "chosen": {
+            "id": 15763805,
+            "wh": "6000x4000",
+            "avg_color": "#101010",
+            "tone_score": 0.9,
+            "alt": "Detailed close-up of a car's steering wheel and dashboard in low light.",
+            "photographer": "Abdulvahap Demir",
+            "url": "https://www.pexels.com/photo/close-up-photo-of-a-steering-wheel-in-a-car-15763805/"
+          }
+        }
+      ]
+    },
+    "M12": {
+      "after_pdf": "/Users/hwa/Projects/Automation/TickDeck/v2/pexels_validation/output/M12_pexels_after.pdf",
+      "slots": [
+        {
+          "slot": "S08_member_polaroid_grid",
+          "page": 4,
+          "role": "member_concept_photo",
+          "tone": "dark",
+          "orient": "portrait",
+          "pexels_suitable_apriori": false,
+          "query": "moody portrait young person red light cinematic",
+          "note": "TXT 멤버(MESS/SOOBIN/YEONJUN) 폴라로이드. 특정 실존 인물 → 스톡 대체 불가. 검증용으로만 무드 포트레이트 시도.",
+          "total_results": 8000,
+          "candidates": [
+            {
+              "id": 11320129,
+              "wh": "4016x6016",
+              "avg_color": "#110102",
+              "luma": 4.5,
+              "tone_score": 0.972,
+              "alt": "Dramatic portrait of a woman in a leather jacket under red lighting.",
+              "photographer": "Hebert  Santos",
+              "url": "https://www.pexels.com/photo/woman-in-leather-jacket-in-red-light-and-black-background-11320129/"
+            },
+            {
+              "id": 14096155,
+              "wh": "4016x6016",
+              "avg_color": "#1A0B08",
+              "luma": 14.0,
+              "tone_score": 0.913,
+              "alt": "Dramatic nighttime portrait of a young man smoking under colorful lights.",
+              "photographer": "Vladislav Nahorny",
+              "url": "https://www.pexels.com/photo/a-man-smoking-a-cigarette-14096155/"
+            },
+            {
+              "id": 29185841,
+              "wh": "4000x6000",
+              "avg_color": "#240B06",
+              "luma": 16.0,
+              "tone_score": 0.9,
+              "alt": "A young adult wearing glasses in a leather jacket with dramatic red lighting.",
+              "photographer": "Photos 8a",
+              "url": "https://www.pexels.com/photo/stylish-portrait-with-dramatic-lighting-29185841/"
+            },
+            {
+              "id": 14833446,
+              "wh": "4160x6240",
+              "avg_color": "#0F140D",
+              "luma": 18.4,
+              "tone_score": 0.885,
+              "alt": "Dramatic portrait capturing a man with red and green lighting, adding a mysterio",
+              "photographer": "Furkan Salihoğlu",
+              "url": "https://www.pexels.com/photo/man-looking-sideways-14833446/"
+            },
+            {
+              "id": 30852683,
+              "wh": "5304x7952",
+              "avg_color": "#300F18",
+              "luma": 22.7,
+              "tone_score": 0.858,
+              "alt": "A person illuminated by vibrant neon lights in a mysterious outdoor setting.",
+              "photographer": "Jos Peñarán",
+              "url": "https://www.pexels.com/photo/dramatic-portrait-with-neon-lighting-effect-30852683/"
+            },
+            {
+              "id": 10522612,
+              "wh": "4098x6144",
+              "avg_color": "#301B08",
+              "luma": 30.1,
+              "tone_score": 0.812,
+              "alt": "Moody close-up portrait of a shirtless man under red lighting, evoking dramatic ",
+              "photographer": "Raditya Narendrasuta",
+              "url": "https://www.pexels.com/photo/photo-of-a-shirtless-man-10522612/"
+            },
+            {
+              "id": 10273450,
+              "wh": "4000x6000",
+              "avg_color": "#850208",
+              "luma": 30.3,
+              "tone_score": 0.811,
+              "alt": "Moody portrait of a young person in a red-lit darkroom, capturing a unique ambia",
+              "photographer": "Ron Lach",
+              "url": "https://www.pexels.com/photo/young-photographer-standing-in-darkroom-10273450/"
+            },
+            {
+              "id": 10273452,
+              "wh": "4000x6000",
+              "avg_color": "#8C030A",
+              "luma": 32.6,
+              "tone_score": 0.796,
+              "alt": "Person in a darkroom with dramatic red lighting and film strips.",
+              "photographer": "Ron Lach",
+              "url": "https://www.pexels.com/photo/young-man-in-red-room-with-photos-and-camera-films-in-background-10273452/"
+            }
+          ],
+          "status": "FILLED",
+          "chosen": {
+            "id": 11320129,
+            "wh": "4016x6016",
+            "avg_color": "#110102",
+            "tone_score": 0.972,
+            "alt": "Dramatic portrait of a woman in a leather jacket under red lighting.",
+            "photographer": "Hebert  Santos",
+            "url": "https://www.pexels.com/photo/woman-in-leather-jacket-in-red-light-and-black-background-11320129/"
+          }
+        }
+      ]
+    }
+  },
+  "method": {
+    "keyword_extraction": "슬라이드 헤드라인+본문에서 핵심 명사구 추출 (placeholders.py query)",
+    "tone_matching": "슬라이드 톤(dark/light) vs Pexels avg_color 밝기(luma) 매칭 점수 0~1",
+    "aspect": "박스 비율에 맞춰 orientation 필터 + center-crop (왜곡 0)",
+    "quality": "size=large + 긴 변 2000px 이상만 채택, large2x 다운로드",
+    "honest_rule": "pexels_suitable=False(특정 인물/특정 장소)는 검증용으로만 채우고 ❌ 후보로 분류"
+  }
+}
