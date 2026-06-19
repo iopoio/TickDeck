@@ -16,7 +16,7 @@ V3_DIR = PIPELINE_DIR.parent
 GENERATED_DIR = PIPELINE_DIR / "generated"
 MANIFEST_PATH = V3_DIR / "axis2_layouts" / "components" / "manifest.json"
 
-REFERENCE_NOTES_PER_SLIDE = 10
+REFERENCE_NOTES_PER_SLIDE = 16
 
 ALLOWED_LAYOUTS = {
     "ir_business_area_2col_card",
@@ -703,7 +703,7 @@ def bind_cover(page: dict[str, Any], page_specs: dict[str, Any]) -> dict[str, An
         "brand_mark": "TickDeck",
         "title": clean_text(page.get("headline") or page_specs.get("governing_thought_short"), 92, preserve_markup=True),
         "subtitle": subtitle_from_takeaways(page, 180) or clean_subtitle(page_specs.get("governing_thought_short"), 120),
-        "cover_meta": clean_text(page_specs.get("governing_thought_short"), 120),
+        "cover_meta": "",
     }
 
 
@@ -731,10 +731,10 @@ def bind_agenda(page: dict[str, Any], page_specs: dict[str, Any]) -> dict[str, A
         ]
     return {
         "layout": "editorial_impact_axes",
-        "kicker": "AGENDA",
+        "kicker": "목차",
         "headline": clean_text(page.get("headline"), 90, preserve_markup=True),
         "headline_mark": clean_text(page.get("headline"), 90).split(" ")[0],
-        "subtitle": clean_subtitle(page_specs.get("governing_thought_short"), 120),
+        "subtitle": "",
         "axes": axes,
     }
 
@@ -1064,10 +1064,10 @@ def bind_back_cover(page_specs: dict[str, Any]) -> dict[str, Any]:
     return {
         "layout": "back_cover",
         "cover": True,
-        "brand_mark": "TickDeck",
+        "brand_mark": "감사합니다",
         "disclaimer": "본 자료는 공개 출처를 종합한 참고용입니다",
         "basis_date": basis_date,
-        "document_label": f"{title} · TickDeck v3",
+        "document_label": title,
     }
 
 
