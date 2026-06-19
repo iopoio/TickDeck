@@ -82,6 +82,24 @@
       "footnotes": []
     },
     {
+      "page_no": 4.5,
+      "role": "content",
+      "content_kind": "chart_kpi",
+      "section_nav": "01 판이 바뀐다",
+      "headline": "돈도 AI로 몰린다 — 수익의 가속",
+      "takeaways": [
+        "AI 마케팅 수익 2025년 $47B → 연 36.6% 성장 전망 (IDNZ)",
+        "도구를 넘어 '돈이 도는' 시장 — 투자 근거가 분명해짐"
+      ],
+      "payload": {
+        "value": "$47B",
+        "label": "2025 글로벌 AI 마케팅 수익 · 이후 연 36.6% 성장 전망",
+        "mini": [47, 64, 88, 119]
+      },
+      "sources": [{"name": "IDNZ (2025)", "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report"}],
+      "footnotes": [{"term": "추정 주의", "en": "", "def": "$47B=2025 글로벌 'AI 마케팅 수익' 추정 · 36.6%=2025~2028 연평균 성장률(IDNZ). 점선 궤적은 이 성장률을 적용한 참고치"}]
+    },
+    {
       "page_no": 5,
       "role": "content",
       "content_kind": "timeline_evolution",
@@ -118,8 +136,8 @@
         "lead": "MarTech 시장 규모는 무엇을 포함하느냐(소프트웨어만 vs 생태계 전체)에 따라 추정이 4배 가까이 벌어짐. 단일 합의치가 아니라 성장 방향의 신호로 읽음.",
         "right_kind": "stats",
         "stats": [
-          {"label": "좁은 정의 · 소프트웨어 한정 (InsightAce, 2025)", "value": "$173B", "note": "소프트웨어 시장만 집계"},
-          {"label": "넓은 정의 · 생태계 전체 (Mordor, 2026)", "value": "$660B", "note": "Coherent도 유사 수준 — 좁은 정의의 약 4배"}
+          {"label": "좁은 정의 · SW 한정", "value": "$173B", "note": "2025 · InsightAce"},
+          {"label": "넓은 정의 · 생태계", "value": "$660B", "note": "2026 · Mordor·Coherent · 약 4배"}
         ]
       },
       "sources": [
@@ -239,11 +257,6 @@
             {"title": "명확한 관점(POV)", "body": "무엇을 믿는 브랜드인가로 차별화"},
             {"title": "인간 주도", "body": "사람이 만든 신뢰가 수익으로 이어짐"}
           ]
-        },
-        "metric": {
-          "label": "HubSpot 진단",
-          "value": "볼륨 → 확신",
-          "note": "AI가 콘텐츠를 쏟아낼수록 관점 없는 브랜드는 묻힘 — 성장은 차별성·신뢰·관련성에서"
         }
       },
       "sources": [{"name": "HubSpot", "url": "https://www.hubspot.com/state-of-marketing"}],
