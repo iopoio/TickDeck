@@ -1,0 +1,481 @@
+{
+  "topic": "2026 마케팅 트렌드",
+  "leader": {
+    "model": "qwen/qwen3.7-plus",
+    "turns": 2,
+    "searches": [
+      {
+        "query": "2026 marketing trends forecast report",
+        "result_preview": "[1] 2026 Future Trends in Marketing Report\nURL: https://www.ama.org/marketing-news/2026-trends-report\n관련 섹션:\n# 2026 Future Trends in Marketing Report\n\n[Skip to Content](https://www.ama.org/marketing-n"
+      },
+      {
+        "query": "marketing technology market size 2026 CAGR forecast",
+        "result_preview": "[1] Marketing Technology (MarTech) Market Size Report, 2034\nURL: https://www.imarcgroup.com/marketing-technology-market\n관련 섹션:\n![logo](https://d2igyncgwko95k.cloudfront.net/wwwroot/webassets/image/IMA"
+      },
+      {
+        "query": "AI marketing trends 2026 predictions Gartner HubSpot",
+        "result_preview": "[1] AI in Marketing: 5 Predictions for B2B Marketing in 2026 and Beyond - Read Blog\nURL: https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond\n관련 섹션:\n["
+      }
+    ],
+    "prompt_tokens": 14164,
+    "completion_tokens": 6082,
+    "cost_usd": 0.012317439999999999,
+    "final": "# 2026 마케팅 트렌드 종합 보고서\n\n---\n\n## 1. 2026 마케팅 환경 개요\n\n2026년 마케팅 환경은 인공지능(AI)의 본격적 도입, 경제 압박, 소비자 행동 변화라는 세 가지 거시적 힘이 중첩되면서 근본적인 재편기에 진입했다. Deloitte Digital은 2026년 2월 발행한 《Marketing Trends of 2026》 보고서에서 \"우리가 알고 있던 마케팅은 끝났다(Marketing, as we know it, is over)\"고 선언하며, AI·경제 불확실성·소비자 행동 변화의 복합적 영향으로 기존에 검증된 마케팅 전략이 더 이상 작동하지 않게 되었다고 진단했다. 불확실하고 변동성이 큰 세계에서 사람들이 가치를 두는 방식, 의사결정 방식, 영향을 받는 경로가 모두 유동적으로 변하고 있으며, 기술은 이러한 변화를 가속화해 의사결정 사이클을 압축하고 기대치를 동시에 끌어올리고 있다. 동시에 가짜 디지털 콘텐츠의 확산은 신뢰와 진정성에 대한 프리미엄을 한층 높였다.\n\nAmerican Marketing Association(AMA) 역시 《2026 Future Trends in Marketing Report》를 통해 CMO들이 대응해야 할 미래 트렌드를 제시했으며, Coursera는 2026년 9대 마케팅 트렌드로 AI 통합, 숏폼 비디오의 지속적 강세, UGC(User-Generated Content) 전략, 진정성 있는 브랜딩의 중요성 부상을 꼽았다. Innovation Visual은 2026년을 규정할 7대 트렌드로 ① 데이터 품질의 전략적 필수화 ② AI의 실험에서 실행으로 전환 ③ 프라이버시 퍼스트 데이터 전략 ④ 진정성 스토리텔링 등을 제시했다.\n\n종합하면, 2026년 마케팅은 '도구 도입' 단계를 넘어 '어떻게 잘 활용하느냐'의 실행 역량 경쟁 단계로 진입했으며, AI·데이터·신뢰라는 세 축이 마케팅 전략의 핵심 프레임워크로 자리 잡고 있다.\n\n> 출처: Deloitte Digital (https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html), AMA (https://www.ama.org/marketing-news/2026-trends-report), Coursera (https://www.coursera.org/articles/marketing-trends), Innovation Visual (https://www.innovationvisual.com/knowledge-hub/knowledge/7-marketing-trends-define-2026)\n\n---\n\n## 2. MarTech 시장 규모 및 성장 전망\n\n2026년 마케팅 기술(MarTech) 시장은 주요 리서치 기관별로 상이한 기준과 범위를 적용하고 있으나, 전반적으로 수천억 달러 규모의 거대 시장으로 성장했으며 향후 수년간 두 자릿수 CAGR로 확장될 것이라는 점에서는 의견이 일치한다.\n\n### 2.1 기관별 MarTech 시장 규모 비교\n\n| 기관 | 기준 연도 시장 규모 | 목표 연도 시장 규모 | CAGR | 예측 기간 |\n|---|---|---|---|---|\n| Mordor Intelligence | 5,800억 달러 (2025년) | 1조 2,708억 달러 (2031년) | 13.95% | 2026~2031 |\n| Mordor Intelligence | 6,609억 달러 (2026년) | 1조 2,708억 달러 (2031년) | 13.95% | 2026~2031 |\n| IMARC Group | 5,846억 달러 (2025년) | 2조 6,383억 달러 (2034년) | 17.68% | 2026~2034 |\n| Coherent Market Insights | 6,805억 달러 (2026년) | 2조 1,040억 달러 (2033년) | 17.5% | 2026~2033 |\n| InsightAce Analytic | 1,731억 6천만 달러 (2025년) | 6,465억 8천만 달러 (2035년) | 14.5% | 2026~2035 |\n\n> 출처: Mordor Intelligence (https://www.mordorintelligence.com/industry-reports/marketing-technology-market), IMARC Group (https://www.imarcgroup.com/marketing-technology-market), Coherent Market Insights (https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market), InsightAce Analytic (https://www.insightaceanalytic.com/report/martech-market/3049)\n\n### 2.2 지역별 시장 구조\n\nMordor Intelligence에 따르면, 2026~2031년 기간 기준 최대 시장은 북미이며, 가장 빠르게 성장하는 시장은 아시아태평양이다. IMARC Group의 분석에서는 북미가 2025년 기준 시장 점유율 35.8% 이상을 차지하며 압도적 우위를 점하고 있으며, 이는 고도화된 디지털 인프라, 높은 MarTech 도입률, 강력한 기술 혁신 생태계에 기인한다. 시장 집중도는 Mordor Intelligence 기준 '낮음(Low)'으로 분류되어, 벤더 간 경쟁이 치열하고 다수의 플레이어가 공존하는 구조임을 시사한다.\n\n### 2.3 성장 동인\n\n여러 출처 종합에 따르면, MarTech 시장 성장의 핵심 동인은 다음과 같다.\n\n① **클라우드 퍼스트·AI 임베디드 스택에 대한 기업 수요**: Mordor Intelligence는 실시간 캠페인 오케스트레이션, 동적 콘텐츠 생성, 크로스채널 귀속(attribution)을 가능하게 하는 클라우드·AI 기반 기술 스택이 1차 가속 요인이라고 분석했다.\n\n② **생성형 AI의 핵심 제품 임베딩**: 주요 시장 리더들이 자사 핵심 제품에 생성형 AI를 내장하고 있으며, 예측 분석, 챗봇, 실시간 의사결정 등 AI 기반 기능이 마케팅 도구 전반에 확산되고 있다(IMARC Group).\n\n③ **프라이버시 퍼스트 데이터 전략으로의 전환**: 규제 압박이 강화되면서 퍼티파티(1st-party) 데이터와 제로파티(0-party) 데이터 자산의 가치가 상승하고, 이를 지원하는 MarTech 솔루션 수요가 증가하고 있다(Mordor Intelligence).\n\n④ **소셜 미디어 폭발과 멀티채널 마케팅 확대**: InsightAce Analytic은 소셜 미디어의 폭발적 성장과 인터넷 서비스 이용 확대가 마케팅 도구 수요를 견인하고 있으며, 기업의 멀티채널 마케팅 채택이 시장 확장에 크게 기여했다고 분석했다.\n\n> 출처: Mordor Intelligence (https://www.mordorintelligence.com/industry-reports/marketing-technology-market), IMARC Group (https://www.imarcgroup.com/marketing-technology-market), InsightAce Analytic (https://www.insightaceanalytic.com/report/martech-market/3049)\n\n---\n\n## 3. AI 마케팅의 부상과 현황\n\n### 3.1 AI 마케팅 시장 규모\n\nAI 마케팅은 MarTech 전체 시장에서 가장 역동적으로 성장하는 하위 영역이다. Big Moves Marketing이 인용한 Demand Gen Report의 《2026 B2B Trends Research Report》에 따르면, 2026년 B2B 마케터의 96%가 업무에서 AI를 사용하고 있다고 응답했으며, 그중 거의 절반이 AI를 가장 기대되는 단일 트렌드로 꼽았다. AI 마케팅 시장 규모는 2026년 기준 약 579억 9천만 달러로 평가되며, 2030년까지 2,400억 달러에 도달해 연평균 37.2%의 CAGR로 성장할 전망이다(All About AI 인용, Big Moves Marketing 경유).\n\n| 지표 | 수치 | 기준 시점 | 출처 |\n|---|---|---|---|\n| B2B 마케터 AI 사용률 | 96% | 2026년 | Demand Gen Report (Big Moves Marketing 인용) |\n| AI 마케팅 시장 규모 | 약 579억 9천만 달러 | 2026년 | All About AI (Big Moves Marketing 인용) |\n| AI 마케팅 시장 규모 (전망) | 2,400억 달러 | 2030년 | All About AI (Big Moves Marketing 인용) |\n| AI 마케팅 CAGR | 37.2% | 2026→2030 | All About AI (Big Moves Marketing 인용) |\n\n> 출처: Big Moves Marketing (https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond), All About AI (https://www.allaboutai.com/resources/ai-statistics/marketing/), Demand Gen Report (https://www.demandgenreport.com/industry-news/feature/demand-gen-reports-2026-b2b-trends-research-report-is-live/52002-2/)\n\n### 3.2 도입률과 성과 격차\n\n그러나 AI 도입률이 높다고 해서 곧바로 경쟁 우위로 이어지는 것은 아니다. Big Moves Marketing이 인용한 The Smarketers의 데이터에 따르면, AI가 하단(bottom-line) 성과에 의미 있게 기여하는 '하이 퍼포머'로 자격을 갖춘 조직은 전체의 6%에 불과하다. 대다수 B2B 마케팅 팀은 아직 실험 단계에 머물러 있으며, 일회성 포인트 솔루션과 단발성 유스케이스를 운영하는 반면, 소수의 실무자만이 복리(compounding)적이고 체계적인 우위를 구축하고 있다. 즉, '도입(adoption)'과 '우위(advantage)' 사이의 간극이 2026년 AI 마케팅의 핵심 과제다.\n\n### 3.3 주요 AI 마케팅 도구\n\nCircle S Studio가 정리한 2026년 주요 AI 마케팅 도구는 다음과 같다.\n\n- **ChatGPT**: 글쓰기, 아이디어 도출, 일반 추론에 강점\n- **Perplexity**: 리서치 및 실시간 정보 검색에 강점\n- **Copy.ai, Jasper, Surfer SEO**: 콘텐츠 및 검색 최적화\n- **HubSpot AI**: CRM 기반 인사이트 및 자동화\n- **Canva, Grammarly**: 크리에이티브 및 편집 지원\n- **Sora 등 비디오 생성 플랫폼**: 신규 콘텐츠 포맷 창출\n\nCircle S Studio는 \"가능한 한 많은 AI 도구를 사용하려 하기보다, 생산성을 의미 있게 높일 수 있는 방식으로 AI를 어떻게 구현할지에 집중해야 한다\"고 조언했다.\n\n> 출처: Circle S Studio (https://circlesstudio.com/blog/ai-marketing-trends-and-tools)\n\n---\n\n## 4. 2026년 핵심 마케팅 트렌드\n\n여러 출처를 종합하면, 2026년 마케팅을 규정하는 핵심 트렌드는 크게 6가지 축으로 정리된다.\n\n### 4.1 AI 에이전트의 부상과 자동화 심화\n\n2026년 AI 마케팅의 가장 중요한 흐름은 '생성형 AI'를 넘어 'AI 에이전트'로의 전환이다. Gartner는 2028년까지 B2B 구매의 상당 부분이 AI 에이전트를 통해 중개될 것이며, 이는 조 단위(trillion-dollar) 규모의 시장 변화를 의미할 것으로 전망했다(Circle S Studio 인용). 2026년 현재는 AI가 리서치, 요약, 콘텐츠 초안 작성, 예측 분석, 크리에이티브 제작, 자동화 등에서 팀을 지원하는 단계이며, 합성 데이터(synthetic data)가 모델링과 테스트의 새로운 접근법을 제공하고 있다. 다만 Circle S Studio는 \"이러한 도구의 효과는 인간 감독에 크게 의존하며, 신뢰성과 정확성 측면에서 여전히 한계가 있다\"고 지적했다.\n\n### 4.2 데이터 품질의 전략적 필수화\n\nInnovation Visual의 MarTech 매니저 Vanessa Reid는 \"2025년 내내 가장 두드러진 문제는 기업 전반에 걸친 지저분하고 일관성 없는 데이터였다\"며 \"데이터의 상당한 공백, 단절된 시스템, 불분명한 정보 소유권으로 인해 팀은 의미 있는 인사이트를 얻거나, 리포트를 신뢰하거나, 자동화·AI 도구를 완전히 활용하는 데 어려움을 겪었다\"고 진단했다. 이는 연쇄적 문제—취약한 자동화, 신뢰할 수 없는 AI 결과물, 팀 간 중복 작업—를 야기했으며, \"깨진 기반 위에 지능형 시스템을 구축할 수 없다\"는 교훈을 남겼다. HubSpot이 2025년 유료 플랜에 대해 데이터 인리치(data enrichment)를 무료로 전환한 것도 이러한 흐름을 가속화했다.\n\n### 4.3 신뢰·진정성(Authenticity)의 프리미엄\n\nDeloitte Digital은 2026년 마케팅 트렌드의 핵심 테마로 \"AI가 크리에이티브를 재작성한다. 신뢰가 (마케팅의) 통화가 된다(AI rewrites creativity. Trust becomes currency)\"는 메시지를 제시했다. 가짜 디지털 콘텐츠가 범람할수록 소비자는 진정성과 신뢰를 가진 브랜드에 프리미엄을 부여하며, 이는 UGC(User-Generated Content) 전략과 창립자·직원 중심의 인간 내러티브 콘텐츠로 이어지고 있다(Coursera).\n\n### 4.4 숏폼 비디오와 크리에이티브 포맷의 진화\n\nCoursera는 2026년 9대 마케팅 트렌드 중 하나로 숏폼 비디오의 지속적 강세를 꼽았다. TikTok, Instagram Reels, YouTube Shorts 등을 중심으로 한 숏폼 콘텐츠는 소비자 참여를 이끄는 핵심 포맷으로 자리 잡았으며, Sora 등 AI 비디오 생성 도구의 등장은 새로운 콘텐츠 포맷과 발견(discovery) 행동을 형성할 것으로 예상된다(Circle S Studio).\n\n### 4.5 프라이버시 퍼스트와 제3자 데이터 의존 탈피\n\nCoherent Market Insights는 iOS 프라이버시 업데이트와 안드로이드의 정책 변화가 모바일 광고 도구에 변화를 강제하고 있으며, 기업들이 새로운 추적·타겟팅 방식을 모색하고 있다고 분석했다. Mordor Intelligence 역시 규제 압박이 프라이버시 퍼스트 데이터 전략으로의 전환을 촉발하고 있으며, 퍼티파티·제로파티 데이터 자산의 가치가 상승하고 있다고 지적했다. 이에 따라 CRM 기반의 고객 데이터 플랫폼(CDP)과 데이터 인리치 도구의 중요성이 한층 커지고 있다.\n\n### 4.6 실험(Experimentation)에서 실행(Execution)으로\n\nInnovation Visual은 \"AI 도구가 성숙하고 예산이 긴축적인 2026년에는 실험이 아닌 실행이 요구된다\"고 강조했다. 2024~2025년이 AI 도구의 가능성을 탐색하는 실험의 해였다면, 2026년은 구체적인 ROI를 증명하고 운영 효율성으로 연결해야 하는 해라는 것이다. Big Moves Marketing 역시 \"AI 마케팅의 다음 장은 도구를 누가 사용하느냐가 아니라, 기술이 어디로 향하는지 이해하고 그 미래를 위해 지금 구축하느냐로 정의될 것\"이라고 전망했다.\n\n> 출처: Deloitte Digital (https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html), Coursera (https://www.coursera.org/articles/marketing-trends), Innovation Visual (https://www.innovationvisual.com/knowledge-hub/knowledge/7-marketing-trends-define-2026), Circle S Studio (https://circlesstudio.com/blog/ai-marketing-trends-and-tools), Big Moves Marketing (https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond), Mordor Intelligence (https://www.mordorintelligence.com/industry-reports/marketing-technology-market), Coherent Market Insights (https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market)\n\n---\n\n## 5. 주요 쟁점과 리스크\n\n### 5.1 AI 규제와 법적 리스크\n\nGartner는 AI 오용 또는 불충분한 가드레드(guardrails)와 관련된 법적 청구가 2026년 말까지 상당히 증가할 것으로 전망했으며, 2027년까지는 생성형 AI와 AI 에이전트가 기존 생산성 도구들을 위협하며 대규모 시장 전환을 촉발할 수 있다고 내다봤다(Circle S Studio 인용). 이는 AI 마케팅 도입이 가속화될수록 거버넌스, 컴플라이언스, 윤리적 사용에 대한 체계적 대응이 필수적임을 의미한다.\n\n### 5.2 AI 투자 버블 우려\n\nCircle S Studio는 \"AI 투자의 급격한 확장이 신흥 버블을 반영하는 것이 아닌지에 대한 우려가 존재한다\"고 지적했다. 특히 인프라 수요 증가, 모델 간 성능 개선의 불균등, AI 산업의 불확실한 재무 성과 등이 잠재적 리스크 요인으로 거론된다.\n\n### 5.3 데이터 격차와 시스템 단절\n\nInnovation Visual의 진단에 따르면, 많은 기업에서 데이터의 공백, 단절된 시스템, 불명확한 데이터 소유권이 여전히 해결되지 않은 과제로 남아 있다. 이는 AI와 자동화 투자의 효과를 근본적으로 제한하는 구조적 문제로, 기술 도입 이전에 데이터 인프라 정비가 선행되어야 한다는 시사점을 준다.\n\n### 5.4 관세·거시경제 불확실성\n\nHIRI(Home Improvement Research Institute)의 분석에 따르면, 2025년 관세로 인해 인플레이션 진전이 중단되었으며, 2026년 내내 인플레이션이 높게 유지될 것으로 예상된다. 이는 마케팅 예산 운용과 소비자 지출 패턴에 직접적인 영향을 미치는 변수로, 기업들은 긴축 예산 환경에서도 성과를 증명해야 하는 압박에 직면해 있다.\n\n> 출처: Circle S Studio (https://circlesstudio.com/blog/ai-marketing-trends-and-tools), Innovation Visual (https://www.innovationvisual.com/knowledge-hub/knowledge/7-marketing-trends-define-2026), HIRI (https://www.hiri.org/blog/home-improvement-products-market-analysis)\n\n---\n\n## 6. 기업에 대한 시사점 및 전략 제언\n\n2026년 마케팅 트렌드와 시장 데이터를 종합할 때, 기업이 우선적으로 추진해야 할 전략 과제는 다음과 같이 정리된다.\n\n### 6.1 데이터 기반(Data Foundation)의 선(先) 정비\n\nInnovation Visual과 여러 출처의 공통된 지적은 \"깨진 데이터 기반 위에 AI를 올릴 수 없다\"는 것이다. 기업은 AI·자동화 투자 이전에 데이터 품질 감사, 시스템 통합, 데이터 소유권 명확화를 선행해야 한다. HubSpot의 데이터 인리치 무료화 등 접근성 개선 도구를 활용하여 퍼티파티 데이터 자산을 체계적으로 구축하는 것이 중요하다.\n\n### 6.2 AI '도입'에서 AI '성과'로의 전환\n\nB2B 마케터의 96%가 AI를 사용하고 있지만, 실제 하단 성과에 기여하는 하이 퍼포머는 6%에 불과하다(Demand Gen Report / The Smarketers). 기업은 AI 도입 현황 자체보다 AI가 매출·전환·고객 생애가치 등 비즈니스 KPI에 기여하는지를 측정하는 프레임워크를 구축해야 한다.\n\n### 6.3 신뢰·진정성 콘텐츠 전략 강화\n\nDeloitte Digital의 진단처럼 \"신뢰가 마케팅의 통화\"가 된 환경에서, 브랜드는 AI 생성 콘텐츠와 인간 기반 콘텐츠의 균형을 전략적으로 설계해야 한다. UGC, 창립자 스토리, 직원 옹고(advocacy) 등 진정성 있는 내러티브에 대한 투자를 확대하는 것이 차별화 요인이 된다.\n\n### 6.4 AI 거버넌스와 컴플라이언스 체계 구축\n\nGartner의 경고처럼 AI 관련 법적 리스크가 증가하는 환경에서, 기업은 AI 사용 가이드라인, 콘텐츠 검증 프로세스, 개인정보 보호 컴플라이언스를 체계적으로 정비해야 한다. 특히 크로스보더 데이터 이전 규제, EU AI Act 등의 규제 환경 변화를 모니터링하고 선제적으로 대응할 필요가 있다.\n\n### 6.5 Composable Architecture로의 전환\n\nMordor Intelligence는 \"경쟁 역학은 크리에이티브, 데이터, 활성화(activation) 워크플로우를 composable architecture 안에서 통합할 수 있는 벤더에게 유리하게 작용한다\"고 분석했다. 기업은 단일 벤더 종속을 피하고, 비용·지연시간·컴플라이언스에 대한 세밀한 제어를 가능하게 하는 조합형(composable) 마케팅 기술 스택을 구축하는 방향으로 투자해야 한다.\n\n> 출처: Deloitte Digital (https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html), Mordor Intelligence (https://www.mordorintelligence.com/industry-reports/marketing-technology-market), Innovation Visual (https://www.innovationvisual.com/knowledge-hub/knowledge/7-marketing-trends-define-2026), Big Moves Marketing (https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond), Circle S Studio (https://circlesstudio.com/blog/ai-marketing-trends-and-tools)\n\n---\n\n## 부록: 주요 출처 일람\n\n| 출처 | 보고서/기사명 | URL |\n|---|---|---|\n| Deloitte Digital | Marketing Trends of 2026 | https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html |\n| AMA | 2026 Future Trends in Marketing Report | https://www.ama.org/marketing-news/2026-trends-report |\n| Mordor Intelligence | Marketing Technology Market Size & Share Analysis (2026-2031) | https://www.mordorintelligence.com/industry-reports/marketing-technology-market |\n| IMARC Group | Marketing Technology Market Size Report (2026-2034) | https://www.imarcgroup.com/marketing-technology-market |\n| Coherent Market Insights | Marketing Technology Market Size and Forecast (2026-2033) | https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market |\n| InsightAce Analytic | MarTech Market Size, Share, Trend Report (2026-2035) | https://www.insightaceanalytic.com/report/martech-market/3049 |\n| Big Moves Marketing | AI in Marketing: 5 Predictions for B2B Marketing in 2026 and Beyond | https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond |\n| Innovation Visual | 7 Marketing Trends That Will Define 2026 | https://www.innovationvisual.com/knowledge-hub/knowledge/7-marketing-trends-define-2026 |\n| Coursera | 9 Top Marketing Trends of 2026 | https://www.coursera.org/articles/marketing-trends |\n| Circle S Studio | 2026 AI Marketing Trends and Tools for B2B Firms | https://circlesstudio.com/blog/ai-marketing-trends-and-tools |\n\n> 출처: 상단 표 내 각 URL 직접 확인 기반 작성",
+    "aborted": null,
+    "elapsed_s": 124.0,
+    "empty_retry_used": false
+  },
+  "reviews": {
+    "kimi": {
+      "model": "moonshotai/kimi-k2.6",
+      "prompt_tokens": 13643,
+      "completion_tokens": 1600,
+      "cost_usd": 0.01473324,
+      "empty_retry_used": true,
+      "error": null,
+      "elapsed_s": 79.4,
+      "review": ""
+    },
+    "minimax": {
+      "model": "minimax/minimax-m3",
+      "prompt_tokens": 10240,
+      "completion_tokens": 1600,
+      "cost_usd": 0.004992,
+      "empty_retry_used": true,
+      "error": null,
+      "elapsed_s": 30.1,
+      "review": ""
+    }
+  },
+  "numeric_audit": {
+    "checked": 48,
+    "matched": 43,
+    "suspected": 5,
+    "coverage": 0.896,
+    "flags": [
+      {
+        "number": "2.1",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      },
+      {
+        "number": "5,800억 달러",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      },
+      {
+        "number": "1조",
+        "found": true,
+        "evidence_url": "https://www.hiri.org/blog/home-improvement-products-market-analysis"
+      },
+      {
+        "number": "2,708억 달러",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "13.95",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "6,609억 달러",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "5,846억 달러",
+        "found": true,
+        "evidence_url": "https://www.imarcgroup.com/marketing-technology-market"
+      },
+      {
+        "number": "2조",
+        "found": true,
+        "evidence_url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "6,383억 달러",
+        "found": true,
+        "evidence_url": "https://www.imarcgroup.com/marketing-technology-market"
+      },
+      {
+        "number": "17.68",
+        "found": true,
+        "evidence_url": "https://www.imarcgroup.com/marketing-technology-market"
+      },
+      {
+        "number": "6,805억 달러",
+        "found": true,
+        "evidence_url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "1,040억 달러",
+        "found": true,
+        "evidence_url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "17.5",
+        "found": true,
+        "evidence_url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "1,731억",
+        "found": true,
+        "evidence_url": "https://www.insightaceanalytic.com/report/martech-market/3049"
+      },
+      {
+        "number": "6,465억",
+        "found": true,
+        "evidence_url": "https://www.insightaceanalytic.com/report/martech-market/3049"
+      },
+      {
+        "number": "14.5",
+        "found": true,
+        "evidence_url": "https://www.thebusinessresearchcompany.com/report/marketing-technology-global-market-report"
+      },
+      {
+        "number": "2.2",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      },
+      {
+        "number": "35.8",
+        "found": true,
+        "evidence_url": "https://www.imarcgroup.com/marketing-technology-market"
+      },
+      {
+        "number": "2.3",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      },
+      {
+        "number": "3.1",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      },
+      {
+        "number": "579억",
+        "found": true,
+        "evidence_url": "https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond"
+      },
+      {
+        "number": "2,400억 달러",
+        "found": true,
+        "evidence_url": "https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond"
+      },
+      {
+        "number": "37.2",
+        "found": true,
+        "evidence_url": "https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond"
+      },
+      {
+        "number": "3.2",
+        "found": true,
+        "evidence_url": "https://www.hiri.org/blog/home-improvement-products-market-analysis"
+      },
+      {
+        "number": "3.3",
+        "found": true,
+        "evidence_url": "https://www.hiri.org/blog/home-improvement-products-market-analysis"
+      },
+      {
+        "number": "4.1",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "4.2",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "4.3",
+        "found": true,
+        "evidence_url": "https://www.imarcgroup.com/marketing-technology-market"
+      },
+      {
+        "number": "4.4",
+        "found": true,
+        "evidence_url": "https://www.hiri.org/blog/home-improvement-products-market-analysis"
+      },
+      {
+        "number": "4.5",
+        "found": true,
+        "evidence_url": "https://www.thebusinessresearchcompany.com/report/marketing-technology-global-market-report"
+      },
+      {
+        "number": "4.6",
+        "found": true,
+        "evidence_url": "https://kidder.com/industrial-outlook-western-us-market-forecast"
+      },
+      {
+        "number": "5.1",
+        "found": true,
+        "evidence_url": "https://improvado.io/blog/ai-marketing-trends"
+      },
+      {
+        "number": "5.2",
+        "found": true,
+        "evidence_url": "https://kidder.com/industrial-outlook-western-us-market-forecast"
+      },
+      {
+        "number": "5.3",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      },
+      {
+        "number": "5.4",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "6.1",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "6.2",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "6.3",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "6.4",
+        "found": true,
+        "evidence_url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "6.5",
+        "found": true,
+        "evidence_url": "https://www.insightaceanalytic.com/report/martech-market/3049"
+      },
+      {
+        "number": "13.95%",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "17.68%",
+        "found": true,
+        "evidence_url": "https://www.imarcgroup.com/marketing-technology-market"
+      },
+      {
+        "number": "17.5%",
+        "found": true,
+        "evidence_url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "14.5%",
+        "found": true,
+        "evidence_url": "https://www.thebusinessresearchcompany.com/report/marketing-technology-global-market-report"
+      },
+      {
+        "number": "35.8%",
+        "found": true,
+        "evidence_url": "https://www.imarcgroup.com/marketing-technology-market"
+      },
+      {
+        "number": "96%",
+        "found": true,
+        "evidence_url": "https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond"
+      },
+      {
+        "number": "37.2%",
+        "found": true,
+        "evidence_url": "https://www.bigmoves.marketing/blog/ai-in-marketing-5-predictions-for-b2b-marketing-in-2026-and-beyond"
+      },
+      {
+        "number": "6%",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      }
+    ]
+  },
+  "glossary": {
+    "domain": "일반",
+    "topic": "2026 마케팅 트렌드",
+    "extracted": 596,
+    "kept": 30,
+    "corpus_confirmed": 10,
+    "terms": [
+      {
+        "term": "AI",
+        "source_url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html",
+        "kind": "영문"
+      },
+      {
+        "term": "AMA",
+        "source_url": "https://www.ama.org/marketing-news/2026-trends-report",
+        "kind": "영문"
+      },
+      {
+        "term": "UGC",
+        "source_url": "https://www.coursera.org/articles/marketing-trends",
+        "kind": "영문"
+      },
+      {
+        "term": "IMARC",
+        "source_url": "https://www.imarcgroup.com/marketing-technology-market",
+        "kind": "영문"
+      },
+      {
+        "term": "SEO",
+        "source_url": "https://www.thebusinessresearchcompany.com/report/marketing-technology-global-market-report",
+        "kind": "영문"
+      },
+      {
+        "term": "CRM",
+        "source_url": "https://www.thebusinessresearchcompany.com/report/marketing-technology-global-market-report",
+        "kind": "영문"
+      },
+      {
+        "term": "CDP",
+        "source_url": "https://www.imarcgroup.com/marketing-technology-market",
+        "kind": "영문"
+      },
+      {
+        "term": "HIRI",
+        "source_url": "https://www.hiri.org/blog/home-improvement-products-market-analysis",
+        "kind": "영문"
+      },
+      {
+        "term": "EU",
+        "source_url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html",
+        "kind": "영문"
+      },
+      {
+        "term": "URL",
+        "source_url": "https://www.ama.org/marketing-news/2026-trends-report",
+        "kind": "영문"
+      },
+      {
+        "term": "마케팅",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "트렌드",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "종합",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "환경",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "개요",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "인공지능",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "본격적",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "경제",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "압박",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "소비자",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "행동",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "변화",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "가지",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "거시적",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "힘이",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "중첩되",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "근본적인",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "재편기",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "진입",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "발행한",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      }
+    ]
+  },
+  "fetch_stats": {
+    "docs": 15,
+    "with_raw_content": 15,
+    "avg_raw_len": 32078
+  },
+  "total_cost_usd": 0.032,
+  "elapsed_s": 233.7,
+  "guards": {
+    "max_tool_turns": 8,
+    "max_input_tokens": 150000,
+    "abort_usd": 1.5,
+    "search_k": 5
+  },
+  "models": {
+    "leader": "qwen/qwen3.7-plus",
+    "reviewer_a": "moonshotai/kimi-k2.6",
+    "reviewer_b": "minimax/minimax-m3"
+  },
+  "ran_at": "2026-06-19 14:08 KST"
+}

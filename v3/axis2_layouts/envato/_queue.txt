@@ -1,0 +1,52 @@
+# envato 수집 큐 — 후추님이 던진 item URL 모음
+# 사용: 다 모이면 코과장에 envato_collect 스크립트 + 이 큐 일괄 전달
+# 처리 완료: creative-ZUCHJ3X (시범·sandbox/deck_layouts/envato/creative_ZUCHJ3X/)
+# 갱신: 2026-06-18
+
+# --- 1차 (infographic·comparison·analysis 등) ---
+https://elements.envato.com/wixa-powerpoint-templates-GXFQ5KS
+https://elements.envato.com/pros-and-cons-infographic-DA2MZMD
+https://elements.envato.com/comparison-infographic-keynote-Y9L99BJ
+https://elements.envato.com/analysis-infographic-keynote-ABVVKUC
+https://elements.envato.com/water-infographic-keynote-XNEFPBK
+https://elements.envato.com/employee-relations-infographics-keynote-template-N6929F4
+https://elements.envato.com/management-dashboard-infographic-keynote-XXDRKDW
+https://elements.envato.com/infographic-powerpoint-SSWGZ64
+https://elements.envato.com/timeline-infographic-9QWELHB
+https://elements.envato.com/swot-infographic-EBDEWDY
+https://elements.envato.com/infographic-BMNYBXF
+https://elements.envato.com/steps-arrow-process-powerpoint-PU7YNN6
+https://elements.envato.com/process-infographic-4XEXQ5S
+
+# --- 2차 (process) ---
+https://elements.envato.com/process-infographic-X2Q5AXP
+https://elements.envato.com/financial-process-PRPT925
+https://elements.envato.com/process-diagram-G2W663F
+https://elements.envato.com/onboarding-process-flow-ZGNPQ24
+https://elements.envato.com/arrow-process-infographic-keynote-template-Z5584UT
+https://elements.envato.com/process-infographics-LJLVC8K
+https://elements.envato.com/process-infographic-3RR4Y5L
+https://elements.envato.com/process-keynote-presentation-templates-NKKHYTJ  # ⚠️ 캐릭터 슬라이드 제외하고 참고
+
+# --- 2차 (roadmap) ---
+https://elements.envato.com/roadmaps-infographic-keynote-7CAXS3Y
+https://elements.envato.com/roadmap-diagrams-keynote-template-HWGZRXH
+https://elements.envato.com/ai-business-roadmap-KTFH6XF
+
+# --- 2차 (funnel) ---
+https://elements.envato.com/doodle-funnel-infographic-powerpoint-presentation-TGCQVK9
+https://elements.envato.com/funnel-infographic-TMF9QZK
+https://elements.envato.com/funnel-infographics-keynote-template-FZPUS97
+
+# --- 2차 (sales/economy) ⭐ 후추님 선호 스타일 ("다 참고하지만 난 이런 스타일이 좋더라") = 미니멀·세일즈 덱 방향 ---
+https://elements.envato.com/minimalist-sales-green-pitch-deck-KRY4PCK
+https://elements.envato.com/economy-sales-6NMN2TA
+https://elements.envato.com/economy-sales-AMUQS4G
+https://elements.envato.com/economy-sales-G75CFWA
+https://elements.envato.com/sales-deck-PNMPSYM
+
+# --- 3차 (pitch/sales) ⭐ 후추님 "전반적으로 괜찮·좋다 싶은 애들" ---
+https://elements.envato.com/saas-pitch-deck-WXZY6NK
+https://elements.envato.com/sales-proposal-keynote-RMKV2BN
+https://elements.envato.com/sales-and-marketing-analysis-google-slides-HY39XWB
+https://elements.envato.com/b2b-pitch-deck-powerpoint-TNTCB7G

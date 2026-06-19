@@ -1,0 +1,62 @@
+<svg class="tdc-svg tdc-comparison-vs-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" role="img" aria-label="기존 방식 vs 새 방식">
+  <defs>
+    <filter id="tdc-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.13"/>
+    </filter>
+    <linearGradient id="tdc-purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="tdc-green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ccfbf1"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="tdc-cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ccfbf1"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="tdc-rose" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    
+  </defs>
+
+  <rect width="1280" height="720" fill="#f1f5f9"/>
+  <text x="640" y="118" text-anchor="middle" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="56" font-weight="780">기존 방식 vs 새 방식</text>
+  <text x="640" y="160" text-anchor="middle" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23">Centered VS comparison with balanced contrast</text>
+  <rect data-role="vs-panel" x="150" y="214" width="370" height="330" rx="34" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <rect x="178" y="242" width="314" height="98" rx="28" fill="#dbeafe"/>
+  <circle cx="232" cy="291" r="32" fill="url(#tdc-purple)"/>
+  <text x="232" y="301" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="840">42%</text>
+  <text x="192" y="402" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="43" font-weight="800">수동</text>
+  <text x="192" y="452" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24">느린 인계</text>
+  <rect x="192" y="486" width="270" height="20" rx="10" fill="#ccfbf1"/>
+  <rect x="192" y="486" width="113.40" height="20" rx="10" fill="url(#tdc-purple)"/>
+  <rect data-role="vs-panel" x="760" y="214" width="370" height="330" rx="34" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <rect x="788" y="242" width="314" height="98" rx="28" fill="#ccfbf1"/>
+  <circle cx="842" cy="291" r="32" fill="url(#tdc-teal)"/>
+  <text x="842" y="301" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="840">84%</text>
+  <text x="802" y="402" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="43" font-weight="800">자동화</text>
+  <text x="802" y="452" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24">근거 확장</text>
+  <rect x="802" y="486" width="270" height="20" rx="10" fill="#ccfbf1"/>
+  <rect x="802" y="486" width="226.80" height="20" rx="10" fill="url(#tdc-teal)"/>
+  <path data-role="vs-connector" d="M 520 302 C 574 262, 616 262, 660 324" fill="none" stroke="#1e40af" stroke-width="9" stroke-linecap="round"/>
+  <path data-role="vs-connector" d="M 760 458 C 704 500, 654 500, 620 396" fill="none" stroke="#0f766e" stroke-width="9" stroke-linecap="round"/>
+  <circle data-role="vs-medallion" cx="640" cy="360" r="78" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <circle cx="640" cy="360" r="56" fill="url(#tdc-orange)"/>
+  <text x="640" y="379" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="46" font-weight="880">VS</text>
+
+</svg>

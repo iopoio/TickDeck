@@ -1,0 +1,79 @@
+<svg class="tdc-svg tdc-timeline-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" role="img" aria-label="출시 일정">
+  <defs>
+    <filter id="tdc-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.13"/>
+    </filter>
+    <linearGradient id="tdc-purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    <linearGradient id="tdc-green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <linearGradient id="tdc-cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <linearGradient id="tdc-rose" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    
+  </defs>
+
+  <rect width="1280" height="720" fill="#f8fafc"/>
+  <text x="112" y="118" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="58" font-weight="780">출시 일정</text>
+  <text x="112" y="158" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24">Alternating milestone cards with roadmap clarity</text>
+  <path data-role="timeline-axis" d="M 150 360 C 350 286, 504 434, 672 360 S 984 286, 1138 360" fill="none" stroke="#dbeafe" stroke-width="24" stroke-linecap="round"/>
+  <path d="M 150 360 C 350 286, 504 434, 672 360 S 984 286, 1138 360" fill="none" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+  <rect x="124" y="170" width="208" height="112" rx="22" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <rect data-role="timeline-date-pill" x="146" y="188" width="58" height="28" rx="14" fill="#dbeafe"/>
+  <text x="175" y="208" text-anchor="middle" fill="#1e40af" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="16" font-weight="820">Q1</text>
+  <text x="146" y="242" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24" font-weight="820">발견</text>
+  <text x="146" y="270" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="18">신호 탐색</text>
+  <rect x="392" y="446" width="208" height="112" rx="22" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <rect data-role="timeline-date-pill" x="414" y="464" width="58" height="28" rx="14" fill="#dbeafe"/>
+  <text x="443" y="484" text-anchor="middle" fill="#1e40af" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="16" font-weight="820">Q2</text>
+  <text x="414" y="518" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24" font-weight="820">시제품</text>
+  <text x="414" y="546" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="18">시각 근거</text>
+  <rect x="660" y="170" width="208" height="112" rx="22" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <rect data-role="timeline-date-pill" x="682" y="188" width="58" height="28" rx="14" fill="#dbeafe"/>
+  <text x="711" y="208" text-anchor="middle" fill="#1e40af" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="16" font-weight="820">Q3</text>
+  <text x="682" y="242" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24" font-weight="820">파일럿</text>
+  <text x="682" y="270" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="18">실계정 검증</text>
+  <rect x="928" y="446" width="208" height="112" rx="22" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <rect data-role="timeline-date-pill" x="950" y="464" width="58" height="28" rx="14" fill="#dbeafe"/>
+  <text x="979" y="484" text-anchor="middle" fill="#1e40af" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="16" font-weight="820">Q4</text>
+  <text x="950" y="518" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24" font-weight="820">확장</text>
+  <text x="950" y="546" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="18">반복 운영</text>
+  <line data-role="timeline-connector" x1="228" y1="360" x2="228" y2="262" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <circle data-role="timeline-node" cx="228" cy="360" r="38" fill="#dbeafe"/>
+  <circle cx="228" cy="360" r="22" fill="#ffffff" opacity="0.28"/>
+  <text x="228" y="369" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="840">01</text>
+  <line data-role="timeline-connector" x1="496" y1="360" x2="496" y2="418" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <circle data-role="timeline-node" cx="496" cy="360" r="38" fill="#bfdbfe"/>
+  <circle cx="496" cy="360" r="22" fill="#ffffff" opacity="0.28"/>
+  <text x="496" y="369" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="840">02</text>
+  <line data-role="timeline-connector" x1="764" y1="360" x2="764" y2="262" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <circle data-role="timeline-node" cx="764" cy="360" r="38" fill="#60a5fa"/>
+  <circle cx="764" cy="360" r="22" fill="#ffffff" opacity="0.28"/>
+  <text x="764" y="369" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="840">03</text>
+  <line data-role="timeline-connector" x1="1032" y1="360" x2="1032" y2="418" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <circle data-role="timeline-node" cx="1032" cy="360" r="38" fill="#d97706"/>
+  <circle cx="1032" cy="360" r="22" fill="#ffffff" opacity="0.28"/>
+  <text x="1032" y="369" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="840">04</text>
+
+</svg>

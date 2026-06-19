@@ -1,0 +1,127 @@
+{
+  "title": "TickDeck Axis 2 Components Demo",
+  "components": [
+    "big_percent",
+    "donut_gauge",
+    "bar_chart",
+    "card_grid",
+    "funnel",
+    "timeline",
+    "matrix_2x2",
+    "comparison_vs",
+    "dashboard",
+    "map_data",
+    "process"
+  ],
+  "metadata": {
+    "big_percent": {
+      "component": "big_percent",
+      "design_refs": [
+        "Big number emphasis",
+        "Financial gauge structure"
+      ],
+      "source_map": {
+        "value": "demo:axis2:big_percent"
+      }
+    },
+    "donut_gauge": {
+      "component": "donut_gauge",
+      "design_refs": [
+        "Circular progress gauge",
+        "Clean sales palette"
+      ],
+      "source_map": {
+        "value": "demo:axis2:donut_gauge"
+      }
+    },
+    "bar_chart": {
+      "component": "bar_chart",
+      "design_refs": [
+        "Rising percent bars",
+        "Financial chart discipline"
+      ],
+      "source_map": {
+        "items": "demo:axis2:bar_chart"
+      }
+    },
+    "card_grid": {
+      "component": "card_grid",
+      "design_refs": [
+        "Metric card grid",
+        "Big-number metrics"
+      ],
+      "source_map": {
+        "cards": "demo:axis2:card_grid"
+      }
+    },
+    "funnel": {
+      "component": "funnel",
+      "design_refs": [
+        "Layered funnel geometry",
+        "Pyramid conversion logic"
+      ],
+      "source_map": {
+        "stages": "demo:axis2:funnel"
+      }
+    },
+    "timeline": {
+      "component": "timeline",
+      "design_refs": [
+        "Alternating timeline cards",
+        "Roadmap clarity"
+      ],
+      "source_map": {
+        "events": "demo:axis2:timeline"
+      }
+    },
+    "matrix_2x2": {
+      "component": "matrix_2x2",
+      "design_refs": [
+        "Cost-impact positioning"
+      ],
+      "source_map": {
+        "points": "demo:axis2:matrix_2x2"
+      }
+    },
+    "comparison_vs": {
+      "component": "comparison_vs",
+      "design_refs": [
+        "Centered VS comparison",
+        "Two-color contrast"
+      ],
+      "source_map": {
+        "left": "demo:axis2:comparison_vs:left",
+        "right": "demo:axis2:comparison_vs:right"
+      }
+    },
+    "dashboard": {
+      "component": "dashboard",
+      "design_refs": [
+        "Multi-chart dashboard"
+      ],
+      "source_map": {
+        "kpis": "demo:axis2:dashboard"
+      }
+    },
+    "map_data": {
+      "component": "map_data",
+      "design_refs": [
+        "Map card layout",
+        "Regional data tone"
+      ],
+      "source_map": {
+        "regions": "demo:axis2:map_data"
+      }
+    },
+    "process": {
+      "component": "process",
+      "design_refs": [
+        "Arrow sequence",
+        "Step structure"
+      ],
+      "source_map": {
+        "steps": "demo:axis2:process"
+      }
+    }
+  }
+}

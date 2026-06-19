@@ -1,0 +1,65 @@
+<svg class="tdc-svg tdc-matrix-2x2-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" role="img" aria-label="포지션 매트릭스">
+  <defs>
+    <filter id="tdc-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.13"/>
+    </filter>
+    <linearGradient id="tdc-purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="tdc-green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ccfbf1"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="tdc-cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ccfbf1"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="tdc-rose" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    
+  </defs>
+
+  <rect width="1280" height="720" fill="#f1f5f9"/>
+  <rect x="78" y="76" width="1124" height="568" rx="32" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <text x="126" y="150" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="54" font-weight="780">포지션 매트릭스</text>
+  <text data-role="matrix-subtitle-line" x="126" y="194" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="400">Cost-impact positioning pattern</text>
+  <circle cx="176" cy="302" r="32" fill="url(#tdc-purple)"/>
+  <text x="224" y="312" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24" font-weight="800">High impact</text>
+  <circle cx="176" cy="382" r="32" fill="url(#tdc-teal)"/>
+  <text x="224" y="392" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24" font-weight="800">Low effort</text>
+  <rect x="448" y="154" width="600" height="420" rx="24" fill="#ffffff" stroke="#e5e7eb" stroke-width="3"/>
+  <rect data-role="matrix-quadrant" x="448.00" y="154.00" width="300.00" height="210.00" fill="#dbeafe"/>
+  <text data-role="matrix-quadrant-label" x="472.00" y="196.00" text-anchor="start" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="20" font-weight="800">Strategic</text>
+  <rect data-role="matrix-quadrant" x="748.00" y="154.00" width="300.00" height="210.00" fill="#ccfbf1"/>
+  <text data-role="matrix-quadrant-label" x="1024.00" y="196.00" text-anchor="end" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="20" font-weight="800">Scale</text>
+  <rect data-role="matrix-quadrant" x="448.00" y="364.00" width="300.00" height="210.00" fill="#fef3c7"/>
+  <text data-role="matrix-quadrant-label" x="472.00" y="532.00" text-anchor="start" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="20" font-weight="800">Watch</text>
+  <rect data-role="matrix-quadrant" x="748.00" y="364.00" width="300.00" height="210.00" fill="#f1f5f9"/>
+  <text data-role="matrix-quadrant-label" x="1024.00" y="532.00" text-anchor="end" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="20" font-weight="800">Automate</text>
+  <line data-role="matrix-axis-x" x1="448" y1="364.0" x2="1048" y2="364.0" stroke="#94a3b8" stroke-width="4"/>
+  <line data-role="matrix-axis-y" x1="748.0" y1="154" x2="748.0" y2="574" stroke="#94a3b8" stroke-width="4"/>
+  <text x="748.0" y="620" text-anchor="middle" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="820">실행 부담</text>
+  <text transform="translate(402 364.0) rotate(-90)" text-anchor="middle" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="820">시장 영향</text>
+  <circle data-role="matrix-point" cx="616.00" cy="288.40" r="19" fill="url(#tdc-purple)" stroke="#ffffff" stroke-width="6"/>
+  <text x="644.00" y="295.40" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="22" font-weight="800">검색</text>
+  <circle data-role="matrix-point" cx="868.00" cy="397.60" r="19" fill="url(#tdc-orange)" stroke="#ffffff" stroke-width="6"/>
+  <text x="896.00" y="404.60" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="22" font-weight="800">행사</text>
+  <circle data-role="matrix-point" cx="796.00" cy="229.60" r="19" fill="url(#tdc-teal)" stroke="#ffffff" stroke-width="6"/>
+  <text x="824.00" y="236.60" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="22" font-weight="800">제휴</text>
+
+</svg>

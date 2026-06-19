@@ -1,0 +1,5 @@
+output/
+output_*/
+pipeline/generated/
+__pycache__/
+*.pyc

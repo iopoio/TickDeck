@@ -1,0 +1,169 @@
+{
+  "topic": "2026년 글로벌 AI 반도체 시장 전망",
+  "leader": {
+    "model": "qwen/qwen3.7-plus",
+    "turns": 2,
+    "searches": [
+      {
+        "query": "2026 global AI semiconductor market size forecast outlook",
+        "result_preview": "[1] 2026 Global Semiconductor Industry Outlook - Deloitte\nURL: https://www.deloitte.com/us/en/insights/industry/technology/technology-media-telecom-outlooks/semiconductor-industry-outlook.html\n관련 섹션:\n"
+      },
+      {
+        "query": "AI chip market 2026 revenue growth NVIDIA AMD forecast",
+        "result_preview": "[1] AMD Stock Price Forecast 2026: AI Chip Growth & Analyst Targets\nURL: https://intellectia.ai/blog/amd-stock-price-forecast-2026-analysis\n관련 섹션:\n# AMD Stock Price Forecast 2026: AI Chip Growth & Ana"
+      }
+    ],
+    "prompt_tokens": 8145,
+    "completion_tokens": 965,
+    "cost_usd": 0.0038416,
+    "final": "# 2026년 글로벌 AI 반도체 시장 전망 종합 보고서\n\n## 시장 규모 및 성장\n\nFortune Business Insights에 따르면 글로벌 반도체 시장은 2025년 5,980억 달러에서 **2026년 6,597억 달러**로 성장하며, 2034년까지 연평균 10.6%의 성장률(CAGR)로 1조 4,771억 달러에 달할 전망이다. Gartner는 AI 프로세서·네트워크 부품 수요에 힘입어 2026년 글로벌 반도체 매출이 **전년비 64% 증가한 1조 3,200억 달러**에 이를 것으로 추정했다.\n\n## 핵심 성장 동인\n\n**① 빅테크 데이터센터 투자 폭증**: 빅테크 기업들의 2026년 데이터센터 확장·칩 조달 지출이 **5,000억 달러**를 돌파할 전망이다. ② **HBM4 전환**: TechInsights는 HBM3E의 공격적 양산 확대 후 HBM4(16Hi)가 차세대 AI칩과 함께 메모리 시장 회복을 주도할 것으로 분석했다. ③ **NVIDIA 독주 속 AMD 추격**: NVIDIA는 FY2026 매출 2,159억 달러(전년비 +65%), AI 가속기 시장 점유율 81%(IDC)를 기록했고, AMD는 2026년 주가 114% 급등하며 추격하고 있다.\n\n## 리스크 요인\n\nFuture Horizons의 Malcolm Penn CEO는 \"현재 호황이 AI 과열로 구조적으로 취약하며, 2030년 1조 달러 도달 전망에 회의적\"이라고 경고했다. 관세·지정학적 불확실성도 하방 리스크로 작용한다.\n\n---\n**출처**: Fortune Business Insights, Gartner(Motley Fool 인용), TechInsights, Future Horizons(SemiWiki), IDC, ainvest.com",
+    "aborted": null,
+    "elapsed_s": 31.9,
+    "empty_retry_used": false
+  },
+  "reviews": {
+    "kimi": {
+      "model": "moonshotai/kimi-k2.6",
+      "prompt_tokens": 1306,
+      "completion_tokens": 1600,
+      "cost_usd": 0.00634408,
+      "empty_retry_used": true,
+      "error": null,
+      "elapsed_s": 81.7,
+      "review": ""
+    },
+    "minimax": {
+      "model": "minimax/minimax-m3",
+      "prompt_tokens": 599,
+      "completion_tokens": 441,
+      "cost_usd": 0.0007088999999999999,
+      "empty_retry_used": false,
+      "error": null,
+      "elapsed_s": 11.4,
+      "review": "**리뷰 의견**\n\n1. **수치 불일치 모순**: 2026년 시장 규모가 Fortune Business Insights 기준 6,597억 달러인지, Gartner 기준 1조 3,200억 달러인지 본문에서 통합·해설 없이 병기만 하여 독자가 혼란하며, 단일 신뢰 수치로 재검토가 필요합니다.\n2. **인용 출처의 1차·2차 혼재**: Gartner 수치는 \"Motley Fool 인용\"이고 IDC·주가 등도 ainvest.com 2차 매체에 의존하여, 보고서라기엔 1차 리서치 검증이 빈약하고 수치 신뢰도가 떨어집니다.\n3. **성장 동인 근거의 과장·선택적 서술**: 빅테크 5,000억 달러·NVIDIA 점유율 81%·AMD 주가 114% 등 극단 수치만 나열하고 산출 근거·기준 시점·정의(예: \"AI 가속기\" 범위)가 빠져 있어 과대해석 소지가 큽니다.\n4. **리스크 분석의 균형 부족**: Future Horizons 한 인사의 회의적 견해만 짧게 제시하고, 수출통제·전력·공급망 병목 등 구체적 하방 요인 데이터가 없어 \"리스크 요인\"이라기엔 형식적입니다.\n5. **시점·정의 모호로 전망 신뢰성 저하**: 2026년 전망인데 회계연도(FY2026)·일부 수치의 기준월이 명시되지 않아 동일 연도 비교가 불가능하고, HBM4 16Hi 양산 시점 등 핵심 변수의 일정 가정이 빠져 있습니다.\n\n**보완 제안**: 동일 시점·정의 기준으로 1차 소스(Gartner·IDC·각사 IR)를 재확인해 수치를 통일·재계산하고, 리스크 섹션에 수출통제·전력수급·HBM 공급현황 등 정량 지표를 추가해 낙관론과 균형을 맞추길 권고합니다."
+    }
+  },
+  "numeric_audit": {
+    "checked": 13,
+    "matched": 11,
+    "suspected": 2,
+    "coverage": 0.846,
+    "flags": [
+      {
+        "number": "10.6%",
+        "found": true,
+        "evidence_url": "https://www.fortunebusinessinsights.com/semiconductor-market-102365"
+      },
+      {
+        "number": "64%",
+        "found": true,
+        "evidence_url": "https://www.fortunebusinessinsights.com/semiconductor-market-102365"
+      },
+      {
+        "number": "65%",
+        "found": true,
+        "evidence_url": "https://semiwiki.com/semiconductor-services/semiconductor-intelligence/367018-ai-drives-strong-semiconductor-market-in-2025-2026"
+      },
+      {
+        "number": "81%",
+        "found": true,
+        "evidence_url": "https://www.fool.com/investing/2026/05/13/nvidia-vs-amd-the-better-ai-chip-stock-for-2026"
+      },
+      {
+        "number": "114%",
+        "found": true,
+        "evidence_url": "https://www.fortunebusinessinsights.com/semiconductor-market-102365"
+      },
+      {
+        "number": "5,980억 달러",
+        "found": true,
+        "evidence_url": "https://www.fortunebusinessinsights.com/semiconductor-market-102365"
+      },
+      {
+        "number": "6,597억 달러",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "1조",
+        "found": true,
+        "evidence_url": "https://semiwiki.com/forum/threads/semiconductor-market-update-january-2026-future-horizons.24407"
+      },
+      {
+        "number": "4,771억 달러",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "3,200억 달러",
+        "found": true,
+        "evidence_url": "https://semiwiki.com/semiconductor-services/semiconductor-intelligence/367018-ai-drives-strong-semiconductor-market-in-2025-2026"
+      },
+      {
+        "number": "5,000억 달러",
+        "found": true,
+        "evidence_url": "https://www.techinsights.com/outlook-reports-2026/semiconductor-outlook-report"
+      },
+      {
+        "number": "2,159억 달러",
+        "found": true,
+        "evidence_url": "https://www.fool.com/investing/2026/05/13/nvidia-vs-amd-the-better-ai-chip-stock-for-2026"
+      },
+      {
+        "number": "1조 달러",
+        "found": true,
+        "evidence_url": "https://semiwiki.com/forum/threads/semiconductor-market-update-january-2026-future-horizons.24407"
+      }
+    ]
+  },
+  "glossary": {
+    "domain": "반도체",
+    "topic": "2026년 글로벌 AI 반도체 시장 전망",
+    "extracted": 63,
+    "kept": 4,
+    "corpus_confirmed": 4,
+    "terms": [
+      {
+        "term": "AI",
+        "source_url": "https://www.deloitte.com/us/en/insights/industry/technology/technology-media-telecom-outlooks/semiconductor-industry-outlook.html",
+        "kind": "영문"
+      },
+      {
+        "term": "NVIDIA",
+        "source_url": "https://semiwiki.com/semiconductor-services/semiconductor-intelligence/367018-ai-drives-strong-semiconductor-market-in-2025-2026",
+        "kind": "영문"
+      },
+      {
+        "term": "AMD",
+        "source_url": "https://semiwiki.com/semiconductor-services/semiconductor-intelligence/367018-ai-drives-strong-semiconductor-market-in-2025-2026",
+        "kind": "영문"
+      },
+      {
+        "term": "IDC",
+        "source_url": "https://semiwiki.com/semiconductor-services/semiconductor-intelligence/367018-ai-drives-strong-semiconductor-market-in-2025-2026",
+        "kind": "영문"
+      }
+    ]
+  },
+  "fetch_stats": {
+    "docs": 10,
+    "with_raw_content": 10,
+    "avg_raw_len": 96344
+  },
+  "total_cost_usd": 0.0109,
+  "elapsed_s": 125.1,
+  "guards": {
+    "max_tool_turns": 8,
+    "max_input_tokens": 150000,
+    "abort_usd": 1.5,
+    "search_k": 5
+  },
+  "models": {
+    "leader": "qwen/qwen3.7-plus",
+    "reviewer_a": "moonshotai/kimi-k2.6",
+    "reviewer_b": "minimax/minimax-m3"
+  },
+  "ran_at": "2026-06-18 17:49 KST"
+}

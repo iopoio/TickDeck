@@ -1,0 +1,473 @@
+{
+  "topic": "2026 마케팅 트렌드",
+  "leader": {
+    "model": "qwen/qwen3.7-plus",
+    "turns": 2,
+    "searches": [
+      {
+        "query": "2026 marketing trends forecast",
+        "result_preview": "[1] 9 Top Marketing Trends of 2026 | Coursera\nURL: https://www.coursera.org/articles/marketing-trends\n관련 섹션:\n# 9 Top Marketing Trends of 2026\n\nWritten by Coursera Staff • Updated on\n\nDiscover the mark"
+      },
+      {
+        "query": "2026 marketing technology AI trends market size",
+        "result_preview": "[1] Marketing Technology Statistics: 30 Key MarTech Trends and Data ...\nURL: https://technologychecker.io/blog/marketing-technology-statistics-martech\n관련 섹션:\n# Marketing Technology Statistics: 30 Key "
+      },
+      {
+        "query": "2026 digital advertising spending forecast CAGR",
+        "result_preview": "[1] Digital Advertising Agencies in the US Industry Analysis, 2026\nURL: https://www.ibisworld.com/united-states/industry/digital-advertising-agencies/5889\n관련 섹션:\n* [Contact Us](/contact-us/ \"Contact U"
+      }
+    ],
+    "prompt_tokens": 16109,
+    "completion_tokens": 5631,
+    "cost_usd": 0.01236256,
+    "final": "# 2026 마케팅 트렌드 종합 보고서\n\n---\n\n## 개요: 2026년 마케팅 환경의 구조적 전환\n\n2026년 마케팅 산업은 인공지능(AI)의 전면적 도입, 경제 압박, 소비자 행동의 급변이라는 세 가지 구조적 힘이 중첩되며 \"기존 마케팅의 종언\"을 맞이하고 있다. Deloitte Digital은 2026년 2월 발간한 《Marketing Trends of 2026》 보고서에서 \"Marketing, as we know it, is over(우리가 알던 마케팅은 끝났다)\"고 선언하며, AI·경제 압박·소비자 행동 변화의 복합적 영향으로 기존 전략이 더 이상 작동하지 않는다고 진단했다. 특히 가짜 디지털 콘텐츠의 범람은 신뢰(trust)와 진정성(authenticity)을 최우선 가치로 부상시켰고, 기술 가속화는 의사결정 사이클을 압축하면서 기대치를 동시에 끌어올리고 있다.\n\nCoursera는 2026년 마케팅 트렌드로 ① AI의 효율성·효과성 제고 ② 숏폼 비디오의 소셜 전략 주도 ③ 사용자 제작 콘텐츠(UGC)의 브랜드 인지도 상승 ④ 커뮤니티·진정성 브랜딩을 통한 소비자 신뢰 확보 ⑤ 고품질 에디토리얼 콘텐츠의 지속 ⑥ 케이스 스터디의 리드 생성 역할 ⑦ 검색 엔진 변화에 따른 SEO 전략 전환 ⑧ AI 기반 챗봇의 대화형 역량 확장 ⑨ 개인화를 통한 사용자 경험 강화 등 9대 트렌드를 제시했다.\n\nCircana는 2026년 성장 동력이 될 소비자 마케팅 트렌드를 별도 리포트로 정리하며, 소비재(FMCG) 관에서의 데이터 기반 성장 전략을 강조했다. American Marketing Association(AMA) 역시 《2026 Future Trends in Marketing Report》를 통해 마케팅 미래 전망을 발표했다.\n\n> 출처: Deloitte Digital(https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html), Coursera(https://www.coursera.org/articles/marketing-trends), Circana(https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026), AMA(https://www.ama.org/marketing-news/2026-trends-report)\n\n---\n\n## 마케팅 기술(MarTech) 시장 규모 및 성장\n\n### 글로벌 MarTech 시장 현황\n\nMordor Intelligence에 따르면, 글로벌 마케팅 기술(MarTech) 시장은 2025년 5,800억 달러에서 2026년 6,609억 달러로 성장하며, 2031년에는 1조 2,708억 달러에 달할 전망이다. 2026~2031년 연평균 성장률(CAGR)은 13.95%로, 클라우드 퍼스트·AI 임베디드 스택에 대한 기업 수요가 핵심 가속 동인이다.\n\n| 구분 | 수치 | 기간·기준 | 출처 |\n|---|---|---|---|\n| MarTech 시장 규모 (2025년) | 5,800억 달러 | 2025년 기준 | Mordor Intelligence |\n| MarTech 시장 규모 (2026년) | 6,609억 달러 | 2026년 기준 | Mordor Intelligence |\n| MarTech 시장 규모 (2031년) | 1조 2,708억 달러 | 2031년 전망 | Mordor Intelligence |\n| MarTech CAGR | 13.95% | 2026→2031 | Mordor Intelligence |\n| 최대 시장 | 북미 | 2026년 기준 | Mordor Intelligence |\n| 최고속 성장 시장 | 아시아태평양 | 2026~2031 | Mordor Intelligence |\n| 시장 집중도 | 낮음(Low) | 2026년 기준 | Mordor Intelligence |\n\n> 출처: Mordor Intelligence(https://www.mordorintelligence.com/industry-reports/marketing-technology-market)\n\n### MarTech 시장 성장 동인\n\nMordor Intelligence는 MarTech 시장 성장의 핵심 동인으로 다음을 지목했다.\n\n- **클라우드 퍼스트·AI 임베디드 스택에 대한 기업 수요**: 실시간 캠페인 오케스트레이션, 동적 콘텐츠 생성, 크로스채널 귀속(attribution)을 대규모로 가능케 함\n- **생성형 AI의 핵심 제품 임베딩**: 시장 리더들이 자사 핵심 제품에 GenAI를 내장\n- **프라이버시 퍼스트 데이터 전략으로의 전환 압박**: 규제 압력으로 인해 퍼스트파티·제로파티 데이터 자산 가치 상승\n- **컴포저블 아키텍처**: 크리에이티브·데이터·활성화 워크플로우를 통합하는 벤더가 경쟁 우위 — 비용·레이턴시·컴플라이언스에 대한 세밀한 제어 가능\n\nTechnologyChecker.io는 2026년 4월 발행한 MarTech 통계 보고서에서 5,000만 개 이상 도메인 탐지 데이터와 라이브 AI 크롤러 트래픽을 교차 검증한 30개 핵심 데이터 포인트를 제시하며, AI 도입율·자동화·CDP(고객 데이터 플랫폼) 성장 등을 주요 지표로 추적했다.\n\n> 출처: TechnologyChecker.io(https://technologychecker.io/blog/marketing-technology-statistics-martech)\n\n---\n\n## 핵심 트렌드 ①: AI·생성형 AI의 마케팅 전면 도입\n\n### AI 시장 전체 규모\n\nMarketsandMarkets에 따르면, 글로벌 AI 시장 전체는 2033년 3조 6,380억 달러 규모로 성장하며, 2026~2033년 CAGR은 29.3%에 달한다. 특히 마케팅과 직접 관련된 세그먼트별 수치는 다음과 같다.\n\n| 구분 | 수치 | 기간·기준 | 출처 |\n|---|---|---|---|\n| AI 시장 전체 규모 (2033년) | 3조 6,380억 달러 | 2033년 전망 | MarketsandMarkets |\n| AI 시장 전체 CAGR | 29.3% | 2026→2033 | MarketsandMarkets |\n| 생성형 AI 세그먼트 CAGR | 36.8% | 2026→2033 | MarketsandMarkets |\n| 북미 AI 시장 점유율 | 42.3% | 2026년 기준 | MarketsandMarkets |\n| 하이브리드 배포 모델 CAGR | 39.7% | 2026→2033 | MarketsandMarkets |\n| Sales & Marketing 기능 | AI 주요 비즈니스 기능 | 2026년 기준 | MarketsandMarkets |\n\n> 출처: MarketsandMarkets(https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html)\n\n### 마케팅 기능별 AI 적용\n\nMarketsandMarkets는 'Sales & Marketing'을 AI의 핵심 비즈니스 기능(Operation & Supply Chain과 함께)으로 분류했으며, 생성형 AI가 2026~2033년 AI 시장에서 가장 높은 성장률(36.8%)을 기록할 것으로 전망했다. 이는 마케팅 콘텐츠 자동 생성, 개인화 추천, 캠페인 최적화 등에 GenAI가 전면 도입됨을 의미한다.\n\nImprovado는 《7 AI Marketing Trends for 2026》 보고서에서 AI가 마케팅 전략을 재구성하는 7가지 트렌드를 제시했으며, Marketing Mix Modeling(MMM) 솔루션을 통해 마케팅 ROI의 극대화와 증명을 지원하는 AI 에이전트 제품을 출시했다. Deloitte Digital은 \"AI rewrites creativity(AI가 크리에이티브를 다시 쓴다)\"는 인용구를 통해 AI가 마케팅 크리에이티브의 본질을 재정의하고 있음을 강조했다.\n\nCoursera는 AI가 마케팅 효율성과 효과성을 동시에 끌어올리고 있으며, AI 기반 챗봇이 대화형 역량을 확장하고 있다고 설명했다. Mordor Intelligence 역시 MarTech 시장 리더들이 생성형 AI를 핵심 제품에 임베딩하고 있다고 확인했다.\n\n> 출처: Improvado(https://improvado.io/blog/ai-marketing-trends), Deloitte Digital(https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html), Coursera(https://www.coursera.org/articles/marketing-trends)\n\n---\n\n## 핵심 트렌드 ②: 디지털 광고·리테일 미디어·CTV의 재편\n\n### 미국 디지털 광고 대행 산업\n\nIBISWorld에 따르면, 미국 디지털 광고 대행(Digital Advertising Agencies) 산업 매출은 2026년 570억 달러에 달하며, 전년 대비 6.6% 성장할 전망이다. 산업 전체 CAGR은 7.5% 수준이다. 리테일·금융서비스·자동차·통신 부문에서의 강력한 디지털 광고 수요가 산업 매출을 지탱하고 있으며, 팬데믹 이후 원격 근무 확산으로 소비자의 인터넷 사용 시간이 증가하면서 디지털 광고로의 전환이 가속화됐다.\n\n| 구분 | 수치 | 기간·기준 | 출처 |\n|---|---|---|---|\n| 미국 디지털 광고 대행 산업 매출 (2026년) | 570억 달러 | 2026년 전망 | IBISWorld |\n| 미국 디지털 광고 대행 산업 성장률 (2026년) | 6.6% | 2025→2026 | IBISWorld |\n| 미국 디지털 광고 대행 산업 CAGR | 7.5% | 2026년 포함 기간 | IBISWorld |\n\n> 출처: IBISWorld(https://www.ibisworld.com/united-states/industry/digital-advertising-agencies/5889)\n\n### 글로벌 디지털 광고 지출 구조 변화\n\nResearch and Markets는 2026년 2월 발간한 《Digital Ad Spend Market Databook Report 2026》에서 100개 이상의 KPI를 기준으로 디지털 광고 지출을 분석했다. 핵심 기회 영역으로 ① AI 통합 ② 리테일 미디어 네트워크(Retail Media Networks) ③ CTV(Connected TV)를 지목했으며, 핵심 동인으로 효율성·개인화·규제 컴플라이언스를 제시했다. 특히 리테일러의 퍼스트파티 데이터와 CTV의 브랜드·퍼포먼스 혼합 효과가 주목받고 있다.\n\nPwC는 \"Digital ad spending moves closer to the consumer\"라는 제목의 분석에서, 소비자가 소셜 미디어 플랫폼·앱·리테일 미디어·게임 환경에서 더 많은 시간을 보내면서 광고주들이 이 환경에서 소비자를 직접 만나고 있다고 설명했다. The Business Research Company는 2026년 1월 발행한 디지털 광고 시장 보고서에서 모바일 광고(인앱·모바일 웹), 디지털 디스플레이, 인터넷 유료 검색, 소셜 미디어, 온라인 비디오 등을 주요 플랫폼·포맷으로 분류하며 2035년까지의 전망을 제시했다.\n\n> 출처: Research and Markets / Yahoo Finance(https://finance.yahoo.com/news/digital-ad-spend-market-databook-134700743.html), PwC(https://www.pwc.com/gx/en/industries/tmt/media/outlook/changes-in-digital-advertising-spend.html), The Business Research Company(https://www.thebusinessresearchcompany.com/report/digital-advertising-global-market-report)\n\n---\n\n## 핵심 트렌드 ③: 소비자 신뢰·퍼스트파티 데이터·개인화\n\n### 신뢰와 진정성의 부상\n\nDeloitte Digital은 2026년 마케팅 트렌드의 핵심 축으로 \"Trust becomes the new currency(신뢰가 새로운 통화가 된다)\"를 제시했다. 가짜 디지털 콘텐츠의 범람으로 인해 소비자는 브랜드의 진정성을 그 어느 때보다 엄격하게 심사하고 있으며, AI가 크리에이티브를 재작성하는 시대에도 인간적 연결과 신뢰가 마케팅의 최종 결정 요인으로 작용한다.\n\n### 프라이버시 퍼스트 데이터 전략\n\n여러 자료 종합에 따르면, 규제 압력이 프라이버시 퍼스트 데이터 전략으로의 전환을 촉발하고 있으며, 이에 따라 퍼스트파티(1st-party) 데이터와 제로파티(0th-party) 데이터 자산의 가치가 상승하고 있다. 서드파티 쿠키 의존도가 하락하는 환경에서 브랜드는 자체 데이터 인프라를 구축해야 하며, CDP(고객 데이터 플랫폼)와 컴포저블 아키텍처가 핵심 솔루션으로 부상하고 있다.\n\n### 개인화의 고도화\n\nCoursera는 \"Personalization is enhancing the user experience(개인화가 사용자 경험을 강화하고 있다)\"를 2026년 9대 마케팅 트렌드 중 하나로 선정했다. AI 기반 개인화는 단순한 이름 삽입을 넘어, 행동 데이터·맥락적 신호·실시간 선호도를 반영한 동적 콘텐츠 제공으로 진화하고 있다. 여러 자료 종합에 따르면, 소비자 마케팅 트렌드를 통해 데이터 기반 개인화 성장 전략이 강조되고 있다.\n\n> 출처: Deloitte Digital(https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html), Mordor Intelligence(https://www.mordorintelligence.com/industry-reports/marketing-technology-market), Coursera(https://www.coursera.org/articles/marketing-trends), Circana(https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026)\n\n---\n\n## 핵심 트렌드 ④: 숏폼 비디오·UGC·커뮤니티·SEO 전환\n\n### 숏폼 비디오와 UGC\n\nCoursera는 숏폼 비디오 콘텐츠(TikTok 등)가 소셜 미디어 전략을 주도하고 있으며, UGC(User-Generated Content)가 브랜드 인지도를 높이는 핵심 수단으로 부상했다고 분석했다. 소비자는 브랜드가 직접 제작한 콘텐츠보다 동료 소비자가 만든 콘텐츠를 더 신뢰하는 경향이 강화되고 있으며, 브랜드는 UGC를 유도하고 활용하는 전략을 마케팅 계획에 통합해야 한다.\n\n### 커뮤니티와 진정성 브랜딩\n\nCoursera는 \"Community efforts and genuine branding encourage consumer trust(커뮤니티 노력과 진정성 있는 브랜딩이 소비자 신뢰를 장려한다)\"를 별도의 트렌드로 제시했다. \"신뢰가 새로운 통화\"라는 진단과 맥락을 같이하며, 브랜드는 일방적 메시지 전달이 아닌 커뮤니티 구축과 대화형 관계를 통해 장기적 신뢰를 확보해야 한다.\n\n### SEO 전략의 전환\n\nCoursera는 검색 엔진 환경의 변화가 SEO 전략을 전환시키고 있다고 지적했다. Google의 AI Overview, ChatGPT 검색 등 AI 기반 검색 경험의 확대로 전통적 키워드 중심 SEO가 한계에 도달하면서, AI 검색 최적화(GEO·Generative Engine Optimization)와 고품질 에디토리얼 콘텐츠·케이스 스터디의 가치가 재부상하고 있다.\n\n| 트렌드 영역 | 2026년 핵심 변화 | 주요 출처 |\n|---|---|---|\n| 숏폼 비디오 | TikTok 등 숏폼이 소셜 전략의 중심 | Coursera |\n| UGC | 소비자 제작 콘텐츠가 브랜드 인지도 견인 | Coursera |\n| 커뮤니티·진정성 | 커뮤니티 구축과 진정성 브랜딩이 신뢰 확보 | Coursera, Deloitte Digital |\n| SEO 전환 | AI 검색 확대로 전통 SEO → GEO·에디토리얼 최적화 | Coursera |\n| AI 챗봇 | 대화형 고객 접점으로서 챗봇 역량 확장 | Coursera |\n| 케이스 스터디 | 브랜드 인지도·리드 생성의 핵심 콘텐츠 | Coursera |\n\n> 출처: Coursera(https://www.coursera.org/articles/marketing-trends), Deloitte Digital(https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html)\n\n---\n\n## 시사점 및 전망\n\n### 2026년 마케팅 전략을 위한 5대 시사점\n\n① **AI 네이티브 마케팅 인프라 구축**: MarTech 시장이 CAGR 13.95%(2026→2031, Mordor Intelligence)로 성장하는 가운데, 생성형 AI는 CAGR 36.8%(2026→2033, MarketsandMarkets)로 가장 빠르게 성장하는 AI 세그먼트다. 마케팅 조직은 AI를 별도 도구가 아닌 핵심 인프라로 내재화해야 한다.\n\n② **퍼스트파티 데이터 자산화**: 서드파티 쿠키 퇴장과 규제 압박 속에서 CDP·컴포저블 아키텍처·리테일 미디어 네트워크를 통한 퍼스트파티·제로파티 데이터 확보가 경쟁력의 핵심이다.\n\n③ **신뢰·진정성 중심 브랜딩**: \"신뢰가 새로운 통화\"인 시대다. AI 생성 콘텐츠의 범람 역설적으로 인간적 진정성과 커뮤니티 기반 신뢰 구축의 가치를 높이고 있다.\n\n④ **디지털 광고 채널의 다변화**: 미국 디지털 광고 대행 산업이 570억 달러(2026년, IBISWorld)로 성장하는 가운데, CTV·리테일 미디어·게임 환경 등 새로운 접점으로 광고 지출이 이동하고 있다.\n\n⑤ **콘텐츠 전략의 재설계**: 숏폼 비디오·UGC·케이스 스터디·AI 최적화 에디토리얼 콘텐츠가 복합적으로 작동하는 하이브리드 콘텐츠 전략이 필요하다.\n\n### 종합 전망 표\n\n| 지표 | 수치 | 기간 | 출처 |\n|---|---|---|---|\n| 글로벌 MarTech 시장 규모 | 6,609억 달러 | 2026년 | Mordor Intelligence |\n| 글로벌 MarTech 시장 규모 | 1조 2,708억 달러 | 2031년 전망 | Mordor Intelligence |\n| MarTech CAGR | 13.95% | 2026→2031 | Mordor Intelligence |\n| 글로벌 AI 시장 규모 | 3조 6,380억 달러 | 2033년 전망 | MarketsandMarkets |\n| AI 시장 전체 CAGR | 29.3% | 2026→2033 | MarketsandMarkets |\n| 생성형 AI 세그먼트 CAGR | 36.8% | 2026→2033 | MarketsandMarkets |\n| 미국 디지털 광고 대행 매출 | 570억 달러 | 2026년 | IBISWorld |\n| 미국 디지털 광고 대행 CAGR | 7.5% | 2026년 포함 | IBISWorld |\n\n> 출처: Mordor Intelligence(https://www.mordorintelligence.com/industry-reports/marketing-technology-market), MarketsandMarkets(https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html), IBISWorld(https://www.ibisworld.com/united-states/industry/digital-advertising-agencies/5889)\n\n---\n\n**참고 문헌 일괄**\n\n- Deloitte Digital, \"Marketing Trends of 2026\", 2026년 2월 — https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html\n- Coursera, \"9 Top Marketing Trends of 2026\" — https://www.coursera.org/articles/marketing-trends\n- AMA, \"2026 Future Trends in Marketing Report\" — https://www.ama.org/marketing-news/2026-trends-report\n- Circana, \"Consumer Marketing Trends That Will Drive Growth in 2026\" — https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026\n- Mordor Intelligence, \"Marketing Technology Market Size & Share Analysis (2026-2031)\" — https://www.mordorintelligence.com/industry-reports/marketing-technology-market\n- TechnologyChecker.io, \"30 Key MarTech Trends and Data Points for 2026\", 2026년 4월 — https://technologychecker.io/blog/marketing-technology-statistics-martech\n- MarketsandMarkets, \"Artificial Intelligence (AI) Market Report 2026-2033\" — https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html\n- Improvado, \"7 AI Marketing Trends for 2026\" — https://improvado.io/blog/ai-marketing-trends\n- IBISWorld, \"Digital Advertising Agencies in the US\", 2026년 3월 — https://www.ibisworld.com/united-states/industry/digital-advertising-agencies/5889\n- Research and Markets, \"Digital Ad Spend Market Databook Report 2026\", 2026년 2월 — https://finance.yahoo.com/news/digital-ad-spend-market-databook-134700743.html\n- PwC, \"Digital ad spending moves closer to the consumer\" — https://www.pwc.com/gx/en/industries/tmt/media/outlook/changes-in-digital-advertising-spend.html\n- The Business Research Company, \"Digital Advertising Market Report 2026\", 2026년 1월 — https://www.thebusinessresearchcompany.com/report/digital-advertising-global-market-report",
+    "aborted": null,
+    "elapsed_s": 115.0,
+    "empty_retry_used": false,
+    "final_pre_audit": "# 2026 마케팅 트렌드 종합 보고서\n\n---\n\n## 개요: 2026년 마케팅 환경의 구조적 전환\n\n2026년 마케팅 산업은 인공지능(AI)의 전면적 도입, 경제 압박, 소비자 행동의 급변이라는 세 가지 구조적 힘이 중첩되며 \"기존 마케팅의 종언\"을 맞이하고 있다. Deloitte Digital은 2026년 2월 발간한 《Marketing Trends of 2026》 보고서에서 \"Marketing, as we know it, is over(우리가 알던 마케팅은 끝났다)\"고 선언하며, AI·경제 압박·소비자 행동 변화의 복합적 영향으로 기존 전략이 더 이상 작동하지 않는다고 진단했다. 특히 가짜 디지털 콘텐츠의 범람은 신뢰(trust)와 진정성(authenticity)을 최우선 가치로 부상시켰고, 기술 가속화는 의사결정 사이클을 압축하면서 기대치를 동시에 끌어올리고 있다.\n\nCoursera는 2026년 마케팅 트렌드로 ① AI의 효율성·효과성 제고 ② 숏폼 비디오의 소셜 전략 주도 ③ 사용자 제작 콘텐츠(UGC)의 브랜드 인지도 상승 ④ 커뮤니티·진정성 브랜딩을 통한 소비자 신뢰 확보 ⑤ 고품질 에디토리얼 콘텐츠의 지속 ⑥ 케이스 스터디의 리드 생성 역할 ⑦ 검색 엔진 변화에 따른 SEO 전략 전환 ⑧ AI 기반 챗봇의 대화형 역량 확장 ⑨ 개인화를 통한 사용자 경험 강화 등 9대 트렌드를 제시했다.\n\nCircana는 2026년 성장 동력이 될 소비자 마케팅 트렌드를 별도 리포트로 정리하며, 소비재(FMCG) 관에서의 데이터 기반 성장 전략을 강조했다. American Marketing Association(AMA) 역시 《2026 Future Trends in Marketing Report》를 통해 마케팅 미래 전망을 발표했다.\n\n> 출처: Deloitte Digital(https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html), Coursera(https://www.coursera.org/articles/marketing-trends), Circana(https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026), AMA(https://www.ama.org/marketing-news/2026-trends-report)\n\n---\n\n## 마케팅 기술(MarTech) 시장 규모 및 성장\n\n### 글로벌 MarTech 시장 현황\n\nMordor Intelligence에 따르면, 글로벌 마케팅 기술(MarTech) 시장은 2025년 5,800억 달러에서 2026년 6,609억 달러로 성장하며, 2031년에는 1조 2,708억 달러에 달할 전망이다. 2026~2031년 연평균 성장률(CAGR)은 13.95%로, 클라우드 퍼스트·AI 임베디드 스택에 대한 기업 수요가 핵심 가속 동인이다.\n\n| 구분 | 수치 | 기간·기준 | 출처 |\n|---|---|---|---|\n| MarTech 시장 규모 (2025년) | 5,800억 달러 | 2025년 기준 | Mordor Intelligence |\n| MarTech 시장 규모 (2026년) | 6,609억 달러 | 2026년 기준 | Mordor Intelligence |\n| MarTech 시장 규모 (2031년) | 1조 2,708억 달러 | 2031년 전망 | Mordor Intelligence |\n| MarTech CAGR | 13.95% | 2026→2031 | Mordor Intelligence |\n| 최대 시장 | 북미 | 2026년 기준 | Mordor Intelligence |\n| 최고속 성장 시장 | 아시아태평양 | 2026~2031 | Mordor Intelligence |\n| 시장 집중도 | 낮음(Low) | 2026년 기준 | Mordor Intelligence |\n\n> 출처: Mordor Intelligence(https://www.mordorintelligence.com/industry-reports/marketing-technology-market)\n\n### MarTech 시장 성장 동인\n\nMordor Intelligence는 MarTech 시장 성장의 핵심 동인으로 다음을 지목했다.\n\n- **클라우드 퍼스트·AI 임베디드 스택에 대한 기업 수요**: 실시간 캠페인 오케스트레이션, 동적 콘텐츠 생성, 크로스채널 귀속(attribution)을 대규모로 가능케 함\n- **생성형 AI의 핵심 제품 임베딩**: 시장 리더들이 자사 핵심 제품에 GenAI를 내장\n- **프라이버시 퍼스트 데이터 전략으로의 전환 압박**: 규제 압력으로 인해 퍼스트파티·제로파티 데이터 자산 가치 상승\n- **컴포저블 아키텍처**: 크리에이티브·데이터·활성화 워크플로우를 통합하는 벤더가 경쟁 우위 — 비용·레이턴시·컴플라이언스에 대한 세밀한 제어 가능\n\nTechnologyChecker.io는 2026년 4월 발행한 MarTech 통계 보고서에서 5,000만 개 이상 도메인 탐지 데이터와 라이브 AI 크롤러 트래픽을 교차 검증한 30개 핵심 데이터 포인트를 제시하며, AI 도입율·자동화·CDP(고객 데이터 플랫폼) 성장 등을 주요 지표로 추적했다.\n\n> 출처: TechnologyChecker.io(https://technologychecker.io/blog/marketing-technology-statistics-martech)\n\n---\n\n## 핵심 트렌드 ①: AI·생성형 AI의 마케팅 전면 도입\n\n### AI 시장 전체 규모\n\nMarketsandMarkets에 따르면, 글로벌 AI 시장 전체는 2033년 3조 6,380억 달러 규모로 성장하며, 2026~2033년 CAGR은 29.3%에 달한다. 특히 마케팅과 직접 관련된 세그먼트별 수치는 다음과 같다.\n\n| 구분 | 수치 | 기간·기준 | 출처 |\n|---|---|---|---|\n| AI 시장 전체 규모 (2033년) | 3조 6,380억 달러 | 2033년 전망 | MarketsandMarkets |\n| AI 시장 전체 CAGR | 29.3% | 2026→2033 | MarketsandMarkets |\n| 생성형 AI 세그먼트 CAGR | 36.8% | 2026→2033 | MarketsandMarkets |\n| 북미 AI 시장 점유율 | 42.3% | 2026년 기준 | MarketsandMarkets |\n| 하이브리드 배포 모델 CAGR | 39.7% | 2026→2033 | MarketsandMarkets |\n| Sales & Marketing 기능 | AI 주요 비즈니스 기능 | 2026년 기준 | MarketsandMarkets |\n\n> 출처: MarketsandMarkets(https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html)\n\n### 마케팅 기능별 AI 적용\n\nMarketsandMarkets는 'Sales & Marketing'을 AI의 핵심 비즈니스 기능(Operation & Supply Chain과 함께)으로 분류했으며, 생성형 AI가 2026~2033년 AI 시장에서 가장 높은 성장률(36.8%)을 기록할 것으로 전망했다. 이는 마케팅 콘텐츠 자동 생성, 개인화 추천, 캠페인 최적화 등에 GenAI가 전면 도입됨을 의미한다.\n\nImprovado는 《7 AI Marketing Trends for 2026》 보고서에서 AI가 마케팅 전략을 재구성하는 7가지 트렌드를 제시했으며, Marketing Mix Modeling(MMM) 솔루션을 통해 마케팅 ROI의 극대화와 증명을 지원하는 AI 에이전트 제품을 출시했다. Deloitte Digital은 \"AI rewrites creativity(AI가 크리에이티브를 다시 쓴다)\"는 인용구를 통해 AI가 마케팅 크리에이티브의 본질을 재정의하고 있음을 강조했다.\n\nCoursera는 AI가 마케팅 효율성과 효과성을 동시에 끌어올리고 있으며, AI 기반 챗봇이 대화형 역량을 확장하고 있다고 설명했다. Mordor Intelligence 역시 MarTech 시장 리더들이 생성형 AI를 핵심 제품에 임베딩하고 있다고 확인했다.\n\n> 출처: Improvado(https://improvado.io/blog/ai-marketing-trends), Deloitte Digital(https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html), Coursera(https://www.coursera.org/articles/marketing-trends)\n\n---\n\n## 핵심 트렌드 ②: 디지털 광고·리테일 미디어·CTV의 재편\n\n### 미국 디지털 광고 대행 산업\n\nIBISWorld에 따르면, 미국 디지털 광고 대행(Digital Advertising Agencies) 산업 매출은 2026년 570억 달러에 달하며, 전년 대비 6.6% 성장할 전망이다. 산업 전체 CAGR은 7.5% 수준이다. 리테일·금융서비스·자동차·통신 부문에서의 강력한 디지털 광고 수요가 산업 매출을 지탱하고 있으며, 팬데믹 이후 원격 근무 확산으로 소비자의 인터넷 사용 시간이 증가하면서 디지털 광고로의 전환이 가속화됐다.\n\n| 구분 | 수치 | 기간·기준 | 출처 |\n|---|---|---|---|\n| 미국 디지털 광고 대행 산업 매출 (2026년) | 570억 달러 | 2026년 전망 | IBISWorld |\n| 미국 디지털 광고 대행 산업 성장률 (2026년) | 6.6% | 2025→2026 | IBISWorld |\n| 미국 디지털 광고 대행 산업 CAGR | 7.5% | 2026년 포함 기간 | IBISWorld |\n\n> 출처: IBISWorld(https://www.ibisworld.com/united-states/industry/digital-advertising-agencies/5889)\n\n### 글로벌 디지털 광고 지출 구조 변화\n\nResearch and Markets는 2026년 2월 발간한 《Digital Ad Spend Market Databook Report 2026》에서 100개 이상의 KPI를 기준으로 디지털 광고 지출을 분석했다. 핵심 기회 영역으로 ① AI 통합 ② 리테일 미디어 네트워크(Retail Media Networks) ③ CTV(Connected TV)를 지목했으며, 핵심 동인으로 효율성·개인화·규제 컴플라이언스를 제시했다. 특히 리테일러의 퍼스트파티 데이터와 CTV의 브랜드·퍼포먼스 혼합 효과가 주목받고 있다.\n\nPwC는 \"Digital ad spending moves closer to the consumer\"라는 제목의 분석에서, 소비자가 소셜 미디어 플랫폼·앱·리테일 미디어·게임 환경에서 더 많은 시간을 보내면서 광고주들이 이 환경에서 소비자를 직접 만나고 있다고 설명했다. The Business Research Company는 2026년 1월 발행한 디지털 광고 시장 보고서에서 모바일 광고(인앱·모바일 웹), 디지털 디스플레이, 인터넷 유료 검색, 소셜 미디어, 온라인 비디오 등을 주요 플랫폼·포맷으로 분류하며 2035년까지의 전망을 제시했다.\n\n> 출처: Research and Markets / Yahoo Finance(https://finance.yahoo.com/news/digital-ad-spend-market-databook-134700743.html), PwC(https://www.pwc.com/gx/en/industries/tmt/media/outlook/changes-in-digital-advertising-spend.html), The Business Research Company(https://www.thebusinessresearchcompany.com/report/digital-advertising-global-market-report)\n\n---\n\n## 핵심 트렌드 ③: 소비자 신뢰·퍼스트파티 데이터·개인화\n\n### 신뢰와 진정성의 부상\n\nDeloitte Digital은 2026년 마케팅 트렌드의 핵심 축으로 \"Trust becomes the new currency(신뢰가 새로운 통화가 된다)\"를 제시했다. 가짜 디지털 콘텐츠의 범람으로 인해 소비자는 브랜드의 진정성을 그 어느 때보다 엄격하게 심사하고 있으며, AI가 크리에이티브를 재작성하는 시대에도 인간적 연결과 신뢰가 마케팅의 최종 결정 요인으로 작용한다.\n\n### 프라이버시 퍼스트 데이터 전략\n\nMordor Intelligence는 규제 압력이 프라이버시 퍼스트 데이터 전략으로의 전환을 촉발하고 있으며, 이에 따라 퍼스트파티(1st-party) 데이터와 제로파티(0th-party) 데이터 자산의 가치가 상승하고 있다고 분석했다. 서드파티 쿠키 의존도가 하락하는 환경에서 브랜드는 자체 데이터 인프라를 구축해야 하며, CDP(고객 데이터 플랫폼)와 컴포저블 아키텍처가 핵심 솔루션으로 부상하고 있다.\n\n### 개인화의 고도화\n\nCoursera는 \"Personalization is enhancing the user experience(개인화가 사용자 경험을 강화하고 있다)\"를 2026년 9대 마케팅 트렌드 중 하나로 선정했다. AI 기반 개인화는 단순한 이름 삽입을 넘어, 행동 데이터·맥락적 신호·실시간 선호도를 반영한 동적 콘텐츠 제공으로 진화하고 있다. Circana 역시 소비자 마케팅 트렌드를 통해 데이터 기반 개인화 성장 전략을 강조했다.\n\n> 출처: Deloitte Digital(https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html), Mordor Intelligence(https://www.mordorintelligence.com/industry-reports/marketing-technology-market), Coursera(https://www.coursera.org/articles/marketing-trends), Circana(https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026)\n\n---\n\n## 핵심 트렌드 ④: 숏폼 비디오·UGC·커뮤니티·SEO 전환\n\n### 숏폼 비디오와 UGC\n\nCoursera는 숏폼 비디오 콘텐츠(TikTok 등)가 소셜 미디어 전략을 주도하고 있으며, UGC(User-Generated Content)가 브랜드 인지도를 높이는 핵심 수단으로 부상했다고 분석했다. 소비자는 브랜드가 직접 제작한 콘텐츠보다 동료 소비자가 만든 콘텐츠를 더 신뢰하는 경향이 강화되고 있으며, 브랜드는 UGC를 유도하고 활용하는 전략을 마케팅 계획에 통합해야 한다.\n\n### 커뮤니티와 진정성 브랜딩\n\nCoursera는 \"Community efforts and genuine branding encourage consumer trust(커뮤니티 노력과 진정성 있는 브랜딩이 소비자 신뢰를 장려한다)\"를 별도의 트렌드로 제시했다. Deloitte Digital의 \"신뢰가 새로운 통화\"라는 진단과 맥락을 같이하며, 브랜드는 일방적 메시지 전달이 아닌 커뮤니티 구축과 대화형 관계를 통해 장기적 신뢰를 확보해야 한다.\n\n### SEO 전략의 전환\n\nCoursera는 검색 엔진 환경의 변화가 SEO 전략을 전환시키고 있다고 지적했다. Google의 AI Overview, ChatGPT 검색 등 AI 기반 검색 경험의 확대로 전통적 키워드 중심 SEO가 한계에 도달하면서, AI 검색 최적화(GEO·Generative Engine Optimization)와 고품질 에디토리얼 콘텐츠·케이스 스터디의 가치가 재부상하고 있다.\n\n| 트렌드 영역 | 2026년 핵심 변화 | 주요 출처 |\n|---|---|---|\n| 숏폼 비디오 | TikTok 등 숏폼이 소셜 전략의 중심 | Coursera |\n| UGC | 소비자 제작 콘텐츠가 브랜드 인지도 견인 | Coursera |\n| 커뮤니티·진정성 | 커뮤니티 구축과 진정성 브랜딩이 신뢰 확보 | Coursera, Deloitte Digital |\n| SEO 전환 | AI 검색 확대로 전통 SEO → GEO·에디토리얼 최적화 | Coursera |\n| AI 챗봇 | 대화형 고객 접점으로서 챗봇 역량 확장 | Coursera |\n| 케이스 스터디 | 브랜드 인지도·리드 생성의 핵심 콘텐츠 | Coursera |\n\n> 출처: Coursera(https://www.coursera.org/articles/marketing-trends), Deloitte Digital(https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html)\n\n---\n\n## 시사점 및 전망\n\n### 2026년 마케팅 전략을 위한 5대 시사점\n\n① **AI 네이티브 마케팅 인프라 구축**: MarTech 시장이 CAGR 13.95%(2026→2031, Mordor Intelligence)로 성장하는 가운데, 생성형 AI는 CAGR 36.8%(2026→2033, MarketsandMarkets)로 가장 빠르게 성장하는 AI 세그먼트다. 마케팅 조직은 AI를 별도 도구가 아닌 핵심 인프라로 내재화해야 한다.\n\n② **퍼스트파티 데이터 자산화**: 서드파티 쿠키 퇴장과 규제 압박 속에서 CDP·컴포저블 아키텍처·리테일 미디어 네트워크를 통한 퍼스트파티·제로파티 데이터 확보가 경쟁력의 핵심이다.\n\n③ **신뢰·진정성 중심 브랜딩**: Deloitte Digital이 지적했듯 \"신뢰가 새로운 통화\"인 시대다. AI 생성 콘텐츠의 범람 역설적으로 인간적 진정성과 커뮤니티 기반 신뢰 구축의 가치를 높이고 있다.\n\n④ **디지털 광고 채널의 다변화**: 미국 디지털 광고 대행 산업이 570억 달러(2026년, IBISWorld)로 성장하는 가운데, CTV·리테일 미디어·게임 환경 등 새로운 접점으로 광고 지출이 이동하고 있다.\n\n⑤ **콘텐츠 전략의 재설계**: 숏폼 비디오·UGC·케이스 스터디·AI 최적화 에디토리얼 콘텐츠가 복합적으로 작동하는 하이브리드 콘텐츠 전략이 필요하다.\n\n### 종합 전망 표\n\n| 지표 | 수치 | 기간 | 출처 |\n|---|---|---|---|\n| 글로벌 MarTech 시장 규모 | 6,609억 달러 | 2026년 | Mordor Intelligence |\n| 글로벌 MarTech 시장 규모 | 1조 2,708억 달러 | 2031년 전망 | Mordor Intelligence |\n| MarTech CAGR | 13.95% | 2026→2031 | Mordor Intelligence |\n| 글로벌 AI 시장 규모 | 3조 6,380억 달러 | 2033년 전망 | MarketsandMarkets |\n| AI 시장 전체 CAGR | 29.3% | 2026→2033 | MarketsandMarkets |\n| 생성형 AI 세그먼트 CAGR | 36.8% | 2026→2033 | MarketsandMarkets |\n| 미국 디지털 광고 대행 매출 | 570억 달러 | 2026년 | IBISWorld |\n| 미국 디지털 광고 대행 CAGR | 7.5% | 2026년 포함 | IBISWorld |\n\n> 출처: Mordor Intelligence(https://www.mordorintelligence.com/industry-reports/marketing-technology-market), MarketsandMarkets(https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html), IBISWorld(https://www.ibisworld.com/united-states/industry/digital-advertising-agencies/5889)\n\n---\n\n**참고 문헌 일괄**\n\n- Deloitte Digital, \"Marketing Trends of 2026\", 2026년 2월 — https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html\n- Coursera, \"9 Top Marketing Trends of 2026\" — https://www.coursera.org/articles/marketing-trends\n- AMA, \"2026 Future Trends in Marketing Report\" — https://www.ama.org/marketing-news/2026-trends-report\n- Circana, \"Consumer Marketing Trends That Will Drive Growth in 2026\" — https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026\n- Mordor Intelligence, \"Marketing Technology Market Size & Share Analysis (2026-2031)\" — https://www.mordorintelligence.com/industry-reports/marketing-technology-market\n- TechnologyChecker.io, \"30 Key MarTech Trends and Data Points for 2026\", 2026년 4월 — https://technologychecker.io/blog/marketing-technology-statistics-martech\n- MarketsandMarkets, \"Artificial Intelligence (AI) Market Report 2026-2033\" — https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html\n- Improvado, \"7 AI Marketing Trends for 2026\" — https://improvado.io/blog/ai-marketing-trends\n- IBISWorld, \"Digital Advertising Agencies in the US\", 2026년 3월 — https://www.ibisworld.com/united-states/industry/digital-advertising-agencies/5889\n- Research and Markets, \"Digital Ad Spend Market Databook Report 2026\", 2026년 2월 — https://finance.yahoo.com/news/digital-ad-spend-market-databook-134700743.html\n- PwC, \"Digital ad spending moves closer to the consumer\" — https://www.pwc.com/gx/en/industries/tmt/media/outlook/changes-in-digital-advertising-spend.html\n- The Business Research Company, \"Digital Advertising Market Report 2026\", 2026년 1월 — https://www.thebusinessresearchcompany.com/report/digital-advertising-global-market-report"
+  },
+  "attribution_audit": {
+    "before": {
+      "checked_urls": 12,
+      "unsupported_urls": [],
+      "checked_attributions": 47,
+      "weak_attributions": [
+        {
+          "sentence": "Mordor Intelligence는 규제 압력이 프라이버시 퍼스트 데이터 전략으로의 전환을 촉발하고 있으며, 이에 따라 퍼스트파티(1st-party) 데이터와 제로파티(0th-party) 데이터 자산의 가치가 상승하고 있다고 분석했다.",
+          "org": "Mordor Intelligence",
+          "basis": "no_distinctive_terms_in_org_docs",
+          "terms_checked": [
+            "규제",
+            "압력",
+            "프라이버시",
+            "퍼스트",
+            "데이터",
+            "전략",
+            "전환",
+            "촉발하고",
+            "있으며",
+            "이에"
+          ],
+          "matched_terms": []
+        },
+        {
+          "sentence": "Circana 역시 소비자 마케팅 트렌드를 통해 데이터 기반 개인화 성장 전략을 강조했다.",
+          "org": "Circana",
+          "basis": "no_distinctive_terms_in_org_docs",
+          "terms_checked": [
+            "역시",
+            "소비자",
+            "마케팅",
+            "트렌드",
+            "데이터",
+            "기반",
+            "개인화",
+            "전략",
+            "강조했다"
+          ],
+          "matched_terms": []
+        },
+        {
+          "sentence": "Deloitte Digital의 \"신뢰가 새로운 통화\"라는 진단과 맥락을 같이하며, 브랜드는 일방적 메시지 전달이 아닌 커뮤니티 구축과 대화형 관계를 통해 장기적 신뢰를 확보해야 한다.",
+          "org": "Deloitte Digital",
+          "basis": "no_distinctive_terms_in_org_docs",
+          "terms_checked": [
+            "신뢰",
+            "새로운",
+            "통화",
+            "라는",
+            "진단",
+            "맥락",
+            "같이하며",
+            "브랜드",
+            "일방적",
+            "메시지"
+          ],
+          "matched_terms": []
+        },
+        {
+          "sentence": "③ **신뢰·진정성 중심 브랜딩**: Deloitte Digital이 지적했듯 \"신뢰가 새로운 통화\"인 시대다.",
+          "org": "Deloitte Digital",
+          "basis": "no_distinctive_terms_in_org_docs",
+          "terms_checked": [
+            "신뢰",
+            "진정성",
+            "중심",
+            "브랜딩",
+            "지적했듯",
+            "새로운",
+            "통화",
+            "시대다"
+          ],
+          "matched_terms": []
+        }
+      ],
+      "summary": {
+        "checked_urls": 12,
+        "unsupported_url_count": 0,
+        "checked_attributions": 47,
+        "weak_attribution_count": 4
+      }
+    },
+    "after": {
+      "checked_urls": 12,
+      "unsupported_urls": [],
+      "checked_attributions": 43,
+      "weak_attributions": [],
+      "summary": {
+        "checked_urls": 12,
+        "unsupported_url_count": 0,
+        "checked_attributions": 43,
+        "weak_attribution_count": 0
+      }
+    },
+    "corrected": true,
+    "correction": {
+      "model": "qwen/qwen3.7-plus",
+      "prompt_tokens": 5385,
+      "completion_tokens": 7570,
+      "cost_usd": 0.011412799999999999,
+      "error": null,
+      "elapsed_s": 137.9
+    }
+  },
+  "reviews": {
+    "kimi": {
+      "model": "moonshotai/kimi-k2.6",
+      "prompt_tokens": 12422,
+      "completion_tokens": 1600,
+      "cost_usd": 0.013902959999999999,
+      "empty_retry_used": true,
+      "error": null,
+      "elapsed_s": 21.8,
+      "review": ""
+    },
+    "minimax": {
+      "model": "minimax/minimax-m3",
+      "prompt_tokens": 4584,
+      "completion_tokens": 800,
+      "cost_usd": 0.0023352,
+      "empty_retry_used": false,
+      "error": null,
+      "elapsed_s": 21.0,
+      "review": "**리뷰 (약점·누락·과장)**\n\n1. 한국 시장·규제(개인정보보호법, AI기본법, 공정거래) 데이터와 국내 사례가 전무해 글로벌 보고서 단순 번역·요약 수준에 머무름.\n2. Coursera·Mordor·MarketsandMarkets 등 2차·유료 리서치에 과도 의존하면서 1차 실증 데이터(설문·A/B·매출 귀속)나 방법론 검증이 부재함.\n3. \"마케팅의 종언\", \"신뢰가 새로운 통화\" 같은 자극"
+    }
+  },
+  "numeric_audit": {
+    "checked": 26,
+    "matched": 25,
+    "suspected": 1,
+    "coverage": 0.962,
+    "flags": [
+      {
+        "number": "5,800억 달러",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      },
+      {
+        "number": "6,609억 달러",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "1조",
+        "found": true,
+        "evidence_url": "https://improvado.io/blog/ai-marketing-trends"
+      },
+      {
+        "number": "2,708억 달러",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "13.95",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "5,000만",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "3조",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "6,380억 달러",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      },
+      {
+        "number": "29.3",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      },
+      {
+        "number": "36.8",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      },
+      {
+        "number": "42.3",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      },
+      {
+        "number": "39.7",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      },
+      {
+        "number": "570억 달러",
+        "found": true,
+        "evidence_url": "https://www.ama.org/marketing-news/2026-trends-report"
+      },
+      {
+        "number": "6.6",
+        "found": true,
+        "evidence_url": "https://www.fortunebusinessinsights.com/industry-reports/artificial-intelligence-market-100114"
+      },
+      {
+        "number": "7.5",
+        "found": true,
+        "evidence_url": "https://www.ibisworld.com/united-states/industry/digital-advertising-agencies/5889"
+      },
+      {
+        "number": "2031,",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "2033,",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      },
+      {
+        "number": "13.95%",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "29.3%",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      },
+      {
+        "number": "36.8%",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      },
+      {
+        "number": "42.3%",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      },
+      {
+        "number": "39.7%",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      },
+      {
+        "number": "6.6%",
+        "found": true,
+        "evidence_url": "https://www.fortunebusinessinsights.com/industry-reports/artificial-intelligence-market-100114"
+      },
+      {
+        "number": "7.5%",
+        "found": true,
+        "evidence_url": "https://www.ibisworld.com/united-states/industry/digital-advertising-agencies/5889"
+      },
+      {
+        "number": "CAGR 13.95%",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+      },
+      {
+        "number": "CAGR 36.8%",
+        "found": true,
+        "evidence_url": "https://www.marketsandmarkets.com/Market-Reports/artificial-intelligence-market-74851580.html"
+      }
+    ]
+  },
+  "glossary": {
+    "domain": "일반",
+    "topic": "2026 마케팅 트렌드",
+    "extracted": 382,
+    "kept": 30,
+    "corpus_confirmed": 10,
+    "terms": [
+      {
+        "term": "AI",
+        "source_url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html",
+        "kind": "영문"
+      },
+      {
+        "term": "UGC",
+        "source_url": "https://www.coursera.org/articles/marketing-trends",
+        "kind": "영문"
+      },
+      {
+        "term": "SEO",
+        "source_url": "https://www.coursera.org/articles/marketing-trends",
+        "kind": "영문"
+      },
+      {
+        "term": "AMA",
+        "source_url": "https://www.ama.org/marketing-news/2026-trends-report",
+        "kind": "영문"
+      },
+      {
+        "term": "CDP",
+        "source_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market",
+        "kind": "영문"
+      },
+      {
+        "term": "MMM",
+        "source_url": "https://improvado.io/blog/ai-marketing-trends",
+        "kind": "영문"
+      },
+      {
+        "term": "CTV",
+        "source_url": "https://finance.yahoo.com/news/digital-ad-spend-market-databook-134700743.html",
+        "kind": "영문"
+      },
+      {
+        "term": "TV",
+        "source_url": "https://www.kantar.com/Campaigns/Marketing-Trends",
+        "kind": "영문"
+      },
+      {
+        "term": "GEO",
+        "source_url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market",
+        "kind": "영문"
+      },
+      {
+        "term": "US",
+        "source_url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html",
+        "kind": "영문"
+      },
+      {
+        "term": "마케팅",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "트렌드",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "종합",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "개요",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "환경",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "인공지능",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "전면적",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "경제",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "압박",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "소비자",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "행동",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "급변이",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "가지",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "힘이",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "중첩되",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "기존",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "종언",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "맞이",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "있다",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      },
+      {
+        "term": "발간한",
+        "source_url": "(보고서 종합 본문)",
+        "kind": "한국어"
+      }
+    ]
+  },
+  "fetch_stats": {
+    "docs": 15,
+    "with_raw_content": 15,
+    "avg_raw_len": 55016
+  },
+  "total_cost_usd": 0.04,
+  "elapsed_s": 296.0,
+  "guards": {
+    "max_tool_turns": 8,
+    "max_input_tokens": 150000,
+    "abort_usd": 1.5,
+    "search_k": 5
+  },
+  "models": {
+    "leader": "qwen/qwen3.7-plus",
+    "reviewer_a": "moonshotai/kimi-k2.6",
+    "reviewer_b": "minimax/minimax-m3"
+  },
+  "ran_at": "2026-06-19 15:45 KST"
+}

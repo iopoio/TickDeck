@@ -1,0 +1,70 @@
+<svg class="tdc-svg tdc-dashboard-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" role="img" aria-label="매출 대시보드">
+  <defs>
+    <filter id="tdc-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.13"/>
+    </filter>
+    <linearGradient id="tdc-purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="tdc-green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="tdc-cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="tdc-rose" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    
+  </defs>
+
+  <rect width="1280" height="720" fill="#f8fafc"/>
+  <rect x="72" y="72" width="1136" height="576" rx="30" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <text x="104" y="116" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="42" font-weight="780">매출 대시보드</text>
+  <text x="828" y="116" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="22">Multi-chart management board</text>
+  <rect data-role="dashboard-card" x="104" y="142" width="260" height="140" rx="24" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <circle data-role="dashboard-kpi-marker" cx="328" cy="180" r="18" fill="#d97706"/>
+  <text x="130" y="246" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="42" font-weight="840">6.2M</text>
+  <text data-role="dashboard-kpi-label" x="130" y="188" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="18" font-weight="800">파이프라인</text>
+  <rect data-role="dashboard-card" x="408" y="154" width="176" height="116" rx="24" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <circle data-role="dashboard-kpi-marker" cx="548" cy="192" r="18" fill="#60a5fa"/>
+  <text x="434" y="242" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="32" font-weight="840">28%</text>
+  <text data-role="dashboard-kpi-label" x="434" y="194" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="18" font-weight="800">승률</text>
+  <rect data-role="dashboard-card" x="610" y="154" width="176" height="116" rx="24" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <circle data-role="dashboard-kpi-marker" cx="750" cy="192" r="18" fill="#2563eb"/>
+  <text x="636" y="242" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="32" font-weight="840">31d</text>
+  <text data-role="dashboard-kpi-label" x="636" y="194" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="18" font-weight="800">주기</text>
+  <rect x="104" y="312" width="552" height="264" rx="26" fill="#f8fafc"/>
+  <line x1="140" y1="542" x2="620" y2="542" stroke="#e5e7eb" stroke-width="3"/>
+  <line x1="140" y1="456" x2="620" y2="456" stroke="#e5e7eb" stroke-width="2"/>
+  <line x1="140" y1="370" x2="620" y2="370" stroke="#e5e7eb" stroke-width="2"/>
+  <path data-role="dashboard-line" d="M 142.00 542.00 L 226.00 489.38 L 310.00 517.71 L 394.00 420.57 L 478.00 436.76 L 562.00 372.00 L 646.00 392.24" fill="none" stroke="#334155" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="646.00" cy="392.24" r="13" fill="#334155" stroke="#ffffff" stroke-width="5"/>
+  <rect x="704" y="312" width="426" height="264" rx="26" fill="#f8fafc"/>
+  <rect data-role="dashboard-bar" x="740" y="486.59" width="42" height="61.41" rx="14" fill="#dbeafe"/>
+  <rect data-role="dashboard-bar" x="812" y="450.76" width="42" height="97.24" rx="14" fill="#bfdbfe"/>
+  <rect data-role="dashboard-bar" x="884" y="414.94" width="42" height="133.06" rx="14" fill="#60a5fa"/>
+  <rect data-role="dashboard-bar" x="956" y="435.41" width="42" height="112.59" rx="14" fill="#2563eb"/>
+  <rect data-role="dashboard-bar" x="1028" y="374.00" width="42" height="174.00" rx="14" fill="#d97706"/>
+  <circle cx="1026" cy="210" r="72" fill="none" stroke="#dbeafe" stroke-width="24"/>
+  <path data-role="dashboard-donut" d="M 1026.00 138.00 A 72 72 0 0 1 1096.73 223.49" fill="none" stroke="url(#tdc-purple)" stroke-width="24" stroke-linecap="round"/>
+  <text x="1026" y="220" text-anchor="middle" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="32" font-weight="840">28%</text>
+  <text x="1026" y="260" text-anchor="middle" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="17" font-weight="800">conversion</text>
+
+</svg>

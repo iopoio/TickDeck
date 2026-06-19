@@ -1,0 +1,161 @@
+{
+  "schema_version": 3,
+  "title": "TickDeck v3 Author Stage Routing Manifest",
+  "gbrain_interface_note": "Author page_specs map to deck_harness native layout candidates. OpenRouter writer calls stay inside sinya; this manifest is deterministic binding only.",
+  "layout_mappings": [
+    {
+      "route": "role:cover",
+      "content_kind": "cover",
+      "layout_candidates": ["cover_hero"],
+      "data_slots": ["title", "subtitle", "cover_meta", "brand_mark"],
+      "source_fields": ["page_specs.pages[].headline", "page_specs.governing_thought_short"]
+    },
+    {
+      "route": "role:agenda",
+      "content_kind": "agenda",
+      "layout_candidates": ["editorial_impact_axes"],
+      "data_slots": ["headline", "subtitle", "axes"],
+      "source_fields": ["page_specs.pages[].payload.sections", "deck_blueprint.sections"]
+    },
+    {
+      "route": "role:section_divider",
+      "content_kind": "section_divider",
+      "layout_candidates": ["section_divider_hero_text"],
+      "data_slots": ["kicker", "title", "subtitle"],
+      "source_fields": ["page_specs.pages[].section_nav", "page_specs.pages[].headline"]
+    },
+    {
+      "route": "kind:market_numbers",
+      "content_kind": "market_numbers",
+      "layout_candidates": ["data_visualization_3col_chart", "data_visualization_2col_chart_text"],
+      "data_slots": ["stats", "bars", "body", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.stats", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:split",
+      "content_kind": "split",
+      "layout_candidates": ["split_master"],
+      "data_slots": ["lead", "takeaways", "right_kind", "stats", "right_items", "columns", "rows", "chart", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.lead", "page_specs.pages[].payload.right_kind", "page_specs.pages[].payload.stats", "page_specs.pages[].payload.right_items", "page_specs.pages[].payload.headers", "page_specs.pages[].payload.columns", "page_specs.pages[].payload.rows", "page_specs.pages[].payload.chart", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:chart_bar",
+      "content_kind": "chart_bar",
+      "layout_candidates": ["chart_bar"],
+      "data_slots": ["chart", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.categories", "page_specs.pages[].payload.series", "page_specs.pages[].payload.orient", "page_specs.pages[].payload.stacked", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:chart_donut",
+      "content_kind": "chart_donut",
+      "layout_candidates": ["chart_donut"],
+      "data_slots": ["chart", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.value", "page_specs.pages[].payload.label", "page_specs.pages[].payload.max", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:chart_gauge",
+      "content_kind": "chart_gauge",
+      "layout_candidates": ["chart_gauge"],
+      "data_slots": ["chart", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.value", "page_specs.pages[].payload.label", "page_specs.pages[].payload.max", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:chart_line",
+      "content_kind": "chart_line",
+      "layout_candidates": ["chart_line"],
+      "data_slots": ["chart", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.categories", "page_specs.pages[].payload.series", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:chart_combo",
+      "content_kind": "chart_combo",
+      "layout_candidates": ["chart_combo"],
+      "data_slots": ["chart", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.categories", "page_specs.pages[].payload.bars", "page_specs.pages[].payload.line", "page_specs.pages[].payload.y2", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:chart_kpi",
+      "content_kind": "chart_kpi",
+      "layout_candidates": ["chart_kpi"],
+      "data_slots": ["kpi", "chart", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.value", "page_specs.pages[].payload.label", "page_specs.pages[].payload.mini", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:institution_forecasts",
+      "content_kind": "institution_forecasts",
+      "layout_candidates": ["requirements_excel_table", "tam_scenario_table"],
+      "data_slots": ["columns", "rows", "driver_header", "scenarios", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.headers", "page_specs.pages[].payload.rows", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:comparison",
+      "content_kind": "comparison",
+      "layout_candidates": ["requirements_excel_table", "tam_scenario_table"],
+      "data_slots": ["columns", "rows", "driver_header", "scenarios", "source", "caption"],
+      "source_fields": ["page_specs.pages[].payload.headers", "page_specs.pages[].payload.rows", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:timeline_evolution",
+      "content_kind": "timeline_evolution",
+      "layout_candidates": ["evolution_timeline"],
+      "data_slots": ["stages"],
+      "source_fields": ["page_specs.pages[].payload.stages", "page_specs.pages[].sources"]
+    },
+    {
+      "route": "kind:concept_relation",
+      "content_kind": "concept_relation",
+      "layout_candidates": ["before_after_diagram_with_metric"],
+      "data_slots": ["before", "after", "metric"],
+      "source_fields": ["page_specs.pages[].payload.before", "page_specs.pages[].payload.after", "page_specs.pages[].payload.metric"]
+    },
+    {
+      "route": "kind:funnel_steps",
+      "content_kind": "funnel_steps",
+      "layout_candidates": ["funnel"],
+      "data_slots": ["stages"],
+      "source_fields": ["page_specs.pages[].payload.steps"]
+    },
+    {
+      "route": "kind:growth_drivers",
+      "content_kind": "growth_drivers",
+      "layout_candidates": ["3-card"],
+      "data_slots": ["cards"],
+      "source_fields": ["page_specs.pages[].payload.cards"]
+    },
+    {
+      "route": "kind:implications",
+      "content_kind": "implications",
+      "layout_candidates": ["narrative_centered_text_block", "closing"],
+      "data_slots": ["paragraphs", "bullets"],
+      "source_fields": ["page_specs.pages[].payload.paragraphs", "page_specs.pages[].takeaways"]
+    },
+    {
+      "route": "kind:narrative",
+      "content_kind": "narrative",
+      "layout_candidates": ["narrative_centered_text_block"],
+      "data_slots": ["paragraphs"],
+      "source_fields": ["page_specs.pages[].payload.paragraphs", "page_specs.pages[].takeaways"]
+    },
+    {
+      "route": "role:section_synthesis",
+      "content_kind": "section_synthesis",
+      "layout_candidates": ["narrative_centered_text_block"],
+      "data_slots": ["paragraphs"],
+      "source_fields": ["page_specs.pages[].payload.paragraphs", "page_specs.pages[].takeaways"]
+    },
+    {
+      "route": "role:conclusion",
+      "content_kind": "conclusion",
+      "layout_candidates": ["conclusion_synthesis"],
+      "data_slots": ["headline", "actions", "note"],
+      "source_fields": ["page_specs.pages[].payload.paragraphs", "page_specs.pages[].takeaways", "page_specs.governing_thought_short"]
+    },
+    {
+      "route": "role:references",
+      "content_kind": "references",
+      "layout_candidates": ["references_notes"],
+      "data_slots": ["notes"],
+      "source_fields": ["page_specs.references"]
+    }
+  ]
+}

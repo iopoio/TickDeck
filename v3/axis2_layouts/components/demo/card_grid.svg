@@ -1,0 +1,78 @@
+<svg class="tdc-svg tdc-card-grid-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" role="img" aria-label="성장 동인">
+  <defs>
+    <filter id="tdc-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.13"/>
+    </filter>
+    <linearGradient id="tdc-purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="tdc-green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ccfbf1"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="tdc-cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ccfbf1"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="tdc-rose" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tdc-blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    
+  </defs>
+
+  <rect width="1280" height="720" fill="#f8fafc"/>
+  <text x="130" y="132" fill="#0f766e" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="30" font-weight="800">CARD GRID</text>
+  <text x="130" y="194" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="62" font-weight="780">성장 동인</text>
+  <text x="760" y="176" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="24">Structured metric cards.</text>
+  <rect data-role="card-frame" x="130" y="256" width="320" height="318" rx="28" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <rect x="158" y="284" width="58" height="58" rx="18" fill="#dbeafe"/>
+  <text x="187" y="323" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="840">01</text>
+  <text x="158" y="388" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="35" font-weight="800">신호</text>
+  <text x="158" y="430" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23">의도 데이터</text>
+  <text data-role="card-value" x="412" y="456" text-anchor="end" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="32" font-weight="820">64%</text>
+  <rect data-role="spark-panel" x="160" y="460" width="260" height="78" rx="20" fill="#f8fafc"/>
+  <path data-role="card-spark" d="M 172 512 L 398 477.44" data-value="64.0" fill="none" stroke="#1e40af" stroke-width="10" stroke-linecap="round"/>
+  <circle data-role="card-spark-marker" data-value="64.0" cx="398" cy="477.44" r="11" fill="#dbeafe" stroke="#ffffff" stroke-width="4"/>
+  <rect data-role="card-progress-track" x="168" y="526" width="244" height="18" rx="9" fill="#ccfbf1"/>
+  <rect x="168" y="526" width="156.16" height="18" rx="9" fill="#dbeafe"/>
+
+  <rect data-role="card-frame" x="486" y="256" width="320" height="318" rx="28" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <rect x="514" y="284" width="58" height="58" rx="18" fill="#bfdbfe"/>
+  <text x="543" y="323" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="840">02</text>
+  <text x="514" y="388" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="35" font-weight="800">근거</text>
+  <text x="514" y="430" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23">사례 근거</text>
+  <text data-role="card-value" x="768" y="456" text-anchor="end" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="32" font-weight="820">78%</text>
+  <rect data-role="spark-panel" x="516" y="460" width="260" height="78" rx="20" fill="#f8fafc"/>
+  <path data-role="card-spark" d="M 528 512 L 754 469.88" data-value="78.0" fill="none" stroke="#1e40af" stroke-width="10" stroke-linecap="round"/>
+  <circle data-role="card-spark-marker" data-value="78.0" cx="754" cy="469.88" r="11" fill="#bfdbfe" stroke="#ffffff" stroke-width="4"/>
+  <rect data-role="card-progress-track" x="524" y="526" width="244" height="18" rx="9" fill="#ccfbf1"/>
+  <rect x="524" y="526" width="190.32" height="18" rx="9" fill="#bfdbfe"/>
+
+  <rect data-role="card-frame" x="842" y="256" width="320" height="318" rx="28" fill="#ffffff" filter="url(#tdc-shadow)"/>
+  <rect x="870" y="284" width="58" height="58" rx="18" fill="#d97706"/>
+  <text x="899" y="323" text-anchor="middle" fill="#ffffff" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23" font-weight="840">03</text>
+  <text x="870" y="388" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="35" font-weight="800">실행</text>
+  <text x="870" y="430" fill="#64748b" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="23">영업 리듬</text>
+  <text data-role="card-value" x="1124" y="456" text-anchor="end" fill="#111827" font-family="'Malgun Gothic', NanumGothic, Pretendard, sans-serif" font-size="32" font-weight="820">55%</text>
+  <rect data-role="spark-panel" x="872" y="460" width="260" height="78" rx="20" fill="#f8fafc"/>
+  <path data-role="card-spark" d="M 884 512 L 1110 482.30" data-value="55.0" fill="none" stroke="#1e40af" stroke-width="10" stroke-linecap="round"/>
+  <circle data-role="card-spark-marker" data-value="55.0" cx="1110" cy="482.30" r="11" fill="#d97706" stroke="#ffffff" stroke-width="4"/>
+  <rect data-role="card-progress-track" x="880" y="526" width="244" height="18" rx="9" fill="#ccfbf1"/>
+  <rect x="880" y="526" width="134.20" height="18" rx="9" fill="#d97706"/>
+
+
+</svg>

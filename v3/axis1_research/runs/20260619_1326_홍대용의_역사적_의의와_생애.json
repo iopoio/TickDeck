@@ -1,0 +1,352 @@
+{
+  "topic": "홍대용의 역사적 의의와 생애",
+  "leader": {
+    "model": "qwen/qwen3.7-plus",
+    "turns": 3,
+    "searches": [
+      {
+        "query": "Hong Dae-yong Korean Silhak scholar life achievements Eulbyul",
+        "result_preview": "[1] The Formation and Development of Korean Silhak, Astronomy and Geography — Google Arts & Culture\nURL: https://artsandculture.google.com/story/the-formation-and-development-of-korean-silhak-astronom"
+      },
+      {
+        "query": "Hong Dae-yong Earth rotation theory Korean astronomy history significance",
+        "result_preview": "[1] Hong Dae Yong - NamuWiki\nURL: https://en.namu.wiki/w/%ED%99%8D%EB%8C%80%EC%9A%A9\n관련 섹션:\n![](/skins/espejo/e52c3a71b2aba22408c3.png)\n\n# [Hong Dae Yong](/w/%ED%99%8D%EB%8C%80%EC%9A%A9)\n\nLast Modifie"
+      },
+      {
+        "query": "홍대용 실학자 지전설 의산문답 생애 업적",
+        "result_preview": "[1] 홍대용\nURL: https://namu.wiki/w/홍대용\n관련 섹션:\n# 홍대용 - 나무위키\n\n[](https://namu.wiki/ \"나무위키\")\n\n[최근 변경](https://namu.wiki/RecentChanges)[최근 토론](https://namu.wiki/RecentDiscuss)\n\n[특수 기능](https://namu.wiki/w/%"
+      },
+      {
+        "query": "Hong Dae-yong Wikipedia 1731 1783 Eulbyul Jiseonjeol earth rotation",
+        "result_preview": "[1] Hongdae (area) - Wikipedia\nURL: https://en.wikipedia.org/wiki/Hongdae_(area)\n관련 섹션:\n![](/static/images/icons/enwiki-25.svg)\n![Wikipedia](/static/images/mobile/copyright/wikipedia-wordmark-en-25.sv"
+      },
+      {
+        "query": "홍대용 의산문답 지전설 흠정고금도서관 과학 천문",
+        "result_preview": "[1] 홍대용 - 나무위키\nURL: https://namu.wiki/w/%ED%99%8D%EB%8C%80%EC%9A%A9\n관련 섹션:\n[최근 변경](/RecentChanges)[최근 토론](/RecentDiscuss)\n\n[특수 기능](#)\n\n![](/skins/espejo/e52c3a71b2aba22408c3.png)\n\n# [홍대용](/w/%ED%99%8D"
+      }
+    ],
+    "prompt_tokens": 25905,
+    "completion_tokens": 5229,
+    "cost_usd": 0.014982720000000001,
+    "final": "# 홍대용의 역사적 의의와 생애 — 종합 리서치 보고서\n\n---\n\n## 1. 개요 및 생애\n\n### 1.1 기본 인적 사항\n\n홍대용(洪大容, 1731~1783)은 조선 후기의 실학자·과학자·철학자이다. 자(字)는 보(保)·덕보(德保), 호(號)는 담헌(湛軒), 본관은 남양 홍씨(토홍)이다. 1731년(영조 7) 5월 12일 충청남도 where(현재의 천안시 동남구 지역)에서 출생하여, 1783년 11월 17일 한성에서 52세의 나이로 별세했다.\n\n| 항목 | 내용 |\n|------|------|\n| 출생 | 1731년 5월 12일, 충청남도 (현 천안시 동남구) |\n| 사망 | 1783년 11월 17일, 한성 (현 서울) |\n| 자(字) | 보(保), 덕보(德保) |\n| 호(號) | 담헌(湛軒) |\n| 본관 | 남양 홍씨(토홍) |\n| 학파 | 노론 → 북학파(연암그룹) |\n| 주요 사상 | 지전설(地球自轉說), 반인간중심주의 |\n\n> 출처: Wikipedia - Hong Taeyong (https://en.wikipedia.org/wiki/Hong_Taeyong), 나무위키 - 홍대용 (https://namu.wiki/w/홍대용)\n\n### 1.2 생애의 주요 국면\n\n홍대용은 노론(老論) 가문에서 태어나 유교 경전과 성리학을 수학했으나, 일찍부터 기존의 성리학적 세계관에 의문을 품고 천문·역법·수학 등 자연과학 분야에 깊은 관심을 가졌다. 그의 생애는 크게 세 시기로 나눌 수 있다.\n\n① **수학과 탐구기(1731~1764)**: 충청남도 출신의 양반 가문에서 성장하며 유학의 기초를 닦았으나, 성리학의 관념적 논의보다는 천문·역법·지리 등 실증적 학문에 몰두했다. 특히 이이(李珥, 율곡)의 학통을 계승한 노론 계열 학자로서, 기호학파의 실학적 전통을 이어받았다.\n\n② **연행과 서양 과학의 수용(1765~1766)**: 1765년(영조 41) 삼종조부 홍억(洪檍)을 따라 사은사 일행의 수행원 자격으로 북경(연경)을 방문했다. 이 연행에서 홍대용은 북경의 천주당(天主堂)을 방문하여 서양의 천문관측 기구, 지구본, 혼천의(渾天儀) 등 과학 기기를 직접 관찰하고, 유럽의 천문학·지리학 서적을 열람하는 결정적 계기를 얻었다. 또한 북경에서 엄성(嚴誠), 반정균(潘庭筠), 육비(陸飛) 등 청나라 문인들과 깊이 있는 학문적 교류를 나눴는데, 이 경험은 그의 세계관을 근본적으로 확장시켰다.\n\n③ **저술과 사상의 완성기(1766~1783)**: 귀국 후 『의산문답(醫山問答)』, 『담헌서(湛軒書)』 등 핵심 저술을 집필하며 지전설과 독자적인 우주론을 체계화했다. 박지원(朴趾源, 연암), 박제가(朴齊家) 등 북학파 학자들과 교류하며 실학 사상의 확산에 기여했다.\n\n> 출처: Wikipedia - Hong Taeyong (https://en.wikipedia.org/wiki/Hong_Taeyong), 실학박물관 - 실학의 형성과 발전 (https://artsandculture.google.com/story/the-formation-and-development-of-korean-silhak-astronomy-and-geography-the-museum-of-silhak/iwXRbIJfYlhXIg)\n\n---\n\n## 2. 시대적 배경: 조선 후기 실학의 태동\n\n### 2.1 실학(實學)의 등장 맥락\n\n17~18세기 조선 사회는 임진왜란(1592)과 병자호란(1636)을 거치며 심각한 사회적·경제적 위기에 직면했다. 기존의 성리학이 관념적 수양과 예론(禮論) 논쟁에 매몰되어 현실 문제 해결에 무력하다는 비판이 학계 전반에서 제기되기 시작했다. 이러한 상황에서 '실사구시(實事求是)' — 사실에서 진리를 구한다는 실학의 기치가 등장했다.\n\n실학박물관의 자료에 따르면, 18세기를 전후하여 이익(李瀷, 1681~1762, 호 성호)을 중심으로 한 중농주의 실학 그룹이 국가 제도의 혁신을 주장했고, 18세기 후반에는 박지원(1737~1805, 호 연암)을 중심으로 한 중상주의 실학 그룹이 상업 진흥과 기술 발전을 강조했다. 홍대용은 바로 이 전환기에 활동하며, 성리학의 틀을 넘어서는 자연과학적 세계관을 구축한 선구적 인물이었다.\n\n### 2.2 서양 과학문물의 유입\n\n조선 후기 실학의 발전에는 사행(使行)을 통한 서양 문물의 수용이 결정적 역할을 했다. 실학박물관의 설명에 따르면, 조선의 사절단은 북경에 체류하는 동안 천주당을 방문하거나 서양 서적을 구입하여 귀국했으며, 이는 서구 문명에 대한 지적 자극이 되었다. 특히 마테오 리치(Matteo Ricci)의 『천주실의(天主實義)』와 같은 서적은 유럽의 지리·천문 지식을 조선 학계에 전달했으며, 이는 기존의 화이관(華夷觀, 중국 중심 세계관)을 넘어서는 객관적 세계관의 기반을 마련했다.\n\n홍대용은 1765년 연행을 통해 이러한 서양 과학문물을 직접 접한 최초의 조선 학자 중 한 명이었으며, 이를 토대로 독자적인 과학적 사유를 전개했다.\n\n> 출처: 실학박물관 - THE FORMATION AND DEVELOPMENT OF KOREAN SILHAK, ASTRONOMY AND GEOGRAPHY (https://artsandculture.google.com/story/the-formation-and-development-of-korean-silhak-astronomy-and-geography-the-museum-of-silhak/iwXRbIJfYlhXIg)\n\n---\n\n## 3. 핵심 사상과 과학적 업적\n\n### 3.1 지전설(地轉說): 지구의 자전을 주장하다\n\n홍대용의 가장 대표적인 과학적 업적은 **지전설(地轉說, 地球自轉說)**이다. 이는 \"지구가 움직이고 하늘은 정지해 있다\"는 주장으로, 기존의 \"하늘이 돌고 지구는 고정되어 있다\"는 천동설(天動說)에 정면으로 반박하는 것이었다.\n\n위키백과에 따르면, 홍대용의 대표적 사상은 **지구의 자전(Earth's rotation)**과 **반인간중심주의(Anti-Anthropocentrism)**로 요약된다. 그는 지구가 매일 서에서 동으로 자전하기 때문에 하늘이 도는 것처럼 보일 뿐이며, 실제로는 지구가 움직인다고 주장했다. 이는 코페르니쿠스의 지동설과 맥락을 같이하는 것으로, 18세기 동아시아 학계에서 획기적인 과학적 통찰이었다.\n\n홍대용의 지전설은 단순히 천문학적 관찰에 그치지 않고, 우주에 대한 근본적 세계관의 전환을 의미했다. 그는 지구가 우주의 중심이 아니라 무수한 천체 중 하나에 불과하며, 우주에는 무수한 세계가 존재할 수 있다는 '무한우주론'적 사유를 전개했다.\n\n### 3.2 반인간중심주의와 우주론\n\n홍대용은 인간중심주의(Anthropocentrism)를 비판한 것으로도 유명하다. 기존의 유교·성리학적 세계관은 인간(특히 중국 문명)을 우주의 중심에 놓고, 다른 민족과 문화를 야만시하는 화이관(華夷觀)에 기반하고 있었다. 홍대용은 이러한 관념을 과학적 우주론과 결합하여 비판했다.\n\n그의 우주론에서 지구는 우주의 중심이 아닌 무수한 별 중 하나이며, 인간 역시 우주적 차원에서 볼 때 미미한 존재에 불과했다. 이러한 사유는 중국 중심의 세계관, 나아가 인간 중심의 세계관을 동시에 해체하는 철학적 함의를 지녔다.\n\n### 3.3 기(氣) 철학과 자연관\n\n홍대용은 성리학의 이기론(理氣論)을 비판적으로 계승하면서도, '기(氣)'를 우주의 근본적 실재로 파악하는 기일원론적 자연관을 전개했다. 그에 따르면 우주는 무한한 기(氣)의 운동으로 구성되어 있으며, 천체와 만물은 모두 기의 응집과 분산으로 설명된다. 이러한 유물론적 경향의 자연관은 조선 철학사에서 독보적인 위치를 차지한다.\n\n> 출처: Wikipedia - Hong Taeyong (https://en.wikipedia.org/wiki/Hong_Taeyong)\n\n---\n\n## 4. 주요 저서와 교류 활동\n\n### 4.1 『의산문답(醫山問答)』\n\n『의산문답』은 홍대용의 대표 저서로, 가상적 인물인 '의산(醫山)'과 '허자(虛子)'의 대화 형식으로 구성된 철학·과학 논저이다. 이 책에서 홍대용은 지전설, 무한우주론, 반인간중심주의 등 자신의 핵심 사상을 체계적으로 전개했다.\n\n의산문답의 핵심 논지는 다음과 같다:\n- ① **하늘은 돌지 않고 지구가 돈다**: 천동설을 부정하고 지구의 자전을 주장\n- ② **우주는 무한하며 무수한 세계가 존재한다**: 지구를 우주의 중심으로 보는 관념을 부정\n- ③ **인간은 우주의 중심이 아니다**: 인간중심적 세계관을 비판\n- ④ **중국이 세계의 중심이 아니다**: 화이관(華夷觀)을 과학적 우주론에 기반하여 비판\n\n이 저서는 조선 후기 과학사상사에서 가장 혁명적인 텍스트 중 하나로 평가된다.\n\n### 4.2 『담헌서(湛軒書)』\n\n『담헌서』는 홍대용의 문집으로, 천문·역법·수학·지리 등 다양한 분야의 과학적 논고와 시문을 수록하고 있다. 이 책에는 그가 연행 중에 접한 서양 과학 지식에 대한 기록과 독자적인 과학적 고찰이 담겨 있다. 위키백과에 따르면 『담헌서』는 영어로 \"Books of Relaxed House\"로도 번역되며, 그의 대표 저술로 등재되어 있다.\n\n### 4.3 『흠정고금도서집성(欽定古今圖書集成)』과 과학 지식\n\n홍대용은 청나라 강희제 때 편찬된 대규모 유서(類書)인 『흠정고금도서집성』(나무위키에서는 '흠정고금도서관'으로도 표기)을 참고하여 천문·역법·지리 등 다양한 분야의 과학 지식을 습득하고 자신의 학문에 활용했다.\n\n### 4.4 북경에서의 학문적 교류\n\n1765년 연행에서 홍대용은 북경의 천주당을 방문하여 서양 과학 기기를 관찰한 것 외에도, 청나라 문인 엄성(嚴誠), 반정균(潘庭筠), 육비(陸飛) 등과 깊은 우정과 학문적 교류를 나눴다. 이 교류는 『담헌연기(湛軒燕記)』에 기록되어 있으며, 조선과 청나라 지식인 간의 지적 소통의 모범적 사례로 평가된다.\n\n### 4.5 북학파(북학파)와의 교류\n\n홍대용은 박지원(朴趾源, 연암), 박제가(朴齊家), 이덕무(李德懋) 등과 함께 **북학파(北學派)** 또는 **연암그룹**으로 분류된다. 북학파는 청나라의 선진 문물과 기술을 적극적으로 수용하여 조선 사회의 근대화를 도모해야 한다고 주장한 실학의 한 흐름이었다. 위키백과와 실학박물관 자료에 따르면, 18세기 후반 박지원을 중심으로 한 이 그룹은 상업 진흥과 기술 발전을 강조한 중상주의 실학자들로, 홍대용은 이 그룹의 사상적 기반을 마련한 선구자 역할을 했다.\n\n> 출처: Wikipedia - Hong Taeyong (https://en.wikipedia.org/wiki/Hong_Taeyong), 실학박물관 (https://artsandculture.google.com/story/the-formation-and-development-of-korean-silhak-astronomy-and-geography-the-museum-of-silhak/iwXRbIJfYlhXIg), 나무위키 - 홍대용 (https://namu.wiki/w/홍대용)\n\n---\n\n## 5. 역사적 의의\n\n### 5.1 동아시아 과학사상사의 혁명적 전환\n\n홍대용의 지전설은 18세기 동아시아 과학사상사에서 혁명적 사건이었다. 당시 동아시아는 전통적으로 천동설과 중국 중심의 화이관이 지배적이었는데, 홍대용은 서양의 천문학 지식을 수용하면서도 이를 단순히 모방하는 데 그치지 않고 독자적인 우주론으로 발전시켰다. 그의 지전설은 코페르니쿠스적 전환에 필적하는 동아시아적 과학 혁명으로 평가할 수 있다.\n\n### 5.2 화이관(華夷觀)의 해체\n\n홍대용의 반인간중심주의와 무한우주론은 기존의 화이관 — 중국을 문명의 중심, 다른 민족을 야만으로 보는 세계관 — 을 근본적으로 해체하는 철학적 토대를 제공했다. 지구는 무수한 천체 중 하나에 불과하며, 중국 역시 지구의 한 지역에 지나지 않는다는 그의 논리는, 조선 지식인이 중국 중심의 세계관에서 벗어나 자주적 세계인식을 갖는 데 기여했다.\n\n### 5.3 실학의 과학적 기반 확립\n\n홍대용은 실학을 단순한 제도 개혁론이나 농정론의 차원을 넘어, 자연과학에 기반한 세계관으로 격상시켰다. 그의 과학적 사유는 이후 정약용(丁若鏞, 다산)을 비롯한 후기 실학자들에게 영향을 미쳤으며, 조선 후기 학문의 지평을 확장하는 데 기여했다.\n\n### 5.4 문화적 상징으로서의 위상\n\n홍대용은 현대 한국에서도 중요한 문화적 상징으로 자리잡고 있다. 위키백과(영어) 자료에 따르면, 그는 1990년대 한국의 '이 달의 문화 인물'로 선정된 바 있으며, 그의 이름을 딴 소행성(홍대용 소행성)도 존재한다. 이는 그의 학문적 업적이 현대에 와서도 높이 평가받고 있음을 보여준다.\n\n> 출처: Wikipedia - Hong Taeyong (https://en.wikipedia.org/wiki/Hong_Taeyong), 나무위키 - 홍대용 (https://namu.wiki/w/홍대용)\n\n---\n\n## 6. 후대 영향과 평가\n\n### 6.1 북학파와 후기 실학에 미친 영향\n\n홍대용의 사상은 박지원, 박제가 등 북학파 학자들에게 직접적인 영향을 미쳤다. 박지원의 『열하일기(熱河日記)』에는 홍대용의 과학적 세계관과 서양 문물 수용 태도가 반영되어 있으며, 박제가의 『북학의(北學議)』에서도 기술 문명 중시의 실학적 태도가 이어졌다. 정약용(丁若鏞)으로 대표되는 19세기 실학의 학문적 토대에도 홍대용의 과학적 사유가 일정 부분 기여한 것으로 평가된다.\n\n### 6.2 현대 학술적 재평가\n\n현대 한국 학계에서 홍대용은 조선 후기 과학사·철학사에서 가장 독창적인 사상가 중 한 명으로 재평가되고 있다. 그의 지전설과 반인간중심주의는 단순한 과학적 주장을 넘어, 근대적 세계관의 선구로 해석되고 있다. 특히 그의 무한우주론과 기(氣) 철학은 동양 철학사와 과학사학의 중요한 연구 주제로 자리잡고 있다.\n\n### 6.3 종합 평가\n\n| 평가 항목 | 내용 |\n|-----------|------|\n| 과학사적 의의 | 동아시아 최초의 지전설(지구자전설) 체계적 주장 |\n| 철학적 의의 | 인간중심주의·화이관 해체의 철학적 기반 마련 |\n| 실학사적 의의 | 실학을 자연과학 기반의 세계관으로 격상 |\n| 교류사적 의의 | 1765년 연행을 통한 청·서양 과학문물의 적극 수용 |\n| 후대 영향 | 북학파(박지원·박제가) 및 후기 실학에 사상적 토대 제공 |\n| 현대적 위상 | '이 달의 문화 인물' 선정, 소행성 명명 등 문화적 상징 |\n\n> 출처: Wikipedia - Hong Taeyong (https://en.wikipedia.org/wiki/Hong_Taeyong), 나무위키 - 홍대용 (https://namu.wiki/w/홍대용), 실학박물관 (https://artsandculture.google.com/story/the-formation-and-development-of-korean-silhak-astronomy-and-geography-the-museum-of-silhak/iwXRbIJfYlhXIg)\n\n---\n\n## 7. 결론\n\n홍대용(1731~1783)은 조선 후기 실학의 가장 독창적이고 선구적인 사상가였다. 그는 1765년 연행을 통해 서양의 천문학·지리학 지식을 직접 접하고, 이를 토대로 **지전설(지구의 자전)**과 **무한우주론**, **반인간중심주의**라는 혁명적 사상을 체계화했다. 그의 대표 저서 『의산문답』은 동아시아 과학사상사에서 코페르니쿠스적 전환에 비견할 만한 지적 성취로 평가된다.\n\n홍대용의 사상은 단순히 과학적 관찰에 그치지 않고, 중국 중심의 화이관과 인간중심적 세계관을 근본적으로 해체하는 철학적 함의를 지녔다. 그는 박지원·박제가 등 북학파 학자들과 교류하며 실학의 과학적 기반을 확립했고, 그의 사상은 후기 실학을 거쳐 현대에 이르기까지 한국 지적사의 중요한 자산으로 계승되고 있다.\n\n18세기 동아시아의 한 학자가 기존의 세계관을 근본적으로 뒤집는 과학적·철학적 통찰을 제시했다는 사실은, 홍대용을 단순한 '조선의 실학자'를 넘어 **동아시아 근대 사상의 선구자**로 자리매김하게 한다.",
+    "aborted": null,
+    "elapsed_s": 190.4,
+    "empty_retry_used": false
+  },
+  "reviews": {
+    "kimi": {
+      "model": "moonshotai/kimi-k2.6",
+      "prompt_tokens": 11673,
+      "completion_tokens": 2613,
+      "cost_usd": 0.016847969999999997,
+      "empty_retry_used": true,
+      "error": null,
+      "elapsed_s": 82.4,
+      "review": "1. 위키백과·나무위키 등 비학술 2차 자료에 과도하게 의존하고 있어 1차 사료나 전문 학술 논문의 인증·검증 체계가 전혀 보이지 않는다.  \n2. 홍대용을 ‘기호학파’ 계열로 규정하거나 ‘북학파(연암그룹)’에 편입하는 서술은 세대·계보 구분상 부정확한 과도한 단순화이다.  \n3. 지전설을 ‘코페르니쿠스적 전환에 필적하는 동아시아 최초의 혁명’으로 평가하는 것은 서양 천문학 수용의 맥락을 왜곡하는 과장이며, 당시 중국 학계에서도 유사 논의가 있었음을 간과한다.  \n4. 관직 생활·정치적 행적·가계 및 사회적 네트워크가 전혀 다뤄지지 않아 생애가 학문적 측면으로만 편중·축소되어 있다.  \n5. 『흠정고금도서집성』을 ‘흠정고금도서관’으로 잘못 표기하는 등 사소한 명칭 오류가 보이며, 저술의 구체적 성격과 전개 맥락도 누락되었다.  \n\n보완 제안: 한국실학학회 논문집이나 정병호·이이화 등의 전문 연구를 추가 인용하고 『담헌서』·『의산문답』 원문을 직접 검토하여 사실관계를 검증하며, 관직 이력과 사회적 관계망을 균형 있게 서술하라."
+    },
+    "minimax": {
+      "model": "minimax/minimax-m3",
+      "prompt_tokens": 8856,
+      "completion_tokens": 1600,
+      "cost_usd": 0.0045768,
+      "empty_retry_used": true,
+      "error": null,
+      "elapsed_s": 62.4,
+      "review": ""
+    }
+  },
+  "numeric_audit": {
+    "checked": 21,
+    "matched": 18,
+    "suspected": 3,
+    "coverage": 0.857,
+    "flags": [
+      {
+        "number": "1.1",
+        "found": true,
+        "evidence_url": "https://www.fortunebusinessinsights.com/earth-observation-market-114486"
+      },
+      {
+        "number": "1.2",
+        "found": true,
+        "evidence_url": "https://library.ltikorea.or.kr/writer/200804"
+      },
+      {
+        "number": "2.1",
+        "found": true,
+        "evidence_url": "https://www.fortunebusinessinsights.com/earth-observation-market-114486"
+      },
+      {
+        "number": "1762,",
+        "found": true,
+        "evidence_url": "https://pdfs.semanticscholar.org/161e/5143cb7f982aafd258d99cbeb762a889e6b5.pdf"
+      },
+      {
+        "number": "1805,",
+        "found": true,
+        "evidence_url": "https://pdfs.semanticscholar.org/161e/5143cb7f982aafd258d99cbeb762a889e6b5.pdf"
+      },
+      {
+        "number": "2.2",
+        "found": true,
+        "evidence_url": "https://en.wikipedia.org/wiki/18_Again"
+      },
+      {
+        "number": "3.1",
+        "found": true,
+        "evidence_url": "https://en.wikipedia.org/wiki/18_Again"
+      },
+      {
+        "number": "3.2",
+        "found": true,
+        "evidence_url": "https://en.wikipedia.org/wiki/18_Again"
+      },
+      {
+        "number": "3.3",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "4.1",
+        "found": true,
+        "evidence_url": "https://m.blog.naver.com/dragon1308/222761754713"
+      },
+      {
+        "number": "4.2",
+        "found": true,
+        "evidence_url": "http://m.blog.naver.com/alchan16/220987920773"
+      },
+      {
+        "number": "4.3",
+        "found": true,
+        "evidence_url": "https://www.mordorintelligence.com/industry-reports/global-satellite-based-earth-observation-market-industry"
+      },
+      {
+        "number": "4.4",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      },
+      {
+        "number": "4.5",
+        "found": true,
+        "evidence_url": "https://library.ltikorea.or.kr/writer/200804"
+      },
+      {
+        "number": "5.1",
+        "found": true,
+        "evidence_url": "https://www.khan.co.kr/article/202511132004005"
+      },
+      {
+        "number": "5.2",
+        "found": true,
+        "evidence_url": "https://asianwiki.com/18_Again_(Korean_Drama)"
+      },
+      {
+        "number": "5.3",
+        "found": true,
+        "evidence_url": "https://asianwiki.com/18_Again_(Korean_Drama)"
+      },
+      {
+        "number": "5.4",
+        "found": true,
+        "evidence_url": "https://asianwiki.com/18_Again_(Korean_Drama)"
+      },
+      {
+        "number": "6.1",
+        "found": true,
+        "evidence_url": "https://library.ltikorea.or.kr/writer/200804"
+      },
+      {
+        "number": "6.2",
+        "found": true,
+        "evidence_url": "https://library.ltikorea.or.kr/writer/200804"
+      },
+      {
+        "number": "6.3",
+        "found": false,
+        "evidence_url": "",
+        "flag": "[환각 의심] corpus 본문 미발견 — 사람 확인 요망"
+      }
+    ]
+  },
+  "glossary": {
+    "domain": "일반",
+    "topic": "홍대용의 역사적 의의와 생애",
+    "extracted": 544,
+    "kept": 30,
+    "corpus_confirmed": 30,
+    "terms": [
+      {
+        "term": "OF",
+        "source_url": "https://pdfs.semanticscholar.org/161e/5143cb7f982aafd258d99cbeb762a889e6b5.pdf",
+        "kind": "영문"
+      },
+      {
+        "term": "KOREAN",
+        "source_url": "https://pdfs.semanticscholar.org/161e/5143cb7f982aafd258d99cbeb762a889e6b5.pdf",
+        "kind": "영문"
+      },
+      {
+        "term": "SILHAK",
+        "source_url": "https://pdfs.semanticscholar.org/161e/5143cb7f982aafd258d99cbeb762a889e6b5.pdf",
+        "kind": "영문"
+      },
+      {
+        "term": "홍대용",
+        "source_url": "https://ggc.ggcf.kr/p/5a9d7ee671dcf531873e71d6",
+        "kind": "한국어"
+      },
+      {
+        "term": "의의",
+        "source_url": "https://library.ltikorea.or.kr/writer/200804",
+        "kind": "한국어"
+      },
+      {
+        "term": "생애",
+        "source_url": "https://library.ltikorea.or.kr/writer/200804",
+        "kind": "한국어"
+      },
+      {
+        "term": "종합",
+        "source_url": "https://library.ltikorea.or.kr/writer/200804",
+        "kind": "한국어"
+      },
+      {
+        "term": "기본",
+        "source_url": "https://library.ltikorea.or.kr/writer/200804",
+        "kind": "한국어"
+      },
+      {
+        "term": "인적",
+        "source_url": "https://m.cafe.daum.net/hahaca/O4Lw/38",
+        "kind": "한국어"
+      },
+      {
+        "term": "사항",
+        "source_url": "https://ggc.ggcf.kr/p/5a9d7ee671dcf531873e71d6",
+        "kind": "한국어"
+      },
+      {
+        "term": "조선",
+        "source_url": "https://library.ltikorea.or.kr/writer/200804",
+        "kind": "한국어"
+      },
+      {
+        "term": "후기",
+        "source_url": "https://library.ltikorea.or.kr/writer/200804",
+        "kind": "한국어"
+      },
+      {
+        "term": "실학자",
+        "source_url": "https://library.ltikorea.or.kr/writer/200804",
+        "kind": "한국어"
+      },
+      {
+        "term": "과학자",
+        "source_url": "https://namu.wiki/w/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "철학자",
+        "source_url": "https://ko.wikipedia.org/wiki/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "덕보",
+        "source_url": "https://ko.wikipedia.org/wiki/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "담헌",
+        "source_url": "https://ko.wikipedia.org/wiki/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "본관",
+        "source_url": "https://library.ltikorea.or.kr/writer/200804",
+        "kind": "한국어"
+      },
+      {
+        "term": "남양",
+        "source_url": "https://namu.wiki/w/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "홍씨",
+        "source_url": "https://namu.wiki/w/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "토홍",
+        "source_url": "https://namu.wiki/w/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "이다",
+        "source_url": "https://library.ltikorea.or.kr/writer/200804",
+        "kind": "한국어"
+      },
+      {
+        "term": "영조",
+        "source_url": "https://namu.wiki/w/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "충청남",
+        "source_url": "https://ko.wikipedia.org/wiki/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "천안시",
+        "source_url": "https://ko.wikipedia.org/wiki/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "동남구",
+        "source_url": "https://namu.wiki/w/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "출생",
+        "source_url": "https://namu.wiki/w/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "한성",
+        "source_url": "https://www.khan.co.kr/article/202511132004005",
+        "kind": "한국어"
+      },
+      {
+        "term": "나이",
+        "source_url": "https://ko.wikipedia.org/wiki/홍대용",
+        "kind": "한국어"
+      },
+      {
+        "term": "별세",
+        "source_url": "https://dl.dongascience.com/magazine/view/S198912N045",
+        "kind": "한국어"
+      }
+    ]
+  },
+  "fetch_stats": {
+    "docs": 25,
+    "with_raw_content": 25,
+    "avg_raw_len": 36907
+  },
+  "total_cost_usd": 0.0364,
+  "elapsed_s": 335.4,
+  "guards": {
+    "max_tool_turns": 8,
+    "max_input_tokens": 150000,
+    "abort_usd": 1.5,
+    "search_k": 5
+  },
+  "models": {
+    "leader": "qwen/qwen3.7-plus",
+    "reviewer_a": "moonshotai/kimi-k2.6",
+    "reviewer_b": "minimax/minimax-m3"
+  },
+  "ran_at": "2026-06-19 13:26 KST"
+}
