@@ -300,18 +300,13 @@
             {"title": "신뢰 · 진정성", "body": "가짜 범람 속 '진짜'의 프리미엄"},
             {"title": "창의 · 공감 · 전문성", "body": "자동화를 능가하는 성과"}
           ]
-        },
-        "metric": {
-          "label": "Deloitte — 개인화의 역설",
-          "value": "43%",
-          "note": "브랜드 상호작용 중 개인화로 인지되는 비율은 43%뿐 — 노력과 체감의 간극이 신뢰의 빈자리"
         }
       },
       "sources": [
         {"name": "HubSpot", "url": "https://www.hubspot.com/state-of-marketing"},
         {"name": "Deloitte Digital", "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"}
       ],
-      "footnotes": []
+      "footnotes": [{"term": "개인화의 역설", "en": "", "def": "브랜드 상호작용 중 개인화로 인지되는 비율은 43%뿐 (Deloitte) — 노력과 체감의 간극이 신뢰의 빈자리"}]
     },
     {
       "page_no": 14,
