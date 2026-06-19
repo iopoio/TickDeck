@@ -10,7 +10,9 @@
 - 5덱 레이아웃 학습 → 17 골격 라이브러리(공통 셸 + 본문 모듈)
 - **코덱스 iter1 완료**: evolution_timeline·conclusion_synthesis·back_cover·간지 거대숫자 (픽셀 검증 ✓)
 - **코덱스 iter2a 완료**: 타이포·그리드 시스템 + split_master(좌텍스트/우비주얼) + 혼합웨이트 헤드라인 + 거대숫자 콜아웃 (픽셀 검증 = 큰 점프 ✓)
-- **코덱스 iter2bc 빌드 중(EOD 미완)**: ECharts 차트 모듈(chart_bar/donut/gauge/line/combo/kpi) + 펜톤 톤다운 테마(TD_pantone_ink/green/warm × light/dark). 결과 = `/tmp/codex_iter2bc_result.txt`
+- **코덱스 iter2bc 완료+커밋** (TickDeck `ebd13b9` · Think `2d1bfa7f`): ECharts 차트(chart_bar/donut/gauge/line/combo/kpi) + 펜톤 톤다운 테마(라이트/다크·`--theme`). **차트 렌더·톤다운 픽셀 확인됨** ✓. ⚠️ slide 6 차트 = AI수익+MarTech를 한 축에 섞어 단위 충돌·숫자 mangle → 재작성서 분리·정정할 것.
+
+## ▶ 다음 세션 = 여기서 시작 (iter2 전부 완료·커밋됨 → 바로 재작성)
 
 ## 내일 할 것 (순서)
 1. **iter2bc 결과 확인** + 픽셀 QA (차트 데이터 비례·테마 톤다운·**타이포 전체 통일** 확인). 미완이면 마저.
