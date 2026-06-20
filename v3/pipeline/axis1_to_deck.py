@@ -940,6 +940,9 @@ def bind_concept_relation(page: dict[str, Any], layout: str) -> dict[str, Any]:
     slide = common_slide(page, layout)
     slide["before"] = _normalize_panel(payload.get("before"), "현재")
     slide["after"] = _normalize_panel(payload.get("after"), "미래")
+    relation = clean_text(payload.get("relation"))
+    if relation:
+        slide["relation"] = relation
     metric = payload.get("metric") if isinstance(payload.get("metric"), dict) else {}
     if metric and any(clean_text(metric.get(key)) for key in ("label", "value", "note")):
         slide["metric"] = {

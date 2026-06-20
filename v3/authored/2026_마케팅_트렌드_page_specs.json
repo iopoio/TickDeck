@@ -285,6 +285,7 @@
         "차별화는 자동화를 능가하는 인간의 창의·공감·전문성에서 갈림 (HubSpot)"
       ],
       "payload": {
+        "relation": "vs",
         "before": {
           "label": "AI",
           "title": "AI가 푸는 것 (기본값)",
