@@ -125,7 +125,7 @@
     {
       "page_no": 6,
       "role": "content",
-      "content_kind": "split",
+      "content_kind": "market_numbers",
       "section_nav": "01 판이 바뀐다",
       "headline": "MarTech 규모 — 합의 아닌 방향 신호",
       "takeaways": [
@@ -133,11 +133,9 @@
         "합의된 사실 아닌 '예산 이동'의 방향 신호"
       ],
       "payload": {
-        "lead": "MarTech 시장 규모는 무엇을 포함하느냐(소프트웨어만 vs 생태계 전체)에 따라 추정이 4배 가까이 벌어짐. 단일 합의치가 아니라 성장 방향의 신호로 읽음.",
-        "right_kind": "stats",
         "stats": [
-          {"label": "좁은 정의 · SW 한정", "value": "$173B", "note": "2025 · InsightAce"},
-          {"label": "넓은 정의 · 생태계", "value": "$660B", "note": "2026 · Mordor·Coherent · 약 4배"}
+          {"label": "좁은 정의 · SW 한정 (2025)", "value": "$173B", "note": "InsightAce — 소프트웨어 시장만"},
+          {"label": "넓은 정의 · 생태계 (2026)", "value": "$660B", "note": "Mordor·Coherent — 좁은 정의의 약 4배"}
         ]
       },
       "sources": [
@@ -277,7 +275,7 @@
     {
       "page_no": 13,
       "role": "content",
-      "content_kind": "concept_relation",
+      "content_kind": "growth_drivers",
       "section_nav": "03 신뢰의 역설",
       "headline": "차별화 = 'AI 효율'이 아니라 '인간 신뢰'",
       "takeaways": [
@@ -285,23 +283,10 @@
         "차별화는 자동화를 능가하는 인간의 창의·공감·전문성에서 갈림 (HubSpot)"
       ],
       "payload": {
-        "relation": "vs",
-        "before": {
-          "label": "AI",
-          "title": "AI가 푸는 것 (기본값)",
-          "items": [
-            {"title": "효율", "body": "제작·운영의 속도와 규모"},
-            {"title": "개인화", "body": "대규모 자동화와 성과 귀속"}
-          ]
-        },
-        "after": {
-          "label": "사람",
-          "title": "사람이 버는 것 (차별값)",
-          "items": [
-            {"title": "신뢰 · 진정성", "body": "가짜 범람 속 '진짜'의 프리미엄"},
-            {"title": "창의 · 공감 · 전문성", "body": "자동화를 능가하는 성과"}
-          ]
-        }
+        "cards": [
+          {"title": "AI가 푸는 것 — 기본값", "body": "효율: 제작·운영의 속도와 규모 / 개인화: 대규모 자동화와 성과 귀속. 모두가 갖는 기본값"},
+          {"title": "사람이 버는 것 — 차별값", "body": "신뢰·진정성: 가짜 범람 속 '진짜'의 프리미엄 / 창의·공감·전문성: 자동화를 능가하는 성과"}
+        ]
       },
       "sources": [
         {"name": "HubSpot", "url": "https://www.hubspot.com/state-of-marketing"},
