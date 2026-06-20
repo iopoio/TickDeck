@@ -731,9 +731,9 @@ def bind_agenda(page: dict[str, Any], page_specs: dict[str, Any]) -> dict[str, A
         ]
     return {
         "layout": "editorial_impact_axes",
-        "kicker": "목차",
-        "headline": clean_text(page.get("headline"), 90, preserve_markup=True),
-        "headline_mark": clean_text(page.get("headline"), 90).split(" ")[0],
+        "kicker": "INDEX",
+        "headline": "목차",
+        "headline_mark": "목차",
         "subtitle": "",
         "axes": axes,
     }
