@@ -123,6 +123,13 @@
       "source_fields": ["page_specs.pages[].payload.cards"]
     },
     {
+      "route": "kind:convergence",
+      "content_kind": "convergence",
+      "layout_candidates": ["convergence_diagram"],
+      "data_slots": ["drivers", "outcome"],
+      "source_fields": ["page_specs.pages[].payload.drivers", "page_specs.pages[].payload.outcome"]
+    },
+    {
       "route": "kind:implications",
       "content_kind": "implications",
       "layout_candidates": ["narrative_centered_text_block", "closing"],

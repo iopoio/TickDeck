@@ -4,21 +4,81 @@
   "governing_thought": "AI가 마케팅의 기본값이 된 2026 — 차별화는 더 이상 기술이 아니라 신뢰와 관점에서 남.",
   "governing_thought_short": "AI는 기본값 · 차별화는 신뢰",
   "references": [
-    {"name": "Deloitte Digital — Marketing Trends 2026", "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html", "tag": "본문 출처"},
-    {"name": "HubSpot — 2026 State of Marketing", "url": "https://www.hubspot.com/state-of-marketing", "tag": "본문 출처"},
-    {"name": "Kantar — Marketing Trends 2026", "url": "https://www.kantar.com/Campaigns/Marketing-Trends", "tag": "본문 출처"},
-    {"name": "Circana — Consumer Marketing Trends 2026", "url": "https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026", "tag": "본문 출처"},
-    {"name": "IDNZ — State of AI in Marketing 2025-2026", "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report", "tag": "수치 근거"},
-    {"name": "Improvado — 7 AI Marketing Trends 2026", "url": "https://improvado.io/blog/ai-marketing-trends", "tag": "수치 근거"},
-    {"name": "Adobe — AI Marketing Statistics 2026", "url": "https://www.adobe.com/uk/acrobat/resources/ai-marketing-trends.html", "tag": "수치 근거"},
-    {"name": "ContentGrip — Future of AI Marketing", "url": "https://www.contentgrip.com/future-ai-marketing", "tag": "본문 출처"},
-    {"name": "WordStream — 2026 AI Marketing Trends", "url": "https://www.wordstream.com/blog/2026-ai-marketing-trends", "tag": "본문 출처"},
-    {"name": "Coursera — 2026 Marketing Trends", "url": "https://www.coursera.org/articles/marketing-trends", "tag": "본문 출처"},
-    {"name": "Mordor Intelligence — MarTech Market (넓은 정의)", "url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market", "tag": "수치 근거"},
-    {"name": "Coherent Market Insights — MarTech Market", "url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market", "tag": "수치 근거"},
-    {"name": "InsightAce Analytic — MarTech Market (좁은 정의)", "url": "https://www.insightaceanalytic.com/report/martech-market/3049", "tag": "수치 근거"},
-    {"name": "Research and Markets (TBRC) — MarTech Report", "url": "https://www.researchandmarkets.com/reports/5930973/marketing-technology-market-report", "tag": "수치 근거"},
-    {"name": "IMARC Group — MarTech Market 2026-2034", "url": "https://www.imarcgroup.com/marketing-technology-market", "tag": "수치 근거"}
+    {
+      "name": "Deloitte Digital — Marketing Trends 2026",
+      "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "HubSpot — 2026 State of Marketing",
+      "url": "https://www.hubspot.com/state-of-marketing",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "Kantar — Marketing Trends 2026",
+      "url": "https://www.kantar.com/Campaigns/Marketing-Trends",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "Circana — Consumer Marketing Trends 2026",
+      "url": "https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "IDNZ — State of AI in Marketing 2025-2026",
+      "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report",
+      "tag": "수치 근거"
+    },
+    {
+      "name": "Improvado — 7 AI Marketing Trends 2026",
+      "url": "https://improvado.io/blog/ai-marketing-trends",
+      "tag": "수치 근거"
+    },
+    {
+      "name": "Adobe — AI Marketing Statistics 2026",
+      "url": "https://www.adobe.com/uk/acrobat/resources/ai-marketing-trends.html",
+      "tag": "수치 근거"
+    },
+    {
+      "name": "ContentGrip — Future of AI Marketing",
+      "url": "https://www.contentgrip.com/future-ai-marketing",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "WordStream — 2026 AI Marketing Trends",
+      "url": "https://www.wordstream.com/blog/2026-ai-marketing-trends",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "Coursera — 2026 Marketing Trends",
+      "url": "https://www.coursera.org/articles/marketing-trends",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "Mordor Intelligence — MarTech Market (넓은 정의)",
+      "url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market",
+      "tag": "수치 근거"
+    },
+    {
+      "name": "Coherent Market Insights — MarTech Market",
+      "url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market",
+      "tag": "수치 근거"
+    },
+    {
+      "name": "InsightAce Analytic — MarTech Market (좁은 정의)",
+      "url": "https://www.insightaceanalytic.com/report/martech-market/3049",
+      "tag": "수치 근거"
+    },
+    {
+      "name": "Research and Markets (TBRC) — MarTech Report",
+      "url": "https://www.researchandmarkets.com/reports/5930973/marketing-technology-market-report",
+      "tag": "수치 근거"
+    },
+    {
+      "name": "IMARC Group — MarTech Market 2026-2034",
+      "url": "https://www.imarcgroup.com/marketing-technology-market",
+      "tag": "수치 근거"
+    }
   ],
   "pages": [
     {
@@ -27,7 +87,9 @@
       "content_kind": "narrative",
       "section_nav": "",
       "headline": "2026 마케팅 트렌드",
-      "takeaways": ["AI가 기본값이 된 시대 — 차별화는 신뢰와 관점에서 남"],
+      "takeaways": [
+        "AI가 기본값이 된 시대 — 차별화는 신뢰와 관점에서 남"
+      ],
       "payload": {},
       "sources": [],
       "footnotes": []
@@ -41,23 +103,44 @@
       "takeaways": [],
       "payload": {
         "sections": [
-          {"num": "01", "key": "판이 바뀐다", "tag": "The Shift", "line": "AI가 마케팅을 다시 씀 — 생성형에서 에이전틱으로"},
-          {"num": "02", "key": "다섯 갈래", "tag": "Five Forces", "line": "변화가 번지는 5대 트렌드 축"},
-          {"num": "03", "key": "신뢰의 역설", "tag": "The Paradox", "line": "AI가 흔할수록 인간·진정성이 비싸짐"},
-          {"num": "04", "key": "그래서 무엇을", "tag": "So What", "line": "CMO의 3중 과제와 다음 행동"}
+          {
+            "num": "01",
+            "key": "판이 바뀐다",
+            "tag": "The Shift",
+            "line": "AI가 마케팅을 다시 씀 — 생성형에서 에이전틱으로"
+          },
+          {
+            "num": "02",
+            "key": "다섯 갈래",
+            "tag": "Five Forces",
+            "line": "변화가 번지는 5대 트렌드 축"
+          },
+          {
+            "num": "03",
+            "key": "신뢰의 역설",
+            "tag": "The Paradox",
+            "line": "AI가 흔할수록 인간·진정성이 비싸짐"
+          },
+          {
+            "num": "04",
+            "key": "그래서 무엇을",
+            "tag": "So What",
+            "line": "CMO의 3중 과제와 다음 행동"
+          }
         ]
       },
       "sources": [],
       "footnotes": []
     },
-
     {
       "page_no": 3,
       "role": "section_divider",
       "content_kind": "narrative",
       "section_nav": "01 판이 바뀐다",
       "headline": "판이 바뀐다 — AI가 마케팅을 다시 씀",
-      "takeaways": ["기술·경제·소비자의 변화로 기존 전략 무효화"],
+      "takeaways": [
+        "기술·경제·소비자의 변화로 기존 전략 무효화"
+      ],
       "payload": {},
       "sources": [],
       "footnotes": []
@@ -78,7 +161,12 @@
           "그 결과 '많이·빠르게 만들면 이긴다'는 오래된 공식이 깨짐. 콘텐츠가 흔해질수록 '무엇을 믿게 하느냐'가 승부처가 됨 — Deloitte의 진단 그대로, AI가 창의성을 재작성하고 신뢰가 화폐가 됨."
         ]
       },
-      "sources": [{"name": "Deloitte Digital — Marketing Trends 2026 (2026.2)", "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"}],
+      "sources": [
+        {
+          "name": "Deloitte Digital — Marketing Trends 2026 (2026.2)",
+          "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"
+        }
+      ],
       "footnotes": []
     },
     {
@@ -94,10 +182,26 @@
       "payload": {
         "value": "$47B",
         "label": "2025 글로벌 AI 마케팅 수익 · 이후 연 36.6% 성장 전망",
-        "mini": [47, 64, 88, 119]
+        "mini": [
+          47,
+          64,
+          88,
+          119
+        ]
       },
-      "sources": [{"name": "IDNZ (2025)", "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report"}],
-      "footnotes": [{"term": "추정 주의", "en": "", "def": "$47B=2025 글로벌 'AI 마케팅 수익' 추정 · 36.6%=2025~2028 연평균 성장률(IDNZ). 점선 궤적은 이 성장률을 적용한 참고치"}]
+      "sources": [
+        {
+          "name": "IDNZ (2025)",
+          "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report"
+        }
+      ],
+      "footnotes": [
+        {
+          "term": "추정 주의",
+          "en": "",
+          "def": "$47B=2025 글로벌 'AI 마케팅 수익' 추정 · 36.6%=2025~2028 연평균 성장률(IDNZ). 점선 궤적은 이 성장률을 적용한 참고치"
+        }
+      ]
     },
     {
       "page_no": 5,
@@ -111,16 +215,40 @@
       ],
       "payload": {
         "stages": [
-          {"period": "~2024", "label": "실험 (Pilot)", "detail": "초기 도입기 — 2024년 초 워크플로우에 AI 통합한 마케터는 21%에 그침"},
-          {"period": "2025", "label": "생성형 통합 (Generative)", "detail": "전사 확산 전환점 — 마케터 60%가 매일 AI 사용, 콘텐츠 제작의 기본 도구로"},
-          {"period": "2026~", "label": "에이전틱 실행 (Agentic)", "detail": "목표만 받아 스스로 집행 — 광고주의 2/3가 에이전틱 AI 도입 추진 (ContentGrip)"}
+          {
+            "period": "~2024",
+            "label": "실험 (Pilot)",
+            "detail": "초기 도입기 — 2024년 초 워크플로우에 AI 통합한 마케터는 21%에 그침"
+          },
+          {
+            "period": "2025",
+            "label": "생성형 통합 (Generative)",
+            "detail": "전사 확산 전환점 — 마케터 60%가 매일 AI 사용, 콘텐츠 제작의 기본 도구로"
+          },
+          {
+            "period": "2026~",
+            "label": "에이전틱 실행 (Agentic)",
+            "detail": "목표만 받아 스스로 집행 — 광고주의 2/3가 에이전틱 AI 도입 추진 (ContentGrip)"
+          }
         ]
       },
       "sources": [
-        {"name": "IDNZ (2025)", "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report"},
-        {"name": "ContentGrip", "url": "https://www.contentgrip.com/future-ai-marketing"}
+        {
+          "name": "IDNZ (2025)",
+          "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report"
+        },
+        {
+          "name": "ContentGrip",
+          "url": "https://www.contentgrip.com/future-ai-marketing"
+        }
       ],
-      "footnotes": [{"term": "에이전틱 AI", "en": "Agentic AI", "def": "사람 지시 없이 목표만 받아 스스로 작업을 실행하는 AI"}]
+      "footnotes": [
+        {
+          "term": "에이전틱 AI",
+          "en": "Agentic AI",
+          "def": "사람 지시 없이 목표만 받아 스스로 작업을 실행하는 AI"
+        }
+      ]
     },
     {
       "page_no": 6,
@@ -134,17 +262,39 @@
       ],
       "payload": {
         "stats": [
-          {"label": "좁은 정의 · SW 한정 (2025)", "value": "$173B", "note": "InsightAce — 소프트웨어 시장만"},
-          {"label": "넓은 정의 · 생태계 (2026)", "value": "$660B", "note": "Mordor·Coherent — 좁은 정의의 약 4배"}
+          {
+            "label": "좁은 정의 · SW 한정 (2025)",
+            "value": "$173B",
+            "note": "InsightAce — 소프트웨어 시장만"
+          },
+          {
+            "label": "넓은 정의 · 생태계 (2026)",
+            "value": "$660B",
+            "note": "Mordor·Coherent — 좁은 정의의 약 4배"
+          }
         ]
       },
       "sources": [
-        {"name": "InsightAce Analytic (좁은 정의·2025)", "url": "https://www.insightaceanalytic.com/report/martech-market/3049"},
-        {"name": "Mordor·Coherent (넓은 정의·2026)", "url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"}
+        {
+          "name": "InsightAce Analytic (좁은 정의·2025)",
+          "url": "https://www.insightaceanalytic.com/report/martech-market/3049"
+        },
+        {
+          "name": "Mordor·Coherent (넓은 정의·2026)",
+          "url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+        }
       ],
       "footnotes": [
-        {"term": "MarTech", "en": "Marketing Technology", "def": "마케팅 자동화·분석·콘텐츠를 아우르는 소프트웨어 생태계"},
-        {"term": "미래 전망의 발산", "en": "", "def": "2031~2034년 전망은 $1.27조~$2.6조로 더 벌어짐 — 정의·기간 차이. 평균 대신 범위로 본다"}
+        {
+          "term": "MarTech",
+          "en": "Marketing Technology",
+          "def": "마케팅 자동화·분석·콘텐츠를 아우르는 소프트웨어 생태계"
+        },
+        {
+          "term": "미래 전망의 발산",
+          "en": "",
+          "def": "2031~2034년 전망은 $1.27조~$2.6조로 더 벌어짐 — 정의·기간 차이. 평균 대신 범위로 본다"
+        }
       ]
     },
     {
@@ -158,25 +308,51 @@
         "격차는 '쓰느냐' 아닌 '얼마나 잘' — AI는 기본값"
       ],
       "payload": {
-        "categories": ["매일 AI 사용", "콘텐츠 제작에 활용", "미디어 제작에 활용"],
-        "series": [{"name": "마케터 응답 비율 (%)", "values": [60, 80, 75]}],
+        "categories": [
+          "매일 AI 사용",
+          "콘텐츠 제작에 활용",
+          "미디어 제작에 활용"
+        ],
+        "series": [
+          {
+            "name": "마케터 응답 비율 (%)",
+            "values": [
+              60,
+              80,
+              75
+            ]
+          }
+        ],
         "orient": "h",
         "stacked": false
       },
       "sources": [
-        {"name": "HubSpot — 2026 State of Marketing", "url": "https://www.hubspot.com/state-of-marketing"},
-        {"name": "IDNZ (2025)", "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report"}
+        {
+          "name": "HubSpot — 2026 State of Marketing",
+          "url": "https://www.hubspot.com/state-of-marketing"
+        },
+        {
+          "name": "IDNZ (2025)",
+          "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report"
+        }
       ],
-      "footnotes": [{"term": "AI는 기본값", "en": "Baseline, not Differentiator", "def": "HubSpot 진단 — 마케터 61%가 'AI로 인한 20년래 최대 격변'으로 인식. 누가 쓰느냐가 아니라 얼마나 잘 쓰느냐가 격차"}]
+      "footnotes": [
+        {
+          "term": "AI는 기본값",
+          "en": "Baseline, not Differentiator",
+          "def": "HubSpot 진단 — 마케터 61%가 'AI로 인한 20년래 최대 격변'으로 인식. 누가 쓰느냐가 아니라 얼마나 잘 쓰느냐가 격차"
+        }
+      ]
     },
-
     {
       "page_no": 8,
       "role": "section_divider",
       "content_kind": "narrative",
       "section_nav": "02 다섯 갈래",
-      "headline": "5대 트렌드",
-      "takeaways": ["AI 통합 · 숏폼/UGC · 신뢰 · 브랜드 관점 · 프라이버시가 2026을 재편"],
+      "headline": "마케팅을 다시 짜는 다섯 힘",
+      "takeaways": [
+        "AI 통합 · 숏폼/UGC · 신뢰 · 브랜드 관점 · 프라이버시가 2026을 재편"
+      ],
       "payload": {},
       "sources": [],
       "footnotes": []
@@ -192,42 +368,110 @@
         "공통 저류 = 자동화가 밀어낸 자리를 '인간다움'이 메움"
       ],
       "payload": {
-        "headers": ["트렌드 축", "무엇이 바뀌나", "마케터의 과제"],
+        "headers": [
+          "트렌드 축",
+          "무엇이 바뀌나",
+          "마케터의 과제"
+        ],
         "rows": [
-          ["AI 전면 통합", "생성형 → 에이전틱, 자율 캠페인 실행", "도구 아닌 운영체계로 다룸"],
-          ["채널 · 검색 재편", "숏폼·UGC와 AI 검색(AEO)이 발견·노출을 다시 씀", "제작 아닌 참여·AEO를 설계"],
-          ["신뢰 · 진정성", "가짜 콘텐츠 범람 → 진정성에 프리미엄", "커뮤니티·일관된 진정성에 투자"],
-          ["브랜드 POV", "볼륨보다 명확성·확신이 성장을 만듦", "넓게 퍼뜨리기보다 날카로운 관점"],
-          ["프라이버시 퍼스트", "규제 압박 → 퍼스트·제로파티 데이터 가치 상승", "동의 기반 데이터를 자산화"]
+          [
+            "AI 전면 통합",
+            "생성형 → 에이전틱, 자율 캠페인 실행",
+            "도구 아닌 운영체계로 다룸"
+          ],
+          [
+            "채널 · 검색 재편",
+            "숏폼·UGC와 AI 검색(AEO)이 발견·노출을 다시 씀",
+            "제작 아닌 참여·AEO를 설계"
+          ],
+          [
+            "신뢰 · 진정성",
+            "가짜 콘텐츠 범람 → 진정성에 프리미엄",
+            "커뮤니티·일관된 진정성에 투자"
+          ],
+          [
+            "브랜드 POV",
+            "볼륨보다 명확성·확신이 성장을 만듦",
+            "넓게 퍼뜨리기보다 날카로운 관점"
+          ],
+          [
+            "프라이버시 퍼스트",
+            "규제 압박 → 퍼스트·제로파티 데이터 가치 상승",
+            "동의 기반 데이터를 자산화"
+          ]
         ],
         "source": "Deloitte Digital · HubSpot · Coursera · Mordor 종합"
       },
       "sources": [
-        {"name": "HubSpot", "url": "https://www.hubspot.com/state-of-marketing"},
-        {"name": "Coursera", "url": "https://www.coursera.org/articles/marketing-trends"}
+        {
+          "name": "HubSpot",
+          "url": "https://www.hubspot.com/state-of-marketing"
+        },
+        {
+          "name": "Coursera",
+          "url": "https://www.coursera.org/articles/marketing-trends"
+        }
       ],
       "footnotes": [
-        {"term": "UGC", "en": "User-Generated Content", "def": "사용자가 직접 만든 콘텐츠"},
-        {"term": "POV", "en": "Point of View", "def": "브랜드의 명확한 관점·입장"}
+        {
+          "term": "UGC",
+          "en": "User-Generated Content",
+          "def": "사용자가 직접 만든 콘텐츠"
+        },
+        {
+          "term": "POV",
+          "en": "Point of View",
+          "def": "브랜드의 명확한 관점·입장"
+        }
       ]
     },
     {
       "page_no": 10,
       "role": "content",
-      "content_kind": "growth_drivers",
+      "content_kind": "convergence",
       "section_nav": "02 다섯 갈래",
       "headline": "MarTech 성장 = 네 동력의 합",
-      "takeaways": ["기술 수요와 데이터 전환이 맞물려 시장을 가속"],
+      "takeaways": [
+        "기술 수요와 데이터 전환이 맞물려 시장을 가속"
+      ],
       "payload": {
-        "cards": [
-          {"title": "AI 내장 스택", "body": "AI 임베디드 마케팅 스택이 표준 요구 — 도입 자체가 경쟁 조건"},
-          {"title": "실시간 오케스트레이션", "body": "캠페인 실시간 조율 · 콘텐츠 동적 생성 · 크로스채널 성과 귀속"},
-          {"title": "생성형의 제품화", "body": "별도 기능 아닌 핵심 제품에 기본 탑재 → 사용량 견인"},
-          {"title": "데이터 전환", "body": "규제가 동의 기반으로 이동 강제 → 퍼스트·제로파티 자산 가치 상승"}
-        ]
+        "drivers": [
+          {
+            "title": "AI 내장 스택",
+            "body": "도입 자체가 경쟁 조건"
+          },
+          {
+            "title": "실시간 오케스트레이션",
+            "body": "조율·동적 생성·성과 귀속"
+          },
+          {
+            "title": "생성형 제품화",
+            "body": "핵심 제품에 기본 탑재"
+          },
+          {
+            "title": "데이터 전환",
+            "body": "퍼스트·제로파티 자산화"
+          }
+        ],
+        "outcome": {
+          "label": "결과",
+          "title": "MarTech 성장 가속",
+          "body": "네 동력이 맞물려 시장을 함께 밀어 올림"
+        }
       },
-      "sources": [{"name": "Mordor Intelligence", "url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"}],
-      "footnotes": [{"term": "제로파티 데이터", "en": "Zero-party Data", "def": "고객이 자발적으로 제공한 데이터"}]
+      "sources": [
+        {
+          "name": "Mordor Intelligence",
+          "url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+        }
+      ],
+      "footnotes": [
+        {
+          "term": "제로파티 데이터",
+          "en": "Zero-party Data",
+          "def": "고객이 자발적으로 제공한 데이터"
+        }
+      ]
     },
     {
       "page_no": 11,
@@ -244,30 +488,48 @@
           "label": "전",
           "title": "볼륨의 시대",
           "items": [
-            {"title": "많이 · 자주", "body": "채널·콘텐츠 물량으로 도달을 삼"},
-            {"title": "평균적 메시지", "body": "넓게 퍼뜨리는 평균값 전략"}
+            {
+              "title": "많이 · 자주",
+              "body": "채널·콘텐츠 물량으로 도달을 삼"
+            },
+            {
+              "title": "평균적 메시지",
+              "body": "넓게 퍼뜨리는 평균값 전략"
+            }
           ]
         },
         "after": {
           "label": "후",
           "title": "확신의 시대",
           "items": [
-            {"title": "명확한 관점(POV)", "body": "무엇을 믿는 브랜드인가로 차별화"},
-            {"title": "인간 주도", "body": "사람이 만든 신뢰가 수익으로 이어짐"}
+            {
+              "title": "명확한 관점(POV)",
+              "body": "무엇을 믿는 브랜드인가로 차별화"
+            },
+            {
+              "title": "인간 주도",
+              "body": "사람이 만든 신뢰가 수익으로 이어짐"
+            }
           ]
         }
       },
-      "sources": [{"name": "HubSpot", "url": "https://www.hubspot.com/state-of-marketing"}],
+      "sources": [
+        {
+          "name": "HubSpot",
+          "url": "https://www.hubspot.com/state-of-marketing"
+        }
+      ],
       "footnotes": []
     },
-
     {
       "page_no": 12,
       "role": "section_divider",
       "content_kind": "narrative",
       "section_nav": "03 신뢰의 역설",
       "headline": "역설 — AI가 흔할수록 사람이 비싸짐",
-      "takeaways": ["콘텐츠가 무한히 싸지는 시대, 가장 비싼 자산은 인간의 신뢰"],
+      "takeaways": [
+        "콘텐츠가 무한히 싸지는 시대, 가장 비싼 자산은 인간의 신뢰"
+      ],
       "payload": {},
       "sources": [],
       "footnotes": []
@@ -284,15 +546,33 @@
       ],
       "payload": {
         "cards": [
-          {"title": "AI가 푸는 것 — 기본값", "body": "효율: 제작·운영의 속도와 규모 / 개인화: 대규모 자동화와 성과 귀속. 모두가 갖는 기본값"},
-          {"title": "사람이 버는 것 — 차별값", "body": "신뢰·진정성: 가짜 범람 속 '진짜'의 프리미엄 / 창의·공감·전문성: 자동화를 능가하는 성과"}
+          {
+            "title": "AI가 푸는 것 — 기본값",
+            "body": "효율: 제작·운영의 속도와 규모 / 개인화: 대규모 자동화와 성과 귀속. 모두가 갖는 기본값"
+          },
+          {
+            "title": "사람이 버는 것 — 차별값",
+            "body": "신뢰·진정성: 가짜 범람 속 '진짜'의 프리미엄 / 창의·공감·전문성: 자동화를 능가하는 성과"
+          }
         ]
       },
       "sources": [
-        {"name": "HubSpot", "url": "https://www.hubspot.com/state-of-marketing"},
-        {"name": "Deloitte Digital", "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"}
+        {
+          "name": "HubSpot",
+          "url": "https://www.hubspot.com/state-of-marketing"
+        },
+        {
+          "name": "Deloitte Digital",
+          "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"
+        }
       ],
-      "footnotes": [{"term": "개인화의 역설", "en": "", "def": "브랜드 상호작용 중 개인화로 인지되는 비율은 43%뿐 (Deloitte) — 노력과 체감의 간극이 신뢰의 빈자리"}]
+      "footnotes": [
+        {
+          "term": "개인화의 역설",
+          "en": "",
+          "def": "브랜드 상호작용 중 개인화로 인지되는 비율은 43%뿐 (Deloitte) — 노력과 체감의 간극이 신뢰의 빈자리"
+        }
+      ]
     },
     {
       "page_no": 14,
@@ -319,8 +599,14 @@
         ]
       },
       "sources": [
-        {"name": "Deloitte Digital (2026.2)", "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"},
-        {"name": "Circana", "url": "https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026"}
+        {
+          "name": "Deloitte Digital (2026.2)",
+          "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"
+        },
+        {
+          "name": "Circana",
+          "url": "https://www.circana.com/post/unpacking-consumer-marketing-trends-that-will-drive-growth-in-2026"
+        }
       ],
       "footnotes": []
     },
@@ -335,28 +621,56 @@
         "AI 검색 트래픽 527% 급증 → 'AI 인용(AEO)'이 새 SEO"
       ],
       "payload": {
-        "categories": ["평균 클릭률 감소", "정보성 쿼리 최대", "6개월 트래픽 감소(사례)"],
-        "series": [{"name": "검색 노출 손실 (%)", "values": [18, 47, 34]}],
+        "categories": [
+          "평균 클릭률 감소",
+          "정보성 쿼리 최대",
+          "6개월 트래픽 감소(사례)"
+        ],
+        "series": [
+          {
+            "name": "검색 노출 손실 (%)",
+            "values": [
+              18,
+              47,
+              34
+            ]
+          }
+        ],
         "orient": "h",
         "stacked": false
       },
       "sources": [
-        {"name": "Improvado — 7 AI Marketing Trends 2026", "url": "https://improvado.io/blog/ai-marketing-trends"},
-        {"name": "WordStream", "url": "https://www.wordstream.com/blog/2026-ai-marketing-trends"}
+        {
+          "name": "Improvado — 7 AI Marketing Trends 2026",
+          "url": "https://improvado.io/blog/ai-marketing-trends"
+        },
+        {
+          "name": "WordStream",
+          "url": "https://www.wordstream.com/blog/2026-ai-marketing-trends"
+        }
       ],
       "footnotes": [
-        {"term": "측정 주의", "en": "", "def": "18%=평균 클릭률↓ · 47%=정보성 쿼리 상한 · 34%=한 사례 6개월 트래픽↓ — 측정이 달라 범위로 봄"},
-        {"term": "AEO", "en": "Answer Engine Optimization", "def": "AI 답변에 인용되도록 최적화 (Improvado)"}
+        {
+          "term": "측정 주의",
+          "en": "",
+          "def": "18%=평균 클릭률↓ · 47%=정보성 쿼리 상한 · 34%=한 사례 6개월 트래픽↓ — 측정이 달라 범위로 봄"
+        },
+        {
+          "term": "AEO",
+          "en": "Answer Engine Optimization",
+          "def": "AI 답변에 인용되도록 최적화 (Improvado)"
+        }
       ]
     },
-
     {
       "page_no": 16,
       "role": "section_divider",
       "content_kind": "narrative",
       "section_nav": "04 그래서 무엇을",
       "headline": "그래서, CMO는 무엇을 하는가",
-      "takeaways": ["컴포저블 스택 · 퍼스트파티 데이터 자산화 · AI 운영화를 동시에"],
+      "takeaways": [
+        "컴포저블 스택 · 퍼스트파티 데이터 자산화 · AI 운영화를 동시에"
+      ],
       "payload": {},
       "sources": [],
       "footnotes": []
@@ -367,19 +681,42 @@
       "content_kind": "growth_drivers",
       "section_nav": "04 그래서 무엇을",
       "headline": "세 과제를 '동시에' — 스택 · 데이터 · 운영",
-      "takeaways": ["하나만 해선 안 됨 — 스택·데이터·운영이 맞물려야 효과가 남"],
+      "takeaways": [
+        "하나만 해선 안 됨 — 스택·데이터·운영이 맞물려야 효과가 남"
+      ],
       "payload": {
         "cards": [
-          {"title": "① 컴포저블 스택", "body": "크리에이티브·데이터·활성화를 한 아키텍처로 통합 → 비용·지연·규제를 세밀 제어"},
-          {"title": "② 퍼스트파티 데이터 자산화", "body": "동의 기반 퍼스트·제로파티 데이터를 측정·재사용 가능한 자산으로"},
-          {"title": "③ AI 운영화", "body": "실험을 넘어 에이전틱 AI를 전사 운영에 통합 · 사람 판단을 그 위에 얹음"}
+          {
+            "title": "① 컴포저블 스택",
+            "body": "크리에이티브·데이터·활성화를 한 아키텍처로 통합 → 비용·지연·규제를 세밀 제어"
+          },
+          {
+            "title": "② 퍼스트파티 데이터 자산화",
+            "body": "동의 기반 퍼스트·제로파티 데이터를 측정·재사용 가능한 자산으로"
+          },
+          {
+            "title": "③ AI 운영화",
+            "body": "실험을 넘어 에이전틱 AI를 전사 운영에 통합 · 사람 판단을 그 위에 얹음"
+          }
         ]
       },
       "sources": [
-        {"name": "Mordor Intelligence", "url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"},
-        {"name": "Deloitte Digital", "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"}
+        {
+          "name": "Mordor Intelligence",
+          "url": "https://www.mordorintelligence.com/industry-reports/marketing-technology-market"
+        },
+        {
+          "name": "Deloitte Digital",
+          "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"
+        }
       ],
-      "footnotes": [{"term": "컴포저블 아키텍처", "en": "Composable Architecture", "def": "필요한 기능 모듈을 조합해 구성하는 유연한 스택 구조"}]
+      "footnotes": [
+        {
+          "term": "컴포저블 아키텍처",
+          "en": "Composable Architecture",
+          "def": "필요한 기능 모듈을 조합해 구성하는 유연한 스택 구조"
+        }
+      ]
     },
     {
       "page_no": 18,
@@ -387,18 +724,38 @@
       "content_kind": "funnel_steps",
       "section_nav": "04 그래서 무엇을",
       "headline": "AI 운영화 = 네 단계의 상승",
-      "takeaways": ["실험에서 멈추지 말고 측정까지 올라가야 투자가 회수됨"],
+      "takeaways": [
+        "실험에서 멈추지 말고 측정까지 올라가야 투자가 회수됨"
+      ],
       "payload": {
         "steps": [
-          {"label": "1. 실험적 도입", "body": "파일럿·부분 부서에서 생성형 AI를 시험"},
-          {"label": "2. 전사 통합", "body": "콘텐츠·캠페인 전반에 AI를 기본 탑재"},
-          {"label": "3. 에이전틱 실행", "body": "자율 캠페인 실행 시스템을 도입"},
-          {"label": "4. AI 기반 측정", "body": "AI 귀속 모델로 전 채널 ROI를 측정 → 루프를 닫음"}
+          {
+            "label": "1. 실험적 도입",
+            "body": "파일럿·부분 부서에서 생성형 AI를 시험"
+          },
+          {
+            "label": "2. 전사 통합",
+            "body": "콘텐츠·캠페인 전반에 AI를 기본 탑재"
+          },
+          {
+            "label": "3. 에이전틱 실행",
+            "body": "자율 캠페인 실행 시스템을 도입"
+          },
+          {
+            "label": "4. AI 기반 측정",
+            "body": "AI 귀속 모델로 전 채널 ROI를 측정 → 루프를 닫음"
+          }
         ]
       },
       "sources": [
-        {"name": "IDNZ", "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report"},
-        {"name": "Coherent Market Insights", "url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market"}
+        {
+          "name": "IDNZ",
+          "url": "https://www.id.ac.nz/blog/2026-ai-digital-marketing-trends-insights-report"
+        },
+        {
+          "name": "Coherent Market Insights",
+          "url": "https://www.coherentmarketinsights.com/industry-reports/marketing-technology-market"
+        }
       ],
       "footnotes": []
     },
@@ -419,8 +776,14 @@
         ]
       },
       "sources": [
-        {"name": "HubSpot", "url": "https://www.hubspot.com/state-of-marketing"},
-        {"name": "Deloitte Digital", "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"}
+        {
+          "name": "HubSpot",
+          "url": "https://www.hubspot.com/state-of-marketing"
+        },
+        {
+          "name": "Deloitte Digital",
+          "url": "https://www.deloittedigital.com/nl/en/insights/perspective/marketing-trends-2026.html"
+        }
       ],
       "footnotes": []
     },

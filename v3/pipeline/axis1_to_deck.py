@@ -31,6 +31,7 @@ ALLOWED_LAYOUTS = {
     "references_notes",
     "logo_grid",
     "funnel",
+    "convergence_diagram",
     "thankyou",
     "section_divider_hero_text",
     "evolution_timeline",
@@ -79,6 +80,7 @@ CONTENT_KINDS = {
     "concept_relation",
     "funnel_steps",
     "growth_drivers",
+    "convergence",
     "implications",
     "split",
     "chart_bar",
@@ -987,6 +989,29 @@ def bind_growth_drivers(page: dict[str, Any], layout: str) -> dict[str, Any]:
     return slide if slide["cards"] else narrative_fallback(page)
 
 
+def bind_convergence(page: dict[str, Any]) -> dict[str, Any]:
+    payload = page.get("payload") or {}
+    drivers = payload.get("drivers") or []
+    outcome = payload.get("outcome") or {}
+    if not drivers or not isinstance(outcome, dict) or not outcome.get("title"):
+        return narrative_fallback(page)
+    slide = common_slide(page, "convergence_diagram")
+    slide["drivers"] = [
+        {
+            "title": clean_text(strip_leading_enumerator(d.get("title")), 30),
+            "body": clean_text(d.get("body"), 72),
+        }
+        for d in drivers[:5]
+        if isinstance(d, dict) and clean_text(d.get("title"))
+    ]
+    slide["outcome"] = {
+        "label": clean_text(outcome.get("label") or "결과", 16),
+        "title": clean_text(outcome.get("title"), 44),
+        "body": clean_text(outcome.get("body"), 120),
+    }
+    return slide if slide["drivers"] else narrative_fallback(page)
+
+
 def bind_conclusion(page: dict[str, Any], page_specs: dict[str, Any]) -> dict[str, Any]:
     actions, note, _body = conclusion_actions_and_note(page)
     slide = common_slide(page, "conclusion_synthesis")
@@ -1103,6 +1128,8 @@ def bind_page(page: dict[str, Any], layout: str, page_specs: dict[str, Any]) -> 
         return bind_funnel(page, layout)
     if kind == "growth_drivers":
         return bind_growth_drivers(page, layout)
+    if kind == "convergence":
+        return bind_convergence(page)
     return bind_narrative(page, layout)
 
 
