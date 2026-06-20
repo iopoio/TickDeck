@@ -1013,10 +1013,12 @@ def bind_convergence(page: dict[str, Any]) -> dict[str, Any]:
 
 
 def bind_conclusion(page: dict[str, Any], page_specs: dict[str, Any]) -> dict[str, Any]:
-    actions, note, _body = conclusion_actions_and_note(page)
+    actions, note, body = conclusion_actions_and_note(page)
     slide = common_slide(page, "conclusion_synthesis")
     slide["title"] = clean_text(page_specs.get("governing_thought_short") or page.get("headline"), 96)
     slide["subtitle"] = ""
+    if body:
+        slide["body"] = clean_text(body, 150)  # 닫는 펀치라인(마무리 임팩트)
     slide["actions"] = actions
     if note:
         slide["note"] = clean_text(note, 220)
