@@ -206,7 +206,31 @@ def route_for_page(page: dict[str, Any]) -> str:
     return f"kind:{page.get('content_kind')}"
 
 
+# 작가가 page_specs에서 직접 지정할 수 있는 대담 레이아웃(패스스루). content_kind 라우팅으로
+# 도달 못 하던 다크/에디토리얼/히어로 양식. payload 키를 슬라이드에 그대로 spread해 렌더한다.
+EXPLICIT_LAYOUTS = {
+    "corporate_research_navy_split_focus",
+    "narrative_centered_text_block",
+    "title-hero",
+    "content-image",
+    "case_card_examples_pair",
+    "ir_company_overview_timeline_milestone",
+    "single_page_complete_landing_mockup",
+}
+_STRUCTURAL_ROLES = {"cover", "agenda", "section_divider", "references", "conclusion"}
+
+
+def explicit_layout_for(page: dict[str, Any]) -> str:
+    layout = clean_text(page.get("layout"))
+    if layout in EXPLICIT_LAYOUTS and page.get("role") not in _STRUCTURAL_ROLES:
+        return layout
+    return ""
+
+
 def choose_layout(page: dict[str, Any], routes: dict[str, list[str]], counters: dict[str, int]) -> str:
+    explicit = explicit_layout_for(page)
+    if explicit:
+        return explicit
     route = route_for_page(page)
     candidates = routes.get(route)
     if not candidates and route.startswith("role:"):
@@ -670,6 +694,18 @@ def common_slide(page: dict[str, Any], layout: str) -> dict[str, Any]:
     return slide
 
 
+def bind_explicit_layout(page: dict[str, Any]) -> dict[str, Any]:
+    """작가가 직접 지정한 대담 레이아웃 — payload 키를 슬라이드에 spread해 해당 렌더러 슬롯을 채운다."""
+    layout = clean_text(page.get("layout"))
+    slide = common_slide(page, layout)
+    payload = page.get("payload") or {}
+    for key, value in payload.items():
+        slide[key] = value
+    if not any(payload.get(k) for k in ("paragraphs", "bullets", "cards", "focus", "cases", "milestones", "sections", "image")):
+        slide["bullets"] = takeaways(page, 110)
+    return slide
+
+
 def has_market_payload(page: dict[str, Any]) -> bool:
     return bool((page.get("payload") or {}).get("stats"))
 
@@ -742,13 +778,24 @@ def bind_agenda(page: dict[str, Any], page_specs: dict[str, Any]) -> dict[str, A
 
 
 def bind_section_divider(page: dict[str, Any]) -> dict[str, Any]:
-    return {
+    slide = {
         "layout": "section_divider_hero_text",
         "kicker": clean_text(page.get("section_nav") or page.get("section_id")),
         "chapter_num": chapter_num_from_nav(page.get("section_nav") or page.get("section_id")),
         "title": clean_text(page.get("headline"), 96, preserve_markup=True),
         "subtitle": subtitle_from_takeaways(page, 160),
     }
+    # 간지 = Family B 다크 statement (챕터 경계 리듬). page.dark 또는 page.style로 켠다.
+    if page.get("dark"):
+        slide["style"] = {
+            "bg": "#14211F", "ink": "#F3F1E9", "muted": "#A7B7B4",
+            "panel": "#1B2C29", "line": "#2C3F3B",
+            "accent-soft": "#1E332F",  # 거대 챕터 숫자 = 어두운 워터마크(제목 겹침 해소)
+            "accent-dark": "#6FD3CF",  # 킥커 = 밝은 틸(다크 위 가독)
+        }
+    if isinstance(page.get("style"), dict):
+        slide.setdefault("style", {}).update(page["style"])
+    return slide
 
 
 def bind_market_numbers(page: dict[str, Any], layout: str) -> dict[str, Any]:
@@ -1114,6 +1161,8 @@ def bind_page(page: dict[str, Any], layout: str, page_specs: dict[str, Any]) -> 
         return bind_references(page_specs, page)
     if role == "conclusion":
         return bind_conclusion(page, page_specs)
+    if explicit_layout_for(page):
+        return bind_explicit_layout(page)
     if kind == "split":
         return bind_split(page)
     if kind in CHART_LAYOUTS:
@@ -1158,11 +1207,23 @@ def build_deck(page_specs_path: Path, theme: str | None = None) -> dict[str, Any
 
     slides.append(bind_back_cover(page_specs))
 
+    # 섹션 내비탭용 챕터 목록 — 목차(editorial_impact_axes)의 axes에서 추출
+    chapters: list[dict[str, str]] = []
+    for slide in slides:
+        if slide.get("layout") == "editorial_impact_axes":
+            chapters = [
+                {"num": clean_text(axis.get("num")), "key": clean_text(axis.get("key"), 16)}
+                for axis in slide.get("axes", [])
+                if clean_text(axis.get("key"))
+            ]
+            break
+
     title = clean_text(page_specs.get("topic"), 90)
     theme_id = clean_text(theme or page_specs.get("theme") or "TD_pantone_ink_light")
     return {
         "title": title,
         "theme": theme_id,
+        "chapters": chapters,
         "brand": {
             "name": "TickDeck",
             "footer": title,

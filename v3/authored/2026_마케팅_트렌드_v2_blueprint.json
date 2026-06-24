@@ -1,0 +1,100 @@
+{
+  "topic": "2026 마케팅 트렌드",
+  "version": "v2 (코퍼스 14 PDF 기반 재제작)",
+  "governing_thought": "AI가 마케팅의 새 기본값이 된 2026 — 모두가 같은 초능력을 쥔 시장에서, 차별화는 'AI를 얼마나 쓰느냐'가 아니라 AI가 복제 못 하는 '증명된 인간다움'(신뢰·관점·팬덤·craft)을 얼마나 만들어내느냐로 갈린다.",
+  "governing_thought_short": "AI는 기본값 · 차별화는 증명된 인간다움",
+  "audience": "마케팅 실무자 일반 (강조점=실행·운영·도구 / 직책 가정 약하게 / 보이스는 후추님 고정)",
+  "register": "개조식(~함/~임) · 사업화형 논리 · 시스템 안전 폰트(맑은고딕)",
+  "story_arc": [
+    "변화 — AI가 마케팅의 기본값이 됨(모두가 같은 초능력). AI 채택은 끝난 논쟁.",
+    "역설 — AI가 흔해질수록 그 산출물은 commodity가 되고 진짜/가짜 구분이 무너짐 → 인간 신뢰·진정성의 '프리미엄'이 오름.",
+    "재편 — 그 결과 마케팅의 다섯 축(발견·고객·신뢰·팬덤·증명)이 동시에 다시 쓰임.",
+    "차별화 모델 — AI는 commodity 작업에, 인간은 craft·신뢰·관점에. 효율로 번 자원을 '인간 증명'에 재투자(matter-more).",
+    "실행·다음 액션 — CMO가 내일 할 것: GEO·이중청중 최적화 / 팬덤 커뮤니티 설계 / MROI·trust equity로 증명."
+  ],
+  "sections": [
+    {
+      "id": "S1",
+      "theme_title": "발견의 재편 — '검색'에서 '발견'으로",
+      "theme_slogan_en": "Discovery Rewritten",
+      "governing_subpoint": "사람을 만나는 입구가 검색창에서 소셜·AI·커뮤니티로 옮겨감 → 노출 전장이 통째로 이동.",
+      "original_categories": ["AMA 검색→스크롤·Google Zero", "McKinsey SEO→GEO", "OSL The Human Algorithm/earned=SEO", "WPP Interfaces Reimagined", "GWI 소셜=지배 미디어", "Collective Measures SEO everywhere"],
+      "reclassified": true,
+      "page_budget": 3,
+      "key_points": [
+        "zero-click 뉴스 56%→70%, 일부 사이트 organic 트래픽 55%+ 하락 (AMA p.24)",
+        "Gen Z 61%가 전통 검색 대신 AI 도구 (Vox Media, AMA p.28)",
+        "소셜+숏폼 주 13.5시간 = 방송TV+스트리밍+라디오 합보다 많음 (GWI p.20)",
+        "SEO→GEO: AI 검색 사용자 50%+가 구매결정에 AI 의존 (McKinsey p.43)"
+      ]
+    },
+    {
+      "id": "S2",
+      "theme_title": "새 고객은 기계 + 사람 — '이중 청중'",
+      "theme_slogan_en": "The Dual Audience",
+      "governing_subpoint": "AI 에이전트가 새 구매자·새 채널이 됨 → 브랜드는 기계에겐 '사실적 명료', 사람에겐 '감정적 연결'을 동시에.",
+      "original_categories": ["WPP Invisible Shoppers/ACO/dual-audience", "AMA Age of Autonomous Agents/B-to-A", "KPMG agentic AI 88%", "MezzoMedia 에이전틱 커머스", "Trending Visa Intelligent Commerce", "McKinsey Coca-Cola agentic"],
+      "reclassified": true,
+      "page_budget": 3,
+      "key_points": [
+        "전통 구매 퍼널(awareness→conversion)이 'agent-driven 단일 스텝'으로 붕괴 가능 (WPP p.27)",
+        "88%가 이미 agentic AI 투자, 92%가 '에이전트 관리'를 핵심 스킬로 전망 (KPMG p.21)",
+        "이중청중 원칙: AI=factual clarity / 인간=emotional connection (WPP p.30)",
+        "Coca-Cola 자율 에이전트 80만 개인화 쿠폰 → CTR 약 4배 (McKinsey p.43)"
+      ]
+    },
+    {
+      "id": "S3",
+      "theme_title": "신뢰 프리미엄 — AI가 흔할수록 비싸지는 '사람'",
+      "theme_slogan_en": "The Trust Premium",
+      "governing_subpoint": "합성 콘텐츠 범람으로 진짜/가짜가 무너질수록, 인간 진정성·증명이 마지막 차별화 통화가 됨.",
+      "original_categories": ["WPP AI Creator Dilemma", "AMA Brand Trust/proof design/trust equity", "OSL Return to Real/Proof of Craft", "McKinsey Be trusted", "Trending Keep Commerce Human/AI vegans"],
+      "reclassified": true,
+      "page_budget": 3,
+      "key_points": [
+        "영국 65%가 진짜와 합성 콘텐츠 구분 어려움 / 77%가 AI 콘텐츠 라벨링 요구 (WPP p.19)",
+        "'storytelling → proof design': 위조 가능 시대에 신뢰성이 마지막 차별점 (AMA p.57)",
+        "97%가 'authentic' 이미지가 신뢰에 핵심 / 98%가 AI음악 구별 못함 (OSL Getty·Deezer p.12)",
+        "62%가 '인간 창의팀은 대체 불가'에 동의 — gen AI가 floor와 bar 동시에 올림 (McKinsey p.21)"
+      ]
+    },
+    {
+      "id": "S4",
+      "theme_title": "팬덤·커뮤니티 — '도달'에서 '공명'으로",
+      "theme_slogan_en": "From Reach to Resonance",
+      "governing_subpoint": "영향력 중심이 대중 세분화에서 정체성 기반 커뮤니티·팬덤으로 이동 → reach가 아니라 resonance가 효과를 가름.",
+      "original_categories": ["Havas Fueled by Fandom", "Deloitte DMT fandom value/LTV", "OSL Internet Intimacy", "AMA tribes/cultural code fluency/Lululemon", "GWI World Cup fan 분류"],
+      "reclassified": true,
+      "page_budget": 3,
+      "key_points": [
+        "소비자 80%가 '팬', 팬은 nonfan보다 미디어에 하루 +51분(16%) 소비 (Deloitte DMT)",
+        "Gen Z 86%가 스스로를 'fan'으로 정체화 (OSL Ogilvy Fandom Flux)",
+        "효과는 reach가 아니라 resonance·identity-based community에 좌우 (AMA p.55)",
+        "신규 지표 제안: 'fandom lifetime value' (Deloitte DMT)"
+      ]
+    },
+    {
+      "id": "S5",
+      "theme_title": "마케팅의 재무 증명 — '비용'이 아니라 '성장 엔진'",
+      "theme_slogan_en": "Marketing Must Pay",
+      "governing_subpoint": "AI 효율은 기본값 → 진짜 승부는 효율로 번 자원을 성장에 재투자하고, 마케팅을 재무 언어로 증명하는 것.",
+      "original_categories": ["PwC matter-more/수익승수/지표피라미드", "McKinsey Be effective/MROI", "KPMG ROI zones/adaptive", "Deloitte performance/end of blind spend"],
+      "reclassified": true,
+      "page_budget": 3,
+      "key_points": [
+        "마케팅 3핵심 모두 선도 기업 TSR 평균 +79% (PwC p.5)",
+        "효율 자원을 효과에 재투자 시 단기 절감 대비 수익성 2배+ (PwC p.13)",
+        "ROI는 투자에 비례하지 않음 — 평균 2x, 고성과자 4.5x (KPMG p.12)",
+        "CMO 64%가 '마케팅 가치 증명'이 최대 도전 / KPI 있는 곳 33%뿐 (Deloitte p.9·13)"
+      ]
+    }
+  ],
+  "framing": {
+    "opening": "변화(AI 기본값·끝난 논쟁) + 역설(commodity→human premium)을 첫 3장에 — 덱이 답할 질문 1개 + 긴장(통념→균열). 표지에 지배메시지 1줄.",
+    "synthesis": "★수렴 도식(결론 종합) — 5축이 한 점으로 모임. 각 축을 '신뢰=사업 자산'의 한 면으로 재서술: S1 신뢰=새 유통 / S2 신뢰=최종 결정자 / S3 신뢰=차별화 통화 / S4 신뢰=retention 엔진 / S5 신뢰=성장 승수. 중심 노드 = 'AI는 실행을 평준화 → 인간 신뢰 = 유일한 해자 → 효율로 번 것을 신뢰에 재투자'. 5→1 convergence 레이아웃(DNA 결론종합 도식·N 도식).",
+    "conclusion": "펀치라인(수미상관: 지배메시지 재등장) = '다섯 축은 한 곳을 가리킴 — AI가 실행을 평준화한 시대, 차별화·성장은 AI가 못 사는 인간 신뢰에서만 난다.' + 사업화형 착지: CMO가 내일 아침 회의에서 던질 첫 질문 = '우리는 AI 효율로 번 자원을 인간 증명에 재투자하는가, 아니면 더 싼 commodity를 더 많이 찍는가?' + 3 액션(발견을 GEO·커뮤니티로 재설계 / 에이전트엔 구조화·인간엔 신뢰 / trust equity·fandom LTV를 KPI로). ★변명조 각주·흐지부지 종결 금지(옛 p19 결함)."
+  },
+  "reclassification_note": "원 보고서들의 트렌드 목록(WPP 5축·AMA 5트렌드·GWI 5간과트렌드·McKinsey 3테마·OSL 5·Havas 6예측·Deloitte 5)을 우리 렌즈로 5축(발견·고객·신뢰·팬덤·증명)으로 재범주화. 공통 저류 = '증명된 인간다움'. 베낀 게 아니라 해석.",
+  "estimated_pages": "20~22 (표지·목차 2 / 오프닝 3 / 5축 각 3 = 15 / 종합 1 / 결론 1 / 참고 1)",
+  "design_direction": "모던 트렌드 리포트 레지스터 · 산세(맑은고딕) · 톤다운 베이스 + 비비드 강조 1점 · 킥커+헤드 · borderless 차트 · 라이트/다크 챕터 신호 (DESIGN_LEARNINGS.md 규율 적용)"
+}

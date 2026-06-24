@@ -1,0 +1,680 @@
+{
+  "topic": "2026 마케팅 트렌드",
+  "governing_thought_short": "AI는 기본값 · 차별화는 증명된 인간다움",
+  "audience": "마케팅 실무자 일반",
+  "register": "개조식(~함/~임) · 사업화형 · 맑은고딕",
+  "arc": "사업화형: 시장 변화 → 문제/기회 → 비교·전선 → 해결안/모델 → 운영 계획 → 효과/리스크/다음 액션",
+  "citation_style": "컨설팅 endnote — 수치 옆 위첨자 번호 + 각 장 하단 약식 자료 라인 + 마지막 장 번호순 정식 서지 1장 집약",
+  "pages": [
+    {
+      "page_no": 1,
+      "role": "cover",
+      "content_kind": "narrative",
+      "section_nav": "",
+      "headline": "2026 마케팅 트렌드",
+      "takeaways": [
+        "AI는 기본값 — 차별화는 '증명된 인간다움'에서 남"
+      ],
+      "payload": {},
+      "sources": [],
+      "footnotes": []
+    },
+    {
+      "page_no": 2,
+      "role": "agenda",
+      "content_kind": "narrative",
+      "section_nav": "",
+      "headline": "AI가 기본이 된 시대, 차별화는 어디서 오는가",
+      "takeaways": [
+        "결론을 먼저: 다섯 전선은 한 곳 — 'AI가 못 사는 인간 신뢰'로 모임"
+      ],
+      "payload": {
+        "sections": [
+          {
+            "num": "01",
+            "key": "변화",
+            "tag": "The Shift",
+            "line": "AI가 마케팅의 기본값이 됨 — 도입은 끝난 논쟁"
+          },
+          {
+            "num": "02",
+            "key": "문제·기회",
+            "tag": "The Paradox",
+            "line": "AI가 흔할수록 사람이 비싸짐 — 차별화의 자리 이동"
+          },
+          {
+            "num": "03",
+            "key": "다섯 전선",
+            "tag": "Five Fronts",
+            "line": "발견·고객·신뢰·팬덤·재투자가 다시 쓰임"
+          },
+          {
+            "num": "04",
+            "key": "해결안",
+            "tag": "The Moat",
+            "line": "다섯은 한 곳 — 인간 신뢰가 유일한 해자"
+          },
+          {
+            "num": "05",
+            "key": "운영·실행",
+            "tag": "What To Do",
+            "line": "마케터가 내일부터 바꿀 것"
+          }
+        ]
+      },
+      "sources": [],
+      "footnotes": []
+    },
+    {
+      "page_no": 3,
+      "role": "section_divider",
+      "content_kind": "narrative",
+      "section_nav": "01 변화",
+      "headline": "판이 바뀐다 — AI가 마케팅의 기본값이 됨",
+      "takeaways": [
+        "도입 여부는 끝난 논쟁 · 이제 격차는 '얼마나 잘 쓰느냐'"
+      ],
+      "payload": {},
+      "sources": [],
+      "footnotes": [],
+      "dark": true
+    },
+    {
+      "page_no": 4,
+      "role": "content",
+      "content_kind": "chart_kpi",
+      "section_nav": "01 변화",
+      "headline": "AI는 마케터의 ==1순위 투자처== — 도입은 끝난 논쟁",
+      "takeaways": [
+        "올해 '증액 우선 투자영역' 1위가 gen AI(50%) — 도입 여부는 더 이상 쟁점이 아님",
+        "남은 건 '얼마나 잘 쓰느냐'의 격차"
+      ],
+      "payload": {
+        "value": "50%",
+        "label": "gen AI = 마케터 '증액 우선 투자영역' 1위 (MROI 42 · 인사이트 38 · 디지털 36 · R&D 28)",
+        "mini": [
+          50,
+          42,
+          38,
+          36,
+          28
+        ]
+      },
+      "sources": [
+        {
+          "name": "7. McKinsey — State of Marketing Europe 2026 (Exhibit 11, p.29)"
+        }
+      ],
+      "footnotes": []
+    },
+    {
+      "page_no": 5,
+      "role": "content",
+      "content_kind": "timeline_evolution",
+      "section_nav": "01 변화",
+      "headline": "AI의 역할 이동 — '도구'에서 '실행자'로",
+      "takeaways": [
+        "AI는 콘텐츠 보조를 넘어 캠페인을 스스로 집행하는 단계로 올라섬",
+        "그런데 모두가 같은 실행자를 쥐면, 무엇으로 달라지나"
+      ],
+      "payload": {
+        "stages": [
+          {
+            "period": "~2024",
+            "label": "실험 (Tool)",
+            "detail": "파일럿·부분 도입 — 생성형 AI를 보조 도구로 시험"
+          },
+          {
+            "period": "2025",
+            "label": "생성형 통합 (Generative)",
+            "detail": "전사 확산 — 콘텐츠·캠페인 전반의 기본 도구로 안착"
+          },
+          {
+            "period": "2026~",
+            "label": "에이전틱 실행 (Agentic)",
+            "detail": "목표만 받아 타기팅·집행·측정까지 자율 수행⁴"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "name": "4. AMA (2026)"
+        },
+        {
+          "name": "2. KPMG (2026)"
+        }
+      ],
+      "footnotes": []
+    },
+    {
+      "page_no": 6,
+      "role": "section_divider",
+      "content_kind": "narrative",
+      "section_nav": "02 문제·기회",
+      "headline": "다 같은 AI — 그래서 무엇으로 다른가",
+      "takeaways": [
+        "AI가 흔해질수록 그 산출물은 평준화됨 · 차별화의 자리가 옮겨감"
+      ],
+      "payload": {},
+      "sources": [],
+      "footnotes": [],
+      "dark": true
+    },
+    {
+      "page_no": 7,
+      "role": "content",
+      "content_kind": "concept_relation",
+      "section_nav": "02 문제·기회",
+      "headline": "역설 — AI가 흔할수록 ==사람==이 비싸짐",
+      "takeaways": [
+        "콘텐츠가 무한히 싸지는 시대 → 가장 비싼 자산은 인간의 신뢰",
+        "이 역설이 마케팅의 다섯 전선에서 동시에 구체화됨"
+      ],
+      "payload": {
+        "focus": [
+          {
+            "title": "진짜/가짜 붕괴",
+            "body": "진짜와 합성 콘텐츠 구분이 어렵다는 응답 65% (영국)"
+          },
+          {
+            "title": "진정성 프리미엄",
+            "body": "'authentic' 이미지가 신뢰에 핵심이라는 동의 97%"
+          },
+          {
+            "title": "마지막 차별점",
+            "body": "위조 가능 시대, 신뢰성이 마지막 차별점 — storytelling → proof design"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "name": "5. WPP Media (2026)"
+        },
+        {
+          "name": "6. Ogilvy Social Lab (2026)"
+        },
+        {
+          "name": "4. AMA (2026)"
+        }
+      ],
+      "footnotes": [
+        {
+          "term": "proof design",
+          "en": "proof design",
+          "def": "스토리텔링을 넘어 '진짜임'을 증명하는 설계 — AMA가 제시한 신뢰 시대의 마케팅 원칙"
+        }
+      ],
+      "layout": "corporate_research_navy_split_focus"
+    },
+    {
+      "page_no": 8,
+      "role": "section_divider",
+      "content_kind": "narrative",
+      "section_nav": "03 다섯 전선",
+      "headline": "변화가 다시 쓰는 다섯 전선",
+      "takeaways": [
+        "발견 · 고객 · 신뢰 · 팬덤 · 재투자 — 각 전선이 'Before → After'로 바뀜"
+      ],
+      "payload": {},
+      "sources": [],
+      "footnotes": [],
+      "dark": true
+    },
+    {
+      "page_no": 9,
+      "role": "content",
+      "content_kind": "chart_bar",
+      "section_nav": "03 다섯 전선 · 발견",
+      "headline": "주간 미디어 시간은 ==소셜·숏폼==이 지배 — 발견의 입구가 이동",
+      "takeaways": [
+        "한 조사의 전체 미디어 시간 순위 — 소셜·숏폼이 검색·기사·인쇄를 압도",
+        "사람을 만나는 첫 접점이 피드로 이동 — SEO에서 GEO로"
+      ],
+      "payload": {
+        "categories": [
+          "소셜미디어",
+          "숏폼 영상",
+          "스트리밍",
+          "음악 스트리밍",
+          "방송 TV",
+          "온라인 기사",
+          "인쇄 신문·잡지"
+        ],
+        "series": [
+          {
+            "name": "주간 소비 시간 (글로벌 평균, 시간)",
+            "values": [
+              7.1,
+              6.6,
+              5.0,
+              5.0,
+              4.9,
+              3.0,
+              1.6
+            ]
+          }
+        ],
+        "orient": "h",
+        "stacked": false
+      },
+      "sources": [
+        {
+          "name": "1. GWI — Connecting the Dots 2026 (p.20)"
+        }
+      ],
+      "footnotes": [
+        {
+          "term": "GEO",
+          "en": "Generative Engine Optimization",
+          "def": "검색엔진이 아니라 AI 답변(answer engine)에 노출되도록 최적화하는 것"
+        }
+      ]
+    },
+    {
+      "page_no": 10,
+      "role": "content",
+      "content_kind": "split",
+      "section_nav": "03 다섯 전선 · 고객",
+      "headline": "새 고객은 기계 + 사람 — '이중 청중'",
+      "takeaways": [
+        "AI 에이전트가 새 구매자·새 채널 → 기계와 사람에게 동시에 마케팅",
+        "기계엔 사실적 명료, 사람엔 감정적 연결"
+      ],
+      "payload": {
+        "lead": "AI 에이전트가 탐색·비교·구매를 대행하기 시작함 — 이제 마케팅은 기계와 사람, 두 청중을 동시에 겨냥해야 함.",
+        "right_kind": "bullets",
+        "right_items": [
+          "전통 퍼널(인지→고려→전환)이 에이전트의 '단일 스텝'으로 붕괴 가능",
+          "AI 에이전트에겐 구조화 데이터·제품 피드(ACO)로 노출",
+          "사람에겐 감정·브랜드 스토리로 연결 — 둘을 분리해 동시에 설계"
+        ]
+      },
+      "sources": [
+        {
+          "name": "5. WPP Media — UK Trends 2026 (Invisible Shoppers·ACO, p.27·30)"
+        }
+      ],
+      "footnotes": [
+        {
+          "term": "ACO",
+          "en": "Agentic Commerce Optimization",
+          "def": "AI 에이전트가 읽도록 제품 피드·구조화 데이터를 최적화 — SEO의 에이전트판"
+        }
+      ]
+    },
+    {
+      "page_no": 11,
+      "role": "content",
+      "content_kind": "growth_drivers",
+      "section_nav": "03 다섯 전선 · 신뢰",
+      "headline": "AI가 흔할수록 비싸지는 사람 — ==신뢰 프리미엄==",
+      "takeaways": [
+        "효율·개인화는 모두가 갖는 기본값 · 차별화는 그 위에서 갈림",
+        "차별값 = 자동화를 능가하는 인간의 신뢰·창의·공감"
+      ],
+      "payload": {
+        "cards": [
+          {
+            "title": "AI가 푸는 것 — 기본값",
+            "body": "효율: 제작·운영의 속도와 규모 / 개인화: 대규모 자동화. 모두가 갖는 기본값이라 차별화가 못 됨"
+          },
+          {
+            "title": "사람이 버는 것 — 차별값⁷",
+            "body": "'인간 창의팀은 대체 불가' 동의 62% — 진정성·신뢰, 창의·공감·전문성이 자동화를 능가"
+          },
+          {
+            "title": "소비자도 같은 방향 — 신뢰 요구¹⁰",
+            "body": "'공정주의족'은 허구보다 사실·스토리텔링보다 투명성을 요구 / 번아웃 42%가 '덜 최적화된 진정성'을 갈망"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "name": "7. McKinsey — State of Marketing Europe 2026"
+        },
+        {
+          "name": "10. WGSN — Future Consumer 2026"
+        }
+      ],
+      "footnotes": []
+    },
+    {
+      "page_no": 12,
+      "role": "content",
+      "content_kind": "comparison",
+      "section_nav": "03 다섯 전선 · 팬덤",
+      "headline": "'팬'은 모든 지표에서 비팬을 앞섬 — 측정 가능한 경제 가치",
+      "takeaways": [
+        "한 조사의 팬 vs 비팬 전 지표 비교 — 팬은 더 구독하고·더 오래 머묾",
+        "팬덤은 감성이 아니라 수치 — 도달이 아니라 공명이 가치를 만듦"
+      ],
+      "payload": {
+        "headers": [
+          "지표",
+          "팬",
+          "비팬"
+        ],
+        "rows": [
+          [
+            "SVOD(유료 스트리밍) 가입",
+            "92%",
+            "77%"
+          ],
+          [
+            "게이머 비율",
+            "75%",
+            "52%"
+          ],
+          [
+            "유료 음악 스트리밍 가입",
+            "67%",
+            "40%"
+          ],
+          [
+            "일 미디어 소비 (비팬 대비)",
+            "+51분 (16%)",
+            "기준"
+          ]
+        ]
+      },
+      "sources": [
+        {
+          "name": "8. Deloitte — 2026 Digital Media Trends (n=3,575)"
+        }
+      ],
+      "footnotes": [
+        {
+          "term": "fandom lifetime value",
+          "en": "fandom lifetime value",
+          "def": "개별 팬·팬 커뮤니티의 장기 경제 잠재력을 측정하자고 Deloitte가 제안한 새 지표"
+        }
+      ]
+    },
+    {
+      "page_no": 13,
+      "role": "content",
+      "content_kind": "concept_relation",
+      "section_nav": "03 다섯 전선 · 재투자",
+      "headline": "효율의 함정 — 절감이 아니라 ==재투자==가 차이를 만듦",
+      "takeaways": [
+        "AI 효율은 누구나 갖는 기본값 → 절감을 어디 쓰느냐가 승부",
+        "효율을 인간 자산(신뢰·관점·관계)에 재투자한 소수가 압도"
+      ],
+      "payload": {
+        "before": {
+          "label": "함정",
+          "title": "절감 → 더 싼 commodity",
+          "items": [
+            {
+              "title": "cost less",
+              "body": "효율을 비용 절감에만 쓰면 남보다 싼·많은 평준화 콘텐츠뿐"
+            }
+          ]
+        },
+        "after": {
+          "label": "성장",
+          "title": "재투자 → 인간 자산",
+          "items": [
+            {
+              "title": "matter more",
+              "body": "효율로 번 자원을 신뢰·관점·관계에 재투자 — 자동화가 못 만드는 차별화"
+            }
+          ]
+        },
+        "metric": {
+          "label": "효율 향상 격차 (선도 vs 후발)",
+          "value": "22% vs 1%",
+          "note": "차이는 도구가 아니라 '어디에 쓰나' — 선도는 재투자로 격차를 벌림"
+        }
+      },
+      "sources": [
+        {
+          "name": "7. McKinsey — State of Marketing Europe 2026 (Exhibit 15, p.39)"
+        }
+      ],
+      "footnotes": []
+    },
+    {
+      "page_no": 14,
+      "role": "section_synthesis",
+      "content_kind": "convergence",
+      "section_nav": "04 해결안",
+      "headline": "다섯 전선은 한 곳을 가리킴 — ==인간 신뢰==가 해자",
+      "takeaways": [
+        "다섯 전선은 따로 노는 트렌드가 아니라 한 변화의 다섯 얼굴",
+        "AI는 '실행'을 평준화 · 차별화·성장은 'AI가 못 사는 인간 신뢰'에서만 남"
+      ],
+      "payload": {
+        "drivers": [
+          {
+            "title": "발견",
+            "body": "신뢰 = 새 유통(어디서 발견되나)"
+          },
+          {
+            "title": "고객",
+            "body": "신뢰 = 최종 결정자(기계 너머 사람)"
+          },
+          {
+            "title": "신뢰",
+            "body": "신뢰 = 차별화 통화"
+          },
+          {
+            "title": "팬덤",
+            "body": "신뢰 = retention 엔진"
+          },
+          {
+            "title": "재투자",
+            "body": "신뢰 = 성장 승수"
+          }
+        ],
+        "outcome": {
+          "label": "해결안",
+          "title": "인간 신뢰 = 유일한 해자",
+          "body": "AI는 실행을 평준화함 → 효율로 번 것을 인간 신뢰에 재투자하는 자가 2026을 가져감"
+        }
+      },
+      "sources": [],
+      "footnotes": []
+    },
+    {
+      "page_no": 15,
+      "role": "section_divider",
+      "content_kind": "narrative",
+      "section_nav": "05 운영",
+      "headline": "그래서, 마케터는 무엇을·어떻게",
+      "takeaways": [
+        "통찰을 운영 단위로 — 내일부터 바꿀 것 셋 + 운영화 단계"
+      ],
+      "payload": {},
+      "sources": [],
+      "footnotes": [],
+      "dark": true
+    },
+    {
+      "page_no": 16,
+      "role": "content",
+      "content_kind": "growth_drivers",
+      "section_nav": "05 운영",
+      "headline": "내일부터 셋 — 발견·이중청중·재투자",
+      "takeaways": [
+        "큰 전략이 아니라 이번 분기에 손댈 수 있는 실행 단위로 내림",
+        "셋 다 '인간 신뢰에 재투자'라는 한 방향"
+      ],
+      "payload": {
+        "cards": [
+          {
+            "title": "① 발견을 재설계⁴",
+            "body": "검색 키워드 최적화에서 → AI 답변(GEO)·커뮤니티·earned 노출 설계로. '그룹챗에 공유할까?'를 콘텐츠 기준으로"
+          },
+          {
+            "title": "② 이중 청중에 맞춤⁵",
+            "body": "에이전트엔 구조화 데이터·피드(ACO), 사람엔 감정·브랜드 스토리. 둘을 분리해 동시에 설계"
+          },
+          {
+            "title": "③ 효율을 재투자",
+            "body": "AI로 번 시간·예산을 더 싼 콘텐츠가 아니라 진정성·커뮤니티·인간 craft에 재투자"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "name": "4. AMA (2026)"
+        },
+        {
+          "name": "5. WPP Media (2026)"
+        }
+      ],
+      "footnotes": []
+    },
+    {
+      "page_no": 17,
+      "role": "content",
+      "content_kind": "funnel_steps",
+      "section_nav": "05 운영",
+      "headline": "AI 운영화 = 네 단계의 상승",
+      "takeaways": [
+        "실험에서 멈추면 효율만 남고 차별화는 안 생김 — 측정·재투자까지 올라가야 회수됨"
+      ],
+      "payload": {
+        "steps": [
+          {
+            "label": "1. 실험적 도입",
+            "body": "파일럿·부분 부서에서 생성형 AI를 시험"
+          },
+          {
+            "label": "2. 전사 통합",
+            "body": "콘텐츠·캠페인 전반에 AI를 기본 탑재"
+          },
+          {
+            "label": "3. 에이전틱 실행",
+            "body": "목표를 받아 자율 집행하는 시스템 도입"
+          },
+          {
+            "label": "4. 측정 → 재투자⁷",
+            "body": "성과를 측정해 효율로 번 것을 인간 신뢰에 다시 투입 → 루프를 닫음"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "name": "7. McKinsey (2026)"
+        },
+        {
+          "name": "4. AMA (2026)"
+        }
+      ],
+      "footnotes": []
+    },
+    {
+      "page_no": 18,
+      "role": "conclusion",
+      "content_kind": "narrative",
+      "section_nav": "",
+      "headline": "AI는 기본값이 됨 — 이제 ==인간 신뢰==에 재투자",
+      "takeaways": [
+        "다섯 전선은 한 곳을 가리킴 — AI가 실행을 평준화한 시대, 차별화·성장은 'AI가 못 사는 인간 신뢰'에서만 남",
+        "효과: 효율로 번 것을 인간 자산에 재투자한 쪽이 성장 (선도 22% vs 후발 1%⁷ · ROI 고성과 4.5x²)",
+        "다음 액션: ① 발견을 GEO·커뮤니티로 ② 에이전트엔 구조화·사람엔 감정 ③ 효율을 진정성·커뮤니티에 재투자",
+        "전제·리스크: 시장규모·채택률 수치는 기관별로 갈리는 '방향 신호' — 단일 합의 수치 아님을 전제로 읽되, 방향은 모든 출처에서 일관"
+      ],
+      "payload": {},
+      "sources": [
+        {
+          "name": "7. McKinsey (2026)"
+        },
+        {
+          "name": "2. KPMG (2026)"
+        }
+      ],
+      "footnotes": []
+    },
+    {
+      "page_no": 19,
+      "role": "references",
+      "content_kind": "narrative",
+      "section_nav": "",
+      "headline": "참고자료 (Sources)",
+      "takeaways": [],
+      "payload": {},
+      "sources": [],
+      "footnotes": []
+    }
+  ],
+  "references": [
+    {
+      "name": "1. GWI — Connecting the Dots 2026",
+      "url": "gwi.com",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "2. KPMG — Global Tech Report 2026",
+      "url": "kpmg.com",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "3. Deloitte Digital — Marketing Trends 2026",
+      "url": "deloittedigital.com",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "4. AMA — 2026 Future Trends in Marketing",
+      "url": "ama.org",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "5. WPP Media — UK Trends 2026",
+      "url": "wppmedia.com",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "6. Ogilvy Social Lab — Social Trends 2026",
+      "url": "social-lab.eu",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "7. McKinsey — State of Marketing Europe 2026",
+      "url": "mckinsey.com",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "8. Deloitte — 2026 Digital Media Trends",
+      "url": "deloitte.com",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "9. PwC Consulting — Marketing in the AI Era",
+      "url": "pwc.com",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "10. WGSN — Future Consumer 2026",
+      "url": "wgsn.com",
+      "tag": "본문 출처"
+    },
+    {
+      "name": "기타 · Havas Red — Brand Experience 2026",
+      "url": "havas.com",
+      "tag": "참고"
+    },
+    {
+      "name": "기타 · WGSN — Top Trends for 2026",
+      "url": "wgsn.com/top-trends",
+      "tag": "참고"
+    },
+    {
+      "name": "기타 · Collective Measures — 2026 Trend Predictions",
+      "url": "collectivemeasures.com",
+      "tag": "참고"
+    },
+    {
+      "name": "기타 · Foresight Factory — Trending 2026",
+      "url": "foresightfactory.co",
+      "tag": "참고"
+    },
+    {
+      "name": "기타 · MezzoMedia — 2026 Trend Report",
+      "url": "mezzomedia.co.kr",
+      "tag": "참고"
+    }
+  ]
+}
