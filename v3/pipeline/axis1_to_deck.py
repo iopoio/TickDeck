@@ -44,6 +44,10 @@ ALLOWED_LAYOUTS = {
     "chart_line",
     "chart_combo",
     "chart_kpi",
+    "heatmap_matrix",
+    "mirror_bars",
+    "rising_columns",
+    "dumbbell_plot",
     "product_use_case_4step",
     "case_card_examples_pair",
     "data_visualization_2col_chart_text",
@@ -216,6 +220,13 @@ EXPLICIT_LAYOUTS = {
     "case_card_examples_pair",
     "ir_company_overview_timeline_milestone",
     "single_page_complete_landing_mockup",
+    # Phase 2 신규 차트 — 데이터 형태 보고 작가가 양식 의도 선택(deck-layout-deliberate).
+    # payload 키(matrix / categories+left+right / values / start+end)를 슬라이드에 spread.
+    "heatmap_matrix",
+    "mirror_bars",
+    "rising_columns",
+    "dumbbell_plot",
+    "before_after_diagram_with_metric",
 }
 _STRUCTURAL_ROLES = {"cover", "agenda", "section_divider", "references", "conclusion"}
 
@@ -390,7 +401,7 @@ def conclusion_actions_and_note(page: dict[str, Any]) -> tuple[list[dict[str, st
             body_parts.append(text)
 
     actions = [
-        {"num": f"{idx:02d}", "text": clean_text(text, 90)}
+        {"num": f"{idx:02d}", "text": clean_text(text, 140)}
         for idx, text in enumerate(action_texts[:5], start=1)
         if clean_text(text)
     ]
@@ -591,6 +602,7 @@ def normalize_bar_chart(payload: dict[str, Any]) -> dict[str, Any]:
         "type": "bar",
         "categories": chart_categories(payload.get("categories")),
         "series": normalize_series(payload.get("series"), default_name="Series"),
+        "unit": clean_text(payload.get("unit"), 8),
         "orient": "h" if clean_text(payload.get("orient")).lower() == "h" else "v",
         "stacked": bool(payload.get("stacked")),
     }
@@ -668,7 +680,7 @@ def bind_chart(page: dict[str, Any], layout: str) -> dict[str, Any]:
     elif layout == "chart_kpi":
         slide["kpi"] = {
             "value": clean_text(payload.get("value"), 48),
-            "label": clean_text(payload.get("label"), 64),
+            "label": clean_text(payload.get("label"), 110),
         }
         if isinstance(payload.get("chart"), dict):
             slide["chart"] = normalize_nested_chart(payload["chart"], "line")
@@ -788,9 +800,9 @@ def bind_section_divider(page: dict[str, Any]) -> dict[str, Any]:
     # 간지 = Family B 다크 statement (챕터 경계 리듬). page.dark 또는 page.style로 켠다.
     if page.get("dark"):
         slide["style"] = {
-            "bg": "#14211F", "ink": "#F3F1E9", "muted": "#A7B7B4",
+            "bg": "#14211F", "ink": "#F3F1E9", "muted": "#C3D0CD",
             "panel": "#1B2C29", "line": "#2C3F3B",
-            "accent-soft": "#1E332F",  # 거대 챕터 숫자 = 어두운 워터마크(제목 겹침 해소)
+            "accent-soft": "#2A4640",  # 거대 챕터 숫자 = 의도된 워터마크(명확하게·탁함 제거)
             "accent-dark": "#6FD3CF",  # 킥커 = 밝은 틸(다크 위 가독)
         }
     if isinstance(page.get("style"), dict):
@@ -1005,8 +1017,10 @@ def bind_concept_relation(page: dict[str, Any], layout: str) -> dict[str, Any]:
 def bind_funnel(page: dict[str, Any], layout: str) -> dict[str, Any]:
     if not has_list_payload(page, "steps"):
         return narrative_fallback(page)
-    steps = (page.get("payload") or {}).get("steps") or []
+    payload = page.get("payload") or {}
+    steps = payload.get("steps") or []
     slide = common_slide(page, layout)
+    slide["ascending"] = bool(payload.get("ascending"))
     slide["stages"] = [
         {
             "stage": clean_text(step.get("label") or f"Step {idx}", 32),
@@ -1069,6 +1083,15 @@ def bind_conclusion(page: dict[str, Any], page_specs: dict[str, Any]) -> dict[st
     slide["actions"] = actions
     if note:
         slide["note"] = clean_text(note, 220)
+    # 결론 = 다크 피날레(간지 5장과 같은 틸 다크 톤 = 챕터-경계 리듬). 본문과 구분 + 마무리 임팩트.
+    # 흰 제목 + 틸 숫자 + 흰 카드텍스트 = 2층 위계(단조 X). 채도 낮아 눈부심 X.
+    slide["style"] = {
+        "bg": "#14211F", "ink": "#F3F1E9", "muted": "#B7C8C4",
+        "panel": "#243F3A", "line": "#42605A",
+        "accent": "#5FD0CB", "accent-dark": "#5FD0CB", "accent-soft": "#22382F",
+    }
+    if isinstance(page.get("style"), dict):
+        slide["style"].update(page["style"])
     return slide
 
 
