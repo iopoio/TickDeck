@@ -70,6 +70,31 @@
 - [ ] number-chip 디바이더 · 산세/세리프 페어링 (중)
 > Phase 2~3은 Phase 1 마무리 후 top 6~8 선별 구현. 매 항목 렌더·검증·보고.
 
+### Phase 2 — 차트 신규 4종 (2026-06-24 완료 · 엔진 흡수)
+- [x] **히트맵 매트릭스**(`heatmap_matrix`) — 셀 명도=값 단일강조 명도램프 + 행/열 라벨 + 직접 수치 + 스케일 키
+- [x] **미러 분기 막대**(`mirror_bars`) — 중앙 카테고리 스파인, 좌(accent tint)/우(accent), 값라벨 고정 컬럼
+- [x] **상승컬럼 + 멀티플라이어**(`rising_columns`) — 점증 막대 명도램프 + 첫→끝 ×N 브래킷 콜아웃
+- [x] **덤벨 도트플롯 + 델타**(`dumbbell_plot`) — 두 시점 도트+커넥터, 우측 증감 델타(▲accent-dark/▼muted, 단색 유지)
+> **구현 방식 결정**: vendored echarts(`echarts.local.js`)는 bar/line/donut/gauge만 지원하는 커스텀 shim → 신규 4종은 **순수 HTML/CSS**(funnel·convergence 패턴, `color-mix` 명도램프)로 렌더. echarts 확장 안 함.
+> **위치**: `deck_harness/src/build.py`(렌더러+LAYOUT_RENDERERS) · `styles/tokens.css`(클래스) · `TickDeck/v3/pipeline/axis1_to_deck.py`(EXPLICIT_LAYOUTS+ALLOWED_LAYOUTS 패스스루).
+> **작가 사용법**: page_specs에서 `role:content` + `content_kind`(아무 유효값) + `layout:"<차트>"` + payload(히트맵=`matrix{x,y,values,unit}` · 미러=`categories/left/right/unit` · 상승=`categories/values/unit/multiplier?` · 덤벨=`categories/start/end/unit`). content_kind 자동라우팅은 의도 안 함(데이터 형태 보고 작가가 양식 선택 = deck-layout-deliberate).
+> **검증**: 4종 issues=0 렌더 · design_lint block 0 · 데모 = `deck_harness/slides_phase2_charts.json`(TD_trend_teal). sparse-content warn은 텍스트-ink 메트릭이 색 도형 미집계 탓(출하 3-card 0.14·표 0.17과 동급, 비차단). 미커밋 — 후추님 리뷰/커밋 권장.
+
+### 세련도 5레버 (2026-06-25 완료 · 엔진 토큰 흡수 · 크몽 외주샘플급 목표)
+- [x] **§3 한글 타이포** ★최우선 — 헤드라인 자간 `-0.025em`(display 공통) · 본문 프로즈 행간 1.5~1.62 · `word-break:keep-all`(.slide 전역). = AI티 제거.
+- [x] **모듈러 스케일/간지 숫자** — 워터마크 `accent-soft #2A4640`(또렷) · 거대숫자 300px(7~8×↑).
+- [x] **의도적 빈공간** — p10 split-left 세로중앙 · p5 타임라인 노드/간격 ↑.
+- [x] **표지·divider 시그니처** — cover/back 연한 틸 브랜드 원(북엔드) · 표지↔백커버 선 일치.
+- [x] **borderless 빅넘버 영웅화** — `chart-kpi-value`/`stat-callout-value`/`stat-value` = `var(--accent)` 강조색(body 3~3.7×).
+> 그 외 동반 흡수: 라이트/다크 매핑(본문 라이트·간지/결론 다크, p7 navy→라이트), 결론 다크 피날레(2층 위계), p16 줄글→3카드, p20 단기·중기·장기 로드맵, 카드 채움(center+340px). **SoT 메모리 = `deck-engine-design-tokens`.** 검증 block 0·issues 0. 손 안 댄 것 = Phase 4(동적색)·5(이미지).
+
+### 신규 엔진 레이아웃·기능 (2026-06-25 리뷰 라운드 흡수)
+- [x] **상승 계단**(`funnel` + payload `ascending:true`) — 좌→우 점증 블록(고도화·상승). render_funnel 분기 + `.stair-*` CSS.
+- [x] **vs 2단 비교**(`before_after_diagram_with_metric`, relation `vs`) — EXPLICIT_LAYOUTS 등록. payload `{relation,before,after}`.
+- [x] **코너 1/4 원형 모티프** — 표지·간지·감사 `::before`(중심=슬라이드 모서리, radius 320, 톤온톤).
+- [x] navy_split_focus 하단 **출처 푸터** 렌더 · 결론 카드 대비(panel/line) · 표 헤더 틸톤·강조열 우측.
+> 작가 사용법·전체 토큰 = 메모리 `deck-engine-design-tokens`. 전부 엔진 레벨(특정 덱 하드코딩 X) — 다음 덱 자동 적용.
+
 ## 권고
 1. **Phase 1(규약)은 비용 대비 효과 최고 → 먼저.** 차트 제목 액션타이틀·델타 주석·Figure 캡션·키워드 색전환만 해도 "컨설팅 리포트" 격이 올라감.
 2. **Phase 2~3은 우리 약점(비교·구조·다항통계) 직격 → 우선순위 높은 6~8개만 선별 구현**(전부 X).

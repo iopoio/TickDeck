@@ -4,7 +4,7 @@
 > 메모리(자동 로드): `tickdeck-v3-pivot` · `deck-pipeline-system` · `deck-font-safety` · `deck-single-source-ranking` · `deck-layout-deliberate`. 먼저 이거 본다.
 
 ## 한 줄 상태
-보강 flow로 **2026 마케팅 덱 v2 완성·렌더됨**(틸·사업화형·단일출처·컨설팅 인용). 엔진에 **레이아웃 직접지정·다크 간지·키워드 accent·섹션 내비탭**을 깔았고(모든 덱 적용), **디자인 흡수 Phase 1 주요항목 완료**. 다음 = **Phase 2(차트 신규)**.
+보강 flow로 **2026 마케팅 덱 v2 완성·렌더됨**(틸·사업화형·단일출처·컨설팅 인용). 엔진에 **레이아웃 직접지정·다크 간지·키워드 accent·섹션 내비탭**을 깔았고(모든 덱 적용), **디자인 흡수 Phase 1 주요항목 + Phase 2 차트 신규 4종 완료**. 다음 = **Phase 3(구조 위젯 top 6~8)**.
 
 ## 산출물 위치
 - 작가 원고: `v3/authored/2026_마케팅_트렌드_v2_page_specs.json` (SoT)
@@ -33,12 +33,20 @@
 - `bind_section_divider`: `page.dark`/`page.style`로 **다크 간지**(틸 다크 팔레트 + 챕터숫자 워터마크)
 - `build_deck`: `deck.chapters` 추출(목차 axes에서) — 내비탭용
 
+**Phase 2 차트 4종 (2026-06-24 추가 · 미커밋):**
+- `deck_harness/src/build.py`: `render_heatmap_matrix`·`render_mirror_bars`·`render_rising_columns`·`render_dumbbell_plot` + 헬퍼(`_chart_num`/`_fmt_value`/`_ramp_pct`/`render_chart_key`) + `LAYOUT_RENDERERS` 등록. (순수 HTML/CSS — echarts shim 미지원. render_ 본문 hex 금지 규약 준수.)
+- `deck_harness/styles/tokens.css`: 위 4종 클래스 + `.chart-key` 범례 (color-mix 명도램프).
+- `axis1_to_deck.py`: 4종을 `EXPLICIT_LAYOUTS` + `ALLOWED_LAYOUTS`에 추가(작가 직접지정 패스스루).
+
 ## 다음 할 것 (DESIGN_ABSORPTION_BACKLOG.md 순서)
-1. **Phase 2 차트 신규**(우선) — 각 새 렌더러 in deck_harness: 히트맵 매트릭스 · 미러 분기막대 · 상승컬럼+멀티플라이어 브래킷 · 덤벨 도트플롯 + bar 델타 주석. (단색+명도램프 철학 유지·자동생성 가능한 것만.)
-2. **Phase 3 구조 위젯** — 비교 매트릭스표 · 피라미드 계층도 · 노드-커넥터 분기도 · 틴티드 스탯카드 그리드 · 지그재그 프로세스 · 혼합 통계 대시보드. (top 6~8만 선별.)
+1. ~~**Phase 2 차트 신규**~~ ✅ **완료(2026-06-24)** — `heatmap_matrix`·`mirror_bars`·`rising_columns`·`dumbbell_plot` 4종 엔진 흡수(순수 HTML/CSS·단색 명도램프·issues=0). 데모 `deck_harness/slides_phase2_charts.json`. 작가 사용법·검증 = DESIGN_ABSORPTION_BACKLOG.md "Phase 2 완료" 섹션. (bar 델타 주석=기존 chart_bar용은 Phase 1 잔여로 남김.)
+2. **Phase 3 구조 위젯**(다음 우선) — 비교 매트릭스표 · 피라미드 계층도 · 노드-커넥터 분기도 · 틴티드 스탯카드 그리드 · 지그재그 프로세스 · 혼합 통계 대시보드. (top 6~8만 선별.) ※ Phase 2와 동일하게 echarts 말고 **순수 HTML/CSS** 패턴 권장(shim은 bar/line/donut/gauge만 지원).
 3. **Phase 4 색 동적화** — 섹션별 컬러코딩 · 콘텐츠/사진에서 색 생성.
 4. **Phase 5 = B 이미지** — v2 Pexels 연동을 v3로(사진=표지·디바이더 한정·데이터/본문 금지) + 지배색 추출.
 - 매 항목: 렌더·슬라이드 PNG 검증·후추님 보고. content_kind→layout은 `axis2_layouts/components/manifest.json`(현 20종 라우팅), 직접지정은 `EXPLICIT_LAYOUTS`.
+
+## 덱 구조 수정 (2026-06-24 후속)
+- **04 해결안 섹션 승격**: 원래 04는 간지 없이 수렴 슬라이드(현 15p)의 결과 박스로만 존재 → 다른 섹션과 리듬 깨짐. **간지("그래서, 무엇이 해자인가", 14p) + 독립 statement("인간 신뢰 = 유일한 해자", 16p, narrative_centered)** 추가 → 04 = 간지→수렴(증거)→statement(해자 메커니즘) = tell→show→land. 덱 19→**21 spec pages(22 슬라이드)**. block 0·issues 0.
 
 ## 현 덱 폴리시 미결(작은 것)
 - p7 navy(블루)와 다크 간지(틸 다크)가 **다른 다크** → 한 톤(틸 다크)으로 통일.
