@@ -1087,7 +1087,7 @@ def bind_conclusion(page: dict[str, Any], page_specs: dict[str, Any]) -> dict[st
     # 흰 제목 + 틸 숫자 + 흰 카드텍스트 = 2층 위계(단조 X). 채도 낮아 눈부심 X.
     slide["style"] = {
         "bg": "#14211F", "ink": "#F3F1E9", "muted": "#B7C8C4",
-        "panel": "#243F3A", "line": "#42605A",
+        "panel": "#26443E", "line": "#577D75",
         "accent": "#5FD0CB", "accent-dark": "#5FD0CB", "accent-soft": "#22382F",
     }
     if isinstance(page.get("style"), dict):
@@ -1147,7 +1147,7 @@ def bind_references(page_specs: dict[str, Any], page: dict[str, Any] | None = No
             {
                 "layout": "references_notes",
                 "title": title,
-                "subtitle": "본문 출처·수치 근거·용어 근거",
+                "subtitle": "출처 → 인용된 주장·페이지 (검증 가능)",
                 "notes": chunk,
             }
         )

@@ -185,7 +185,7 @@
       "headline": "역설 — AI가 흔할수록 ==사람==이 비싸짐",
       "takeaways": [
         "콘텐츠가 무한히 싸지는 시대 → 가장 비싼 자산은 인간의 신뢰",
-        "이 역설이 마케팅의 다섯 갈래에서 동시에 구체화됨"
+        "이 역설은 이제 마케팅의 다섯 갈래에서 확인된다"
       ],
       "payload": {
         "focus": [
@@ -242,7 +242,7 @@
       "role": "content",
       "content_kind": "chart_bar",
       "section_nav": "03 변화하는 지각 변동 · 발견",
-      "headline": "주간 미디어 시간은 ==소셜·숏폼==이 지배 — 발견의 입구가 이동",
+      "headline": "주간 미디어 시간은 ==소셜·숏폼==에 쏠림 — 발견의 입구가 이동",
       "takeaways": [
         "한 조사의 전체 미디어 시간 순위 — 소셜·숏폼이 검색·기사·인쇄를 압도",
         "사람을 만나는 첫 접점이 피드로 이동 — SEO에서 GEO로"
@@ -450,9 +450,9 @@
           ]
         },
         "metric": {
-          "label": "효율 향상 격차 (선도 vs 후발)",
-          "value": "22% vs 1%",
-          "note": "차이는 도구가 아니라 '어디에 쓰나' — 선도는 재투자로 격차를 벌림"
+          "label": "효율을 어디에 쓰나",
+          "value": "재투자",
+          "note": "효율은 누구나 갖는 기본값 — 절감이 아니라 인간 자산(신뢰·관점·관계)에 재투자한 소수가 격차를 벌린다"
         }
       },
       "sources": [
@@ -553,7 +553,7 @@
       "section_nav": "05 운영·실행",
       "headline": "마케터가 내일부터 바꿀 것",
       "takeaways": [
-        "발견·이중청중·재투자, 그리고 운영화 단계"
+        "다섯 갈래를 세 레버로, 그리고 운영화 단계"
       ],
       "payload": {},
       "sources": [],
@@ -565,24 +565,24 @@
       "role": "content",
       "content_kind": "growth_drivers",
       "section_nav": "05 운영·실행",
-      "headline": "내일부터 셋 — 발견·이중청중·재투자",
+      "headline": "내일부터 셋 — 다섯 갈래를 세 레버로",
       "takeaways": [
         "큰 전략이 아니라 이번 분기에 손댈 수 있는 실행 단위로 내림",
-        "셋 다 '인간 신뢰에 재투자'라는 한 방향"
+        "다섯 갈래(발견·고객·진정성·팬덤·재투자)가 빠짐없이 세 레버에 담김 — 버려진 트렌드 없음"
       ],
       "payload": {
         "cards": [
           {
-            "title": "① 발견을 재설계",
-            "body": "검색 키워드 최적화에서 → AI 답변(GEO)·커뮤니티·earned 노출 설계로. '그룹챗에 공유할까?'를 콘텐츠 기준으로"
+            "title": "① 발견·팬덤을 재설계",
+            "body": "검색 키워드 최적화 → AI 답변(GEO)·커뮤니티·earned 노출 설계. 팬이 '그룹챗에 공유'하는 것을 콘텐츠 기준으로 (발견 + 팬덤)"
           },
           {
             "title": "② 이중 청중에 맞춤",
-            "body": "에이전트엔 구조화 데이터·피드(ACO), 사람엔 감정·브랜드 스토리. 둘을 분리해 동시에 설계"
+            "body": "에이전트엔 구조화 데이터·피드(ACO), 사람엔 감정·브랜드 스토리. 둘을 분리해 동시에 설계 (고객)"
           },
           {
-            "title": "③ 효율을 재투자",
-            "body": "AI로 번 시간·예산을 더 싼 콘텐츠가 아니라 진정성·커뮤니티·인간 craft에 재투자"
+            "title": "③ 진정성·재투자 루프",
+            "body": "AI로 번 시간·예산을 더 싼 콘텐츠가 아니라 진정성·커뮤니티·인간 craft에 재투자 (진정성 + 재투자)"
           }
         ]
       },
@@ -609,19 +609,19 @@
         "steps": [
           {
             "label": "1. 실험적 도입",
-            "body": "파일럿·부분 부서에서 생성형 AI를 시험"
+            "body": "파일럿·부분 부서에서 생성형 AI 시험 · 산출물: AI 유스케이스 인벤토리"
           },
           {
             "label": "2. 전사 통합",
-            "body": "콘텐츠·캠페인 전반에 AI를 기본 탑재"
+            "body": "콘텐츠·캠페인 전반에 AI 기본 탑재 · 산출물: 제품 피드·스키마 audit"
           },
           {
             "label": "3. 에이전틱 실행",
-            "body": "목표를 받아 자율 집행하는 시스템 도입"
+            "body": "목표를 받아 자율 집행하는 시스템 도입 · 산출물: 에이전트 플레이북"
           },
           {
             "label": "4. 측정 → 재투자",
-            "body": "성과를 측정해 효율로 번 것을 인간 신뢰에 다시 투입 → 루프를 닫음"
+            "body": "성과를 측정해 인간 신뢰에 다시 투입, 루프를 닫음 · 산출물: proof asset 라이브러리·재투자 원장"
           }
         ],
         "ascending": true
@@ -648,7 +648,7 @@
       ],
       "payload": {
         "paragraphs": [
-          "AI가 실행을 평준화한 시대, 차별화·성장은 'AI가 못 사는 인간 신뢰'에서만 남는다 — 재투자한 쪽이 앞섰다 (선도 22% vs 후발 1%)"
+          "AI가 실행을 평준화한 시대, 차별화·성장은 'AI가 못 사는 인간 신뢰'에서만 남는다 — 절감이 아니라 재투자한 소수가 격차를 벌린다"
         ]
       },
       "sources": [
@@ -677,52 +677,52 @@
     {
       "name": "1. GWI — Connecting the Dots 2026",
       "url": "gwi.com",
-      "tag": "본문 출처"
+      "tag": "미디어·발견 p9"
     },
     {
       "name": "2. KPMG — Global Tech Report 2026",
       "url": "kpmg.com",
-      "tag": "본문 출처"
+      "tag": "AI 성숙도 p5·20"
     },
     {
       "name": "3. Deloitte Digital — Marketing Trends 2026",
       "url": "deloittedigital.com",
-      "tag": "본문 출처"
+      "tag": "배경 참고"
     },
     {
       "name": "4. AMA — 2026 Future Trends in Marketing",
       "url": "ama.org",
-      "tag": "본문 출처"
+      "tag": "AI 흐름·실행"
     },
     {
       "name": "5. WPP Media — UK Trends 2026",
       "url": "wppmedia.com",
-      "tag": "본문 출처"
+      "tag": "이중 청중 p10"
     },
     {
       "name": "6. Ogilvy Social Lab — Social Trends 2026",
       "url": "social-lab.eu",
-      "tag": "본문 출처"
+      "tag": "진정성 신호 p7"
     },
     {
       "name": "7. McKinsey — State of Marketing Europe 2026",
       "url": "mckinsey.com",
-      "tag": "본문 출처"
+      "tag": "효율·재투자"
     },
     {
       "name": "8. Deloitte — 2026 Digital Media Trends",
       "url": "deloitte.com",
-      "tag": "본문 출처"
+      "tag": "팬덤 LTV p12"
     },
     {
       "name": "9. PwC Consulting — Marketing in the AI Era",
       "url": "pwc.com",
-      "tag": "본문 출처"
+      "tag": "배경 참고"
     },
     {
       "name": "10. WGSN — Future Consumer 2026",
       "url": "wgsn.com",
-      "tag": "본문 출처"
+      "tag": "진정성 소비자 p11"
     },
     {
       "name": "기타 · Havas Red — Brand Experience 2026",
