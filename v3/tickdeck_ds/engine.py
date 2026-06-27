@@ -42,13 +42,14 @@ def tokens_css(p):
     bar2     = "rgba(255,255,255,.22)" if dark else "rgba(0,0,0,.14)"
     line     = "rgba(255,255,255,.09)" if dark else "rgba(0,0,0,.10)"
     stroke   = "rgba(255,255,255,.14)" if dark else "rgba(0,0,0,.10)"
-    cardshd  = "none" if dark else "0 1px 4px rgba(0,0,0,.05)"
+    cardshd  = "none" if dark else "0 6px 22px rgba(64,46,28,.10)"   # 따뜻한 톤·부드럽게(회색 띠 방지)
+    cardbd   = line if dark else "rgba(120,95,62,.14)"               # 라이트=따뜻한 얇은 테두리
     glow     = f"{acc}14" if dark else f"{acc}10"
     accsoft  = f"{acc}26"
     return f""":root{{
   --c60:{p['c60']};--c30:{p['c30']};--acc:{acc};--acc2:{p['accent2']};
   --ink:{p['ink']};--muted:{p['muted']};--line:{line};--card:{card};--track:{track};
-  --bar2:{bar2};--stroke:{stroke};--accsoft:{accsoft};--cardshd:{cardshd};
+  --bar2:{bar2};--stroke:{stroke};--accsoft:{accsoft};--cardshd:{cardshd};--cardbd:{cardbd};
   --t-hero:clamp(56px,6.4vw,104px);--t-h1:clamp(34px,3.4vw,46px);
   --t-h2:clamp(24px,2.2vw,32px);--t-body:clamp(16px,1.4vw,20px);--t-meta:12px;
   --safe-x:72px;--safe-y:56px;--rhythm:24px;
@@ -69,7 +70,7 @@ def tokens_css(p):
 .foot{{position:absolute;left:var(--safe-x);right:var(--safe-x);bottom:28px;display:flex;
    justify-content:space-between;font-size:var(--t-meta);color:var(--muted);letter-spacing:.12em;
    border-top:1px solid var(--line);padding-top:14px}}
-.body{{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:18px}}
+.body{{flex:1;display:flex;flex-direction:column;justify-content:flex-start;margin-top:26px}}
 .card{{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:var(--cardshd)}}
 .kick{{font-size:13px;font-weight:700;color:var(--acc);letter-spacing:.1em}}
 """
@@ -111,12 +112,20 @@ def L_cover(s):
       <div style="font-size:var(--t-hero);font-weight:900;line-height:1.02;letter-spacing:-.03em;margin-top:18px;word-break:keep-all">{accent_title(anti_pattern(s['title']))}</div>
       <div class="sub" style="font-size:22px;margin-top:22px">{anti_pattern(s.get('sub',''))}</div></div>"""
 
-def L_divider(s):  # 큰 번호 아웃라인 변주
+def L_divider(s):  # 간지 — 어둡게 반전(본문과 확실히 구분) + 큰 폰트 + 아웃라인 번호
     num = s.get("num", "")
-    return f"""<div class="slide" style="justify-content:center">
-      <div style="position:absolute;right:60px;top:50%;transform:translateY(-50%);
-        font-size:340px;font-weight:900;color:transparent;-webkit-text-stroke:1.5px var(--line)">{num}</div>
-      {_head(s)}</div>"""
+    eb = anti_pattern(s.get("eyebrow", ""))
+    title = accent_title(anti_pattern(s["title"]))
+    sub = anti_pattern(s.get("sub", ""))
+    return f"""<div class="slide" style="justify-content:center;overflow:hidden;color:var(--c60);background:
+        radial-gradient(960px 560px at 84% 16%, color-mix(in srgb, var(--acc) 18%, transparent), transparent 62%),
+        linear-gradient(140deg, var(--ink), color-mix(in srgb, var(--ink) 88%, #000) 100%)">
+      <div style="position:absolute;right:88px;top:50%;transform:translateY(-50%);line-height:.76;
+        font-size:248px;font-weight:900;color:transparent;-webkit-text-stroke:2px color-mix(in srgb, var(--c60) 20%, transparent);pointer-events:none">{num}</div>
+      <div style="font-size:13px;font-weight:700;color:var(--acc);letter-spacing:.3em;text-transform:uppercase">{eb}</div>
+      <div style="font-size:clamp(52px,5.4vw,82px);font-weight:900;line-height:1.06;letter-spacing:-.02em;margin-top:18px;word-break:keep-all">{title}</div>
+      <div style="font-size:20px;color:color-mix(in srgb, var(--c60) 70%, transparent);margin-top:16px;max-width:880px;line-height:1.5;word-break:keep-all">{sub}</div>
+    </div>"""
 
 def L_statement(s):  # MONO / manifesto
     return f"""<div class="slide" style="justify-content:center">
@@ -145,21 +154,34 @@ def L_bar(s):  # 가로 막대 + 사이드 인사이트(빈하단 방지)
         f'<div style="font-weight:700;text-align:right;font-size:15px">{r["v"]}{unit}</div></div>'
         for i, r in enumerate(s["rows"]))
     ins = s.get("insight")
-    side = (f'<div class="card" style="width:320px;flex:none"><div class="kick">KEY INSIGHT</div>'
+    side = (f'<div class="card" style="width:320px;flex:none;align-self:center;display:flex;flex-direction:column;justify-content:center"><div class="kick">KEY INSIGHT</div>'
             f'<div style="font-size:18px;font-weight:700;margin-top:12px;word-break:keep-all">{anti_pattern(ins)}</div></div>') if ins else ""
     return f"""<div class="slide">{_head(s)}
-      <div class="body" style="flex-direction:row;gap:40px;align-items:center">
-        <div style="flex:1">{bars}</div>{side}</div>
+      <div class="body" style="flex-direction:row;gap:40px;align-items:stretch;padding:14px 0">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly">{bars}</div>{side}</div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
-def L_cards(s):  # TRELLIS/3카드 (동등 N)
-    cs = "".join(f'<div class="card"><div class="kick">{anti_pattern(c.get("kick",""))}</div>'
-                 f'<div style="font-size:22px;font-weight:800;margin-top:10px">{anti_pattern(c["title"])}</div>'
-                 f'<div class="sub" style="margin-top:10px;font-size:15px">{anti_pattern(c["body"])}</div></div>'
+def L_cards(s):  # TRELLIS/3카드 (동등 N) — 세로 채움
+    cs = "".join(f'<div class="card" style="display:flex;flex-direction:column;justify-content:center"><div class="kick">{anti_pattern(c.get("kick",""))}</div>'
+                 f'<div style="font-size:23px;font-weight:800;margin-top:10px">{anti_pattern(c["title"])}</div>'
+                 f'<div class="sub" style="margin-top:12px;font-size:16px">{anti_pattern(c["body"])}</div></div>'
                  for c in s["cards"])
     n = len(s["cards"])
     return f"""<div class="slide">{_head(s)}
-      <div class="body"><div style="display:grid;grid-template-columns:repeat({min(n,3)},1fr);gap:20px">{cs}</div></div>
+      <div class="body"><div style="flex:1;display:grid;grid-template-columns:repeat({min(n,3)},1fr);gap:20px;align-items:stretch;padding:10px 0">{cs}</div></div>
+      {_foot(s, s['_n'], s['_t'])}</div>"""
+
+
+def L_agenda(s):  # 목차 — 번호+제목+설명 리스트 (세로 분배)
+    rows = "".join(
+        f'<div style="display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:baseline;'
+        f'padding:18px 0;border-top:1px solid var(--line)">'
+        f'<div style="font-size:26px;font-weight:800;color:var(--acc)">{anti_pattern(it["no"])}</div>'
+        f'<div><div style="font-size:20px;font-weight:700">{anti_pattern(it["t"])}</div>'
+        f'<div class="sub" style="font-size:15px;margin-top:4px">{anti_pattern(it.get("d",""))}</div></div></div>'
+        for it in s["items"])
+    return f"""<div class="slide">{_head(s)}
+      <div class="body" style="justify-content:space-between;padding-top:10px">{rows}</div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
 def L_beforeafter(s):
@@ -175,10 +197,21 @@ def L_beforeafter(s):
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
 def L_funnel(s):
-    rows = "".join(f'<div style="width:{100-i*16}%;margin:9px auto;background:var(--accsoft);'
-                   f'border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;padding:17px 22px;text-align:center;font-weight:700">{anti_pattern(r)}</div>'
+    rows = "".join(f'<div style="width:{100-i*16}%;margin:0 auto;background:var(--accsoft);'
+                   f'border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;padding:18px 22px;text-align:center;font-weight:700;font-size:18px">{anti_pattern(r)}</div>'
                    for i, r in enumerate(s["steps"]))
-    return f"""<div class="slide">{_head(s)}<div class="body">{rows}</div>{_foot(s, s['_n'], s['_t'])}</div>"""
+    return f"""<div class="slide">{_head(s)}<div class="body" style="justify-content:space-evenly;padding:24px 0">{rows}</div>{_foot(s, s['_n'], s['_t'])}</div>"""
+
+
+def L_refs(s):  # 참고자료 — 전체 번호 리스트(2열)
+    items = "".join(f'<div style="display:grid;grid-template-columns:26px 1fr;gap:10px;padding:9px 0;border-top:1px solid var(--line)">'
+                    f'<div style="color:var(--acc);font-weight:800;font-size:14px">{i+1}</div>'
+                    f'<div><span style="font-weight:600;font-size:14px">{anti_pattern(r["s"])}</span>'
+                    f'<span class="sub" style="font-size:13px"> · {anti_pattern(r.get("t",""))}</span></div></div>'
+                    for i, r in enumerate(s["refs"]))
+    return f"""<div class="slide">{_head(s)}
+      <div class="body" style="margin-top:22px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:0 50px;align-content:start;width:100%">{items}</div></div>
+      {_foot(s, s['_n'], s['_t'])}</div>"""
 
 def L_table(s):  # zebra
     head = "".join(f"<th style='text-align:{'left' if i==0 else 'right'};padding:14px;font-size:12px;letter-spacing:.1em;color:var(--muted)'>{anti_pattern(h)}</th>" for i, h in enumerate(s["cols"]))
@@ -196,7 +229,7 @@ def L_closing(s):
 
 LAYOUTS = {"cover": L_cover, "divider": L_divider, "statement": L_statement, "kpi": L_kpi,
            "bar": L_bar, "cards": L_cards, "beforeafter": L_beforeafter, "funnel": L_funnel,
-           "table": L_table, "closing": L_closing}
+           "table": L_table, "closing": L_closing, "agenda": L_agenda, "refs": L_refs}
 # 데이터 밀도 높은(시각 무거운) 레이아웃 — 텐션릴리즈용
 HEAVY = {"bar", "table", "kpi"}
 
