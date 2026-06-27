@@ -48,7 +48,8 @@ def validate(rec, current_year=None, decay_years=3):
         flags.append("ZOMBIE")
 
     dom = rec.url.lower()
-    looks_primary = any(h in dom for h in _PRIMARY)
+    # local: 파일은 URL 힌트로 1차 인정 X(파일명의 .pdf 오인 방지) — visited_primary 플래그로만 판정
+    looks_primary = not dom.startswith("local:") and any(h in dom for h in _PRIMARY)
     is_news = any(n in dom for n in _NEWS)
     # A3 출처세탁: 언론 도메인인데 1차 원문 미열람·원본 힌트 없음
     if is_news and not (rec.visited_primary or looks_primary):
