@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>발표 덱 레이아웃 갤러리</title>
+<style>
+  :root{
+    --navy:#0B1E3D;
+    --navy-2:#13294B;
+    --navy-3:#1C3A66;
+    --green:#0E2A24;
+    --green-2:#16403A;
+    --gold:#C9A86A;
+    --teal:#4FB3A9;
+    --coral:#E07A5F;
+    --paper:#E8ECEF;
+    --ink:#0A1424;
+    --muted:#8A9BB4;
+    --line:#2A3F63;
+    --bg:#0A1424;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--paper);}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:24px;padding:24px;}
+  .slide{
+    width:1280px;height:720px;position:relative;overflow:hidden;
+    background:var(--navy);color:var(--paper);
+    padding:64px 80px;display:flex;flex-direction:column;
+    box-shadow:0 10px 40px rgba(0,0,0,.4);
+    page-break-after:always;
+  }
+  .slide.green{background:var(--green);}
+  .label{
+    position:absolute;top:24px;left:32px;
+    font-size:11px;letter-spacing:.18em;color:var(--gold);
+    font-weight:700;text-transform:uppercase;
+    border-left:2px solid var(--gold);padding-left:8px;
+  }
+  .page-num{position:absolute;bottom:24px;right:40px;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+  .footer-bar{position:absolute;bottom:24px;left:80px;font-size:11px;color:var(--muted);letter-spacing:.08em;}
+  h1{font-size:64px;font-weight:800;line-height:1.1;letter-spacing:-.02em;}
+  h2{font-size:40px;font-weight:700;letter-spacing:-.01em;line-height:1.15;}
+  h3{font-size:22px;font-weight:700;}
+  p,li{font-size:15px;line-height:1.6;color:#C8D2E0;}
+  .small{font-size:12px;color:var(--muted);}
+  .eyebrow{font-size:13px;color:var(--gold);letter-spacing:.18em;font-weight:700;text-transform:uppercase;margin-bottom:14px;}
+  .accent{color:var(--gold);}
+  .teal{color:var(--teal);}
+  .coral{color:var(--coral);}
+
+  /* ---------- 1 Cover ---------- */
+  .cover{background:linear-gradient(135deg,#0B1E3D 0%,#0E2A24 100%);}
+  .cover .deco{position:absolute;right:-120px;top:-120px;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,106,.18),transparent 70%);}
+  .cover .grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:80px 80px;}
+  .cover-content{position:relative;z-index:2;margin-top:auto;}
+  .cover-meta{display:flex;gap:40px;margin-top:32px;font-size:13px;color:var(--muted);letter-spacing:.1em;}
+  .cover-meta span b{color:var(--paper);display:block;margin-top:4px;font-size:15px;letter-spacing:0;}
+
+  /* ---------- 2 Section Divider ---------- */
+  .divider{justify-content:center;align-items:flex-start;}
+  .divider .big-num{font-size:200px;font-weight:800;color:rgba(201,168,106,.12);position:absolute;right:60px;bottom:0;line-height:.8;}
+  .divider .line{width:80px;height:3px;background:var(--gold);margin:24px 0;}
+
+  /* ---------- 3 Single KPI ---------- */
+  .kpi-wrap{display:flex;flex-direction:column;justify-content:space-between;height:100%;}
+  .kpi-number{font-size:180px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+  .kpi-unit{font-size:48px;color:var(--gold);margin-left:8px;}
+  .kpi-delta{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(79,179,169,.15);border:1px solid var(--teal);border-radius:20px;color:var(--teal);font-size:14px;font-weight:700;margin-left:20px;}
+  .kpi-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;border-top:1px solid var(--line);padding-top:28px;}
+  .kpi-stats div small{display:block;color:var(--muted);font-size:11px;letter-spacing:.1em;margin-bottom:6px;}
+  .kpi-stats div b{font-size:24px;font-weight:700;}
+
+  /* ---------- 4 Horizontal Bar ---------- */
+  .chart-area{margin-top:32px;display:flex;flex-direction:column;gap:18px;}
+  .hbar{display:grid;grid-template-columns:160px 1fr 80px;align-items:center;gap:16px;}
+  .hbar .name{font-size:14px;}
+  .hbar .track{height:28px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;position:relative;}
+  .hbar .fill{height:100%;background:linear-gradient(90deg,var(--navy-3),var(--teal));border-radius:4px;}
+  .hbar .fill.gold{background:linear-gradient(90deg,var(--navy-3),var(--gold));}
+  .hbar .val{text-align:right;font-weight:700;font-size:15px;}
+
+  /* ---------- 5 Vertical Bar ---------- */
+  .vbar-chart{display:flex;align-items:flex-end;gap:24px;flex:1;margin-top:40px;padding-bottom:40px;border-bottom:1px solid var(--line);}
+  .vbar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;height:100%;}
+  .vbar{width:100%;max-width:80px;background:linear-gradient(180deg,var(--teal),var(--navy-3));border-radius:4px 4px 0 0;position:relative;}
+  .vbar.gold{background:linear-gradient(180deg,var(--gold),var(--navy-3));}
+  .vbar .v{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:700;}
+  .vbar-col .lbl{font-size:13px;color:var(--muted);}
+
+  /* ---------- 6 Two item comparison ---------- */
+  .compare2{display:grid;grid-template-columns:1fr 60px 1fr;flex:1;align-items:stretch;margin-top:32px;}
+  .compare-card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:32px;display:flex;flex-direction:column;}
+  .compare-card.accent{border-color:var(--gold);background:rgba(201,168,106,.06);}
+  .vs{display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--muted);}
+  .compare-card .tag{font-size:11px;letter-spacing:.15em;color:var(--gold);font-weight:700;margin-bottom:8px;}
+  .compare-card h3{font-size:28px;margin-bottom:16px;}
+  .compare-card ul{list-style:none;margin-top:auto;}
+  .compare-card li{padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px;}
+  .compare-card li:last-child{border:0;}
+
+  /* ---------- 7 Before/After ---------- */
+  .ba{display:grid;grid-template-columns:1fr 1fr;flex:1;gap:0;margin-top:32px;border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+  .ba-side{padding:32px;display:flex;flex-direction:column;}
+  .ba-side.before{background:rgba(255,255,255,.03);}
+  .ba-side.after{background:rgba(201,168,106,.08);}
+  .ba-side .step{font-size:11px;letter-spacing:.2em;font-weight:700;margin-bottom:8px;}
+  .ba-side .step.b{color:var(--muted);}
+  .ba-side .step.a{color:var(--gold);}
+  .ba-side h3{font-size:26px;margin-bottom:20px;}
+  .ba-side .metric{font-size:48px;font-weight:800;}
+  .ba-side .desc{margin-top:auto;font-size:13px;line-height:1.7;}
+  .ba-arrow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:800;font-size:22px;}
+
+  /* ---------- 8 Timeline ---------- */
+  .timeline{flex:1;display:flex;align-items:center;margin-top:40px;position:relative;}
+  .timeline::before{content:"";position:absolute;top:50%;left:0;right:0;height:2px;background:var(--line);}
+  .tl-item{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;}
+  .tl-item .dot{width:16px;height:16px;border-radius:50%;background:var(--navy);border:3px solid var(--teal);position:relative;z-index:2;}
+  .tl-item.active .dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 6px rgba(201,168,106,.2);}
+  .tl-item .year{position:absolute;top:-40px;font-size:14px;font-weight:700;color:var(--paper);}
+  .tl-item .txt{position:absolute;top:30px;font-size:13px;text-align:center;width:140px;color:#C8D2E0;}
+
+  /* ---------- 9 Process steps ---------- */
+  .process{display:flex;flex:1;align-items:stretch;gap:0;margin-top:40px;}
+  .proc-step{flex:1;padding:32px 24px;position:relative;background:rgba(255,255,255,.03);border-right:1px solid var(--line);}
+  .proc-step:last-child{border:0;}
+  .proc-step .n{font-size:14px;font-weight:800;color:var(--gold);letter-spacing:.1em;margin-bottom:16px;}
+  .proc-step h3{font-size:18px;margin-bottom:12px;}
+  .proc-step p{font-size:13px;}
+  .proc-step::after{content:"→";position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;background:var(--navy);padding:0 6px;z-index:2;}
+  .proc-step:last-child::after{display:none;}
+
+  /* ---------- 10 Funnel ---------- */
+  .funnel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-top:20px;}
+  .funnel-row{display:flex;align-items:center;gap:24px;width:100%;justify-content:center;}
+  .funnel-bar{height:54px;display:flex;align-items:center;padding:0 24px;color:#fff;font-weight:700;border-radius:4px;}
+  .funnel-val{font-size:13px;color:var(--muted);width:80px;}
+
+  /* ---------- 11 Quadrant ---------- */
+  .quad{flex:1;position:relative;margin-top:24px;border:1px solid var(--line);background:rgba(255,255,255,.02);}
+  .quad::before,.quad::after{content:"";position:absolute;background:var(--line);}
+  .quad::before{left:50%;top:0;bottom:0;width:1px;}
+  .quad::after{top:50%;left:0;right:0;height:1px;}
+  .quad-cell{position:absolute;width:50%;height:50%;padding:24px;display:flex;flex-direction:column;}
+  .quad-cell .qtag{font-size:11px;letter-spacing:.15em;font-weight:700;margin-bottom:8px;}
+  .quad-cell h3{font-size:16px;margin-bottom:6px;}
+  .quad-cell p{font-size:12px;line-height:1.5;}
+  .q1{top:0;left:0;}.q2{top:0;right:0;}.q3{bottom:0;left:0;}.q4{bottom:0;right:0;}
+  .axis-x{position:absolute;bottom:-28px;left:0;right:0;display:flex;justify-content:space-between;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+  .axis-y{position:absolute;left:-32px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+
+  /* ---------- 12 Heatmap ---------- */
+  .heat{display:grid;grid-template-columns:120px repeat(5,1fr);gap:4px;flex:1;margin-top:24px;}
+  .heat .hcell{display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;border-radius:3px;}
+  .heat .hcell.head{background:transparent;color:var(--muted);font-size:12px;}
+  .heat .hcell.row{background:transparent;color:var(--paper);justify-content:flex-start;padding-left:8px;}
+
+  /* ---------- 13 Two column cards ---------- */
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;margin-top:32px;}
+  .card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:8px;padding:32px;display:flex;flex-direction:column;}
+  .card .num{font-size:48px;font-weight:800;color:var(--gold);}
+  .card h3{font-size:22px;margin:12px 0;}
+  .card p{font-size:14px;margin-bottom:auto;}
+  .card .meta{display:flex;gap:16px;margin-top:24px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;}
+  .card .meta b{color:var(--paper);font-size:14px;}
+
+  /* ---------- 14 Three cards ---------- */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;flex:1;margin-top:32px;}
+  .card3{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:28px;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+  .card3 .icon{width:48px;height:48px;border-radius:10px;background:rgba(201,168,106,.15);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:22px;font-weight:800;margin-bottom:20px;}
+  .card3 h3{font-size:18px;margin-bottom:10px;}
+  .card3 p{font-size:13px;margin-bottom:16px;}
+  .card3 .tag{margin-top:auto;font-size:11px;color:var(--teal);letter-spacing:.1em;font-weight:700;}
+
+  /* ---------- 15 Comparison Table ---------- */
+  .ctable{width:100%;border-collapse:collapse;margin-top:24px;flex:1;}
+  .ctable th,.ctable td{padding:14px 16px;text-align:left;font-size:13px;border-bottom:1px solid var(--line);}
+  .ctable thead th{background:rgba(255,255,255,.05);font-weight:700;color:var(--paper);font-size:12px;letter-spacing:.08em;text-transform:uppercase;}
+  .ctable tbody tr:hover{background:rgba(255,255,255,.02);}
+  .ctable td.feature{color:var(--muted);}
+  .ctable td .yes{color:var(--teal);font-weight:700;}
+  .ctable td .no{color:var(--coral);}
+  .ctable td .partial{color:var(--gold);}
+
+  /* ---------- 16 Quote ---------- */
+  .quote{justify-content:center;align-items:center;text-align:center;}
+  .quote .qmark{font-size:160px;color:var(--gold);opacity:.2;line-height:.5;font-family:Georgia,serif;}
+  .quote blockquote{font-size:42px;font-weight:300;line-height:1.35;max-width:900px;letter-spacing:-.01em;margin:24px 0;}
+  .quote blockquote b{color:var(--gold);font-weight:700;}
+  .quote .attr{font-size:14px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;}
+  .quote .attr b{color:var(--paper);display:block;font-size:16px;letter-spacing:.02em;text-transform:none;margin-bottom:4px;}
+
+  /* ---------- 17 Logo grid ---------- */
+  .logo-grid{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(3,1fr);gap:16px;flex:1;margin-top:32px;}
+  .logo-cell{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:var(--muted);letter-spacing:.05em;}
+
+  /* ---------- 18 Mirror bar ---------- */
+  .mirror{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:32px;gap:14px;}
+  .mirror-row{display:grid;grid-template-columns:1fr 100px 1fr;align-items:center;gap:16px;}
+  .mirror-row .lbl{text-align:center;font-size:13px;font-weight:700;}
+  .mbar{height:24px;border-radius:3px;display:flex;align-items:center;padding:0 12px;font-size:12px;font-weight:700;}
+  .mbar.left{justify-content:flex-end;background:linear-gradient(270deg,var(--teal),transparent);color:var(--teal);}
+  .mbar.right{background:linear-gradient(90deg,var(--coral),transparent);color:var(--coral);}
+
+  /* ---------- 19 Dumbbell ---------- */
+  .dumb{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:32px;gap:24px;}
+  .dumb-row{display:grid;grid-template-columns:140px 1fr 60px;align-items:center;gap:16px;}
+  .dumb-row .name{font-size:14px;}
+  .dumb-track{height:32px;position:relative;background:rgba(255,255,255,.03);border-radius:4px;}
+  .dumb-track .start{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--muted);}
+  .dumb-track .end{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--gold);}
+  .dumb-track .line{position:absolute;top:50%;height:3px;background:var(--gold);opacity:.6;}
+  .dumb-row .diff{font-weight:700;font-size:13px;color:var(--teal);text-align:right;}
+
+  /* ---------- 20 Donut ---------- */
+  .donut-wrap{display:grid;grid-template-columns:1fr 1fr;flex:1;align-items:center;margin-top:24px;gap:48px;}
+  .donut{position:relative;width:340px;height:340px;margin:0 auto;}
+  .donut .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .donut .center b{font-size:48px;font-weight:800;}
+  .donut .center small{font-size:12px;color:var(--muted);letter-spacing:.1em;}
+  .legend{display:flex;flex-direction:column;gap:14px;}
+  .legend-item{display:grid;grid-template-columns:14px 1fr auto;align-items:center;gap:12px;font-size:14px;}
+  .legend-item .sw{width:14px;height:14px;border-radius:3px;}
+  .legend-item b{font-weight:700;}
+
+  /* ---------- 21 Bullet chart ---------- */
+  .bullet{flex:1;display:flex;flex-direction:column;justify-content:center;gap:28px;margin-top:32px;}
+  .bullet-row .bhead{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;}
+  .bullet-row .bhead b{color:var(--paper);}
+  .btrack{height:18px;position:relative;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;}
+  .brange{position:absolute;top:0;bottom:0;}
+  .btarget{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--coral);}
+  .bactual{position:absolute;top:0;bottom:0;background:var(--gold);border-radius:2px;}
+  .bscale{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;}
+
+  /* ---------- 22 Stacked bar ---------- */
+  .stack{flex:1;display:flex;align-items:flex-end;gap:28px;margin-top:32px;padding-bottom:32px;border-bottom:1px solid var(--line);}
+  .stack-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .stack-bar{width:80px;display:flex;flex-direction:column-reverse;border-radius:4px 4px 0 0;overflow:hidden;}
+  .stack-seg{height:var(--h);position:relative;}
+  .stack-seg span{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font-size:11px;font-weight:700;color:#fff;}
+
+  /* ---------- 23 Pyramid ---------- */
+  .pyramid{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;margin-top:24px;}
+  .pyr-row{height:60px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;border-radius:3px;}
+
+  /* ---------- 24 Stat + sparkline ---------- */
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;flex:1;margin-top:32px;}
+  .stat-card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:24px;display:flex;flex-direction:column;}
+  .stat-card .label{position:static;border:0;padding:0;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+  .stat-card .v{font-size:42px;font-weight:800;margin:8px 0;}
+  .stat-card .spark{height:50px;margin-top:auto;}
+
+  /* ---------- 25 Agenda ---------- */
+  .agenda-list{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:32px;}
+  .agenda-item{display:grid;grid-template-columns:80px 1fr auto;align-items:center;gap:24px;padding:18px 0;border-bottom:1px solid var(--line);}
+  .agenda-item .n{font-size:32px;font-weight:800;color:var(--gold);}
+  .agenda-item .t{font-size:18px;font-weight:600;}
+  .agenda-item .t small{display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:4px;}
+  .agenda-item .time{color:var(--muted);font-size:13px;}
+
+  /* ---------- 26 Team grid ---------- */
+  .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;flex:1;margin-top:32px;}
+  .team-card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:24px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .team-card .av{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--navy-3),var(--teal));display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;margin-bottom:16px;}
+  .team-card h3{font-size:16px;}
+  .team-card .role{font-size:12px;color:var(--gold);margin:4px 0 12px;letter-spacing:.05em;}
+  .team-card p{font-size:12px;}
+
+  /* ---------- 27 Treemap ---------- */
+  .treemap{flex:1;display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:6px;margin-top:24px;}
+  .tm-cell{border-radius:6px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;}
+  .tm-cell b{font-size:18px;}
+  .tm-cell span{font-size:13px;font-weight:700;}
+  .tm1{grid-row:span 2;}
+
+  /* ---------- 28 Closing / Thank You ---------- */
+  .closing{justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,#0E2A24,#0B1E3D);}
+  .closing .ring{width:200px;height:200px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:32px;font-size:48px;font-weight:800;color:var(--gold);}
+
+  /* ---------- Color palette slides ---------- */
+  .palette-slide{padding:48px 64px;}
+  .palette-block{display:flex;flex-direction:column;gap:24px;flex:1;margin-top:32px;}
+  .pal-combo{display:grid;grid-template-columns:1fr;gap:16px;}
+  .pal-header{display:flex;align-items:baseline;justify-content:space-between;}
+  .pal-header h3{font-size:20px;}
+  .pal-header .ratio{font-size:13px;color:var(--gold);letter-spacing:.1em;font-weight:700;}
+  .pal-chips{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .chip{height:120px;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;color:#fff;}
+  .chip.dark{color:var(--paper);}
+  .chip b{font-size:14px;font-weight:700;}
+  .chip code{font-size:11px;opacity:.85;}
+  .pal-desc{font-size:13px;line-height:1.7;color:#C8D2E0;}
+  .pal-desc .tag{display:inline-block;padding:3px 10px;background:rgba(255,255,255,.08);border-radius:3px;font-size:11px;margin-right:6px;color:var(--gold);font-weight:700;letter-spacing:.05em;}
+
+  /* misc */
+  .row{display:flex;gap:20px;align-items:flex-end;}
+  .footer-bar strong{color:var(--paper);}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 1 COVER -->
+<section class="slide cover">
+  <span class="label">LAYOUT — cover</span>
+  <div class="grid-lines"></div>
+  <div class="deco"></div>
+  <div class="cover-content">
+    <div class="eyebrow">2025 Strategic Review · Annual Report</div>
+    <h1>데이터가 그리는<br>다음 해의 <span class="accent">지형도</span></h1>
+    <p style="max-width:640px;margin-top:20px;">한 해의 성과를 정량화하고, 내년의 방향성을 구조적으로 제시합니다. 의사결정을 위한 단일 진실의 근거.</p>
+    <div class="cover-meta">
+      <span>발표자<b>전략기획팀</b></span>
+      <span>일정<b>2025.01.15</b></span>
+      <span>대상<b>경영위원회</b></span>
+      <span>문서<b>Confidential v3.2</b></span>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>STRATEGY</strong> · Annual Deck</div>
+  <div class="page-num">01 / 30</div>
+</section>
+
+<!-- 2 SECTION DIVIDER 1 -->
+<section class="slide divider">
+  <span class="label">LAYOUT — section_divider (variant A)</span>
+  <div class="eyebrow" style="margin-top:auto">PART 01</div>
+  <h1>시장을<br>읽는 눈</h1>
+  <div class="line"></div>
+  <p style="max-width:480px">거시 환경과 경쟁 구도, 그리고 우리가 서 있는 위치를 3개 챕터에 걸쳐 점검합니다.</p>
+  <div style="margin-top:auto"></div>
+  <div class="big-num">01</div>
+  <div class="footer-bar"><strong>PART 01</strong> · Market Landscape</div>
+  <div class="page-num">02 / 30</div>
+</section>
+
+<!-- 3 SECTION DIVIDER 2 -->
+<section class="slide divider green" style="justify-content:center;align-items:center;text-align:center">
+  <span class="label">LAYOUT — section_divider (variant B, centered)</span>
+  <div class="eyebrow">PART 02</div>
+  <h1 style="font-size:72px">성과의<br>해부학</h1>
+  <div class="line" style="margin-left:auto;margin-right:auto"></div>
+  <p style="max-width:560px;text-align:center">매출·이익·고객·운영 4개 축으로 2024년을 분해합니다.</p>
+  <div class="big-num" style="left:50%;transform:translateX(-50%);right:auto;">02</div>
+  <div class="footer-bar"><strong>PART 02</strong> · Performance Anatomy</div>
+  <div class="page-num">03 / 30</div>
+</section>
+
+<!-- 4 SECTION DIVIDER 3 -->
+<section class="slide divider" style="flex-direction:row;align-items:stretch;gap:48px">
+  <span class="label">LAYOUT — section_divider (variant C, split)</span>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div class="eyebrow">PART 03</div>
+    <h1>내일의<br>방향</h1>
+    <div class="line"></div>
+    <p style="max-width:420px">3개 전략 과제와 12개 실행 과제로 내년의 로드맵을 구성합니다.</p>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px">
+    <div style="display:flex;gap:16px;align-items:center;padding:18px;background:rgba(255,255,255,.04);border-radius:8px"><b style="font-size:24px;color:var(--gold)">3.1</b><div><b>전략 과제</b><br><small style="color:var(--muted)">시장 확장 · 제품 고도화 · 운영 효율</small></div></div>
+    <div style="display:flex;gap:16px;align-items:center;padding:18px;background:rgba(255,255,255,.04);border-radius:8px"><b style="font-size:24px;color:var(--gold)">3.2</b><div><b>투자 우선순위</b><br><small style="color:var(--muted)">자원 배분 기준 및 한도</small></div></div>
+    <div style="display:flex;gap:16px;align-items:center;padding:18px;background:rgba(255,255,255,.04);border-radius:8px"><b style="font-size:24px;color:var(--gold)">3.3</b><div><b>리스크 관리</b><br><small style="color:var(--muted)">시나리오별 통제 방안</small></div></div>
+  </div>
+  <div class="big-num">03</div>
+  <div class="footer-bar"><strong>PART 03</strong> · Roadmap</div>
+  <div class="page-num">04 / 30</div>
+</section>
+
+<!-- 5 SINGLE KPI -->
+<section class="slide">
+  <span class="label">LAYOUT — single_kpi</span>
+  <div class="kpi-wrap">
+    <div>
+      <div class="eyebrow">2024 Annual Revenue</div>
+      <h2>한 해를 관통한 한 줄의 성과</h2>
+    </div>
+    <div>
+      <span class="kpi-number">1,284<span class="kpi-unit">억</span></span>
+      <span class="kpi-delta">▲ 18.4% YoY</span>
+    </div>
+    <div class="kpi-stats">
+      <div><small>전년 매출</small><b>1,085억</b></div>
+      <div><small>목표 대비</small><b>104.3%</b></div>
+      <div><small>영업이익률</small><b>14.2%</b></div>
+      <div><small>신규 고객</small><b>23,400명</b></div>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>REVENUE</strong> · 단일 핵심 지표</div>
+  <div class="page-num">05 / 30</div>
+</section>
+
+<!-- 6 HORIZONTAL BAR -->
+<section class="slide">
+  <span class="label">LAYOUT — horizontal_bar_chart</span>
+  <div class="eyebrow">Channel Performance</div>
+  <h2>채널별 매출 기여도</h2>
+  <div class="chart-area">
+    <div class="hbar"><span class="name">이커머스</span><div class="track"><div class="fill gold" style="width:92%"></div></div><span class="val">412억</span></div>
+    <div class="hbar"><span class="name">오프라인 매장</span><div class="track"><div class="fill" style="width:74%"></div></div><span class="val">331억</span></div>
+    <div class="hbar"><span class="name">B2B 파트너십</span><div class="track"><div class="fill" style="width:58%"></div></div><span class="val">259억</span></div>
+    <div class="hbar"><span class="name">모바일 앱</span><div class="track"><div class="fill" style="width:42%"></div></div><span class="val">188억</span></div>
+    <div class="hbar"><span class="name">해외 법인</span><div class="track"><div class="fill" style="width:21%"></div></div><span class="val">94억</span></div>
+  </div>
+  <div class="footer-bar"><strong>CHANNEL</strong> · 기여도 순위</div>
+  <div class="page-num">06 / 30</div>
+</section>
+
+<!-- 7 VERTICAL BAR -->
+<section class="slide">
+  <span class="label">LAYOUT — vertical_bar_chart</span>
+  <div class="eyebrow">Quarterly Trend</div>
+  <h2>분기별 영업이익 추이</h2>
+  <p style="margin-top:8px">2024년 4분기 역대 최대치 기록</p>
+  <div class="vbar-chart">
+    <div class="vbar-col"><div class="vbar" style="height:45%"><span class="v">186억</span></div><span class="lbl">23Q4</span></div>
+    <div class="vbar-col"><div class="vbar" style="height:38%"><span class="v">158억</span></div><span class="lbl">24Q1</span></div>
+    <div class="vbar-col"><div class="vbar" style="height:52%"><span class="v">214억</span></div><span class="lbl">24Q2</span></div>
+    <div class="vbar-col"><div class="vbar" style="height:64%"><span class="v">268억</span></div><span class="lbl">24Q3</span></div>
+    <div class="vbar-col"><div class="vbar gold" style="height:88%"><span class="v">312억</span></div><span class="lbl">24Q4</span></div>
+    <div class="vbar-col"><div class="vbar" style="height:72%;background:repeating-linear-gradient(45deg,var(--navy-3),var(--navy-3) 6px,transparent 6px,transparent 12px)"><span class="v">328억</span></div><span class="lbl">25Q1(E)</span></div>
+  </div>
+  <div class="footer-bar"><strong>QUARTERLY</strong> · 분기 영업이익</div>
+  <div class="page-num">07 / 30</div>
+</section>
+
+<!-- 8 TWO ITEM COMPARE -->
+<section class="slide">
+  <span class="label">LAYOUT — two_item_compare</span>
+  <div class="eyebrow">Scenario Planning</div>
+  <h2>두 시나리오, 하나의 결단</h2>
+  <div class="compare2">
+    <div class="compare-card">
+      <span class="tag">SCENARIO A · 보수</span>
+      <h3>현 구도 유지</h3>
+      <ul>
+        <li>매출 성장률: +9% 내외</li>
+        <li>핵심 인력 추가 채용 없음</li>
+        <li>투자 한도: 120억</li>
+        <li>리스크: 낮음</li>
+      </ul>
+    </div>
+    <div class="vs">vs</div>
+    <div class="compare-card accent">
+      <span class="tag">SCENARIO B · 공격</span>
+      <h3>해외 시장 진출</h3>
+      <ul>
+        <li>매출 성장률: +24% 목표</li>
+        <li>전문 인력 47명 추가 채용</li>
+        <li>투자 한도: 280억</li>
+        <li>리스크: 중상</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>SCENARIO</strong> · 시나리오 비교</div>
+  <div class="page-num">08 / 30</div>
+</section>
+
+<!-- 9 BEFORE AFTER -->
+<section class="slide">
+  <span class="label">LAYOUT — before_after</span>
+  <div class="eyebrow">Operational Transformation</div>
+  <h2>운영 혁신, 18개월의 결과</h2>
+  <div class="ba" style="position:relative">
+    <div class="ba-side before">
+      <span class="step b">BEFORE · 2023</span>
+      <h3>수동 주문 처리</h3>
+      <div class="metric">42<span style="font-size:20px;color:var(--muted);margin-left:4px">시간</span></div>
+      <p class="desc">주문 접수부터 출고까지 평균 42시간 소요. 담당자별 편차 심하고 재고 정합성 87%에 머물렀습니다.</p>
+    </div>
+    <div class="ba-side after">
+      <span class="step a">AFTER · 2024</span>
+      <h3>자동화 파이프라인</h3>
+      <div class="metric" style="color:var(--gold)">6<span style="font-size:20px;margin-left:4px">시간</span></div>
+      <p class="desc">RPA + 실시간 재고 동기화로 6시간 단축. 정합성 99.4%, 인건비 연 23억 절감 효과.</p>
+    </div>
+    <div class="ba-arrow">↓</div>
+  </div>
+  <div class="footer-bar"><strong>TRANSFORM</strong> · 전후 비교</div>
+  <div class="page-num">09 / 30</div>
+</section>
+
+<!-- 10 TIMELINE -->
+<section class="slide">
+  <span class="label">LAYOUT — timeline</span>
+  <div class="eyebrow">Roadmap · 2024 → 2026</div>
+  <h2>전략 마일스톤</h2>
+  <div class="timeline">
+    <div class="tl-item"><span class="year">2024 Q1</span><div class="dot"></div><span class="txt">조직 개편 및 KPI 재설계</span></div>
+    <div class="tl-item active"><span class="year">2024 Q3</span><div class="dot"></div><span class="txt">자동화 파이프라인 가동</span></div>
+    <div class="tl-item"><span class="year">2025 Q1</span><div class="dot"></div><span class="txt">일본 법인 설립</span></div>
+    <div class="tl-item"><span class="year">2025 Q3</span><div class="dot"></div><span class="txt">프리미엄 라인 출시</span></div>
+    <div class="tl-item"><span class="year">2026 Q2</span><div class="dot"></div><span class="txt">IPO 사전 준비 완료</span></div>
+  </div>
+  <div class="footer-bar"><strong>ROADMAP</strong> · 타임라인</div>
+  <div class="page-num">10 / 30</div>
+</section>
+
+<!-- 11 PROCESS -->
+<section class="slide">
+  <span class="label">LAYOUT — process_steps</span>
+  <div class="eyebrow">Customer Journey</div>
+  <h2>고객 경험 5단계</h2>
+  <div class="process">
+    <div class="proc-step"><div class="n">01</div><h3>인지</h3><p>브랜드 노출 및 콘텐츠 도달</p></div>
+    <div class="proc-step"><div class="n">02</div><h3>관심</h3><p>상세 페이지 및 리뷰 열람</p></div>
+    <div class="proc-step"><div class="n">03</div><h3>검증</h3><p>체험 및 상담 진행</p></div>
+    <div class="proc-step"><div class="n">04</div><h3>전환</h3><p>구매 및 온보딩</p></div>
+    <div class="proc-step"><div class="n">05</div><h3>확장</h3><p>재구매 및 추천</p></div>
+  </div>
+  <div class="footer-bar"><strong>JOURNEY</strong> · 프로세스 단계</div>
+  <div class="page-num">11 / 30</div>
+</section>
+
+<!-- 12 FUNNEL -->
+<section class="slide">
+  <span class="label">LAYOUT — funnel_convergence</span>
+  <div class="eyebrow">Conversion Funnel</div>
+  <h2>영업 퍼널, 수렴하는 여정</h2>
+  <div class="funnel">
+    <div class="funnel-row"><div class="funnel-val">100.0%</div><div class="funnel-bar" style="width:720px;background:linear-gradient(90deg,#1C3A66,#4FB3A9)">리드 발생 · 48,200건</div></div>
+    <div class="funnel-row"><div class="funnel-val">61.2%</div><div class="funnel-bar" style="width:580px;background:linear-gradient(90deg,#1C3A66,#4FB3A9)">상담 신청 · 29,500건</div></div>
+    <div class="funnel-row"><div class="funnel-val">32.7%</div><div class="funnel-bar" style="width:440px;background:linear-gradient(90deg,#13294B,#C9A86A)">상세 제안 · 15,760건</div></div>
+    <div class="funnel-row"><div class="funnel-val">14.2%</div><div class="funnel-bar" style="width:300px;background:linear-gradient(90deg,#13294B,#C9A86A)">계약 협상 · 6,840건</div></div>
+    <div class="funnel-row"><div class="funnel-val">6.4%</div><div class="funnel-bar" style="width:160px;background:linear-gradient(90deg,#0E2A24,#C9A86A)">최종 계약 · 3,090건</div></div>
+  </div>
+  <div class="footer-bar"><strong>FUNNEL</strong> · 전환 깔때기</div>
+  <div class="page-num">12 / 30</div>
+</section>
+
+<!-- 13 QUADRANT -->
+<section class="slide">
+  <span class="label">LAYOUT — quadrant_2x2</span>
+  <div class="eyebrow">Portfolio Matrix</div>
+  <h2>제품 포트폴리오 매트릭스</h2>
+  <div class="quad">
+    <div class="quad-cell q1"><span class="qtag" style="color:var(--gold)">★ STAR</span><h3>프리미엄 라인</h3><p>고성장·고점유. 적극 투자 확대 영역.</p></div>
+    <div class="quad-cell q2"><span class="qtag" style="color:var(--teal)">? QUESTION</span><h3>신규 카테고리</h3><p>성장 중이나 점유 미흡. 선택적 집중.</p></div>
+    <div class="quad-cell q3"><span class="qtag" style="color:var(--muted)">⚙ CASH COW</span><h3>기본 라인업</h3><p>안정적 현금창출. 수익성 유지 관리.</p></div>
+    <div class="quad-cell q4"><span class="qtag" style="color:var(--coral)">× DOG</span><h3>레거시 제품</h3><p>정비 또는 철수 검토 대상.</p></div>
+    <div class="axis-x"><span>낮은 점유율</span><span>높은 점유율</span></div>
+    <div class="axis-y"><span>높은 성장</span><span>낮은 성장</span></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:32px;font-size:11px;color:var(--muted)"><span>X축 · 시장 점유율</span><span>Y축 · 시장 성장률</span></div>
+  <div class="footer-bar"><strong>MATRIX</strong> · 2×2 사분면</div>
+  <div class="page-num">13 / 30</div>
+</section>
+
+<!-- 14 HEATMAP -->
+<section class="slide">
+  <span class="label">LAYOUT — heatmap_matrix</span>
+  <div class="eyebrow">Region × Quarter Heatmap</div>
+  <h2>지역·분기 매출 밀도</h2>
+  <div class="heat">
+    <div class="hcell head"></div><div class="hcell head">Q1</div><div class="hcell head">Q2</div><div class="hcell head">Q3</div><div class="hcell head">Q4</div><div class="hcell head">합계</div>
+
+    <div class="hcell row">서울</div>
+    <div class="hcell" style="background:#1C3A66">62</div><div class="hcell" style="background:#2A5380">78</div><div class="hcell" style="background:#3B6B9E">85</div><div class="hcell" style="background:#4FB3A9;color:#fff">94</div><div class="hcell" style="background:#C9A86A;color:#0B1E3D">319</div>
+
+    <div class="hcell row">경기</div>
+    <div class="hcell" style="background:#1C3A66">48</div><div class="hcell" style="background:#2A5380">55</div><div class="hcell" style="background:#2A5380">61</div><div class="hcell" style="background:#3B6B9E">72</div><div class="hcell" style="background:#3B6B9E">236</div>
+
+    <div class="hcell row">부산</div>
+    <div class="hcell" style="background:#13294B">31</div><div class="hcell" style="background:#1C3A66">42</div><div class="hcell" style="background:#1C3A66">45</div><div class="hcell" style="background:#2A5380">53</div><div class="hcell" style="background:#2A5380">171</div>
+
+    <div class="hcell row">제주</div>
+    <div class="hcell" style="background:#0B1E3D">12</div><div class="hcell" style="background:#13294B">18</div><div class="hcell" style="background:#13294B">22</div><div class="hcell" style="background:#1C3A66">28</div><div class="hcell" style="background:#1C3A66">80</div>
+
+    <div class="hcell row">해외</div>
+    <div class="hcell" style="background:#0B1E3D">8</div><div class="hcell" style="background:#13294B">14</div><div class="hcell" style="background:#13294B">19</div><div class="hcell" style="background:#1C3A66">26</div><div class="hcell" style="background:#1C3A66">67</div>
+  </div>
+  <div style="margin-top:16px;display:flex;gap:12px;font-size:11px;color:var(--muted)"><span>낮음</span><span style="width:200px;height:10px;background:linear-gradient(90deg,#0B1E3D,#C9A86A)"></span><span>높음 (단위: 억)</span></div>
+  <div class="footer-bar"><strong>HEATMAP</strong> · 밀도 매트릭스</div>
+  <div class="page-num">14 / 30</div>
+</section>
+
+<!-- 15 TWO COLUMN CARDS -->
+<section class="slide">
+  <span class="label">LAYOUT — two_column_cards</span>
+  <div class="eyebrow">Key Wins</div>
+  <h2>올해의 두 가지 성과</h2>
+  <div class="cards2">
+    <div class="card">
+      <div class="num">+24.6%</div>
+      <h3>프리미엄 라인 매출 성장</h3>
+      <p>신규 출시 6개월 만에 카테고리 점유율 3위 진입. 평균 객단가는 기존 대비 1.8배 상승했습니다.</p>
+      <div class="meta"><span>점유율 <b>12.4%</b></span><span>객단가 <b>¥58K</b></span></div>
+    </div>
+    <div class="card" style="border-left-color:var(--gold)">
+      <div class="num" style="color:var(--teal)">−23억</div>
+      <h3>운영비 연간 절감</h3>
+      <p>RPA 도입 및 물류 최적화로 인건비·재고비용을 단축. 절감액은 재투자되어 신제품 개발에 활용되었습니다.</p>
+      <div class="meta"><span>인건비 <b>−15억</b></span><span>재고비 <b>−8억</b></span></div>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>WINS</strong> · 2열 카드</div>
+  <div class="page-num">15 / 30</div>
+</section>
+
+<!-- 16 THREE CARDS -->
+<section class="slide">
+  <span class="label">LAYOUT — three_cards</span>
+  <div class="eyebrow">2025 Strategic Pillars</div>
+  <h2>세 개의 전략 기둥</h2>
+  <div class="cards3">
+    <div class="card3">
+      <div class="icon">01</div>
+      <h3>시장 확장</h3>
+      <p>일본·베트남 진출로 해외 매출 비중 18% 달성. 현지 파트너십 3건 체결 예정.</p>
+      <span class="tag">GROWTH</span>
+    </div>
+    <div class="card3">
+      <div class="icon">02</div>
+      <h3>제품 고도화</h3>
+      <p>프리미엄 라인 2종 추가 및 디자인 시스템 리뉴얼. R&D 투자 28% 증액.</p>
+      <span class="tag">PRODUCT</span>
+    </div>
+    <div class="card3">
+      <div class="icon">03</div>
+      <h3>운영 효율</h3>
+      <p>공급망 디지털화 및 자동화율 70% 달성. 단위당 원가 9% 절감 목표.</p>
+      <span class="tag">EFFICIENCY</span>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>PILLARS</strong> · 3카드</div>
+  <div class="page-num">16 / 30</div>
+</section>
+
+<!-- 17 COMPARISON TABLE -->
+<section class="slide">
+  <span class="label">LAYOUT — comparison_table</span>
+  <div class="eyebrow">Option Evaluation</div>
+  <h2>솔루션 비교표</h2>
+  <table class="ctable">
+    <thead><tr><th>평가 항목</th><th>옵션 A · 자체 개발</th><th>옵션 B · SaaS 도입</th><th>옵션 C · 하이브리드</th></tr></thead>
+    <tbody>
+      <tr><td class="feature">초기 도입 비용</td><td><span class="no">높음 · 18억</span></td><td><span class="yes">낮음 · 2.4억/년</span></td><td><span class="partial">중간 · 8억</span></td></tr>
+      <tr><td class="feature">도입 소요 기간</td><td>14개월</td><td>3개월</td><td>7개월</td></tr>
+      <tr><td class="feature">커스터마이징</td><td><span class="yes">완전 자유</span></td><td><span class="no">제한적</span></td><td><span class="partial">부분 가능</span></td></tr>
+      <tr><td class="feature">유지보수 부담</td><td><span class="no">상시 인력 필요</span></td><td><span class="yes">공급책 책임</span></td><td><span class="partial">혼재</span></td></tr>
+      <tr><td class="feature">보안 통제력</td><td><span class="yes">완전 통제</span></td><td><span class="no">외부 의존</span></td><td><span class="yes">핵심 통제</span></td></tr>
+      <tr><td class="feature">확장성</td><td>제한적</td><td><span class="yes">우수</span></td><td><span class="yes">우수</span></td></tr>
+    </tbody>
+  </table>
+  <div class="footer-bar"><strong>COMPARISON</strong> · 옵션 비교표</div>
+  <div class="page-num">17 / 30</div>
+</section>
+
+<!-- 18 QUOTE -->
+<section class="slide quote">
+  <span class="label">LAYOUT — quote_statement</span>
+  <div class="qmark">"</div>
+  <blockquote>전략은 무엇을 할 것인가가 아니라, <b>무엇을 하지 않을 것인가</b>를 결정하는 데서 비로소 빛을 발한다.</blockquote>
+  <div class="attr"><b>김도현 대표</b>STRATEGY MEMO · 2024.12</div>
+  <div class="footer-bar"><strong>QUOTE</strong> · 인용·선언</div>
+  <div class="page-num">18 / 30</div>
+</section>
+
+<!-- 19 LOGO GRID -->
+<section class="slide">
+  <span class="label">LAYOUT — logo_grid</span>
+  <div class="eyebrow">Partners & Clients</div>
+  <h2>함께한 파트너사</h2>
+  <div class="logo-grid">
+    <div class="logo-cell">NEXUS</div>
+    <div class="logo-cell">Velora</div>
+    <div class="logo-cell">ORION</div>
+    <div class="logo-cell">Monolith</div>
+    <div class="logo-cell">Quanta</div>
+    <div class="logo-cell">Aether</div>
+    <div class="logo-cell">PRIMA</div>
+    <div class="logo-cell">Lumen</div>
+    <div class="logo-cell">KORIS</div>
+    <div class="logo-cell">Vossen</div>
+    <div class="logo-cell">Tessian</div>
+    <div class="logo-cell">Helio</div>
+    <div class="logo-cell">VERDE</div>
+    <div class="logo-cell">Anvil</div>
+    <div class="logo-cell">Sora</div>
+  </div>
+  <div class="footer-bar"><strong>PARTNERS</strong> · 로고 그리드</div>
+  <div class="page-num">19 / 30</div>
+</section>
+
+<!-- 20 MIRROR BAR -->
+<section class="slide">
+  <span class="label">LAYOUT — mirror_bar</span>
+  <div class="eyebrow">Gender × Generation</div>
+  <h2>고객 구성 미러 분포</h2>
+  <div class="mirror">
+    <div class="mirror-row"><div class="mbar left" style="width:32%">남 32%</div><div class="lbl">20대</div><div class="mbar right" style="width:28%">여 28%</div></div>
+    <div class="mirror-row"><div class="mbar left" style="width:24%">남 24%</div><div class="lbl">30대</div><div class="mbar right" style="width:30%">여 30%</div></div>
+    <div class="mirror-row"><div class="mbar left" style="width:18%">남 18%</div><div class="lbl">40대</div><div class="mbar right" style="width:22%">여 22%</div></div>
+    <div class="mirror-row"><div class="mbar left" style="width:14%">남 14%</div><div class="lbl">50대</div><div class="mbar right" style="width:16%">여 16%</div></div>
+    <div class="mirror-row"><div class="mbar left" style="width:8%">남 8%</div><div class="lbl">60+</div><div class="mbar right" style="width:10%">여 10%</div></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:24px;font-size:11px;color:var(--muted)"><span>남성 (teal)</span><span>여성 (coral)</span></div>
+  <div class="footer-bar"><strong>DEMOGRAPHIC</strong> · 미러 바</div>
+  <div class="page-num">20 / 30</div>
+</section>
+
+<!-- 21 DUMBBELL -->
+<section class="slide">
+  <span class="label">LAYOUT — dumbbell_plot</span>
+  <div class="eyebrow">Before / After Delta</div>
+  <h2>부서별 NPS 변화 (2023 → 2024)</h2>
+  <div class="dumb">
+    <div class="dumb-row"><span class="name">영업1팀</span><div class="dumb-track"><div class="line" style="left:20%;width:50%"></div><div class="start" style="left:20%"></div><div class="end" style="left:70%"></div></div><span class="diff">+34</span></div>
+    <div class="dumb-row"><span class="name">영업2팀</span><div class="dumb-track"><div class="line" style="left:30%;width:42%"></div><div class="start" style="left:30%"></div><div class="end" style="left:72%"></div></div><span class="diff">+28</span></div>
+    <div class="dumb-row"><span class="name">CS팀</span><div class="dumb-track"><div class="line" style="left:45%;width:24%"></div><div class="start" style="left:45%"></div><div class="end" style="left:69%"></div></div><span class="diff">+18</span></div>
+    <div class="dumb-row"><span class="name">마케팅</span><div class="dumb-track"><div class="line" style="left:40%;width:18%"></div><div class="start" style="left:40%"></div><div class="end" style="left:58%"></div></div><span class="diff">+12</span></div>
+    <div class="dumb-row"><span class="name">기획</span><div class="dumb-track"><div class="line" style="left:55%;width:6%"></div><div class="start" style="left:55%"></div><div class="end" style="left:61%"></div></div><span class="diff" style="color:var(--coral)">+4</span></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--muted);padding-left:140px;padding-right:60px"><span>NPS 0</span><span>50</span><span>100</span></div>
+  <div class="footer-bar"><strong>NPS DELTA</strong> · 덤벨 플롯</div>
+  <div class="page-num">21 / 30</div>
+</section>
+
+<!-- 22 DONUT -->
+<section class="slide">
+  <span class="label">LAYOUT — donut_chart</span>
+  <div class="eyebrow">Revenue Mix</div>
+  <h2>매출 구성 비중</h2>
+  <div class="donut-wrap">
+    <div class="donut">
+      <svg viewBox="0 0 42 42" style="width:100%;height:100%;transform:rotate(-90deg)">
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#1C3A66" stroke-width="6"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#C9A86A" stroke-width="6" stroke-dasharray="38 62" stroke-dashoffset="0"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#4FB3A9" stroke-width="6" stroke-dasharray="28 72" stroke-dashoffset="-38"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#E07A5F" stroke-width="6" stroke-dasharray="22 78" stroke-dashoffset="-66"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#8A9BB4" stroke-width="6" stroke-dasharray="12 88" stroke-dashoffset="-88"/>
+      </svg>
+      <div class="center"><b>1,284억</b><small>TOTAL REVENUE</small></div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="sw" style="background:#C9A86A"></span><span>프리미엄 라인</span><b>38%</b></div>
+      <div class="legend-item"><span class="sw" style="background:#4FB3A9"></span><span>스탠다드 라인</span><b>28%</b></div>
+      <div class="legend-item"><span class="sw" style="background:#E07A5F"></span><span>B2B 파트너십</span><b>22%</b></div>
+      <div class="legend-item"><span class="sw" style="background:#8A9BB4"></span><span>기타</span><b>12%</b></div>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>MIX</strong> · 도넛 차트</div>
+  <div class="page-num">22 / 30</div>
+</section>
+
+<!-- 23 BULLET CHART -->
+<section class="slide">
+  <span class="label">LAYOUT — bullet_chart</span>
+  <div class="eyebrow">Target vs Actual</div>
+  <h2>핵심 지표 달성도</h2>
+  <div class="bullet">
+    <div class="bullet-row">
+      <div class="bhead"><b>매출</b><span>목표 1,230억 / 실적 1,284억</span></div>
+      <div class="btrack">
+        <div class="brange" style="left:0;width:60%;background:rgba(79,179,169,.15)"></div>
+        <div class="brange" style="left:60%;width:30%;background:rgba(201,168,106,.2)"></div>
+        <div class="brange" style="left:90%;width:10%;background:rgba(224,122,95,.2)"></div>
+        <div class="bactual" style="left:0;width:72%"></div>
+        <div class="btarget" style="left:70%"></div>
+      </div>
+      <div class="bscale"><span>0</span><span>500</span><span>1,000</span><span>1,500</span><span>2,000</span></div>
+    </div>
+    <div class="bullet-row">
+      <div class="bhead"><b>영업이익률</b><span>목표 13.0% / 실적 14.2%</span></div>
+      <div class="btrack">
+        <div class="brange" style="left:0;width:50%;background:rgba(79,179,169,.15)"></div>
+        <div class="brange" style="left:50%;width:35%;background:rgba(201,168,106,.2)"></div>
+        <div class="brange" style="left:85%;width:15%;background:rgba(224,122,95,.2)"></div>
+        <div class="bactual" style="left:0;width:71%"></div>
+        <div class="btarget" style="left:65%"></div>
+      </div>
+      <div class="bscale"><span>0</span><span>5</span><span>10</span><span>15</span><span>20%</span></div>
+    </div>
+    <div class="bullet-row">
+      <div class="bhead"><b>신규 고객</b><span>목표 22,000명 / 실적 23,400명</span></div>
+      <div class="btrack">
+        <div class="brange" style="left:0;width:55%;background:rgba(79,179,169,.15)"></div>
+        <div class="brange" style="left:55%;width:30%;background:rgba(201,168,106,.2)"></div>
+        <div class="brange" style="left:85%;width:15%;background:rgba(224,122,95,.2)"></div>
+        <div class="bactual" style="left:0;width:78%"></div>
+        <div class="btarget" style="left:73%"></div>
+      </div>
+      <div class="bscale"><span>0</span><span>10K</span><span>20K</span><span>30K</span></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:24px;margin-top:24px;font-size:11px;color:var(--muted)"><span>■ 실적</span><span style="color:var(--coral)">| 목표선</span></div>
+  <div class="footer-bar"><strong>BULLET</strong> · 불릿 차트</div>
+  <div class="page-num">23 / 30</div>
+</section>
+
+<!-- 24 STACKED BAR -->
+<section class="slide">
+  <span class="label">LAYOUT — stacked_bar</span>
+  <div class="eyebrow">Cost Structure</div>
+  <h2>분기별 비용 구성 (억)</h2>
+  <div class="stack">
+    <div class="stack-col"><div class="stack-bar" style="height:240px"><div class="stack-seg" style="--h:140px;background:#4FB3A9"><span>140</span></div><div class="stack-seg" style="--h:60px;background:#C9A86A"><span>60</span></div><div class="stack-seg" style="--h:40px;background:#E07A5F"><span>40</span></div></div><span class="lbl" style="color:var(--muted);font-size:13px">23Q4 · 240</span></div>
+    <div class="stack-col"><div class="stack-bar" style="height:260px"><div class="stack-seg" style="--h:150px;background:#4FB3A9"><span>150</span></div><div class="stack-seg" style="--h:70px;background:#C9A86A"><span>70</span></div><div class="stack-seg" style="--h:40px;background:#E07A5F"><span>40</span></div></div><span class="lbl" style="color:var(--muted);font-size:13px">24Q1 · 260</span></div>
+    <div class="stack-col"><div class="stack-bar" style="height:280px"><div class="stack-seg" style="--h:160px;background:#4FB3A9"><span>160</span></div><div class="stack-seg" style="--h:80px;background:#C9A86A"><span>80</span></div><div class="stack-seg" style="--h:40px;background:#E07A5F"><span>40</span></div></div><span class="lbl" style="color:var(--muted);font-size:13px">24Q2 · 280</span></div>
+    <div class="stack-col"><div class="stack-bar" style="height:320px"><div class="stack-seg" style="--h:180px;background:#4FB3A9"><span>180</span></div><div class="stack-seg" style="--h:90px;background:#C9A86A"><span>90</span></div><div class="stack-seg" style="--h:50px;background:#E07A5F"><span>50</span></div></div><span class="lbl" style="color:var(--muted);font-size:13px">24Q3 · 320</span></div>
+    <div class="stack-col"><div class="stack-bar" style="height:360px"><div class="stack-seg" style="--h:200px;background:#4FB3A9"><span>200</span></div><div class="stack-seg" style="--h:100px;background:#C9A86A"><span>100</span></div><div class="stack-seg" style="--h:60px;background:#E07A5F"><span>60</span></div></div><span class="lbl" style="color:var(--muted);font-size:13px">24Q4 · 360</span></div>
+  </div>
+  <div style="display:flex;gap:24px;justify-content:center;margin-top:16px;font-size:12px"><span style="color:#4FB3A9">■ 인건비</span><span style="color:#C9A86A">■ 운영비</span><span style="color:#E07A5F">■ 마케팅</span></div>
+  <div class="footer-bar"><strong>STACKED</strong> · 누적 막대</div>
+  <div class="page-num">24 / 30</div>
+</section>
+
+<!-- 25 PYRAMID -->
+<section class="slide">
+  <span class="label">LAYOUT — pyramid</span>
+  <div class="eyebrow">Org Hierarchy</div>
+  <h2>조직 계층 구조</h2>
+  <div class="pyramid">
+    <div class="pyr-row" style="width:200px;background:linear-gradient(135deg,#C9A86A,#A8854A)">경영진 · 4명</div>
+    <div class="pyr-row" style="width:340px;background:linear-gradient(135deg,#4FB3A9,#3A8A82)">본부장 · 12명</div>
+    <div class="pyr-row" style="width:480px;background:linear-gradient(135deg,#2A5380,#1C3A66)">팀장 · 38명</div>
+    <div class="pyr-row" style="width:620px;background:linear-gradient(135deg,#1C3A66,#13294B)">파트 리드 · 86명</div>
+    <div class="pyr-row" style="width:760px;background:linear-gradient(135deg,#13294B,#0B1E3D);border:1px solid var(--line)">실무진 · 412명</div>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:auto;font-size:11px;color:var(--muted)"><span>총 인원 552명</span><span>Span of Control 평균 1:5.2</span></div>
+  <div class="footer-bar"><strong>PYRAMID</strong> · 피라미드</div>
+  <div class="page-num">25 / 30</div>
+</section>
+
+<!-- 26 STAT + SPARKLINE -->
+<section class="slide">
+  <span class="label">LAYOUT — stat_with_sparkline</span>
+  <div class="eyebrow">Live Dashboard</div>
+  <h2>운영 핵심 신호</h2>
+  <div class="stats-grid">
+    <div class="stat-card"><span class="label">DAU</span><div class="v">128.4K</div><svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#4FB3A9" stroke-width="2" points="0,22 10,18 20,20 30,12 40,15 50,8 60,11 70,6 80,9 90,4 100,2"/></svg></div>
+    <div class="stat-card"><span class="label">CONVERSION</span><div class="v">4.82%</div><svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#C9A86A" stroke-width="2" points="0,18 10,20 20,15 30,16 40,12 50,14 60,10 70,8 80,9 90,6 100,5"/></svg></div>
+    <div class="stat-card"><span class="label">CHURN</span><div class="v">1.24%</div><svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#E07A5F" stroke-width="2" points="0,4 10,6 20,5 30,8 40,7 50,10 60,9 70,12 80,11 90,14 100,13"/></svg></div>
+    <div class="stat-card"><span class="label">ARPU</span><div class="v">¥58,200</div><svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#4FB3A9" stroke-width="2" points="0,20 10,18 20,16 30,17 40,14 50,12 60,13 70,9 80,8 90,6 100,3"/></svg></div>
+    <div class="stat-card"><span class="label">NPS</span><div class="v">62</div><svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#C9A86A" stroke-width="2" points="0,24 10,22 20,20 30,18 40,16 50,15 60,12 70,10 80,8 90,6 100,4"/></svg></div>
+    <div class="stat-card"><span class="label">CSAT</span><div class="v">4.6 / 5</div><svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#4FB3A9" stroke-width="2" points="0,10 10,8 20,9 30,7 40,8 50,6 60,7 70,5 80,6 90,4 100,5"/></svg></div>
+  </div>
+  <div class="footer-bar"><strong>DASHBOARD</strong> · 스파크라인</div>
+  <div class="page-num">26 / 30</div>
+</section>
+
+<!-- 27 AGENDA -->
+<section class="slide">
+  <span class="label">LAYOUT — agenda</span>
+  <div class="eyebrow">Today's Agenda</div>
+  <h2>오늘의 발표 순서</h2>
+  <div class="agenda-list">
+    <div class="agenda-item"><span class="n">01</span><div class="t">시장 환경 및 경쟁 구도<small>거시 트렌드 · 경쟁사 포지셔닝</small></div><span class="time">10:00 – 10:20</span></div>
+    <div class="agenda-item"><span class="n">02</span><div class="t">2024년 성과 요약<small>재무·고객·운영 4축 요약</small></div><span class="time">10:20 – 10:50</span></div>
+    <div class="agenda-item"><span class="n">03</span><div class="t">2025년 전략 과제<small>3대 기둥 · 우선순위</small></div><span class="time">10:50 – 11:30</span></div>
+    <div class="agenda-item"><span class="n">04</span><div class="t">투자 계획 및 리스크<small>자원 배분 · 시나리오</small></div><span class="time">11:30 – 12:00</span></div>
+    <div class="agenda-item"><span class="n">05</span><div class="t">Q&A 및 결의<small>의사결정 사항 정리</small></div><span class="time">12:00 – 12:20</span></div>
+  </div>
+  <div class="footer-bar"><strong>AGENDA</strong> · 목차</div>
+  <div class="page-num">27 / 30</div>
+</section>
+
+<!-- 28 TEAM GRID -->
+<section class="slide">
+  <span class="label">LAYOUT — team_grid</span>
+  <div class="eyebrow">Leadership</div>
+  <h2>핵심 임원진</h2>
+  <div class="team-grid">
+    <div class="team-card"><div class="av">K</div><h3>김도현</h3><div class="role">CEO</div><p>전사 비전 수립 및 전략 의사결정 총괄.</p></div>
+    <div class="team-card"><div class="av">L</div><h3>이서연</h3><div class="role">COO</div><p>운영·공급망·물류 혁신 총괄.</p></div>
+    <div class="team-card"><div class="av">P</div><h3>박정우</h3><div class="role">CFO</div><p>재무 계획 · 투자 · IR 담당.</p></div>
+    <div class="team-card"><div class="av">C</div><h3>최유나</h3><div class="role">CMO</div><p>브랜드·마케팅·고객 경험 총괄.</p></div>
+    <div class="team-card"><div class="av">J</div><h3>정민호</h3><div class="role">CTO</div><p>플랫폼 기술 및 데이터 인프라.</p></div>
+    <div class="team-card"><div class="av">H</div><h3>한지원</h3><div class="role">CHRO</h3><div class="role" style="color:var(--gold)">CHRO</div><p>조직 문화 및 인재 전략.</p></div>
+    <div class="team-card"><div class="av">Y</div><h3>윤상혁</h3><div class="role">CSO</div><p>전략 기획 및 신사업 개발.</p></div>
+    <div class="team-card"><div class="av">A</div><h3>안수빈</h3><div class="role">CPO</div><p>제품 전략 및 디자인 총괄.</p></div>
+  </div>
+  <div class="footer-bar"><strong>LEADERSHIP</strong> · 팀 그리드</div>
+  <div class="page-num">28 / 30</div>
+</section>
+
+<!-- 29 TREEMAP -->
+<section class="slide">
+  <span class="label">LAYOUT — treemap</span>
+  <div class="eyebrow">Revenue Contribution</div>
+  <h2>제품군 매출 트리맵</h2>
+  <div class="treemap">
+    <div class="tm-cell tm1" style="background:linear-gradient(135deg,#C9A86A,#A8854A)"><b>프리미엄 라인</b><span>488억 · 38%</span></div>
+    <div class="tm-cell" style="background:#4FB3A9"><b>스탠다드</b><span>360억</span></div>
+    <div class="tm-cell" style="background:#E07A5F"><b>B2B</b><span>282억</span></div>
+    <div class="tm-cell" style="background:#3B6B9E"><b>모바일</b><span>188억</span></div>
+    <div class="tm-cell" style="background:#2A5380"><b>기타</b><span>156억</span></div>
+  </div>
+  <div class="footer-bar"><strong>TREEMAP</strong> · 트리맵</div>
+  <div class="page-num">29 / 30</div>
+</section>
+
+<!-- 30 CLOSING -->
+<section class="slide closing">
+  <span class="label">LAYOUT — closing</span>
+  <div class="ring">感</div>
+  <div class="eyebrow">END OF DECK</div>
+  <h1 style="font-size:56px">함께, 다음 해를<br>만들어 가겠습니다.</h1>
+  <p style="max-width:560px;margin-top:24px">질문과 제안은 전략기획팀까지. 본 자료의 모든 수치는 내부 기준이며 외부 공유를 금합니다.</p>
+  <div style="margin-top:48px;display:flex;gap:48px;font-size:13px;color:var(--muted);letter-spacing:.08em">
+    <span>CONTACT<b style="display:block;color:var(--paper);margin-top:6px">strategy@company.com</b></span>
+    <span>VERSION<b style="display:block;color:var(--paper);margin-top:6px">v3.2 · 2025.01.15</b></span>
+  </div>
+  <div class="footer-bar"><strong>THANK YOU</strong></div>
+  <div class="page-num">30 / 30</div>
+</section>
+
+<!-- ============ COLOR PALETTE 1 ============ -->
+<section class="slide palette-slide">
+  <span class="label">COLOR — palette_combo_01</span>
+  <div class="eyebrow">Palette 01 · Midnight Brass</div>
+  <h2>딥톤 네이비 + 황동 골드</h2>
+  <div class="palette-block">
+    <div class="pal-combo">
+      <div class="pal-header"><h3>조합 1 — 차분한 권위</h3><span class="ratio">BASE 60 · SUB 30 · ACCENT 10</span></div>
+      <div class="pal-chips">
+        <div class="chip dark" style="background:#0B1E3D"><b>Deep Navy</b><code>#0B1E3D</code></div>
+        <div class="chip dark" style="background:#13294B"><b>Navy 700</b><code>#13294B</code></div>
+        <div class="chip dark" style="background:#1C3A66"><b>Navy 500</b><code>#1C3A66</code></div>
+        <div class="chip" style="background:#C9A86A;color:#0B1E3D"><b>Brass Gold</b><code>#C9A86A</code></div>
+        <div class="chip" style="background:#E8ECEF;color:#0B1E3D"><b>Paper</b><code>#E8ECEF</code></div>
+      </div>
+      <p class="pal-desc">
+        <span class="tag">원리</span>베이스(네이비 3단계)로 공간의 무게감을 잡고, 서브(페이퍼)로 가독성을 확보한 뒤, 액센트(황동 골드)로 핵심 정보에만 시선을 모읍니다. 다크 모델 기반이며 콘트라스트 비율 12:1 이상으로 본문·데이터 모두 안전합니다.
+        <br><br>
+        <span class="tag">적용</span>경영 보고 · 재무 실적 · 거시 전략 등 <b>신뢰·권위·정밀함</b>이 우선인 주제. KPI 숫자·핵심 결론·CTA에 골드를 점점이 배치하세요.
+      </p>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>PALETTE 01</strong> · Midnight Brass</div>
+  <div class="page-num">PALETTE / 30</div>
+</section>
+
+<!-- ============ COLOR PALETTE 2 ============ -->
+<section class="slide palette-slide green">
+  <span class="label">COLOR — palette_combo_02</span>
+  <div class="eyebrow">Palette 02 · Forest Quartz</div>
+  <h2>딥그린 + 틸 쿼츠</h2>
+  <div class="palette-block">
+    <div class="pal-combo">
+      <div class="pal-header"><h3>조합 2 — 차분한 성장</h3><span class="ratio">BASE 55 · SUB 30 · ACCENT 15</span></div>
+      <div class="pal-chips">
+        <div class="chip dark" style="background:#0E2A24"><b>Deep Green</b><code>#0E2A24</code></div>
+        <div class="chip dark" style="background:#16403A"><b>Green 700</b><code>#16403A</code></div>
+        <div class="chip dark" style="background:#2A6B5F"><b>Green 500</b><code>#2A6B5F</code></div>
+        <div class="chip" style="background:#4FB3A9;color:#0E2A24"><b>Teal Quartz</b><code>#4FB3A9</code></div>
+        <div class="chip" style="background:#F2EFE6;color:#0E2A24"><b>Bone</b><code>#F2EFE6</code></div>
+      </div>
+      <p class="pal-desc">
+        <span class="tag">원리</span>베이스(딥그린 3단계)가 안정감과 지속가능성을 전달하고, 액센트(틸 쿼츠)는 데이터 시리즈·긍정 변화에 사용됩니다. 본(Bone)은 따뜻한 오프화이트로 딥그린과 보색 대비를 만들어 눈 피로를 줄입니다. 차트의 다중 시리즈에 틸·골드·코랄을 순차 배치하면 정보 위계가 선명해집니다.
+        <br><br>
+        <span class="tag">적용</span>ESG · 헬스케어 · 지속가능성 보고 · 운영 혁신 등 <b>성장·안정·환경</b> 키워드에 최적. 라이트 영역(본)에 본문을 올리고 데이터는 틸로 강조하세요.
+      </p>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>PALETTE 02</strong> · Forest Quartz</div>
+  <div class="page-num">PALETTE / 30</div>
+</section>
+
+<!-- ============ COLOR PALETTE 3 ============ -->
+<section class="slide palette-slide">
+  <span class="label">COLOR — palette_combo_03</span>
+  <div class="eyebrow">Palette 03 · Navy Coral Duet</div>
+  <h2>네이비 + 코랄 듀엣</h2>
+  <div class="palette-block">
+    <div class="pal-combo">
+      <div class="pal-header"><h3>조합 3 — 대비의 강도</h3><span class="ratio">BASE 50 · SUB 35 · ACCENT 15</span></div>
+      <div class="pal-chips">
+        <div class="chip dark" style="background:#0B1E3D"><b>Deep Navy</b><code>#0B1E3D</code></div>
+        <div class="chip dark" style="background:#1C3A66"><b>Navy 500</b><code>#1C3A66</code></div>
+        <div class="chip" style="background:#E8ECEF;color:#0B1E3D"><b>Paper</b><code>#E8ECEF</code></div>
+        <div class="chip" style="background:#E07A5F;color:#0B1E3D"><b>Coral</b><code>#E07A5F</code></div>
+        <div class="chip" style="background:#C9A86A;color:#0B1E3D"><b>Gold (보조)</b><code>#C9A86A</code></div>
+      </div>
+      <p class="pal-desc">
+        <span class="tag">원리</span>네이비 2단계로 차분한 베이스, 페이퍼로 가독성, 코랄을 강 액센트로 사용합니다. 코랄과 골드는 보조 세트로 함께 쓰되 <b>코랄이 우선</b>: 코랄은 경고·리스크·하락·핵심 강조에, 골드는 성장·목표·성취에 배정해 시그널을 통일합니다. 둘 다 네이비와 7:1 이상 대비로 가독성 확보.
+        <br><br>
+        <span class="tag">적용</span>리스크 관리 · 시나리오 분석 · 비교·대조형 발표. 코랄은 핵심 1–2곳에만 쓰면 폭발력이 살고, 남발하면 시각적 피로가 발생합니다. 한 슬라이드당 코랄 면적 5% 이하 권장.
+      </p>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>PALETTE 03</strong> · Navy Coral Duet</div>
+  <div class="page-num">PALETTE / 30</div>
+</section>
+
+</div>
+</body>
+</html>

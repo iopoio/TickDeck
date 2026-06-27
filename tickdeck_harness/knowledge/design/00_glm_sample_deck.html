@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>2026 Marketing Trend — TickDeck</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#050b14;font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:#eaf0f7;-webkit-font-smoothing:antialiased}
+  body{padding:48px 0}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:36px}
+  .slide{width:1280px;height:720px;background:#0a1626;position:relative;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.04)}
+  :root{
+    --navy:#0a1626;--navy2:#0e1d30;--panel:#142436;--panel2:#1b2f48;
+    --green:#3dd9b3;--green-deep:#1a7a63;--green-dim:#0f3a32;
+    --gold:#f0c674;--amber:#e9b949;
+    --text:#eaf0f7;--muted:#7d92a8;--muted2:#5a6f86;
+    --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
+  }
+  /* common chrome */
+  .chrome-tl{position:absolute;top:36px;left:56px;font-size:12px;letter-spacing:.18em;color:var(--muted2);font-weight:600;text-transform:uppercase}
+  .chrome-tr{position:absolute;top:36px;right:56px;font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:600}
+  .chrome-br{position:absolute;bottom:32px;right:56px;font-size:12px;color:var(--muted2);letter-spacing:.1em}
+  .chrome-bl{position:absolute;bottom:32px;left:56px;font-size:11px;color:var(--muted2);letter-spacing:.08em}
+  .brand-dot{display:inline-block;width:8px;height:8px;background:var(--green);border-radius:2px;margin-right:10px;vertical-align:1px}
+  .section-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid var(--line2);border-radius:999px;font-size:11px;letter-spacing:.16em;color:var(--green);font-weight:700}
+  .section-tag::before{content:"";width:6px;height:6px;background:var(--green);border-radius:50%}
+
+  /* === SLIDE 1: COVER === */
+  .cover{background:radial-gradient(ellipse at 70% 30%,#15324a 0%,#0a1626 55%,#060e1a 100%)}
+  .cover .bigyear{position:absolute;right:-40px;top:80px;font-size:520px;font-weight:900;line-height:.85;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px rgba(61,217,179,.18);font-family:'Pretendard',sans-serif}
+  .cover .glow{position:absolute;right:140px;top:260px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(61,217,179,.18),transparent 65%);filter:blur(20px)}
+  .cover-inner{position:absolute;left:80px;top:120px;right:80px;bottom:80px;display:flex;flex-direction:column;justify-content:space-between;z-index:2}
+  .cover-eyebrow{display:flex;align-items:center;gap:14px;font-size:13px;letter-spacing:.3em;color:var(--green);font-weight:700}
+  .cover-eyebrow .ln{width:48px;height:1px;background:var(--green)}
+  .cover h1{font-size:88px;font-weight:800;line-height:1.02;letter-spacing:-.03em;margin-top:24px}
+  .cover h1 .ac{color:var(--green)}
+  .cover .sub{font-size:24px;font-weight:500;color:#c8d4e0;margin-top:28px;max-width:760px;line-height:1.5}
+  .cover .tag{display:inline-block;margin-top:18px;padding:8px 16px;background:rgba(240,198,116,.1);border:1px solid rgba(240,198,116,.3);color:var(--gold);font-size:14px;font-weight:600;border-radius:4px}
+  .cover-foot{display:flex;justify-content:space-between;align-items:flex-end}
+  .cover-foot .brand{font-size:18px;font-weight:800;letter-spacing:.02em}
+  .cover-foot .brand span{color:var(--green)}
+  .cover-foot .meta{font-size:12px;color:var(--muted2);letter-spacing:.2em}
+
+  /* === SLIDE 2: AGENDA === */
+  .ag{padding:80px}
+  .ag-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:50px}
+  .ag-head h2{font-size:54px;font-weight:800;letter-spacing:-.02em}
+  .ag-head h2 .ac{color:var(--green)}
+  .ag-head .desc{font-size:16px;color:var(--muted);max-width:380px;line-height:1.6;text-align:right}
+  .ag-list{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+  .ag-item{display:grid;grid-template-columns:90px 1fr 220px;align-items:center;padding:22px 8px;border-bottom:1px solid var(--line);transition:.2s}
+  .ag-item .n{font-size:22px;font-weight:800;color:var(--green);letter-spacing:.02em}
+  .ag-item .t{font-size:22px;font-weight:600;color:var(--text)}
+  .ag-item .t small{display:block;font-size:13px;color:var(--muted);font-weight:400;margin-top:4px;letter-spacing:.04em}
+  .ag-item .en{text-align:right;font-size:13px;color:var(--muted2);letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+  .ag-item:hover{background:rgba(61,217,179,.04)}
+
+  /* === SECTION DIVIDER === */
+  .div{background:linear-gradient(135deg,#0e1d30 0%,#0a1626 100%);display:flex;align-items:center;padding:0 80px}
+  .div .bignum{font-size:380px;font-weight:900;line-height:.8;color:transparent;-webkit-text-stroke:2px rgba(61,217,179,.25);letter-spacing:-.04em;margin-right:60px}
+  .div .bignum .sl{color:var(--green);-webkit-text-stroke:0}
+  .div-text .lab{font-size:13px;letter-spacing:.3em;color:var(--green);font-weight:700;margin-bottom:18px}
+  .div-text h2{font-size:72px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+  .div-text .en{font-size:20px;color:var(--muted);margin-top:14px;letter-spacing:.04em;font-weight:500}
+  .div-text .desc{font-size:17px;color:#a8b8cc;margin-top:24px;max-width:560px;line-height:1.6}
+  .div-deco{position:absolute;right:80px;bottom:80px;width:200px;height:200px;border:1px solid var(--line2);border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .div-deco::before{content:"";position:absolute;inset:30px;border:1px solid rgba(61,217,179,.3);border-radius:50%}
+  .div-deco::after{content:"";position:absolute;inset:60px;background:var(--green);border-radius:50%;opacity:.4}
+
+  /* === SLIDE 4: HORIZONTAL BAR CHART === */
+  .s4{padding:64px 80px;display:flex;flex-direction:column}
+  .s-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
+  .s-head .left .stag{font-size:11px;letter-spacing:.2em;color:var(--green);font-weight:700;margin-bottom:12px}
+  .s-head .left h3{font-size:38px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+  .s-head .left .sub{font-size:15px;color:var(--muted);margin-top:10px;max-width:600px;line-height:1.5}
+  .s-head .right{text-align:right;font-size:12px;color:var(--muted2);letter-spacing:.1em}
+  .s-head .right .src{margin-top:6px;color:var(--muted)}
+  .chart-h{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;margin-top:20px}
+  .bar-row{display:grid;grid-template-columns:160px 1fr 70px;align-items:center;gap:20px}
+  .bar-row .lbl{font-size:16px;font-weight:600;color:var(--text)}
+  .bar-row .lbl .en{display:block;font-size:11px;color:var(--muted2);letter-spacing:.1em;margin-top:2px}
+  .bar-track{height:34px;background:rgba(255,255,255,.04);border-radius:4px;position:relative;overflow:hidden}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--green-deep),var(--green));border-radius:4px;position:relative;display:flex;align-items:center}
+  .bar-fill.top{background:linear-gradient(90deg,#b89230,var(--gold))}
+  .bar-row .val{font-size:22px;font-weight:800;color:var(--green);text-align:right}
+  .bar-row .val.gold{color:var(--gold)}
+  .bar-fill::after{content:"";position:absolute;right:0;top:0;bottom:0;width:2px;background:rgba(255,255,255,.4)}
+  .chart-note{margin-top:14px;padding:14px 20px;background:rgba(240,198,116,.06);border-left:3px solid var(--gold);font-size:14px;color:#d8e0e8;border-radius:0 4px 4px 0}
+  .chart-note b{color:var(--gold)}
+
+  /* === SLIDE 5: TIMELINE === */
+  .s5{padding:64px 80px;display:flex;flex-direction:column}
+  .tl-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:30px}
+  .tl-line{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
+  .tl-line::before{content:"";position:absolute;top:42px;left:6%;right:6%;height:2px;background:linear-gradient(90deg,var(--green-deep),var(--green),var(--gold))}
+  .tl-node{display:flex;flex-direction:column;align-items:center;padding:0 24px;position:relative}
+  .tl-dot{width:24px;height:24px;border-radius:50%;background:var(--navy);border:3px solid var(--green);position:relative;z-index:2;margin-top:30px}
+  .tl-node.cur .tl-dot{border-color:var(--gold);box-shadow:0 0 0 6px rgba(240,198,116,.15)}
+  .tl-phase{font-size:13px;letter-spacing:.2em;color:var(--muted);font-weight:700;margin-top:18px}
+  .tl-node.cur .tl-phase{color:var(--gold)}
+  .tl-title{font-size:24px;font-weight:800;margin-top:10px;text-align:center}
+  .tl-en{font-size:12px;color:var(--green);letter-spacing:.14em;font-weight:700;margin-top:6px;text-transform:uppercase}
+  .tl-desc{font-size:14px;color:#b8c6d6;margin-top:14px;text-align:center;line-height:1.55;max-width:300px}
+  .tl-q{margin-top:30px;padding:22px 28px;background:var(--panel);border-radius:8px;border:1px solid var(--line2);text-align:center;font-size:17px;color:var(--text);font-weight:500;line-height:1.5}
+  .tl-q b{color:var(--gold)}
+
+  /* === SLIDE 7: 3 STATS === */
+  .s7{padding:64px 80px;display:flex;flex-direction:column}
+  .s7 .s-head h3{max-width:760px}
+  .stats3{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;margin-top:30px}
+  .stat-card{background:linear-gradient(160deg,var(--panel),var(--navy2));border:1px solid var(--line);border-radius:10px;padding:36px 30px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+  .stat-card::before{content:"";position:absolute;top:0;left:0;width:4px;height:60px;background:var(--green)}
+  .stat-card.gold::before{background:var(--gold)}
+  .stat-card .tag{font-size:11px;letter-spacing:.2em;color:var(--muted);font-weight:700;text-transform:uppercase}
+  .stat-card .big{font-size:96px;font-weight:900;line-height:.9;color:var(--green);letter-spacing:-.03em;margin:18px 0 8px}
+  .stat-card.gold .big{color:var(--gold)}
+  .stat-card .big .u{font-size:36px;font-weight:700;margin-left:4px}
+  .stat-card .desc{font-size:16px;color:#c8d4e0;line-height:1.5;font-weight:500}
+  .stat-card .src{font-size:11px;color:var(--muted2);letter-spacing:.06em;margin-top:14px}
+  .stat-card .arrow{font-size:14px;color:var(--gold);font-weight:700;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+  .stat-card .arrow b{font-weight:800}
+
+  /* === SLIDE 9: VERTICAL BAR CHART === */
+  .s9{padding:64px 80px;display:flex;flex-direction:column}
+  .vc-wrap{flex:1;display:flex;align-items:flex-end;margin-top:24px;padding:0 10px 50px;position:relative;border-bottom:1px solid var(--line2)}
+  .vc-grid{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none}
+  .vc-grid .g{border-top:1px dashed rgba(255,255,255,.06);font-size:10px;color:var(--muted2);padding-left:0}
+  .vc-bars{display:flex;justify-content:space-around;align-items:flex-end;width:100%;height:100%;gap:24px;position:relative;z-index:2}
+  .vc-bar{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative}
+  .vc-bar .v{font-size:18px;font-weight:800;color:var(--text);margin-bottom:10px}
+  .vc-bar .v .u{font-size:13px;color:var(--muted);font-weight:600}
+  .vc-bar .col{width:100%;max-width:90px;background:linear-gradient(180deg,var(--green),var(--green-deep));border-radius:6px 6px 0 0;position:relative;border-top:2px solid rgba(255,255,255,.2)}
+  .vc-bar.top .col{background:linear-gradient(180deg,var(--gold),#9c7a1f)}
+  .vc-bar .lab{font-size:14px;font-weight:600;color:var(--text);margin-top:14px;text-align:center;line-height:1.3}
+  .vc-bar .en{font-size:11px;color:var(--muted2);margin-top:3px;letter-spacing:.06em}
+  .vc-note{margin-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+  .vc-note .hl{color:var(--green);font-weight:700}
+
+  /* === SLIDE 10: DUAL AUDIENCE 2COL === */
+  .s10{padding:64px 80px;display:flex;flex-direction:column}
+  .dual{flex:1;display:grid;grid-template-columns:1fr 80px 1fr;gap:0;margin-top:24px;align-items:stretch}
+  .dual-col{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:36px;display:flex;flex-direction:column}
+  .dual-col.machine{border-top:4px solid var(--green)}
+  .dual-col.human{border-top:4px solid var(--gold)}
+  .dual-col .icon{font-size:11px;letter-spacing:.2em;font-weight:700;color:var(--green);margin-bottom:14px}
+  .dual-col.human .icon{color:var(--gold)}
+  .dual-col h4{font-size:30px;font-weight:800;margin-bottom:8px}
+  .dual-col .sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.5}
+  .dual-col ul{list-style:none;flex:1}
+  .dual-col li{padding:14px 0;border-bottom:1px solid var(--line);font-size:15px;color:#d8e0e8;display:flex;gap:14px;align-items:flex-start;line-height:1.5}
+  .dual-col li .mk{color:var(--green);font-weight:800;font-size:13px;min-width:24px}
+  .dual-col.human li .mk{color:var(--gold)}
+  .dual-col .foot{margin-top:20px;padding:14px 16px;background:rgba(255,255,255,.03);border-radius:6px;font-size:13px;color:var(--muted);line-height:1.5}
+  .dual-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+  .dual-mid .plus{width:48px;height:48px;border-radius:50%;background:var(--navy2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--green);font-weight:300}
+
+  /* === SLIDE 11: 2COL COMPARISON === */
+  .s11{padding:64px 80px;display:flex;flex-direction:column}
+  .cmp{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+  .cmp-col{background:linear-gradient(160deg,var(--panel),var(--navy2));border:1px solid var(--line);border-radius:10px;padding:34px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .cmp-col.left{border-left:4px solid var(--muted2)}
+  .cmp-col.right{border-left:4px solid var(--green);background:linear-gradient(160deg,#0f3a32,#0a1626)}
+  .cmp-col .tag{font-size:11px;letter-spacing:.2em;font-weight:700;color:var(--muted);text-transform:uppercase}
+  .cmp-col.right .tag{color:var(--green)}
+  .cmp-col h4{font-size:28px;font-weight:800;margin:10px 0 6px}
+  .cmp-col .sub{font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.5}
+  .cmp-items{display:flex;flex-direction:column;gap:14px;flex:1}
+  .cmp-item{padding:14px 16px;background:rgba(255,255,255,.03);border-radius:6px;border-left:2px solid var(--muted2)}
+  .cmp-col.right .cmp-item{border-left-color:var(--green);background:rgba(61,217,179,.05)}
+  .cmp-item .t{font-size:16px;font-weight:700;color:var(--text)}
+  .cmp-item .d{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+  .cmp-stat{margin-top:auto;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+  .cmp-stat b{color:var(--gold);font-size:20px;font-weight:800;display:block;margin-top:4px}
+
+  /* === SLIDE 12: COMPARISON TABLE === */
+  .s12{padding:64px 80px;display:flex;flex-direction:column}
+  .tbl-wrap{flex:1;margin-top:24px;display:flex;flex-direction:column}
+  table.cmp-tbl{width:100%;border-collapse:collapse;background:var(--panel);border-radius:10px;overflow:hidden}
+  .cmp-tbl th,.cmp-tbl td{padding:20px 24px;text-align:left;border-bottom:1px solid var(--line)}
+  .cmp-tbl thead th{background:var(--navy2);font-size:13px;letter-spacing:.1em;color:var(--muted);font-weight:700;text-transform:uppercase;padding:18px 24px}
+  .cmp-tbl thead th.fan{color:var(--green);background:rgba(61,217,179,.08)}
+  .cmp-tbl tbody tr:last-child td{border-bottom:none}
+  .cmp-tbl tbody tr:hover{background:rgba(255,255,255,.02)}
+  .cmp-tbl td.metric{font-size:16px;font-weight:600;color:var(--text)}
+  .cmp-tbl td.metric small{display:block;font-size:11px;color:var(--muted2);margin-top:2px;letter-spacing:.06em}
+  .cmp-tbl td.non{font-size:20px;font-weight:700;color:var(--muted);text-align:center}
+  .cmp-tbl td.fan{font-size:22px;font-weight:800;color:var(--green);text-align:center;background:rgba(61,217,179,.04)}
+  .cmp-tbl td.fan .plus{font-size:14px;color:var(--gold);display:block;margin-top:2px;font-weight:700}
+  .tbl-note{margin-top:18px;padding:16px 22px;background:rgba(240,198,116,.06);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:14px;color:#d8e0e8;line-height:1.5}
+  .tbl-note b{color:var(--gold)}
+
+  /* === SLIDE 13: TRAP VS REINVEST === */
+  .s13{padding:64px 80px;display:flex;flex-direction:column}
+  .trap{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;position:relative}
+  .trap-col{padding:36px 40px;display:flex;flex-direction:column}
+  .trap-col.left{background:linear-gradient(160deg,#1a1320,#0e1d30);border:1px solid rgba(220,90,90,.25);border-radius:10px 0 0 10px}
+  .trap-col.right{background:linear-gradient(160deg,#0f3a32,#0a1626);border:1px solid rgba(61,217,179,.3);border-radius:0 10px 10px 0}
+  .trap-col .stag{font-size:11px;letter-spacing:.2em;font-weight:700;text-transform:uppercase}
+  .trap-col.left .stag{color:#d87070}
+  .trap-col.right .stag{color:var(--green)}
+  .trap-col h4{font-size:30px;font-weight:800;margin:12px 0 8px}
+  .trap-col .sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.5}
+  .flow{display:flex;flex-direction:column;gap:14px;flex:1}
+  .flow-step{display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,.03);border-radius:6px}
+  .flow-step .ic{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+  .trap-col.left .flow-step .ic{background:rgba(220,90,90,.15);color:#d87070}
+  .trap-col.right .flow-step .ic{background:rgba(61,217,179,.15);color:var(--green)}
+  .flow-step .tx{font-size:14px;color:#d8e0e8;line-height:1.4}
+  .flow-step .tx b{color:var(--text);font-weight:700;display:block;margin-bottom:2px;font-size:15px}
+  .trap-col .out{margin-top:20px;padding:16px;border-radius:6px;font-size:14px;font-weight:600;text-align:center}
+  .trap-col.left .out{background:rgba(220,90,90,.1);color:#e89090}
+  .trap-col.right .out{background:rgba(61,217,179,.1);color:var(--green)}
+
+  /* === SLIDE 14: 5 CONVERGE DIAGRAM === */
+  .s14{padding:64px 80px;display:flex;flex-direction:column}
+  .conv{flex:1;display:grid;grid-template-columns:1fr 1.1fr;gap:40px;margin-top:24px;align-items:center}
+  .conv-left{display:flex;flex-direction:column;gap:14px}
+  .conv-item{display:flex;align-items:center;gap:18px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:8px;position:relative}
+  .conv-item .ic{width:44px;height:44px;border-radius:8px;background:rgba(61,217,179,.12);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--green);flex-shrink:0}
+  .conv-item .tx{flex:1}
+  .conv-item .tx .t{font-size:17px;font-weight:700;color:var(--text)}
+  .conv-item .tx .d{font-size:12px;color:var(--muted);margin-top:2px;letter-spacing:.04em}
+  .conv-item .arrow{color:var(--green);font-size:18px}
+  .conv-right{position:relative;height:100%;display:flex;align-items:center;justify-content:center}
+  .conv-core{width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(61,217,179,.18),transparent 70%);display:flex;align-items:center;justify-content:center;position:relative}
+  .conv-core::before{content:"";position:absolute;inset:40px;border:1px solid rgba(61,217,179,.3);border-radius:50%}
+  .conv-core::after{content:"";position:absolute;inset:80px;border:1px solid rgba(61,217,179,.5);border-radius:50%}
+  .conv-core .inner{width:200px;height:200px;border-radius:50%;background:linear-gradient(135deg,var(--green-deep),#0a1626);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:2px solid var(--green);box-shadow:0 0 40px rgba(61,217,179,.3)}
+  .conv-core .inner .lab{font-size:11px;letter-spacing:.2em;color:var(--green);font-weight:700}
+  .conv-core .inner h4{font-size:30px;font-weight:800;margin-top:8px;line-height:1.1}
+  .conv-core .inner .d{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4;max-width:160px}
+
+  /* === SLIDE 15: 3 CARDS === */
+  .s15{padding:64px 80px;display:flex;flex-direction:column}
+  .cards3{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:24px}
+  .c3{background:linear-gradient(160deg,var(--panel),var(--navy2));border:1px solid var(--line);border-radius:10px;padding:34px 28px;display:flex;flex-direction:column;position:relative}
+  .c3 .n{font-size:60px;font-weight:900;color:transparent;-webkit-text-stroke:1.5px rgba(61,217,179,.3);line-height:.9;margin-bottom:18px}
+  .c3 .tag{font-size:11px;letter-spacing:.2em;color:var(--green);font-weight:700;text-transform:uppercase;margin-bottom:10px}
+  .c3 h4{font-size:24px;font-weight:800;line-height:1.25;margin-bottom:14px}
+  .c3 .d{font-size:14px;color:#b8c6d6;line-height:1.6;flex:1}
+  .c3 .ft{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+  .c3 .ft b{color:var(--gold);font-weight:700}
+
+  /* === SLIDE 16: 3 LEVERS === */
+  .s16{padding:64px 80px;display:flex;flex-direction:column}
+  .lev{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:24px}
+  .lev-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:32px 28px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .lev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--green)}
+  .lev-card.mid::before{background:var(--gold)}
+  .lev-card.end::before{background:#6fb8e8}
+  .lev-card .term{font-size:11px;letter-spacing:.2em;font-weight:700;text-transform:uppercase;margin-bottom:8px}
+  .lev-card .term .tg{color:var(--green)}
+  .lev-card.mid .term .tg{color:var(--gold)}
+  .lev-card.end .term .tg{color:#6fb8e8}
+  .lev-card .num{font-size:14px;font-weight:800;color:var(--muted2);letter-spacing:.1em;margin-bottom:6px}
+  .lev-card h4{font-size:22px;font-weight:800;line-height:1.25;margin-bottom:16px}
+  .lev-card .d{font-size:14px;color:#b8c6d6;line-height:1.6;flex:1}
+  .lev-card .action{margin-top:18px;padding:14px 16px;background:rgba(255,255,255,.03);border-radius:6px;font-size:13px;color:#d8e0e8;line-height:1.5;border-left:2px solid var(--green)}
+  .lev-card.mid .action{border-left-color:var(--gold)}
+  .lev-card.end .action{border-left-color:#6fb8e8}
+
+  /* === SLIDE 17: 4 STEP TIMELINE === */
+  .s17{padding:64px 80px;display:flex;flex-direction:column}
+  .steps4{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;margin-top:30px;position:relative}
+  .steps4::before{content:"";position:absolute;top:50px;left:5%;right:5%;height:2px;background:linear-gradient(90deg,var(--green-deep),var(--green),var(--gold),#b89230)}
+  .stp{display:flex;flex-direction:column;align-items:center;padding:0 16px;position:relative}
+  .stp .circle{width:54px;height:54px;border-radius:50%;background:var(--navy);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:var(--green);margin-top:24px;position:relative;z-index:2}
+  .stp.s3 .circle{border-color:var(--gold);color:var(--gold)}
+  .stp.s4 .circle{border-color:var(--gold);color:var(--gold);background:rgba(240,198,116,.08)}
+  .stp .ph{font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:700;margin-top:18px;text-transform:uppercase}
+  .stp h4{font-size:20px;font-weight:800;margin-top:10px;text-align:center;line-height:1.25}
+  .stp .d{font-size:13px;color:#b8c6d6;margin-top:12px;text-align:center;line-height:1.55;max-width:240px}
+  .stp .out{margin-top:18px;padding:10px 14px;background:var(--panel);border:1px solid var(--line2);border-radius:6px;font-size:12px;color:var(--green);text-align:center;font-weight:600;max-width:240px;line-height:1.4}
+  .stp.s3 .out,.stp.s4 .out{color:var(--gold)}
+  .stp .out .lb{display:block;font-size:10px;color:var(--muted2);letter-spacing:.1em;margin-bottom:3px;font-weight:700}
+  .steps-note{margin-top:24px;text-align:center;font-size:14px;color:var(--muted);line-height:1.6}
+  .steps-note b{color:var(--gold);font-weight:700}
+
+  /* === SLIDE 18: CONCLUSION === */
+  .s18{background:radial-gradient(ellipse at 30% 70%,#15324a 0%,#0a1626 60%);padding:64px 80px;display:flex;flex-direction:column;position:relative}
+  .s18 .bgmark{position:absolute;right:-60px;bottom:-80px;font-size:340px;font-weight:900;color:transparent;-webkit-text-stroke:1.5px rgba(61,217,179,.1);line-height:.8}
+  .s18-head{position:relative;z-index:2}
+  .s18-head .stag{font-size:11px;letter-spacing:.2em;color:var(--gold);font-weight:700;margin-bottom:14px}
+  .s18-head h3{font-size:48px;font-weight:800;line-height:1.15;letter-spacing:-.02em;max-width:900px}
+  .s18-head h3 .ac{color:var(--green)}
+  .conc{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:36px;position:relative;z-index:2}
+  .conc-card{background:rgba(20,36,54,.6);backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:10px;padding:28px 26px;display:flex;flex-direction:column}
+  .conc-card .term{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--green);margin-bottom:14px}
+  .conc-card .term .dt{width:6px;height:6px;background:var(--green);border-radius:50%}
+  .conc-card .term .tg{color:var(--gold)}
+  .conc-card .term .tg .dt{background:var(--gold)}
+  .conc-card h4{font-size:21px;font-weight:800;line-height:1.3;margin-bottom:14px}
+  .conc-card .d{font-size:14px;color:#c0cdda;line-height:1.6}
+  .conc-foot{margin-top:28px;padding:20px 26px;background:rgba(61,217,179,.06);border:1px solid rgba(61,217,179,.2);border-radius:8px;font-size:15px;color:#d8e0e8;text-align:center;position:relative;z-index:2;line-height:1.5}
+  .conc-foot b{color:var(--green);font-weight:700}
+
+  /* utility */
+  .src{font-size:11px;color:var(--muted2);letter-spacing:.06em}
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- SLIDE 1: COVER -->
+  <section class="slide cover">
+    <div class="bigyear">2026</div>
+    <div class="glow"></div>
+    <div class="cover-inner">
+      <div>
+        <div class="cover-eyebrow"><span class="ln"></span>TICKDECK · MARKETING OUTLOOK</div>
+        <h1>2026<br><span class="ac">MARKETING</span> TREND</h1>
+        <div class="sub">AI는 기본값, 차별화는 증명된 인간다움.<br>누구나 AI를 쓰는 시대, 끝까지 남는 차별화는 '인간다움'이다.</div>
+        <span class="tag">THE PARADOX OF SCALE · HUMAN TRUST AS MOAT</span>
+      </div>
+      <div class="cover-foot">
+        <div class="brand"><span>Tick</span>Deck</div>
+        <div class="meta">VOL.01 · 2026 EDITION</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: AGENDA -->
+  <section class="slide ag">
+    <div class="chrome-tl"><span class="brand-dot"></span>TICKDECK · 2026 마케팅 트렌드</div>
+    <div class="chrome-tr">CONTENTS</div>
+    <div class="ag-head">
+      <h2>AGENDA<span class="ac">.</span></h2>
+      <div class="desc">AI가 기본이 된 시대, 차별화는 어디서 오는가 — 다섯 갈래의 변화가 가리키는 한 곳.</div>
+    </div>
+    <div class="ag-list">
+      <div class="ag-item">
+        <div class="n">01</div>
+        <div class="t">변화<small>AI가 마케팅의 기본값 — 도입은 끝난 논쟁</small></div>
+        <div class="en">The Shift</div>
+      </div>
+      <div class="ag-item">
+        <div class="n">02</div>
+        <div class="t">역설<small>AI가 흔할수록 사람이 비싸짐 — 차별화의 자리 이동</small></div>
+        <div class="en">The Paradox</div>
+      </div>
+      <div class="ag-item">
+        <div class="n">03</div>
+        <div class="t">지각 변동<small>발견 · 고객 · 진정성 · 팬덤 · 재투자</small></div>
+        <div class="en">Seismic Shifts</div>
+      </div>
+      <div class="ag-item">
+        <div class="n">04</div>
+        <div class="t">해자<small>다섯은 한 곳 — 인간 신뢰가 유일한 해자</small></div>
+        <div class="en">The Moat</div>
+      </div>
+      <div class="ag-item">
+        <div class="n">05</div>
+        <div class="t">실행<small>마케터가 내일부터 바꿀 것</small></div>
+        <div class="en">What To Do</div>
+      </div>
+    </div>
+    <div class="chrome-br">02 / 16</div>
+  </section>
+
+  <!-- SLIDE 3: SECTION 01 DIVIDER -->
+  <section class="slide div">
+    <div class="chrome-tl"><span class="brand-dot"></span>SECTION 01</div>
+    <div class="bignum"><span class="sl">0</span>1</div>
+    <div class="div-text">
+      <div class="lab">THE SHIFT · 변화</div>
+      <h2>AI가 마케팅의<br>기본값</h2>
+      <div class="en">Introduction is no longer the debate</div>
+      <div class="desc">도입 여부는 끝난 논쟁. 이제 격차는 '얼마나 잘 쓰느냐'로, 그리고 '무엇으로 달라지느냐'로 옮겨간다.</div>
+    </div>
+    <div class="div-deco"></div>
+    <div class="chrome-br">03 / 16</div>
+  </section>
+
+  <!-- SLIDE 4: AI 투자처 HORIZONTAL BAR -->
+  <section class="slide s4">
+    <div class="chrome-tl"><span class="brand-dot"></span>01 변화 · The Shift</div>
+    <div class="chrome-tr">CHART</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">AI는 마케터의 1순위 투자처</div>
+        <h3>도입은 끝난 논쟁 —<br>남은 건 '얼마나 잘 쓰느냐'</h3>
+        <div class="sub">올해 '증액 우선 투자영역' 1위가 gen AI. 효율·개인화는 이제 모두의 출발선이다.</div>
+      </div>
+      <div class="right">
+        증액 우선 투자영역 (%)
+        <div class="src">출처: McKinsey<br>State of Marketing Europe 2026</div>
+      </div>
+    </div>
+    <div class="chart-h">
+      <div class="bar-row">
+        <div class="lbl">gen AI<small>GENERATIVE AI</small></div>
+        <div class="bar-track"><div class="bar-fill top" style="width:100%"></div></div>
+        <div class="val gold">50%</div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl">MROI<small>MARKETING ROI</small></div>
+        <div class="bar-track"><div class="bar-fill" style="width:84%"></div></div>
+        <div class="val">42%</div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl">인사이트<small>INSIGHTS</small></div>
+        <div class="bar-track"><div class="bar-fill" style="width:76%"></div></div>
+        <div class="val">38%</div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl">디지털<small>DIGITAL</small></div>
+        <div class="bar-track"><div class="bar-fill" style="width:72%"></div></div>
+        <div class="val">36%</div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl">R&D<small>RESEARCH & DEV</small></div>
+        <div class="bar-track"><div class="bar-fill" style="width:56%"></div></div>
+        <div class="val">28%</div>
+      </div>
+      <div class="chart-note"><b>READ ·</b> 투자 우선순위가 도구(도입)에서 실행 효율(MROI·인사이트)로 이동 — AI는 더 이상 선택이 아닌 <b>기본 인프라</b>.</div>
+    </div>
+    <div class="chrome-br">04 / 16</div>
+  </section>
+
+  <!-- SLIDE 5: AI 역할 TIMELINE -->
+  <section class="slide s5">
+    <div class="chrome-tl"><span class="brand-dot"></span>01 변화 · The Shift</div>
+    <div class="chrome-tr">TIMELINE</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">AI의 역할 이동 — '도구'에서 '실행자'로</div>
+        <h3>모두가 같은 실행자를 쥐면,<br>무엇으로 달라지나</h3>
+      </div>
+      <div class="right">
+        ROLE EVOLUTION
+        <div class="src">출처: AMA · KPMG (2026)</div>
+      </div>
+    </div>
+    <div class="tl-wrap">
+      <div class="tl-line">
+        <div class="tl-node">
+          <div class="tl-dot"></div>
+          <div class="tl-phase">~ 2024</div>
+          <div class="tl-title">실험</div>
+          <div class="tl-en">TOOL</div>
+          <div class="tl-desc">파일럿·부분 도입 — 생성형 AI를 보조 도구로 시험</div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot"></div>
+          <div class="tl-phase">2025</div>
+          <div class="tl-title">생성형 통합</div>
+          <div class="tl-en">INTEGRATION</div>
+          <div class="tl-desc">전사 확산 — 콘텐츠·캠페인 전반의 기본 도구로 안착</div>
+        </div>
+        <div class="tl-node cur">
+          <div class="tl-dot"></div>
+          <div class="tl-phase">2026 ~</div>
+          <div class="tl-title">에이전틱 실행</div>
+          <div class="tl-en">AGENTIC</div>
+          <div class="tl-desc">목표만 받아 타기팅·집행·측정까지 자율 수행</div>
+        </div>
+      </div>
+      <div class="tl-q">AI가 콘텐츠 보조를 넘어 캠페인을 스스로 집행하는 단계로 — 그런데 모두가 같은 실행자를 쥐면, <b>무엇으로 달라지나.</b></div>
+    </div>
+    <div class="chrome-br">05 / 16</div>
+  </section>
+
+  <!-- SLIDE 6: SECTION 02 DIVIDER -->
+  <section class="slide div">
+    <div class="chrome-tl"><span class="brand-dot"></span>SECTION 02</div>
+    <div class="bignum"><span class="sl">0</span>2</div>
+    <div class="div-text">
+      <div class="lab">THE PARADOX · 역설</div>
+      <h2>AI가 흔할수록<br>사람이 비싸짐</h2>
+      <div class="en">When content is cheap, trust is expensive</div>
+      <div class="desc">콘텐츠가 무한히 싸지는 시대 — 가장 비싼 자산은 인간의 신뢰. 차별화의 자리가 이동한다.</div>
+    </div>
+    <div class="div-deco"></div>
+    <div class="chrome-br">06 / 16</div>
+  </section>
+
+  <!-- SLIDE 7: 3 STATS -->
+  <section class="slide s7">
+    <div class="chrome-tl"><span class="brand-dot"></span>02 역설 · The Paradox</div>
+    <div class="chrome-tr">EVIDENCE</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">역설 — AI가 흔할수록 사람이 비싸짐</div>
+        <h3>콘텐츠가 무한히 싸지는 시대,<br>가장 비싼 자산은 인간의 신뢰</h3>
+      </div>
+      <div class="right">
+        3 SIGNALS
+        <div class="src">출처: WPP Media · Ogilvy · AMA (2026)</div>
+      </div>
+    </div>
+    <div class="stats3">
+      <div class="stat-card">
+        <div>
+          <div class="tag">진짜/가짜 붕괴</div>
+          <div class="big">65<span class="u">%</span></div>
+          <div class="desc">영국 소비자 중 진짜와 합성 콘텐츠 구분이 어렵다고 응답한 비율.</div>
+        </div>
+        <div class="src">WPP Media · UK Trends 2026</div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="tag">진정성 프리미엄</div>
+          <div class="big">97<span class="u">%</span></div>
+          <div class="desc">'authentic' 이미지가 신뢰에 핵심이라는 동의. 진정성이 곧 프리미엄.</div>
+        </div>
+        <div class="src">Ogilvy Social Lab 2026</div>
+      </div>
+      <div class="stat-card gold">
+        <div>
+          <div class="tag">마지막 차별점</div>
+          <div class="big" style="font-size:54px;line-height:1.1">Proof<br>Design</div>
+          <div class="desc">위조 가능 시대, 신뢰성이 마지막 차별점 — storytelling에서 proof design으로.</div>
+        </div>
+        <div class="arrow">전환 <b>storytelling → proof design</b></div>
+      </div>
+    </div>
+    <div class="chrome-br">07 / 16</div>
+  </section>
+
+  <!-- SLIDE 8: SECTION 03 DIVIDER -->
+  <section class="slide div">
+    <div class="chrome-tl"><span class="brand-dot"></span>SECTION 03</div>
+    <div class="bignum"><span class="sl">0</span>3</div>
+    <div class="div-text">
+      <div class="lab">SEISMIC SHIFTS · 지각 변동</div>
+      <h2>다섯 갈래의<br>지각 변동</h2>
+      <div class="en">Discovery · Customer · Authenticity · Fandom · Reinvestment</div>
+      <div class="desc">따로 노는 트렌드가 아니라, 한 변화의 다섯 얼굴 — 발견·고객·진정성·팬덤·재투자.</div>
+    </div>
+    <div class="div-deco"></div>
+    <div class="chrome-br">08 / 16</div>
+  </section>
+
+  <!-- SLIDE 9: VERTICAL BAR CHART -->
+  <section class="slide s9">
+    <div class="chrome-tl"><span class="brand-dot"></span>03 지각 변동 · 발견</div>
+    <div class="chrome-tr">CHART</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">발견 — Discovery</div>
+        <h3>주간 미디어 시간은 소셜·숏폼에 쏠림<br>발견의 입구가 이동한다</h3>
+      </div>
+      <div class="right">
+        주간 소비 시간 (h)
+        <div class="src">출처: GWI<br>Connecting the Dots 2026<br>글로벌 평균</div>
+      </div>
+    </div>
+    <div class="vc-wrap">
+      <div class="vc-grid">
+        <div class="g">8h</div><div class="g">6h</div><div class="g">4h</div><div class="g">2h</div><div class="g">0h</div>
+      </div>
+      <div class="vc-bars">
+        <div class="vc-bar top">
+          <div class="v">7.1<span class="u">h</span></div>
+          <div class="col" style="height:88%"></div>
+          <div class="lab">소셜미디어</div><div class="en">SOCIAL</div>
+        </div>
+        <div class="vc-bar top">
+          <div class="v">6.6<span class="u">h</span></div>
+          <div class="col" style="height:82%"></div>
+          <div class="lab">숏폼 영상</div><div class="en">SHORT-FORM</div>
+        </div>
+        <div class="vc-bar">
+          <div class="v">5.0<span class="u">h</span></div>
+          <div class="col" style="height:62%"></div>
+          <div class="lab">스트리밍</div><div class="en">STREAMING</div>
+        </div>
+        <div class="vc-bar">
+          <div class="v">4.9<span class="u">h</span></div>
+          <div class="col" style="height:61%"></div>
+          <div class="lab">방송 TV</div><div class="en">BROADCAST</div>
+        </div>
+        <div class="vc-bar">
+          <div class="v">3.0<span class="u">h</span></div>
+          <div class="col" style="height:37%"></div>
+          <div class="lab">온라인 기사</div><div class="en">ONLINE NEWS</div>
+        </div>
+        <div class="vc-bar">
+          <div class="v">1.6<span class="u">h</span></div>
+          <div class="col" style="height:20%"></div>
+          <div class="lab">인쇄</div><div class="en">PRINT</div>
+        </div>
+      </div>
+    </div>
+    <div class="vc-note">
+      <span><span class="hl">READ ·</span> 첫 접점이 피드로 이동 — SEO에서 <b style="color:var(--gold)">GEO(AI 답변 최적화)</b>로, 발견의 입구가 재설계된다.</span>
+      <span class="src">GWI — Connecting the Dots 2026</span>
+    </div>
+    <div class="chrome-br">09 / 16</div>
+  </section>
+
+  <!-- SLIDE 10: DUAL AUDIENCE -->
+  <section class="slide s10">
+    <div class="chrome-tl"><span class="brand-dot"></span>03 지각 변동 · 고객</div>
+    <div class="chrome-tr">DUAL AUDIENCE</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">고객 — Customer</div>
+        <h3>새 고객은 기계 + 사람 —<br>이중 청중을 분리해 동시에 설계</h3>
+      </div>
+      <div class="right">
+        AGENT × HUMAN
+        <div class="src">출처: WPP Media<br>UK Trends 2026</div>
+      </div>
+    </div>
+    <div class="dual">
+      <div class="dual-col machine">
+        <div class="icon">기계 청중 · MACHINE</div>
+        <h4>구조화 · 명료</h4>
+        <div class="sub">에이전트가 읽고 평가하는 대상 — 기계가 파싱할 수 있는 형태가 우선.</div>
+        <ul>
+          <li><span class="mk">01</span>구조화 데이터·제품 피드(ACO)로 노출 설계</li>
+          <li><span class="mk">02</span>읽히는 형식 — 스키마·메타데이터·팩트 시트 우선</li>
+          <li><span class="mk">03</span>사실적 정보·명확한 스펙이 의사결정 입력값</li>
+        </ul>
+        <div class="foot">전통 퍼널이 에이전트의 '단일 스텝'으로 붕괴 — 한 번의 평가가 결정을 대행.</div>
+      </div>
+      <div class="dual-mid">
+        <div class="plus">+</div>
+        <div style="font-size:11px;color:var(--muted2);letter-spacing:.16em;font-weight:700;text-align:center">DUAL<br>DESIGN</div>
+      </div>
+      <div class="dual-col human">
+        <div class="icon">사람 청중 · HUMAN</div>
+        <h4>감정 · 신뢰</h4>
+        <div class="sub">최종 결정자인 사람 — 감정과 브랜드 스토리로 연결되는 대상.</div>
+        <ul>
+          <li><span class="mk">01</span>감정·브랜드 스토리로 연결 설계</li>
+          <li><span class="mk">02</span>진정성·신뢰가 최종 선택을 좌우</li>
+          <li><span class="mk">03</span>공명·경험이 도달이 아닌 '기억'을 만듦</li>
+        </ul>
+        <div class="foot">기계에게는 읽히고, 사람에게는 느껴지도록 — 두 청중을 분리해 동시에 설계.</div>
+      </div>
+    </div>
+    <div class="chrome-br">10 / 16</div>
+  </section>
+
+  <!-- SLIDE 11: 2COL COMPARISON -->
+  <section class="slide s11">
+    <div class="chrome-tl"><span class="brand-dot"></span>03 지각 변동 · 진정성</div>
+    <div class="chrome-tr">COMPARISON</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">진정성 — Authenticity</div>
+        <h3>AI가 흔할수록 비싸지는 사람<br>진정성 프리미엄의 시대</h3>
+      </div>
+      <div class="right">
+        AI vs HUMAN
+        <div class="src">출처: McKinsey · WGSN<br>Future Consumer 2026</div>
+      </div>
+    </div>
+    <div class="cmp">
+      <div class="cmp-col left">
+        <div class="tag">AI가 푸는 것 · 기본값</div>
+        <h4>효율 · 개인화</h4>
+        <div class="sub">모두가 갖는 기본값이라 차별화가 되지 못하는 영역.</div>
+        <div class="cmp-items">
+          <div class="cmp-item">
+            <div class="t">효율 — Efficiency</div>
+            <div class="d">제작·운영의 속도와 규모. AI가 자동화하는 첫 번째 기본값.</div>
+          </div>
+          <div class="cmp-item">
+            <div class="t">개인화 — Personalization</div>
+            <div class="d">대규모 자동화 기반 개인화. 이제 누구나 접근하는 출발선.</div>
+          </div>
+        </div>
+        <div class="cmp-stat">차별화 불가<span style="color:var(--muted2)"> · 모두의 기본값</span></div>
+      </div>
+      <div class="cmp-col right">
+        <div class="tag">사람이 버는 것 · 차별값</div>
+        <h4>진정성 · 신뢰 · 창의</h4>
+        <div class="sub">자동화를 능가하는 인간의 고유 자산 — 여기서 차별화가 생긴다.</div>
+        <div class="cmp-items">
+          <div class="cmp-item">
+            <div class="t">진정성 · 신뢰</div>
+            <div class="d">위조 가능 시대, 검증된 신뢰가 마지막 차별점이 됨.</div>
+          </div>
+          <div class="cmp-item">
+            <div class="t">창의 · 공감</div>
+            <div class="d">인간 창의팀은 대체 불가 — 자동화가 못 만드는 관점과 공명.</div>
+          </div>
+        </div>
+        <div class="cmp-stat">"인간 창의팀은 대체 불가" 동의<b>62%</b></div>
+      </div>
+    </div>
+    <div class="chrome-br">11 / 16</div>
+  </section>
+
+  <!-- SLIDE 12: COMPARISON TABLE -->
+  <section class="slide s12">
+    <div class="chrome-tl"><span class="brand-dot"></span>03 지각 변동 · 팬덤</div>
+    <div class="chrome-tr">TABLE</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">팬덤 — Fandom</div>
+        <h3>'팬'은 모든 지표에서 앞선다 —<br>측정 가능한 경제 가치</h3>
+      </div>
+      <div class="right">
+        FAN vs NON-FAN
+        <div class="src">출처: Deloitte<br>2026 Digital Media Trends</div>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="cmp-tbl">
+        <thead>
+          <tr>
+            <th>지표 · METRIC</th>
+            <th style="text-align:center">팬 아님</th>
+            <th class="fan" style="text-align:center">팬 · FAN</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric">SVOD 가입<small>유료 스트리밍 구독</small></td>
+            <td class="non">77%</td>
+            <td class="fan">92%</td>
+          </tr>
+          <tr>
+            <td class="metric">게이머 비율<small>GAMER RATIO</small></td>
+            <td class="non">52%</td>
+            <td class="fan">75%</td>
+          </tr>
+          <tr>
+            <td class="metric">유료 음악 스트리밍<small>PAID MUSIC</small></td>
+            <td class="non">40%</td>
+            <td class="fan">67%</td>
+          </tr>
+          <tr>
+            <td class="metric">일 미디어 소비<small>DAILY MEDIA TIME</small></td>
+            <td class="non">기준</td>
+            <td class="fan">+51분<span class="plus">+16%</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="tbl-note"><b>READ ·</b> 팬덤은 감성이 아니라 수치 — 도달이 아니라 <b>공명이 가치를 만든다.</b> 팬이 '그룹챗에 공유하는 것'이 콘텐츠 기준이 된다.</div>
+    </div>
+    <div class="chrome-br">12 / 16</div>
+  </section>
+
+  <!-- SLIDE 13: TRAP VS REINVEST -->
+  <section class="slide s13">
+    <div class="chrome-tl"><span class="brand-dot"></span>03 지각 변동 · 재투자</div>
+    <div class="chrome-tr">FORK IN THE ROAD</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">재투자 — Reinvestment</div>
+        <h3>효율의 함정 — 절감이 아니라<br>재투자가 차이를 만든다</h3>
+      </div>
+      <div class="right">
+        TRAP × REINVEST
+        <div class="src">출처: McKinsey<br>State of Marketing Europe 2026</div>
+      </div>
+    </div>
+    <div class="trap">
+      <div class="trap-col left">
+        <div class="stag">함정 · THE TRAP</div>
+        <h4>절감 → 더 싼 commodity</h4>
+        <div class="sub">효율을 비용 절감에만 쓰면 남보다 싼·많은 평준화 콘텐츠뿐.</div>
+        <div class="flow">
+          <div class="flow-step"><div class="ic">01</div><div class="tx"><b>AI 효율 확보</b>제작·운영 비용 절감</div></div>
+          <div class="flow-step"><div class="ic">02</div><div class="tx"><b>절감을 이익으로</b>비용만 줄이고 멈춤</div></div>
+          <div class="flow-step"><div class="ic">03</div><div class="tx"><b>평준화 콘텐츠 양산</b>싸고 많지만, 차별점 없음</div></div>
+        </div>
+        <div class="out">결과 · 차별화 상실 · commodity화</div>
+      </div>
+      <div class="trap-col right">
+        <div class="stag">승부 · REINVEST</div>
+        <h4>재투자 → 인간 자산</h4>
+        <div class="sub">효율로 번 자원을 신뢰·관점·관계에 재투자 — 자동화가 못 만드는 차별화.</div>
+        <div class="flow">
+          <div class="flow-step"><div class="ic">01</div><div class="tx"><b>AI 효율 확보</b>시간·예산 자원 창출</div></div>
+          <div class="flow-step"><div class="ic">02</div><div class="tx"><b>인간 자산에 재투자</b>신뢰·커뮤니티·craft</div></div>
+          <div class="flow-step"><div class="ic">03</div><div class="tx"><b>대체불가 해자 형성</b>AI가 살 수 없는 자산</div></div>
+        </div>
+        <div class="out">결과 · 지속 가능한 차별화 · 성장 승수</div>
+      </div>
+    </div>
+    <div class="chrome-br">13 / 16</div>
+  </section>
+
+  <!-- SLIDE 14: 5 CONVERGE -->
+  <section class="slide s14">
+    <div class="chrome-tl"><span class="brand-dot"></span>04 해자 · The Moat</div>
+    <div class="chrome-tr">CONVERGENCE</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">해자 — The Moat</div>
+        <h3>다섯 갈래는 한 곳을 가리킨다<br>인간 신뢰가 유일한 해자</h3>
+      </div>
+      <div class="right">
+        5 → 1 CONVERGENCE
+        <div class="src">AI가 못 사는 단 하나의 자산</div>
+      </div>
+    </div>
+    <div class="conv">
+      <div class="conv-left">
+        <div class="conv-item"><div class="ic">발견</div><div class="tx"><div class="t">Discovery</div><div class="d">새 유통 · 발견의 입구 이동</div></div><div class="arrow">→</div></div>
+        <div class="conv-item"><div class="ic">고객</div><div class="tx"><div class="t">Customer</div><div class="d">최종 결정자 · 이중 청중</div></div><div class="arrow">→</div></div>
+        <div class="conv-item"><div class="ic">진정</div><div class="tx"><div class="t">Authenticity</div><div class="d">차별화 통화 · 진정성 프리미엄</div></div><div class="arrow">→</div></div>
+        <div class="conv-item"><div class="ic">팬덤</div><div class="tx"><div class="t">Fandom</div><div class="d">retention 엔진 · 공명의 경제</div></div><div class="arrow">→</div></div>
+        <div class="conv-item"><div class="ic">재투</div><div class="tx"><div class="t">Reinvestment</div><div class="d">성장 승수 · 효율을 신뢰로</div></div><div class="arrow">→</div></div>
+      </div>
+      <div class="conv-right">
+        <div class="conv-core">
+          <div class="inner">
+            <div class="lab">THE MOAT</div>
+            <h4>인간 신뢰</h4>
+            <div class="d">AI는 실행을 평준화 — 효율로 번 것을 인간 신뢰에 재투자하는 자가 2026을 가져감</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chrome-br">14 / 16</div>
+  </section>
+
+  <!-- SLIDE 15: 3 CARDS -->
+  <section class="slide s15">
+    <div class="chrome-tl"><span class="brand-dot"></span>04 해자 · The Moat</div>
+    <div class="chrome-tr">WHY TRUST</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">왜 신뢰가 해자인가</div>
+        <h3>AI는 실행을 평준화 —<br>차별화는 살 수 없는 것에서만 남는다</h3>
+      </div>
+      <div class="right">
+        3 REASONS
+        <div class="src">TickDeck · 2026 마케팅 트렌드</div>
+      </div>
+    </div>
+    <div class="cards3">
+      <div class="c3">
+        <div class="n">01</div>
+        <div class="tag">EFFICIENCY</div>
+        <h4>효율은 평준화</h4>
+        <div class="d">AI가 콘텐츠·캠페인·실행을 평준화. 효율·개인화는 모두의 기본값이라 차별화가 되지 않는다.</div>
+        <div class="ft">기본값 · <b>모두가 가진다</b></div>
+      </div>
+      <div class="c3">
+        <div class="n">02</div>
+        <div class="tag">IRREPLACEABLE</div>
+        <h4>신뢰 = 대체불가 자산</h4>
+        <div class="d">경쟁우위는 'AI가 살 수 없는 것'으로 이동 — 신뢰·진정성·커뮤니티. 돈으로 살 수 없는 자산.</div>
+        <div class="ft">차별값 · <b>AI가 못 산다</b></div>
+      </div>
+      <div class="c3">
+        <div class="n">03</div>
+        <div class="tag">REINVEST LOOP</div>
+        <h4>재투자 루프</h4>
+        <div class="d">효율로 번 시간·예산을 인간 신뢰에 재투자하는 자가 2026의 성장을 가져간다. 루프가 해자를 키운다.</div>
+        <div class="ft">성장 승수 · <b>루프를 닫아라</b></div>
+      </div>
+    </div>
+    <div class="chrome-br">15 / 16</div>
+  </section>
+
+  <!-- SLIDE 16: 3 LEVERS -->
+  <section class="slide s16">
+    <div class="chrome-tl"><span class="brand-dot"></span>05 실행 · What To Do</div>
+    <div class="chrome-tr">3 LEVERS</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">실행 — 내일부터 셋</div>
+        <h3>다섯 갈래를 세 레버로<br>이번 분기에 손댈 실행 단위</h3>
+      </div>
+      <div class="right">
+        SHORT · MID · LONG
+        <div class="src">출처: AMA · WPP Media (2026)</div>
+      </div>
+    </div>
+    <div class="lev">
+      <div class="lev-card">
+        <div class="term"><span class="tg">●</span> 단기 · SHORT TERM</div>
+        <div class="num">LEVER 01</div>
+        <h4>발견·팬덤 재설계</h4>
+        <div class="d">검색 키워드에서 AI 답변(GEO)·커뮤니티·earned 노출로 발견 입구 재설계. 팬이 '그룹챗에 공유'하는 것을 콘텐츠 기준으로 삼는다.</div>
+        <div class="action">검색 SEO → GEO · 커뮤니티 earned 노출 전환</div>
+      </div>
+      <div class="lev-card mid">
+        <div class="term"><span class="tg">●</span> 중기 · MID TERM</div>
+        <div class="num">LEVER 02</div>
+        <h4>이중 청중 맞춤</h4>
+        <div class="d">에이전트엔 구조화 데이터·피드(ACO), 사람엔 감정·브랜드 스토리. 두 청중을 분리해 동시에 설계한다.</div>
+        <div class="action">기계용 피드 audit · 사람용 스토리라인 분리 설계</div>
+      </div>
+      <div class="lev-card end">
+        <div class="term"><span class="tg">●</span> 장기 · LONG TERM</div>
+        <div class="num">LEVER 03</div>
+        <h4>진정성·재투자 루프</h4>
+        <div class="d">AI로 번 시간·예산을 더 싼 콘텐츠가 아니라 진정성·커뮤니티·인간 craft에 재투자. 루프를 닫아 해자를 키운다.</div>
+        <div class="action">효율 게인 → 신뢰·커뮤니티·craft 재투자 체계화</div>
+      </div>
+    </div>
+    <div class="chrome-br">16 / 16</div>
+  </section>
+
+  <!-- SLIDE 17: 4 STEP -->
+  <section class="slide s17">
+    <div class="chrome-tl"><span class="brand-dot"></span>05 실행 · What To Do</div>
+    <div class="chrome-tr">OPERATING MODEL</div>
+    <div class="s-head">
+      <div class="left">
+        <div class="stag">AI 운영화 — 네 단계의 상승</div>
+        <h3>실험에서 멈추면 효율만 남고<br>차별화는 안 생긴다</h3>
+      </div>
+      <div class="right">
+        4-STAGE ASCENT
+        <div class="src">출처: McKinsey · AMA (2026)</div>
+      </div>
+    </div>
+    <div class="steps4">
+      <div class="stp">
+        <div class="circle">1</div>
+        <div class="ph">STAGE 01</div>
+        <h4>실험적 도입</h4>
+        <div class="d">파일럿·부서 단위에서 생성형 AI 시험</div>
+        <div class="out"><span class="lb">OUTPUT</span>AI 유스케이스 인벤토리</div>
+      </div>
+      <div class="stp">
+        <div class="circle">2</div>
+        <div class="ph">STAGE 02</div>
+        <h4>전사 통합</h4>
+        <div class="d">콘텐츠·캠페인 전반에 AI 기본 탑재</div>
+        <div class="out"><span class="lb">OUTPUT</span>제품 피드·스키마 audit</div>
+      </div>
+      <div class="stp s3">
+        <div class="circle">3</div>
+        <div class="ph">STAGE 03</div>
+        <h4>에이전틱 실행</h4>
+        <div class="d">목표를 받아 자율 집행하는 시스템 도입</div>
+        <div class="out"><span class="lb">OUTPUT</span>에이전트 플레이북</div>
+      </div>
+      <div class="stp s4">
+        <div class="circle">4</div>
+        <div class="ph">STAGE 04</div>
+        <h4>측정 → 재투자</h4>
+        <div class="d">성과를 측정해 인간 신뢰에 다시 투입, 루프를 닫음</div>
+        <div class="out"><span class="lb">OUTPUT</span>proof asset 라이브러리</div>
+      </div>
+    </div>
+    <div class="steps-note">측정·재투자까지 올라가야만 회수된다 — <b>루프를 닫는 자가 2026을 가져간다.</b></div>
+  </section>
+
+  <!-- SLIDE 18: CONCLUSION -->
+  <section class="slide s18">
+    <div class="chrome-tl"><span class="brand-dot"></span>05 실행 · 결론</div>
+    <div class="chrome-tr">CONCLUSION</div>
+    <div class="bgmark">2026</div>
+    <div class="s18-head">
+      <div class="stag">결론 · CONCLUSION</div>
+      <h3>AI는 기본값이 됨 —<br>이제 <span class="ac">인간 신뢰</span>에 재투자하라</h3>
+    </div>
+    <div class="conc">
+      <div class="conc-card">
+        <div class="term"><span class="dt"></span>단기 · SHORT</div>
+        <h4>발견을 GEO·커뮤니티로 재설계</h4>
+        <div class="d">검색 키워드 중심에서 AI 답변 최적화(GEO)와 earned 노출로 발견 입구를 옮긴다. 팬이 공유하는 것을 기준으로.</div>
+      </div>
+      <div class="conc-card">
+        <div class="term"><span class="dt" style="background:var(--gold)"></span><span class="tg">중기 · MID</span></div>
+        <h4>에이전트엔 구조화,<br>사람엔 감정을 분리</h4>
+        <div class="d">기계 청중에는 피드·스키마로 읽히게, 사람 청중에는 스토리·진정성으로 느껴지게 — 두 설계를 동시에.</div>
+      </div>
+      <div class="conc-card">
+        <div class="term"><span class="dt" style="background:#6fb8e8"></span>장기 · LONG</div>
+        <h4>효율을 진정성·커뮤니티에 재투자 체계화</h4>
+        <div class="d">AI로 번 시간·예산을 더 싼 콘텐츠가 아니라, 대체불가한 인간 자산에 재투자하는 루프를 조직화한다.</div>
+      </div>
+    </div>
+    <div class="conc-foot">수치는 기관별로 갈리는 <b>'방향 신호'</b> — 방향이 일관될 때, 그것은 트렌드가 아니라 <b>구조적 전환</b>이다.</div>
+    <div class="chrome-br">END · TickDeck 2026</div>
+  </section>
+
+</div>
+</body>
+</html>
