@@ -24,6 +24,18 @@ python3 test_parse.py
 data.go.kr 키 = `pepstocks/.env.local` 의 `DATAGOKR_API_KEY` 재사용.
 `.hwp` 표 추출 = `Think/.venv/bin/hwp5html`.
 
+## 자료 디깅 (research-first 단계)
+
+웹 디깅은 **신야 경유 중국 모델 + OpenRouter 웹검색**으로 돈다(싼 채널·격리·출처 확보).
+2026-06-27 표준화: 키미·딥시크 → **GLM·Qwen**. GLM=빠름·agentic / Qwen=깊은 종합.
+
+```bash
+python3 dig.py "네바다 단기 팝업 판매세 면세 여부" glm
+python3 dig.py "J-1 비자 정부 sponsor 절차·사례" qwen
+```
+
+⚠️ 공개 주제만(신야 격리 — 개인정보·발주 비밀 X). 자료 풀 예시 = `_work/<RFP>_pool.md`.
+
 ## 지금 되는 것 (2026-06-27, 시범 검증)
 
 - 공고번호 → 첨부 제안요청서 자동 다운로드 (나라장터 OpenAPI + g2b 첨부)
