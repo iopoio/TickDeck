@@ -79,7 +79,7 @@ def compose_deck(outline, ceds, meta_extra=None):
             src = cc[0].source
             cite = f"{src.publisher} [{src.tier}]" if src.publisher else src.tier
             blocks = [{"layout": "statgrid", "eyebrow": eyebrow, "title": ch["title"], "sub": sub,
-                       "stats": [{"label": _short(c.claim), "value": c.metric} for c in cc], "foot": cite}]
+                       "stats": [{"label": (c.label or _short(c.claim)), "value": c.metric} for c in cc], "foot": cite}]
         else:
             blocks = cc                                   # CED → slide_for(kpi/cards/…) via chapter()
         chapters.append(chapter(ch["num"], eyebrow, ch["title"], sub, blocks))

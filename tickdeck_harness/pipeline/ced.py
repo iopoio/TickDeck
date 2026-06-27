@@ -25,6 +25,7 @@ class CED:
     source: DigRecord
     limitation: str = ""      # 비면 UNAUDITED(신뢰 방어 못 함)
     confidence: float = 0.0   # 0~1 (디깅·교차검증 산출)
+    label: str = ""           # statgrid용 짧은 라벨(≤14자·LLM 작명). 비면 compose가 _short(claim) fallback
 
 
 # DWS = Tier×0.4 + Recency×0.3 + Sample×0.2 + Method×0.1 (각 0~10) → 0~10 (A5)

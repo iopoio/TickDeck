@@ -30,7 +30,8 @@ DIG_AGENT_PROMPT = """너는 트렌드 리포트 디깅 애널리스트다. 아�
 각 레코드 필드(JSON):
 {claim, metric, url(없으면 "local:<문서명>"), tier(T1|T2|T3), year(int|null),
  publisher, report, sample("N·방식"), region, coi, visited_primary(bool),
- confidence(0~1), limitation}
+ confidence(0~1), limitation,
+ label("≤14자 핵심 라벨 — statgrid 셀용. 수치를 왜곡 말 것. 예: agentic ROI 조직, 윤리 AI 신뢰")}
 
 반환: JSON 배열만. 코드펜스/설명 없이 [ {...}, ... ].
 
@@ -66,7 +67,8 @@ def extract_ceds(json_text, current_year=None):
             sample=row.get("sample", ""), region=row.get("region", ""), coi=row.get("coi", ""),
             visited_primary=bool(row.get("visited_primary", False)), paywall=bool(row.get("paywall", False)),
         ), current_year=current_year)
-        ceds.append(CED(row["claim"], row.get("metric"), rec, row.get("limitation", ""), float(row.get("confidence", 0.6))))
+        ceds.append(CED(row["claim"], row.get("metric"), rec, row.get("limitation", ""),
+                        float(row.get("confidence", 0.6)), row.get("label", "")))
     return ceds, dropped
 
 
