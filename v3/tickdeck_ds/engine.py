@@ -113,11 +113,22 @@ def _foot(s, n, total):
     return f'<div class="foot"><span>{anti_pattern(s.get("foot","TickDeck · 2026"))}</span><span>{n:02d} / {total:02d}</span></div>'
 
 # ── 레이아웃 템플릿 (각각 body HTML 반환) ─────────────────────────
-def L_cover(s):
-    return f"""<div class="slide" style="justify-content:center;padding-left:80px">
-      <div class="eyebrow">{anti_pattern(s.get('eyebrow','2026'))}</div>
-      <div style="font-size:var(--t-hero);font-weight:900;line-height:1.02;letter-spacing:-.03em;margin-top:18px;word-break:keep-all">{accent_title(anti_pattern(s['title']))}</div>
-      <div class="sub" style="font-size:22px;margin-top:22px">{anti_pattern(s.get('sub',''))}</div></div>"""
+def L_cover(s):  # 표지 — 어둡게 반전(간지와 북엔드)·거대 타이틀 좌하단·브랜드/메타·액센트 룰
+    eb = anti_pattern(s.get("eyebrow", "2026"))
+    title = accent_title(anti_pattern(s["title"]))
+    sub = anti_pattern(s.get("sub", ""))
+    meta = anti_pattern(s.get("meta", "TickDeck · 발표 자료"))
+    return f"""<div class="slide" style="justify-content:flex-end;color:var(--c60);padding:64px 88px;background:
+        radial-gradient(1100px 640px at 90% 8%, color-mix(in srgb, var(--acc) 24%, transparent), transparent 60%),
+        linear-gradient(150deg, var(--ink), color-mix(in srgb, var(--ink) 86%, #000))">
+      <div style="position:absolute;top:60px;left:88px;right:88px;display:flex;justify-content:space-between;align-items:center;font-size:13px;letter-spacing:.3em;font-weight:700">
+        <span style="color:var(--acc)">{eb}</span>
+        <span style="color:color-mix(in srgb,var(--c60) 52%, transparent)">{meta}</span></div>
+      <div style="margin-bottom:38px">
+        <div style="font-size:clamp(60px,7.2vw,112px);font-weight:900;line-height:1.0;letter-spacing:-.03em;word-break:keep-all">{title}</div>
+        <div style="font-size:22px;color:color-mix(in srgb,var(--c60) 80%, transparent);margin-top:26px;max-width:900px;line-height:1.55;word-break:keep-all">{sub}</div></div>
+      <div style="position:absolute;left:88px;bottom:60px;width:64px;height:4px;background:var(--acc)"></div>
+    </div>"""
 
 def L_divider(s):  # 간지 — 어둡게 반전(본문과 확실히 구분) + 큰 폰트 + 아웃라인 번호
     num = s.get("num", "")
