@@ -1,7 +1,7 @@
 # 데모 콘텐츠 — 2026 마케팅 트렌드 (엔진 작동·다양성 검증용 1차)
 DECK = {
     "title": "2026 마케팅 트렌드",
-    "theme": "tech",
+    "theme": "cobalt",
     "slides": [
         {"layout": "cover", "eyebrow": "2026 Marketing Trend",
          "title": "AI는 기본값, 차별화는 증명된 인간다움",

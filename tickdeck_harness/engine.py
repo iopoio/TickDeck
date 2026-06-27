@@ -154,11 +154,13 @@ def L_kpi(s):  # 단일 수치 + 하단 보조통계(빈하단 채움)
     aux = "".join(f'<div><div style="font-size:13px;color:var(--muted)">{anti_pattern(a["label"])}</div>'
                   f'<div style="font-size:24px;font-weight:800;margin-top:4px">{anti_pattern(a["value"])}</div></div>'
                   for a in s.get("aux", []))
+    delta = anti_pattern(s.get('delta', ''))
+    pill = f'<div style="background:var(--accsoft);color:var(--acc);padding:8px 14px;border-radius:99px;font-weight:700">{delta}</div>' if delta else ''
     return f"""<div class="slide">{_head(s)}
       <div class="body" style="justify-content:flex-start;padding-top:30px">
         <div style="display:flex;align-items:baseline;gap:16px">
           <div style="font-size:140px;font-weight:900;letter-spacing:-.04em;line-height:.9">{anti_pattern(s['value'])}</div>
-          <div style="background:var(--accsoft);color:var(--acc);padding:8px 14px;border-radius:99px;font-weight:700">{anti_pattern(s.get('delta',''))}</div></div></div>
+          {pill}</div></div>
       <div style="display:grid;grid-template-columns:repeat({max(1,len(s.get('aux',[])))} ,1fr);gap:20px;border-top:1px solid var(--line);padding-top:22px;margin-bottom:30px">{aux}</div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
@@ -268,8 +270,8 @@ class LayoutMemory:
         self.stack.append(layout)
 
 
-def build_deck(slides, theme="tech", title="Deck"):
-    p = PALETTES[theme]
+def build_deck(slides, theme="cobalt", title="Deck"):
+    p = PALETTES.get(theme) or PALETTES["cobalt"]   # 모르는 테마는 기본 팔레트로(KeyError 방지)
     mem = LayoutMemory()
     total = len(slides)
     out = []

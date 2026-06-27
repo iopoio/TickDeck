@@ -11,6 +11,7 @@ marketing_full.py(흡수 전)의 실제 내용·출처를 CED로 감싸 파이�
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).with_name("pipeline")))
 from dig_schema import DigRecord, validate          # noqa: E402
+from dig import parse_dig_response                   # noqa: E402
 from ced import CED                                  # noqa: E402
 from story_mapper import chapter, assemble, DROPPED  # noqa: E402
 from engine import build_deck, selfcheck            # noqa: E402
@@ -31,6 +32,17 @@ BURN42 = CED("덜 최적화된 진정성 갈망 42%", "42%",
              src("WGSN", "Future Consumer 2026"), "소비자 서베이·N 미표기", 0.68)
 HUMAN62 = CED("인간 창의팀은 대체 불가 동의 62%", "62%",
               src("", "", tier="T3", year=None), "", 0.5)  # 원본 무출처 → DROP 대상
+
+# ── 실제 디깅 1건(본부 WebSearch+WebFetch, 2026-06-28) — dig.py 어댑터로 통과 ──
+# deloitte.com 1차 페이지 직접 열람·방법론(N·기간·지역) 공개 → visited_primary. 강등 안 됨.
+_DELOITTE = parse_dig_response('''[
+ {"claim":"팬의 유료 스트리밍(SVOD) 가입률","metric":"92%",
+  "url":"https://www.deloitte.com/us/en/insights/industry/technology/digital-media-trends-consumption-habits-survey.html",
+  "tier":"T2","year":2026,"publisher":"Deloitte","report":"2026 Digital Media Trends",
+  "sample":"N=3,575 · 2025.10-11 · 미국 14세+","visited_primary":true}
+]''', current_year=Y)[0][0]
+FAN92 = CED("팬의 유료 스트리밍(SVOD) 가입률", "92%", _DELOITTE,
+            "비팬 77% 대비 · 단일 설문이나 1차 검증·방법론 공개", 0.85)  # → route()=MAIN(히어로 승격)
 
 def main(theme="breeze"):
     DROPPED.clear()
@@ -64,6 +76,7 @@ def main(theme="breeze"):
                     "after": {"label": "사람 청중", "items": [{"t": "연결", "b": "감정·브랜드 스토리"},
                                                           {"t": "우선", "b": "진정성·신뢰"}]},
                     "foot": "WPP Media — UK Trends 2026 [T2]"},
+                   FAN92,   # 1차 검증된 수치 → MAIN(빅넘버)로 승격 — 미검증 ch2와 대비
                    {"layout": "table", "eyebrow": "④ 팬덤", "title": "'팬'은 모든 지표에서 앞선다",
                     "sub": "도달이 아니라 공명이 가치를 만든다", "cols": ["지표", "팬 아님", "팬"],
                     "rows": [["SVOD 가입", "77%", "92%"], ["게이머", "52%", "75%"],
@@ -104,8 +117,8 @@ def main(theme="breeze"):
                         "bullets": ["단기 — 발견을 GEO·커뮤니티로 재설계",
                                     "중기 — 에이전트엔 구조화, 사람엔 감정으로 분리",
                                     "장기 — 효율을 진정성·커뮤니티에 재투자",
-                                    "수치는 단일 기관 '방향 신호' — 파이프라인이 히어로서 강등(아래 로그)"]}}
-    sources = [c.source for c in (AUTH97, SYNTH65, BURN42)]  # DROP된 HUMAN62는 refs서도 제외
+                                    "단일 미검증 수치는 정성 강등 · 1차 검증된 것만 히어로(예: Deloitte 팬덤 92%)"]}}
+    sources = [c.source for c in (FAN92, AUTH97, SYNTH65, BURN42)]  # DROP된 HUMAN62는 refs서도 제외
     slides = assemble(meta, [ch1, ch2, ch3, ch4, ch5], sources, lenses=("counterfactual", "tombstone"))
 
     html = build_deck(slides, theme=theme, title="2026 마케팅 트렌드 — 흡수 루프 재생성")

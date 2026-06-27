@@ -29,12 +29,14 @@
 | `pipeline/dig_schema.py` | 디깅 강제 스키마 — 좀비/순환/페이월 flag·1차 미방문 T1 강등 | ✅ 루프 안 |
 | `pipeline/ced.py` | CED + DWS 라우팅(MAIN/정성/방향/삭제) + 렌더 게이트 | ✅ 루프 안 |
 | `pipeline/story_mapper.py` | route 결과 → engine 슬라이드 + 챕터 프레임(C2) + 렌즈 체크리스트 + 정성묶음 | ✅ 루프 안 |
+| `pipeline/dig.py` | 디깅 입구 — 요청 빌더(DIG_PROMPT 주입) + 반환 JSON→DigRecord 파서·validate | ✅ 루프 안 |
 | `marketing_v2.py` | 흡수 루프 재생성 = end-to-end 시험. `python3 marketing_v2.py [theme]` → 단일수치 강등·무출처 DROP | ✅ |
 
 ## 다음 세션 (보고서 통째 재생성 = 흡수 end-to-end 시험)
 현 21p 덱은 흡수 *전* 산출물. 단발 패치 그만 쌓고 이 루프로 재생성:
 1. ✅ `pipeline/dig_schema.py` — 디깅이 tier·원문URL·표본·flag를 구조화 반환(훈련지식 빈칸 채우기 금지). = 리뷰 1순위 약점(출처) fix.
 2. ✅ `pipeline/ced.py` — 슬라이드 수치에 source+limitation+confidence, 자동 강등/삭제.
-3. ✅ `pipeline/story_mapper.py` + `marketing_v2.py` — 위 둘로 보고서 재생성. route(MAIN/QUALITATIVE/DIRECTIONAL/DROP)→engine 슬라이드 + 챕터 프레임(C2) + 렌즈(counterfactual·tombstone) + A6 인용·정성묶음. 22p·11레이아웃·무출처 62% DROP 확인(렌더 QA 통과). 남은 다듬기: 실제 신야 dig로 출처 1차검증(현 CED는 미방문 T2라 일괄 정성강등) → 진짜 검증된 수치만 MAIN 승격.
+3. ✅ `pipeline/story_mapper.py` + `marketing_v2.py` — 위 둘로 보고서 재생성. route(MAIN/QUALITATIVE/DIRECTIONAL/DROP)→engine 슬라이드 + 챕터 프레임(C2) + 렌즈(counterfactual·tombstone) + A6 인용·정성묶음.
+4. ✅ `pipeline/dig.py` — 디깅 입구 열림(스키마는 만들었는데 호출부가 비었던 갭 fix). **실제 디깅 1건 검증**(본부 WebSearch+WebFetch, deloitte.com 1차 직접 열람) → Deloitte 팬덤 92%가 MAIN(히어로) 승격, 미검증 단일수치(97/65/42)는 정성 강등, 무출처 62%는 DROP. 23p·12레이아웃·렌더 QA 통과. **남은 것: 전 수치 라이브 재dig(현 대부분 미방문 T2라 정성)**. `visited_primary`는 디깅 모델 자기보고라 본부 1차 spot-check가 사람 몫(Part D.3 HITL).
 
 상세 설계 = `knowledge/content/00_SYNTHESIS_콘텐츠방법론.md` Part D · 핸드오프 = `Think/.claude/inbox/2026-06-28_0015_…`.
