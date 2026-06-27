@@ -15,13 +15,20 @@ deck_harness는 안 건드림 — 흡수한 규칙을 직접 구현한 독립 �
 import re, html as _html
 
 # ── 팔레트 (Kimi 60-30-10, 주제별) ──────────────────────────────
+# 팔레트 라이브러리 — 어워즈 수상작 채택(2026-06-26) + 펜톤풍 톤다운. 선택형·다양성.
+# 갱신 주기: 분기 awwwards 트렌드 풀(정기-루틴 7/01) + 펜톤 시즌 → palettes.html 재추출해 여기 교체.
+# feedback_deck_palette_pantone: 늘 파랑 X · 톤다운 기본 · 네온 X.
 PALETTES = {
-    "tech":     {"mode": "dark",  "c60": "#0F172A", "c30": "#1E293B", "c10": "#38BDF8",
-                 "ink": "#F8FAFC", "muted": "#94A3B8", "line": "rgba(255,255,255,.10)", "accent2": "#34D399"},
-    "corp":     {"mode": "dark",  "c60": "#0A1A2F", "c30": "#13294B", "c10": "#34D399",
-                 "ink": "#E8EEF6", "muted": "#8B9BB4", "line": "rgba(255,255,255,.10)", "accent2": "#C9A86A"},
-    "creative": {"mode": "dark",  "c60": "#161325", "c30": "#231C3A", "c10": "#E94560",
-                 "ink": "#F6F4FB", "muted": "#9C93B4", "line": "rgba(255,255,255,.10)", "accent2": "#FFD23F"},
+    "brass":  {"mode": "dark", "c60": "#1A1512", "c30": "#2A2420", "c10": "#C39A52",
+               "ink": "#F2ECE0", "muted": "#9C9286", "line": "rgba(255,255,255,.08)", "accent2": "#7E9E8C"},
+    "clay":   {"mode": "dark", "c60": "#181210", "c30": "#241B1A", "c10": "#B65A48",
+               "ink": "#F3ECE6", "muted": "#9C9084", "line": "rgba(255,255,255,.08)", "accent2": "#C39A52"},
+    "sage":   {"mode": "dark", "c60": "#141816", "c30": "#232826", "c10": "#7FA386",
+               "ink": "#EAEDE4", "muted": "#8E948A", "line": "rgba(255,255,255,.08)", "accent2": "#C9B79A"},
+    "plum":   {"mode": "dark", "c60": "#16111A", "c30": "#221A26", "c10": "#A07A9D",
+               "ink": "#EDE8EF", "muted": "#968E98", "line": "rgba(255,255,255,.08)", "accent2": "#C39A52"},
+    "slate":  {"mode": "dark", "c60": "#0F161D", "c30": "#1B2630", "c10": "#6E97A8",
+               "ink": "#E8ECEE", "muted": "#869098", "line": "rgba(255,255,255,.08)", "accent2": "#BFA98A"},
 }
 
 # ── 토큰 CSS (clamp 타이포 + 광학중심 + 안티패턴-safe 기본값) ───────
@@ -143,15 +150,15 @@ def L_cards(s):  # TRELLIS/3카드 (동등 N)
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
 def L_beforeafter(s):
-    def col(d, ac):
-        items = "".join(f'<div class="card" style="padding:18px;margin-top:12px"><b>{anti_pattern(i["t"])}</b>'
-                        f'<div class="sub" style="font-size:14px;margin-top:4px">{anti_pattern(i["b"])}</div></div>' for i in d["items"])
-        return f'<div style="flex:1"><div class="kick" style="color:{ac}">{anti_pattern(d["label"])}</div>{items}</div>'
+    def col(d, ac, edge):
+        items = "".join(f'<div class="card" style="padding:22px;margin-top:14px;border-left:3px solid {edge}"><b style="font-size:16px">{anti_pattern(i["t"])}</b>'
+                        f'<div class="sub" style="font-size:15px;margin-top:6px">{anti_pattern(i["b"])}</div></div>' for i in d["items"])
+        return f'<div style="flex:1;display:flex;flex-direction:column;justify-content:center"><div class="kick" style="color:{ac};font-size:14px">{anti_pattern(d["label"])}</div>{items}</div>'
     return f"""<div class="slide">{_head(s)}
-      <div class="body" style="flex-direction:row;gap:30px;align-items:center">
-        {col(s['before'],'var(--muted)')}
-        <div style="font-size:32px;color:var(--acc)">→</div>
-        {col(s['after'],'var(--acc)')}</div>
+      <div class="body" style="flex-direction:row;gap:30px;align-items:stretch;padding-top:8px">
+        {col(s['before'],'var(--muted)','var(--line)')}
+        <div style="font-size:34px;color:var(--acc);align-self:center">&rarr;</div>
+        {col(s['after'],'var(--acc)','var(--acc)')}</div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
 def L_funnel(s):

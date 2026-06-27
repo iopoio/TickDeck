@@ -145,7 +145,10 @@ SLIDES = [
 ]
 
 if __name__ == "__main__":
-    html = build_deck(SLIDES, theme="tech", title="2026 마케팅 트렌드 — 완성본")
-    pathlib.Path(__file__).with_name("out_marketing.html").write_text(html, encoding="utf-8")
+    import sys
+    theme = sys.argv[1] if len(sys.argv) > 1 else "brass"
+    html = build_deck(SLIDES, theme=theme, title="2026 마케팅 트렌드 — 완성본")
+    out = pathlib.Path(__file__).with_name(f"out_marketing_{theme}.html")
+    out.write_text(html, encoding="utf-8")
     selfcheck(SLIDES, html)
-    print(f"OK — {len(SLIDES)}슬라이드 · 레이아웃 {len(set(s['layout'] for s in SLIDES))}종 · 원문자0 · 3연속없음")
+    print(f"OK [{theme}] — {len(SLIDES)}슬라이드 · 레이아웃 {len(set(s['layout'] for s in SLIDES))}종 · 원문자0 · 3연속없음 → {out.name}")
