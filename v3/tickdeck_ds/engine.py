@@ -116,12 +116,13 @@ def L_kpi(s):  # 단일 수치 + 하단 보조통계(빈하단 채움)
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
 def L_bar(s):  # 가로 막대 + 사이드 인사이트(빈하단 방지)
+    unit = s.get("unit", "%")
     mx = max((r["v"] for r in s["rows"]), default=1)
     bars = "".join(
-        f'<div style="display:grid;grid-template-columns:90px 1fr 60px;align-items:center;gap:14px;margin:14px 0">'
-        f'<div style="font-weight:{700 if i==0 else 400};color:{"var(--acc)" if i==0 else "var(--ink)"}">{anti_pattern(r["k"])}</div>'
+        f'<div style="display:grid;grid-template-columns:120px 1fr 64px;align-items:center;gap:14px;margin:13px 0">'
+        f'<div style="font-weight:{700 if i==0 else 400};color:{"var(--acc)" if i==0 else "var(--ink)"};font-size:15px">{anti_pattern(r["k"])}</div>'
         f'<div style="height:18px;border-radius:6px;background:rgba(255,255,255,.06)"><div style="height:100%;width:{r["v"]/mx*100:.0f}%;border-radius:6px;background:{"var(--acc)" if i==0 else "rgba(255,255,255,.22)"}"></div></div>'
-        f'<div style="font-weight:700;text-align:right">{r["v"]}%</div></div>'
+        f'<div style="font-weight:700;text-align:right;font-size:15px">{r["v"]}{unit}</div></div>'
         for i, r in enumerate(s["rows"]))
     ins = s.get("insight")
     side = (f'<div class="card" style="width:320px;flex:none"><div class="kick">KEY INSIGHT</div>'
