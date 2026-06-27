@@ -159,7 +159,7 @@ def L_kpi(s):  # 단일 수치 + 하단 보조통계(빈하단 채움)
     return f"""<div class="slide">{_head(s)}
       <div class="body" style="justify-content:flex-start;padding-top:30px">
         <div style="display:flex;align-items:baseline;gap:16px">
-          <div style="font-size:140px;font-weight:900;letter-spacing:-.04em;line-height:.9">{anti_pattern(s['value'])}</div>
+          <div style="font-size:140px;font-weight:900;letter-spacing:-.04em;line-height:.9;font-variant-numeric:tabular-nums">{anti_pattern(s['value'])}</div>
           {pill}</div></div>
       <div style="display:grid;grid-template-columns:repeat({max(1,len(s.get('aux',[])))} ,1fr);gap:20px;border-top:1px solid var(--line);padding-top:22px;margin-bottom:30px">{aux}</div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
@@ -258,7 +258,8 @@ def L_line(s):  # 시계열 라인차트(에디토리얼) — 1~2 시리즈·영
     allv = [v for r in series for v in r["values"]]
     lo, hi = min(allv), max(allv); pad = (hi - lo) * 0.18 or (abs(hi) * 0.2 or 1)
     vmin, vmax = lo - pad * 0.35, hi + pad
-    parts = []
+    # 가로 그리드만(캐논 수렴 — 세로 그리드는 흐름 끊음)
+    parts = [f'<line x1="{x0}" y1="{y0 + (y1 - y0) * k / 3:.0f}" x2="{x1}" y2="{y0 + (y1 - y0) * k / 3:.0f}" stroke="var(--line)" stroke-width="1" opacity=".55"/>' for k in range(4)]
     for ri, r in enumerate(series):
         acc = r.get("accent", ri == 0); col = "var(--acc)" if acc else "var(--bar2)"
         P = _scale(r["values"], x0, x1, y0, y1, vmin, vmax)
@@ -279,7 +280,7 @@ def L_line(s):  # 시계열 라인차트(에디토리얼) — 1~2 시리즈·영
                      for i, r in enumerate(series))
     svg = (f'<svg viewBox="0 0 {W} {H}" style="width:100%;height:auto" preserveAspectRatio="xMidYMid meet">'
            f'<defs><linearGradient id="lng" x1="0" y1="0" x2="0" y2="1">'
-           f'<stop offset="0" stop-color="var(--acc)" stop-opacity=".20"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/>'
+           f'<stop offset="0" stop-color="var(--acc)" stop-opacity=".12"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/>'
            f'</linearGradient></defs>{"".join(parts)}</svg>')
     ins = s.get("insight")
     insight = (f'<div class="card" style="margin-top:6px;padding:18px 22px"><span class="kick">KEY INSIGHT</span>'
@@ -307,12 +308,29 @@ def L_donut(s):  # 도넛 — 단일 비중 강조 + 중앙 수치 + 측면 보�
       <div class="body" style="flex-direction:row;align-items:center;gap:56px;padding-top:6px">{donut}{side}</div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
+_SEM = {"up": "#2E9E6B", "down": "#C8553D"}  # 의미색(증가 녹/감소 적) — 캐논 수렴
+def L_statgrid(s):  # 다수치 요약판(메조·KPMG) — 4~6 핵심 수치 위계 격자(라벨→큰숫자→델타)
+    stats = s["stats"]; n = len(stats)
+    cols = min(n, 3) if n > 4 else n          # 1~4 = 한 줄 · 5~6 = 3열 2행
+    cells = []
+    for st in stats:
+        dcol = _SEM.get(st.get("dir", ""), "var(--muted)")
+        arrow = {"up": "▲ ", "down": "▼ "}.get(st.get("dir", ""), "")
+        delta = f'<div style="font-size:13px;font-weight:700;color:{dcol};margin-top:9px">{arrow}{anti_pattern(st["delta"])}</div>' if st.get("delta") else ""
+        note = f'<div class="sub" style="font-size:14px;margin-top:9px;line-height:1.45">{anti_pattern(st["note"])}</div>' if st.get("note") else ""
+        cells.append(f'<div style="border-top:2px solid var(--acc);padding:18px 24px 0">'
+                     f'<div style="font-size:12px;color:var(--muted);letter-spacing:.07em;font-weight:700">{anti_pattern(st["label"])}</div>'
+                     f'<div style="font-size:clamp(40px,4.4vw,54px);font-weight:800;line-height:1.02;margin-top:12px;letter-spacing:-.02em;font-variant-numeric:tabular-nums">{anti_pattern(str(st["value"]))}</div>'
+                     f'{delta}{note}</div>')
+    grid = f'<div style="display:grid;grid-template-columns:repeat({cols},1fr);gap:34px 28px;align-content:center;height:100%">{"".join(cells)}</div>'
+    return f"""<div class="slide">{_head(s)}<div class="body">{grid}</div>{_foot(s, s['_n'], s['_t'])}</div>"""
+
 LAYOUTS = {"cover": L_cover, "divider": L_divider, "statement": L_statement, "kpi": L_kpi,
            "bar": L_bar, "cards": L_cards, "beforeafter": L_beforeafter, "funnel": L_funnel,
            "table": L_table, "closing": L_closing, "agenda": L_agenda, "refs": L_refs,
-           "line": L_line, "donut": L_donut}
+           "line": L_line, "donut": L_donut, "statgrid": L_statgrid}
 # 데이터 밀도 높은(시각 무거운) 레이아웃 — 텐션릴리즈용
-HEAVY = {"bar", "table", "kpi", "line", "donut"}
+HEAVY = {"bar", "table", "kpi", "line", "donut", "statgrid"}
 
 
 # ── 다양성 엔진 (Kimi LayoutMemory + Qwen 텐션릴리즈) ──────────────
