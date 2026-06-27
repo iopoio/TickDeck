@@ -179,14 +179,14 @@ def L_bar(s):  # 가로 막대 + 사이드 인사이트(빈하단 방지)
         <div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly">{bars}</div>{side}</div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
-def L_cards(s):  # TRELLIS/3카드 (동등 N) — 세로 채움
-    cs = "".join(f'<div class="card" style="display:flex;flex-direction:column;justify-content:center"><div class="kick">{anti_pattern(c.get("kick",""))}</div>'
-                 f'<div style="font-size:23px;font-weight:800;margin-top:10px">{anti_pattern(c["title"])}</div>'
-                 f'<div class="sub" style="margin-top:12px;font-size:16px">{anti_pattern(c["body"])}</div></div>'
+def L_cards(s):  # TRELLIS/3카드 — 내용 높이 카드(빈 박스 방지)·그리드 세로 가운데·상단 액센트 룰
+    cs = "".join(f'<div class="card" style="border-top:3px solid var(--acc);padding:28px 26px 30px"><div class="kick">{anti_pattern(c.get("kick",""))}</div>'
+                 f'<div style="font-size:23px;font-weight:800;margin-top:12px">{anti_pattern(c["title"])}</div>'
+                 f'<div class="sub" style="margin-top:12px;font-size:16px;line-height:1.55">{anti_pattern(c["body"])}</div></div>'
                  for c in s["cards"])
     n = len(s["cards"])
     return f"""<div class="slide">{_head(s)}
-      <div class="body"><div style="flex:1;display:grid;grid-template-columns:repeat({min(n,3)},1fr);gap:20px;align-items:stretch;padding:10px 0">{cs}</div></div>
+      <div class="body" style="justify-content:center"><div style="display:grid;grid-template-columns:repeat({min(n,3)},1fr);gap:22px;align-items:start">{cs}</div></div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
 
@@ -240,10 +240,10 @@ def L_table(s):  # zebra
       <div class="body"><table style="width:100%;border-collapse:collapse"><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
-def L_closing(s):
-    bl = "".join(f'<li style="list-style:none;margin:14px 0;padding-left:22px;position:relative;font-size:18px">'
-                 f'<span style="position:absolute;left:0;top:9px;width:8px;height:8px;background:var(--acc)"></span>{anti_pattern(b)}</li>' for b in s.get("bullets", []))
-    return f"""<div class="slide" style="justify-content:center">{_head(s)}<ul style="margin-top:24px">{bl}</ul></div>"""
+def L_closing(s):  # 얇은 라인 마커(투박한 사각형 대신)·세로 분배
+    bl = "".join(f'<li style="list-style:none;padding-left:30px;position:relative;font-size:20px;line-height:1.4">'
+                 f'<span style="position:absolute;left:0;top:14px;width:18px;height:2px;background:var(--acc)"></span>{anti_pattern(b)}</li>' for b in s.get("bullets", []))
+    return f"""<div class="slide">{_head(s)}<ul class="body" style="justify-content:space-evenly;list-style:none;margin-top:18px">{bl}</ul>{_foot(s, s['_n'], s['_t'])}</div>"""
 
 LAYOUTS = {"cover": L_cover, "divider": L_divider, "statement": L_statement, "kpi": L_kpi,
            "bar": L_bar, "cards": L_cards, "beforeafter": L_beforeafter, "funnel": L_funnel,

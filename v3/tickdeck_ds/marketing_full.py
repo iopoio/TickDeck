@@ -47,7 +47,7 @@ SLIDES = [
      "aux": [{"label": "진짜와 합성 콘텐츠, 구분 어려움 (영국)", "value": "65%"},
              {"label": "소비자 번아웃 — '덜 최적화된 진정성' 갈망", "value": "42%"},
              {"label": "신뢰 확보 방향", "value": "스토리텔링 → 증명"}],
-     "foot": "출처: WPP Media · Ogilvy Social Lab · WGSN 2026"},
+     "foot": "각기 다른 조사: 97% Ogilvy · 65% WPP(영국) · 42% WGSN, 2026"},
 
     {"layout": "divider", "num": "03", "eyebrow": "Chapter 03 · 지각 변동 (Seismic Shifts)",
      "title": "한 변화의 다섯 얼굴", "sub": "발견 · 고객 · 진정성 · 팬덤 · 재투자 — 따로 노는 트렌드가 아니다"},
@@ -95,11 +95,11 @@ SLIDES = [
      "foot": "출처: McKinsey — State of Marketing Europe 2026"},
 
     {"layout": "divider", "num": "04", "eyebrow": "Chapter 04 · 해자 (The Moat)",
-     "title": "인간 신뢰가 유일한 해자", "sub": "AI가 못 사는 단 하나의 자산"},
+     "title": "인간 신뢰가 복제 불가능한 해자", "sub": "AI가 가장 따라 사기 어려운 자산"},
 
     {"layout": "agenda", "eyebrow": "해자 · 다섯이 한 곳으로",
      "title": "다섯 갈래는 한 곳을 가리킨다",
-     "sub": "따로 노는 트렌드가 아니라 한 변화의 다섯 얼굴 — 결국 인간 신뢰가 유일한 해자",
+     "sub": "따로 노는 트렌드가 아니라 한 변화의 다섯 얼굴 — 결국 인간 신뢰가 가장 희소한 해자",
      "items": [{"no": "1", "t": "발견 · 새 유통", "d": "검색에서 피드·AI 답변(GEO)으로 입구가 이동"},
                {"no": "2", "t": "고객 · 최종 결정자", "d": "기계+사람 이중 청중을 분리해 동시 설계"},
                {"no": "3", "t": "진정성 · 차별화 통화", "d": "효율은 기본값, 검증된 신뢰가 차별값"},
@@ -146,10 +146,8 @@ SLIDES = [
               {"s": "Deloitte — 2026 Digital Media Trends", "t": "팬덤 LTV p12"},
               {"s": "PwC — Marketing in the AI Era", "t": "배경"},
               {"s": "WGSN — Future Consumer 2026", "t": "진정성 p11"},
-              {"s": "HubSpot — 2026 State of Marketing Report", "t": "배경 리서치"},
-              {"s": "Kantar — Marketing Trends 2026", "t": "배경 리서치"},
-              {"s": "Gartner · Forrester · eMarketer", "t": "추가 참조"},
-              {"s": "Nielsen · Statista · BCG · Accenture · IDC", "t": "배경 리서치"}]},
+              {"s": "HubSpot — 2026 State of Marketing Report", "t": "배경"},
+              {"s": "Kantar — Marketing Trends 2026", "t": "배경"}]},
 ]
 
 if __name__ == "__main__":
