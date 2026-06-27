@@ -81,6 +81,19 @@ def _merge_qual(slides):
     return out
 
 
+def chart_block(kind, head, data, source_ced):
+    """line/donut 차트를 CED와 동일한 출처 게이트로 통과시켜 슬라이드 dict 반환(또는 DROP=None).
+    kind = 'line'|'donut' · head = {eyebrow,title,sub} · data = 차트 데이터 · source_ced = 헤드라인 수치 감싼 CED.
+    약한 출처(MAIN 아님)면 foot에 '방향·약출처' 캐비엇, DROP이면 차트 자체를 빼버린다."""
+    r = route(source_ced)
+    if r == DROP:
+        DROPPED.append((head.get("title", kind), source_ced.confidence, source_ced.source.tier, source_ced.source.flags))
+        return None
+    cite = _cite(source_ced.source)
+    foot = ("방향·약출처 · " + cite) if r != MAIN else cite
+    return {"layout": kind, "foot": foot, **head, **data}
+
+
 def chapter(num, eyebrow, title, sub, blocks, counterfactual=None):
     """divider + 블록(raw dict 그대로 / CED는 route, 정성은 묶음) + (렌즈)반사실 beat."""
     out = [{"layout": "divider", "num": num, "eyebrow": eyebrow, "title": title, "sub": sub}]

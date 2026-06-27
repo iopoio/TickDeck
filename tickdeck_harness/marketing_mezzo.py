@@ -14,7 +14,7 @@ import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).with_name("pipeline")))
 from dig_schema import DigRecord, validate   # noqa: E402
 from ced import CED                            # noqa: E402
-from story_mapper import chapter, assemble, DROPPED  # noqa: E402
+from story_mapper import chapter, assemble, chart_block, DROPPED  # noqa: E402
 from engine import build_deck, selfcheck      # noqa: E402
 
 Y = 2026
@@ -52,7 +52,14 @@ def main(theme="cobalt"):
 
     ch2 = chapter("02", "Ch2 · 발견형 커머스", "검색에서 탐색으로",
                   "목적형 쇼핑(검색)에서 발견형 쇼핑(콘텐츠 중 우연한 발견)으로 패러다임 이동",
-                  [COMMERCE76,
+                  [chart_block("line",
+                       {"eyebrow": "발견형 커머스 · 거래액 추이", "title": "모바일이 온라인쇼핑의 76%로",
+                        "sub": "국내 온라인쇼핑 거래액 (조 원) — 모바일이 전체 성장을 견인"},
+                       {"labels": ["2020", "2021", "2022", "2023", "2024"], "unit": "조",
+                        "series": [{"name": "전체 온라인쇼핑", "values": [158, 193, 216, 242, 259], "accent": True},
+                                   {"name": "모바일 쇼핑", "values": [109, 141, 163, 182, 198]}],
+                        "insight": "모바일 비중 2020년 69%에서 2024년 76%로 — 발견형 쇼핑이 모바일에서 일어난다."},
+                       COMMERCE76),
                    {"layout": "beforeafter", "eyebrow": "발견형 커머스 · 패러다임", "title": "목적형에서 발견형으로",
                     "before": {"label": "목적형(Purposeful)", "items": [
                         {"t": "진입", "b": "필요한 걸 알고 검색창에 상품명 입력"},
@@ -64,7 +71,12 @@ def main(theme="cobalt"):
 
     ch3 = chapter("03", "Ch3 · DOOH", "디지털 옥외가 성과 매체로",
                   "규제 완화 + 디지털 결합으로 옥외광고가 제2의 전성기",
-                  [DOOH,
+                  [chart_block("donut",
+                       {"eyebrow": "DOOH · 옥외광고 비중", "title": "디지털 옥외가 옥외광고의 3분의 1"},
+                       {"value": 36, "center": "DOOH 비중",
+                        "aux": [{"label": "2024 전체 옥외광고", "value": "4.6조"}, {"label": "DOOH 매출", "value": "1.7조"},
+                                {"label": "전년比 DOOH 성장", "value": "+16%"}]},
+                       DOOH),
                    {"layout": "cards", "eyebrow": "DOOH · 진화", "title": "주목도 높은 옥외 + 디지털 기술",
                     "cards": [{"kick": "착시", "title": "임팩트", "body": "대형 매체에 튀어나오는 듯한 3D 착시로 시선 장악."},
                               {"kick": "상호작용", "title": "QR 연결", "body": "QR로 소비자와 실시간 상호작용·온라인 연계."},
