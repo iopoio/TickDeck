@@ -35,6 +35,13 @@ SALESFORCE = CED("기업 마케팅 AI '완벽 도입' 비율", "32%", mezzo(2024
                  "Salesforce 2024 자체조사·AI 벤더 이해관계(COI)·재인용", 0.55)  # → DROP
 SALESFORCE.source.coi = "Salesforce(AI 벤더)"
 
+# 추적→검증→승격 실증: MezzoMedia 259조(광의·근거 미확정)를 폐기하고, 통계청 1차를 직접 확인한 표준 242조로.
+_KOSTAT = validate(DigRecord("", None, "https://kostat.go.kr/board.es?bid=241&list_no=434934", "T1", 2025,
+                             publisher="통계청", report="2024 온라인쇼핑동향(연간)", sample="전국 전수집계",
+                             visited_primary=True), current_year=Y)
+ECOM242 = CED("2024 온라인쇼핑 거래액(역대 최대)", "242조", _KOSTAT,
+              "통계청 온라인쇼핑동향 표준 기준·본부 1차 확인(2026-06-28). MezzoMedia 259조는 광의 기준·근거 미확정이라 제외", 0.9)
+
 
 def main(theme="cobalt"):
     DROPPED.clear()
@@ -53,13 +60,12 @@ def main(theme="cobalt"):
     ch2 = chapter("02", "Ch2 · 발견형 커머스", "검색에서 탐색으로",
                   "목적형 쇼핑(검색)에서 발견형 쇼핑(콘텐츠 중 우연한 발견)으로 패러다임 이동",
                   [chart_block("line",
-                       {"eyebrow": "발견형 커머스 · 거래액 추이", "title": "모바일이 온라인쇼핑의 76%로",
-                        "sub": "국내 온라인쇼핑 거래액 (조 원) — 모바일이 전체 성장을 견인"},
+                       {"eyebrow": "발견형 커머스 · 거래액 추이", "title": "2024년 온라인쇼핑 242조, 역대 최대",
+                        "sub": "국내 온라인쇼핑 연간 거래액 (조 원) · 통계청 온라인쇼핑동향(표준 기준)"},
                        {"labels": ["2020", "2021", "2022", "2023", "2024"], "unit": "조",
-                        "series": [{"name": "전체 온라인쇼핑", "values": [158, 193, 216, 242, 259], "accent": True},
-                                   {"name": "모바일 쇼핑", "values": [109, 141, 163, 182, 198]}],
-                        "insight": "모바일 비중 2020년 69%에서 2024년 76%로 — 발견형 쇼핑이 모바일에서 일어난다."},
-                       COMMERCE76),
+                        "series": [{"name": "온라인쇼핑 거래액", "values": [159, 193, 210, 227, 242], "accent": True}],
+                        "insight": "성장률 +5.8%로 둔화 — 시장은 성숙기, 경쟁은 발견형 점유로 이동한다."},
+                       ECOM242),
                    {"layout": "beforeafter", "eyebrow": "발견형 커머스 · 패러다임", "title": "목적형에서 발견형으로",
                     "before": {"label": "목적형(Purposeful)", "items": [
                         {"t": "진입", "b": "필요한 걸 알고 검색창에 상품명 입력"},
