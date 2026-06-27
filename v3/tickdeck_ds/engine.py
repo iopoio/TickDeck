@@ -19,31 +19,44 @@ import re, html as _html
 # 갱신 주기: 분기 awwwards 트렌드 풀(정기-루틴 7/01) + 펜톤 시즌 → palettes.html 재추출해 여기 교체.
 # feedback_deck_palette_pantone: 늘 파랑 X · 톤다운 기본 · 네온 X.
 PALETTES = {
-    "brass":  {"mode": "dark", "c60": "#1A1512", "c30": "#2A2420", "c10": "#C39A52",
-               "ink": "#F2ECE0", "muted": "#9C9286", "line": "rgba(255,255,255,.08)", "accent2": "#7E9E8C"},
-    "clay":   {"mode": "dark", "c60": "#181210", "c30": "#241B1A", "c10": "#B65A48",
-               "ink": "#F3ECE6", "muted": "#9C9084", "line": "rgba(255,255,255,.08)", "accent2": "#C39A52"},
-    "sage":   {"mode": "dark", "c60": "#141816", "c30": "#232826", "c10": "#7FA386",
-               "ink": "#EAEDE4", "muted": "#8E948A", "line": "rgba(255,255,255,.08)", "accent2": "#C9B79A"},
-    "plum":   {"mode": "dark", "c60": "#16111A", "c30": "#221A26", "c10": "#A07A9D",
-               "ink": "#EDE8EF", "muted": "#968E98", "line": "rgba(255,255,255,.08)", "accent2": "#C39A52"},
-    "slate":  {"mode": "dark", "c60": "#0F161D", "c30": "#1B2630", "c10": "#6E97A8",
-               "ink": "#E8ECEE", "muted": "#869098", "line": "rgba(255,255,255,.08)", "accent2": "#BFA98A"},
+    # 라이트(밝음·에디토리얼) — 어워즈 페이퍼 톤. 'AI 냄새' 안 나게 따뜻하거나 또렷한 색.
+    "cream":  {"mode": "light", "c60": "#F6F1E7", "c30": "#EFE8DA", "c10": "#A6742E",
+               "ink": "#2A2018", "muted": "#7C7264", "accent2": "#5E8268"},   # 따뜻한 황동·프리미엄
+    "ivory":  {"mode": "light", "c60": "#F5F2ED", "c30": "#EAE6DE", "c10": "#9B4A3A",
+               "ink": "#241B1A", "muted": "#7E7469", "accent2": "#A6742E"},   # 클레이·매거진
+    "mist":   {"mode": "light", "c60": "#EEF1EC", "c30": "#E3E8E1", "c10": "#4F7A63",
+               "ink": "#222826", "muted": "#6E766E", "accent2": "#A6742E"},   # 세이지·차분
+    "cobalt": {"mode": "light", "c60": "#EFF1F6", "c30": "#E4E8F1", "c10": "#2D52C9",
+               "ink": "#171E2B", "muted": "#6B7384", "accent2": "#E0833B"},   # 또렷한 코발트(시안글로우 아님)+따뜻한 보조
+    # 다크(필요할 때만, 톤 약간 밝힘)
+    "ink":    {"mode": "dark",  "c60": "#161B22", "c30": "#1F2731", "c10": "#C39A52",
+               "ink": "#EFEADF", "muted": "#9A9384", "accent2": "#7E9E8C"},
 }
 
-# ── 토큰 CSS (clamp 타이포 + 광학중심 + 안티패턴-safe 기본값) ───────
+# ── 토큰 CSS (mode-aware: dark/light · clamp 타이포 · 광학중심) ───────
 def tokens_css(p):
+    dark = p.get("mode", "dark") == "dark"
+    acc = p["c10"]
+    card     = "rgba(255,255,255,.04)" if dark else "#FFFFFF"
+    track    = "rgba(255,255,255,.07)" if dark else "rgba(0,0,0,.06)"
+    bar2     = "rgba(255,255,255,.22)" if dark else "rgba(0,0,0,.14)"
+    line     = "rgba(255,255,255,.09)" if dark else "rgba(0,0,0,.10)"
+    stroke   = "rgba(255,255,255,.14)" if dark else "rgba(0,0,0,.10)"
+    cardshd  = "none" if dark else "0 1px 4px rgba(0,0,0,.05)"
+    glow     = f"{acc}14" if dark else f"{acc}10"
+    accsoft  = f"{acc}26"
     return f""":root{{
-  --c60:{p['c60']};--c30:{p['c30']};--acc:{p['c10']};--acc2:{p['accent2']};
-  --ink:{p['ink']};--muted:{p['muted']};--line:{p['line']};
+  --c60:{p['c60']};--c30:{p['c30']};--acc:{acc};--acc2:{p['accent2']};
+  --ink:{p['ink']};--muted:{p['muted']};--line:{line};--card:{card};--track:{track};
+  --bar2:{bar2};--stroke:{stroke};--accsoft:{accsoft};--cardshd:{cardshd};
   --t-hero:clamp(56px,6.4vw,104px);--t-h1:clamp(34px,3.4vw,46px);
   --t-h2:clamp(24px,2.2vw,32px);--t-body:clamp(16px,1.4vw,20px);--t-meta:12px;
   --safe-x:72px;--safe-y:56px;--rhythm:24px;
 }}
 *{{margin:0;padding:0;box-sizing:border-box;font-family:"Pretendard","Apple SD Gothic Neo",sans-serif}}
 .slide{{width:1280px;height:720px;background:
-   radial-gradient(900px 500px at 85% 15%,rgba(56,189,248,.06),transparent 60%),
-   linear-gradient(135deg,var(--c60),var(--c30) 70%,var(--c60));
+   radial-gradient(900px 520px at 86% 14%,{glow},transparent 60%),
+   linear-gradient(135deg,var(--c60),var(--c30) 72%,var(--c60));
    color:var(--ink);position:relative;overflow:hidden;page-break-after:always;
    display:flex;flex-direction:column;padding:var(--safe-y) var(--safe-x)}}
 .eyebrow{{font-size:var(--t-meta);font-weight:700;color:var(--acc);letter-spacing:.28em;
@@ -57,7 +70,7 @@ def tokens_css(p):
    justify-content:space-between;font-size:var(--t-meta);color:var(--muted);letter-spacing:.12em;
    border-top:1px solid var(--line);padding-top:14px}}
 .body{{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:18px}}
-.card{{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:26px}}
+.card{{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:var(--cardshd)}}
 .kick{{font-size:13px;font-weight:700;color:var(--acc);letter-spacing:.1em}}
 """
 
@@ -118,7 +131,7 @@ def L_kpi(s):  # 단일 수치 + 하단 보조통계(빈하단 채움)
       <div class="body" style="justify-content:flex-start;padding-top:30px">
         <div style="display:flex;align-items:baseline;gap:16px">
           <div style="font-size:140px;font-weight:900;letter-spacing:-.04em;line-height:.9">{anti_pattern(s['value'])}</div>
-          <div style="background:rgba(52,211,153,.16);color:var(--acc2);padding:8px 14px;border-radius:99px;font-weight:700">{anti_pattern(s.get('delta',''))}</div></div></div>
+          <div style="background:var(--accsoft);color:var(--acc);padding:8px 14px;border-radius:99px;font-weight:700">{anti_pattern(s.get('delta',''))}</div></div></div>
       <div style="display:grid;grid-template-columns:repeat({max(1,len(s.get('aux',[])))} ,1fr);gap:20px;border-top:1px solid var(--line);padding-top:22px;margin-bottom:30px">{aux}</div>
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
@@ -128,7 +141,7 @@ def L_bar(s):  # 가로 막대 + 사이드 인사이트(빈하단 방지)
     bars = "".join(
         f'<div style="display:grid;grid-template-columns:120px 1fr 64px;align-items:center;gap:14px;margin:13px 0">'
         f'<div style="font-weight:{700 if i==0 else 400};color:{"var(--acc)" if i==0 else "var(--ink)"};font-size:15px">{anti_pattern(r["k"])}</div>'
-        f'<div style="height:18px;border-radius:6px;background:rgba(255,255,255,.06)"><div style="height:100%;width:{r["v"]/mx*100:.0f}%;border-radius:6px;background:{"var(--acc)" if i==0 else "rgba(255,255,255,.22)"}"></div></div>'
+        f'<div style="height:18px;border-radius:6px;background:var(--track)"><div style="height:100%;width:{r["v"]/mx*100:.0f}%;border-radius:6px;background:{"var(--acc)" if i==0 else "var(--bar2)"}"></div></div>'
         f'<div style="font-weight:700;text-align:right;font-size:15px">{r["v"]}{unit}</div></div>'
         for i, r in enumerate(s["rows"]))
     ins = s.get("insight")
@@ -162,14 +175,14 @@ def L_beforeafter(s):
       {_foot(s, s['_n'], s['_t'])}</div>"""
 
 def L_funnel(s):
-    rows = "".join(f'<div style="width:{100-i*16}%;margin:8px auto;background:rgba(52,211,153,{.10+i*.06:.2f});'
-                   f'border:1px solid var(--line);border-radius:10px;padding:16px 22px;text-align:center;font-weight:700">{anti_pattern(r)}</div>'
+    rows = "".join(f'<div style="width:{100-i*16}%;margin:9px auto;background:var(--accsoft);'
+                   f'border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;padding:17px 22px;text-align:center;font-weight:700">{anti_pattern(r)}</div>'
                    for i, r in enumerate(s["steps"]))
     return f"""<div class="slide">{_head(s)}<div class="body">{rows}</div>{_foot(s, s['_n'], s['_t'])}</div>"""
 
 def L_table(s):  # zebra
     head = "".join(f"<th style='text-align:{'left' if i==0 else 'right'};padding:14px;font-size:12px;letter-spacing:.1em;color:var(--muted)'>{anti_pattern(h)}</th>" for i, h in enumerate(s["cols"]))
-    body = "".join("<tr style='background:{}'>".format("rgba(255,255,255,.03)" if r % 2 else "transparent") +
+    body = "".join("<tr style='background:{}'>".format("var(--track)" if r % 2 else "transparent") +
                    "".join(f"<td style='text-align:{'left' if i==0 else 'right'};padding:14px;{'font-weight:800;color:var(--acc)' if i==len(row)-1 else ''}'>{anti_pattern(str(c))}</td>" for i, c in enumerate(row)) + "</tr>"
                    for r, row in enumerate(s["rows"]))
     return f"""<div class="slide">{_head(s)}
