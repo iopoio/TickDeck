@@ -12,7 +12,7 @@ deck_harness는 안 건드림 — 흡수한 규칙을 직접 구현한 독립 �
 - 안티패턴: Kimi ID표 + GLM 원문자치환 + Qwen pie/3d 금지
 - 팔레트: Kimi 60-30-10 주제별 dict
 """
-import re, html as _html
+import re, math, html as _html
 
 # ── 팔레트 (Kimi 60-30-10, 주제별) ──────────────────────────────
 # 팔레트 라이브러리 — 어워즈 수상작 채택(2026-06-26) + 펜톤풍 톤다운. 선택형·다양성.
@@ -247,11 +247,72 @@ def L_closing(s):  # 얇은 라인 마커(투박한 사각형 대신)·세로 �
                  f'<span style="position:absolute;left:0;top:14px;width:18px;height:2px;background:var(--acc)"></span>{anti_pattern(b)}</li>' for b in s.get("bullets", []))
     return f"""<div class="slide">{_head(s)}<ul class="body" style="justify-content:space-evenly;list-style:none;margin-top:18px">{bl}</ul>{_foot(s, s['_n'], s['_t'])}</div>"""
 
+def _scale(values, x0, x1, y0, y1, vmin, vmax):
+    n = len(values); sx = (x1 - x0) / ((n - 1) or 1); sy = (y1 - y0) / ((vmax - vmin) or 1)
+    return [(x0 + sx * i, y1 - sy * (v - vmin)) for i, v in enumerate(values)]
+
+def L_line(s):  # 시계열 라인차트(에디토리얼) — 1~2 시리즈·영역 채움·값 라벨·연도축·범례
+    series, labels, unit = s["series"], s["labels"], s.get("unit", "")
+    # 인셋 충분히(끝 값·연도 라벨 잘림 방지)·H 축소(인사이트/푸터 충돌 방지)
+    W, H, x0, x1, y0, y1 = 1136, 322, 66, 1070, 40, 280
+    allv = [v for r in series for v in r["values"]]
+    lo, hi = min(allv), max(allv); pad = (hi - lo) * 0.18 or (abs(hi) * 0.2 or 1)
+    vmin, vmax = lo - pad * 0.35, hi + pad
+    parts = []
+    for ri, r in enumerate(series):
+        acc = r.get("accent", ri == 0); col = "var(--acc)" if acc else "var(--bar2)"
+        P = _scale(r["values"], x0, x1, y0, y1, vmin, vmax)
+        d = " ".join(f"{'M' if i == 0 else 'L'}{x:.1f},{y:.1f}" for i, (x, y) in enumerate(P))
+        if acc:
+            parts.append(f'<path d="{d} L{P[-1][0]:.1f},{y1} L{P[0][0]:.1f},{y1} Z" fill="url(#lng)"/>')
+        dash = "" if acc else ' stroke-dasharray="2 6"'
+        parts.append(f'<path d="{d}" fill="none" stroke="{col}" stroke-width="{3.2 if acc else 2}" stroke-linecap="round" stroke-linejoin="round"{dash}/>')
+        for (x, y), v in zip(P, r["values"]):
+            parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{4.5 if acc else 3.2}" fill="var(--c60)" stroke="{col}" stroke-width="2.4"/>')
+            if acc:
+                parts.append(f'<text x="{x:.1f}" y="{y - 15:.1f}" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)">{anti_pattern(str(v))}{unit}</text>')
+    for i, lb in enumerate(labels):
+        x = x0 + (x1 - x0) * i / ((len(labels) - 1) or 1)
+        parts.append(f'<text x="{x:.1f}" y="{H - 7}" text-anchor="middle" font-size="13" fill="var(--muted)">{anti_pattern(str(lb))}</text>')
+    legend = "".join(f'<span style="display:inline-flex;align-items:center;gap:7px;margin-right:22px;font-size:13px;color:var(--muted)">'
+                     f'<span style="width:16px;height:3px;border-radius:2px;background:{"var(--acc)" if r.get("accent", i == 0) else "var(--bar2)"}"></span>{anti_pattern(r["name"])}</span>'
+                     for i, r in enumerate(series))
+    svg = (f'<svg viewBox="0 0 {W} {H}" style="width:100%;height:auto" preserveAspectRatio="xMidYMid meet">'
+           f'<defs><linearGradient id="lng" x1="0" y1="0" x2="0" y2="1">'
+           f'<stop offset="0" stop-color="var(--acc)" stop-opacity=".20"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/>'
+           f'</linearGradient></defs>{"".join(parts)}</svg>')
+    ins = s.get("insight")
+    insight = (f'<div class="card" style="margin-top:6px;padding:18px 22px"><span class="kick">KEY INSIGHT</span>'
+               f'<span style="font-size:16px;font-weight:600;margin-left:10px;word-break:keep-all">{anti_pattern(ins)}</span></div>') if ins else ""
+    return f"""<div class="slide">{_head(s)}
+      <div class="body" style="justify-content:flex-start;gap:10px;padding-top:10px">
+        <div>{legend}</div>{svg}{insight}</div>
+      {_foot(s, s['_n'], s['_t'])}</div>"""
+
+def L_donut(s):  # 도넛 — 단일 비중 강조 + 중앙 수치 + 측면 보조통계
+    val = max(0.0, min(100.0, float(s["value"]))); r = 130; cx = cy = 156; C = 2 * math.pi * r
+    dash = C * val / 100
+    aux = "".join(f'<div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding:12px 0">'
+                  f'<span style="font-size:15px;color:var(--muted);word-break:keep-all">{anti_pattern(a["label"])}</span>'
+                  f'<span style="font-size:22px;font-weight:800;margin-left:16px">{anti_pattern(a["value"])}</span></div>'
+                  for a in s.get("aux", []))
+    donut = (f'<svg viewBox="0 0 312 312" style="width:312px;height:312px;flex:none">'
+             f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="var(--track)" stroke-width="28"/>'
+             f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="var(--acc)" stroke-width="28" stroke-linecap="round" '
+             f'stroke-dasharray="{dash:.1f} {C - dash:.1f}" transform="rotate(-90 {cx} {cy})"/>'
+             f'<text x="{cx}" y="{cy - 4}" text-anchor="middle" dominant-baseline="middle" font-size="74" font-weight="900" fill="var(--ink)">{anti_pattern(str(s["value"]))}%</text>'
+             f'<text x="{cx}" y="{cy + 42}" text-anchor="middle" font-size="15" fill="var(--muted)">{anti_pattern(s.get("center", ""))}</text></svg>')
+    side = f'<div style="flex:1;display:flex;flex-direction:column;justify-content:center">{aux}</div>' if aux else ""
+    return f"""<div class="slide">{_head(s)}
+      <div class="body" style="flex-direction:row;align-items:center;gap:56px;padding-top:6px">{donut}{side}</div>
+      {_foot(s, s['_n'], s['_t'])}</div>"""
+
 LAYOUTS = {"cover": L_cover, "divider": L_divider, "statement": L_statement, "kpi": L_kpi,
            "bar": L_bar, "cards": L_cards, "beforeafter": L_beforeafter, "funnel": L_funnel,
-           "table": L_table, "closing": L_closing, "agenda": L_agenda, "refs": L_refs}
+           "table": L_table, "closing": L_closing, "agenda": L_agenda, "refs": L_refs,
+           "line": L_line, "donut": L_donut}
 # 데이터 밀도 높은(시각 무거운) 레이아웃 — 텐션릴리즈용
-HEAVY = {"bar", "table", "kpi"}
+HEAVY = {"bar", "table", "kpi", "line", "donut"}
 
 
 # ── 다양성 엔진 (Kimi LayoutMemory + Qwen 텐션릴리즈) ──────────────
