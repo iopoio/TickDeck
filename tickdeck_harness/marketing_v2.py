@@ -24,12 +24,13 @@ def src(pub, rep, tier="T2", year=Y, region="", sample=""):
                               publisher=pub, report=rep, region=region, sample=sample), current_year=Y)
 
 # ── 히어로 단일수치 CED 풀 (실제 출처·정직 신뢰도) ──────────────────
+# 2026-06-28 출처 1차 재확인 결과 — 셋 다 primary 도달 실패(Deloitte만 성공). 정직하게 정성 유지.
 AUTH97 = CED("진짜다움이 신뢰의 핵심이라는 동의 97%", "97%",
-             src("Ogilvy", "Social Trends 2026"), "단일 조사·표본 미공개·자사 리포트", 0.7)
+             src("Ogilvy", "Social Trends 2026"), "Ogilvy 1차 페이지에 97% 없음·2차 요약만(미확인)", 0.6)
 SYNTH65 = CED("진짜와 합성 콘텐츠 구분 어려움 65%", "65%",
-              src("WPP Media", "UK Trends 2026", region="영국"), "영국 한정·단일 출처", 0.7)
+              src("WPP Media", "UK Trends 2026", region="영국"), "WPP 1차 미확인 · 인접 실측은 Meltwater ~60%(다른 출처·수치)", 0.6)
 BURN42 = CED("덜 최적화된 진정성 갈망 42%", "42%",
-             src("WGSN", "Future Consumer 2026"), "소비자 서베이·N 미표기", 0.68)
+             src("WGSN", "Future Consumer 2026"), "WGSN 페이월·1차 미확인", 0.6)
 HUMAN62 = CED("인간 창의팀은 대체 불가 동의 62%", "62%",
               src("", "", tier="T3", year=None), "", 0.5)  # 원본 무출처 → DROP 대상
 
