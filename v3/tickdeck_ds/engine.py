@@ -42,8 +42,8 @@ def tokens_css(p):
     bar2     = "rgba(255,255,255,.22)" if dark else "rgba(0,0,0,.14)"
     line     = "rgba(255,255,255,.09)" if dark else "rgba(0,0,0,.10)"
     stroke   = "rgba(255,255,255,.14)" if dark else "rgba(0,0,0,.10)"
-    cardshd  = "none" if dark else "0 6px 22px rgba(64,46,28,.10)"   # 따뜻한 톤·부드럽게(회색 띠 방지)
-    cardbd   = line if dark else "rgba(120,95,62,.14)"               # 라이트=따뜻한 얇은 테두리
+    cardshd  = "none"                                                # 그림자 제거 — 라이트서 카드 겹치면 회색 박스로 뭉침. 테두리로만 정의
+    cardbd   = line if dark else "rgba(120,95,62,.22)"               # 라이트=따뜻한 얇은 테두리(회색 아님)
     glow     = f"{acc}14" if dark else f"{acc}10"
     accsoft  = f"{acc}26"
     return f""":root{{

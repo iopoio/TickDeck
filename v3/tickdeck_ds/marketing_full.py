@@ -148,7 +148,11 @@ SLIDES = [
               {"s": "McKinsey — State of Marketing Europe 2026", "t": "효율·재투자"},
               {"s": "Deloitte — 2026 Digital Media Trends", "t": "팬덤 LTV p12"},
               {"s": "PwC — Marketing in the AI Era", "t": "배경"},
-              {"s": "WGSN — Future Consumer 2026", "t": "진정성 p11"}]},
+              {"s": "WGSN — Future Consumer 2026", "t": "진정성 p11"},
+              {"s": "HubSpot — 2026 State of Marketing Report", "t": "배경 리서치"},
+              {"s": "Kantar — Marketing Trends 2026", "t": "배경 리서치"},
+              {"s": "Gartner · Forrester · eMarketer", "t": "추가 참조"},
+              {"s": "Nielsen · Statista · BCG · Accenture · IDC", "t": "배경 리서치"}]},
 ]
 
 if __name__ == "__main__":
