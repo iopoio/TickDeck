@@ -49,9 +49,9 @@ def slide_for(ced, eyebrow):
         DROPPED.append((ced.claim, ced.confidence, ced.source.tier, ced.source.flags))
         return None
     cite = _cite(ced.source)
-    if r == MAIN:                                    # 빅넘버 — T1/T2·고신뢰만 여기 옴
+    if r == MAIN:                                    # 빅넘버 — T1/T2·고신뢰만 여기 옴. 출처는 foot 단독(중복 방지)
         return {"layout": "kpi", "eyebrow": eyebrow, "title": ced.claim, "value": ced.metric, "delta": "",
-                "aux": [{"label": "한계", "value": ced.limitation or "—"}, {"label": "출처", "value": cite}],
+                "aux": [{"label": "한계", "value": ced.limitation or "—"}],
                 "foot": cite}
     if r == QUALITATIVE:                             # 수치는 맥락(히어로 X) · _qmerge로 묶임
         return {"layout": "cards", "eyebrow": eyebrow, "title": "단일 출처 · 정성 근거(히어로서 강등)", "_qmerge": True,
