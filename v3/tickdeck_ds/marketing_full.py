@@ -12,9 +12,6 @@ SLIDES = [
      "title": "AI는 기본값, 차별화는 증명된 인간다움",
      "sub": "누구나 AI를 쓰는 시대 — 끝까지 남는 차별화는 '검증된 인간다움'이다."},
 
-    {"layout": "statement", "eyebrow": "한 줄 요지",
-     "title": "AI가 흔할수록, 사람이 비싸진다"},
-
     {"layout": "agenda", "eyebrow": "목차 · Agenda",
      "title": "AI가 기본이 된 시대, 차별화는 어디서 오는가",
      "items": [{"no": "01", "t": "변화", "d": "AI가 마케팅의 기본값 — 도입은 끝난 논쟁"},
@@ -157,7 +154,7 @@ SLIDES = [
 
 if __name__ == "__main__":
     import sys
-    theme = sys.argv[1] if len(sys.argv) > 1 else "brass"
+    theme = sys.argv[1] if len(sys.argv) > 1 else "breeze"
     html = build_deck(SLIDES, theme=theme, title="2026 마케팅 트렌드 — 완성본")
     out = pathlib.Path(__file__).with_name(f"out_marketing_{theme}.html")
     out.write_text(html, encoding="utf-8")
