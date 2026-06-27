@@ -28,6 +28,13 @@ PALETTES = {
                "ink": "#222826", "muted": "#6E766E", "accent2": "#A6742E"},   # 세이지·차분
     "cobalt": {"mode": "light", "c60": "#EFF1F6", "c30": "#E4E8F1", "c10": "#2D52C9",
                "ink": "#171E2B", "muted": "#6B7384", "accent2": "#E0833B"},   # 또렷한 코발트(시안글로우 아님)+따뜻한 보조
+    # 시원한 여름 톤 (쿨·라이트, AI-시안 아닌 톤다운 틸/마린/민트)
+    "breeze": {"mode": "light", "c60": "#EDF3F2", "c30": "#DFEBE9", "c10": "#1C8A80",
+               "ink": "#14282A", "muted": "#6C8385", "accent2": "#E08A4F"},   # 시원한 틸 + 따뜻한 코랄 보조
+    "marine": {"mode": "light", "c60": "#EEF2F7", "c30": "#E1E9F1", "c10": "#2C6FB0",
+               "ink": "#14202C", "muted": "#6B7A8C", "accent2": "#3FA39A"},   # 청량 마린블루 + 틸 보조
+    "mint":   {"mode": "light", "c60": "#EFF4F0", "c30": "#E1EDE4", "c10": "#2A9D78",
+               "ink": "#172A24", "muted": "#6E847A", "accent2": "#3E7FB0"},   # 민트그린 + 블루 보조
     # 다크(필요할 때만, 톤 약간 밝힘)
     "ink":    {"mode": "dark",  "c60": "#161B22", "c30": "#1F2731", "c10": "#C39A52",
                "ink": "#EFEADF", "muted": "#9A9384", "accent2": "#7E9E8C"},
