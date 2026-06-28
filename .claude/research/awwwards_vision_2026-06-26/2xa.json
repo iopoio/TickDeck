@@ -1,0 +1,14 @@
+{
+  "is_error_page": true,
+  "one_line": "완전히 검은 에러 페이지로, 디자인 요소 없음",
+  "palette": [
+    "#000000"
+  ],
+  "typography": "텍스트 없음",
+  "layout_grid": "그리드/정렬 시스템 없음",
+  "color_shape_legibility": "색/도형을 이용한 가독성 장치 없음",
+  "deck_transferable": [],
+  "web_only_skip": [],
+  "rating_balance_clean_legible": 1,
+  "_site": "2xa"
+}

@@ -1,0 +1,21 @@
+{
+  "is_error_page": false,
+  "one_line": "Portfolio page for a designer showcasing enterprise product experience design with client logos and service cards",
+  "palette": [
+    "#000000",
+    "#5a7a5a",
+    "#ffffff",
+    "#e8f0e8"
+  ],
+  "typography": "Clean sans-serif, large title (2-3x body), subtitle smaller, service card titles bold",
+  "layout_grid": "Two-column top section (portrait + text), centered logo row, three-column service card grid with equal spacing",
+  "color_shape_legibility": "Green accent for key terms, light green service card backgrounds with icons for section differentiation",
+  "deck_transferable": [
+    "1. Two-column layout with portrait and headline text on the same slide. 2. Centered row of client logos below the headline. 3. Three-column grid of service cards with icons and descriptions. 4. Use of a single accent color (green) for key terms to emphasize hierarchy"
+  ],
+  "web_only_skip": [
+    "Scroll interaction, hover effects on logos/cards, 3D graphics, animated transitions"
+  ],
+  "rating_balance_clean_legible": 9,
+  "_site": "adamhickey"
+}

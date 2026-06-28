@@ -1,0 +1,26 @@
+{
+  "is_error_page": true,
+  "one_line": "Minimal error page with centered warning icon, hierarchical text, and two action buttons",
+  "palette": [
+    "#FFFFFF",
+    "#000000",
+    "#333333"
+  ],
+  "typography": "Sans-serif, clear size hierarchy (icon > main text > subtext > buttons)",
+  "layout_grid": "Centered vertical stack with generous white space around content",
+  "color_shape_legibility": "Warning icon (triangle with exclamation) as a universal error symbol; high contrast black text on white background",
+  "deck_transferable": [
+    "Centered vertical alignment of key elements",
+    "Use of a symbolic icon (e.g., warning or award) to convey meaning",
+    "Hierarchical text structure (main message > subtext > actions)",
+    "Generous white space to reduce clutter and focus attention"
+  ],
+  "web_only_skip": [
+    "Scroll functionality",
+    "Hover effects on buttons/links",
+    "3D visual elements",
+    "Animated transitions"
+  ],
+  "rating_balance_clean_legible": 9,
+  "_site": "trionn"
+}

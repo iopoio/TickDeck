@@ -1,0 +1,27 @@
+{
+  "is_error_page": true,
+  "one_line": "Minimal error page with a warning icon, clear text hierarchy, and two action buttons",
+  "palette": [
+    "#FF0000",
+    "#FFFFFF",
+    "#666666",
+    "#007BFF"
+  ],
+  "typography": "Sans-serif, bold larger title > regular smaller body > gray smallest details",
+  "layout_grid": "Centered vertical stack with generous white space and consistent margins",
+  "color_shape_legibility": "Red triangle as error cue, blue button for primary action, text hierarchy via size/weight",
+  "deck_transferable": [
+    "Centered warning icon with ample surrounding white space",
+    "Clear text hierarchy (title > body > details) using size and weight",
+    "Single accent color (blue) for primary action button",
+    "Minimalist white space to focus on key elements"
+  ],
+  "web_only_skip": [
+    "Scroll",
+    "Hover effects",
+    "3D elements",
+    "Motion animations"
+  ],
+  "rating_balance_clean_legible": 9,
+  "_site": "madrepunk"
+}

@@ -1,0 +1,27 @@
+{
+  "is_error_page": false,
+  "one_line": "Colorful 3D abstract shapes frame a centered headline about precision data, with a top navigation bar and bright CTA buttons",
+  "palette": [
+    "#E8E0F8",
+    "#8A2BE2",
+    "#FFD700",
+    "#FF69B4"
+  ],
+  "typography": "Modern sans-serif (e.g., Inter) with bold, large headline and smaller navigation text",
+  "layout_grid": "Top navigation bar (logo left, menu center, contact right) with centered main content (headline + CTAs) below a large 3D graphic",
+  "color_shape_legibility": "Dark navy headline contrasts with light purple background; bright yellow CTA button stands out against colorful 3D shapes",
+  "deck_transferable": [
+    "Centered headline with dark color on light background",
+    "Large, colorful 3D graphic as a focal point",
+    "Bright yellow CTA button for emphasis",
+    "Top navigation bar with logo, menu, and contact link"
+  ],
+  "web_only_skip": [
+    "Scroll interaction",
+    "Hover effects on navigation/buttons",
+    "3D animation of the graphic",
+    "Dynamic loading"
+  ],
+  "rating_balance_clean_legible": 8,
+  "_site": "urbi"
+}

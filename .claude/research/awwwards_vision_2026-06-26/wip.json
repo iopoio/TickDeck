@@ -1,0 +1,27 @@
+{
+  "is_error_page": false,
+  "one_line": "Minimalist monochrome event page with a bold organic logo and clear typographic hierarchy",
+  "palette": [
+    "#000000",
+    "#FFFFFF",
+    "#F5F5F5"
+  ],
+  "typography": "Custom organic sans-serif logo (fluid, hand-drawn feel) > clean sans-serif event name > bold sans-serif date/location > smaller sans-serif service list (hierarchy via size/weight)",
+  "layout_grid": "Left-aligned logo (occupying ~1/3 width), right-aligned date/location (1/3 width), middle-right service list (1/3 width), bottom-right CTA button—grid-aligned with generous white space for balance",
+  "color_shape_legibility": "High-contrast black-on-white for maximum readability; organic logo shape adds visual personality without cluttering, using negative space to keep focus on key text",
+  "deck_transferable": [
+    "Using a bold, custom organic logo as the slide's primary visual focal point",
+    "Aligning key text elements (event name, date, location) to a left-right grid for balanced composition",
+    "Employing a high-contrast monochrome palette (black on white) to ensure clarity in static slides",
+    "Placing a call-to-action button in a fixed bottom-right position for clear next steps",
+    "Leveraging ample white space to avoid visual overload and guide attention"
+  ],
+  "web_only_skip": [
+    "Scroll functionality (slides are static)",
+    "Hover effects (no interactive elements)",
+    "3D depth or motion graphics (static deck format)",
+    "Dynamic content loading (pre-rendered slides)"
+  ],
+  "rating_balance_clean_legible": 8,
+  "_site": "wip"
+}

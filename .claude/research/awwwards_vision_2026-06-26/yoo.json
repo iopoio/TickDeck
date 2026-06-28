@@ -1,0 +1,27 @@
+{
+  "is_error_page": false,
+  "one_line": "Centered cookie consent modal with blurred background, using clean sans-serif typography and high-contrast buttons",
+  "palette": [
+    "#FFFFFF",
+    "#D32F2F",
+    "#000000",
+    "#1A1A1A"
+  ],
+  "typography": "Clean sans-serif (e.g., Arial/Helvetica) with clear hierarchy: headline (larger, bold), body (smaller, regular), buttons (medium, bold)",
+  "layout_grid": "Centered modal (fixed width, vertical/horizontal alignment) with padding, text left-aligned, buttons centered below",
+  "color_shape_legibility": "White modal stands out against dark blurred background; red highlights key terms ('cookies') for emphasis; high-contrast buttons (red/black on white) ensure clarity",
+  "deck_transferable": [
+    "1) Centered content block with blurred background image (full-screen slide with a centered box and blurred backdrop)",
+    "2) Use of color to highlight key terms (e.g., 'cookies' in red to draw attention)",
+    "3) High-contrast, clearly labeled buttons (red 'DECLINE' and black 'ALLOW' for clear call-to-actions)",
+    "4) Clean sans-serif typography with distinct size hierarchy (headline > body > buttons) for readability"
+  ],
+  "web_only_skip": [
+    "Scroll interactions (decks are static)",
+    "Hover effects (no mouse interaction in decks)",
+    "3D elements (decks are 2D)",
+    "Modal animations (decks don't support dynamic popups)"
+  ],
+  "rating_balance_clean_legible": 8,
+  "_site": "yoo"
+}

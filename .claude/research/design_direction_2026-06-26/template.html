@@ -1,0 +1,72 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  /* ===== 주제 적응 팔레트 토큰 (이 4줄만 바꾸면 전체 색 전환) ===== */
+  :root{--g:#F4EFE5;--d:#15223E;--ac:#B0863A;--gray:#E2DCCE;}
+  /* 고정: 구조·폰트·강조 규율 */
+  :root{--paper:color-mix(in srgb,var(--g) 70%,#fff);--mut:#8A8F9C;}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Pretendard,'Malgun Gothic',sans-serif}
+  body{background:#bdb9b0;padding:28px}
+  .lab{font:600 14px Pretendard;color:#222;margin:20px 0 7px}
+  .s{width:1240px;height:698px;position:relative;overflow:hidden;box-shadow:0 3px 14px rgba(0,0,0,.22);background:var(--paper)}
+  .foot{position:absolute;left:66px;right:66px;bottom:30px;display:flex;justify-content:space-between;font-size:13px;padding-top:11px}
+  .eb{color:var(--ac);font-weight:600;letter-spacing:.06em;font-size:16px}
+
+  .s1{background:var(--d);padding:78px 66px}
+  .s1 .eb{letter-spacing:.18em;font-size:16px}
+  .s1 h1{margin-top:150px;color:#fff;font-weight:800;font-size:66px;line-height:1.18;letter-spacing:-.01em}
+  .s1 h1 em{color:var(--ac);font-style:normal}
+  .s1 .sub{margin-top:28px;color:#c7ccd6;font-size:20px;max-width:54%;line-height:1.6;font-weight:300}
+  .s1 .foot{color:#7f8698;border-top:1px solid rgba(255,255,255,.12)}
+
+  .s2{display:flex}
+  .s2 .L{width:46%;background:var(--d);color:#fff;padding:0 56px;display:flex;flex-direction:column;justify-content:center}
+  .s2 .L .eb{font-weight:600;letter-spacing:.08em;font-size:15px;margin-bottom:20px}
+  .s2 .L h2{font-weight:700;font-size:32px;line-height:1.45}
+  .s2 .R{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 60px}
+  .s2 .big{color:var(--d);font-weight:800;font-size:200px;line-height:.9;letter-spacing:-.02em}
+  .s2 .big span{color:var(--ac);font-size:96px}
+  .s2 .cap{color:var(--d);font-size:22px;margin-top:18px;font-weight:600}
+  .s2 .src{color:var(--mut);font-size:16px;margin-top:6px}
+
+  .s3{display:flex}
+  .s3 .side{width:32%;background:var(--d);color:#fff;padding:64px 48px;position:relative}
+  .s3 .side .n{font-weight:800;font-size:104px;line-height:1;color:var(--ac)}
+  .s3 .side .t{font-weight:700;font-size:26px;line-height:1.45;margin-top:18px}
+  .s3 .side .b{position:absolute;bottom:34px;left:48px;color:rgba(255,255,255,.55);font-size:14px;letter-spacing:.1em}
+  .s3 .main{flex:1;padding:72px 60px}
+  .s3 .main h1{color:var(--d);font-weight:800;font-size:33px;line-height:1.4;margin-bottom:38px}
+  .s3 .li{color:#46506a;font-size:20px;line-height:1.5;margin-bottom:26px;display:flex;gap:14px}
+  .s3 .li .k{color:var(--ac);font-weight:700;flex:none}
+  .s3 .li b{color:var(--d)}
+
+  .s4{padding:54px 64px}
+  .s4 h1{color:var(--d);font-weight:800;font-size:31px;line-height:1.3;margin:10px 0 4px;max-width:92%}
+  .s4 .insight{color:var(--mut);font-size:17px;margin-top:4px}
+  .s4 .insight b{color:var(--d)}
+  .gb{display:flex;align-items:flex-end;gap:48px;height:280px;margin-top:46px;padding-left:4px;border-bottom:2px solid var(--gray)}
+  .b{width:124px;position:relative}
+  .b .f{border-radius:4px 4px 0 0}
+  .b .v{position:absolute;top:-34px;width:100%;text-align:center;font-weight:800;font-size:24px;color:var(--mut)}
+  .b.hot .v{color:var(--d)}
+  .b .x{position:absolute;top:100%;margin-top:10px;width:100%;text-align:center;font-size:15px;color:var(--mut)}
+  .b.hot .x{color:var(--d);font-weight:600}
+  .anno{position:absolute;right:74px;top:152px;width:280px;text-align:right}
+  .anno .h{color:var(--d);font-weight:800;font-size:19px;line-height:1.4}
+  .anno .h em{color:var(--ac);font-style:normal}
+  .s4 .foot{color:var(--mut);border-top:1px solid var(--gray)}
+</style></head><body>
+
+<div class="lab">① 커버</div>
+<div class="s s1"><div class="eb">2026 MARKETING TREND</div><h1>AI는 기본값,<br>차별화는 <em>증명된 인간다움</em></h1><div class="sub">모두가 같은 모델을 쓰는 시장에서, 마지막 해자는 신뢰다.</div><div class="foot"><span>TickDeck</span><span>01</span></div></div>
+
+<div class="lab">② 빅넘버</div>
+<div class="s s2"><div class="L"><div class="eb">III. 신뢰 경제</div><h2>진정성에 동의한 소비자 비율이<br>시장을 다시 그린다</h2></div><div class="R"><div class="big">97<span>%</span></div><div class="cap">"진정성 있는 브랜드를 신뢰한다"</div><div class="src">출처: Ogilvy 글로벌 소비자 조사(2025), n=2,400</div></div></div>
+
+<div class="lab">③ 비대칭 분할</div>
+<div class="s s3"><div class="side"><div class="n">03</div><div class="t">신뢰 경제 기반<br>데이터 전략</div><div class="b">TRUST ECONOMY</div></div><div class="main"><h1>커뮤니티 기반 데이터가 브랜드 생존의 핵심 자산으로 부상함</h1><div class="li"><span class="k">발견</span><span><b>AI 추천 채널 비중 5% → 35%로 급증</b></span></div><div class="li"><span class="k">고객</span><span>직접 검색 감소 · 에이전트 대행 확산</span></div><div class="li"><span class="k">신뢰</span><span>제로파티 데이터 가치 기존 대비 5배 상승</span></div></div></div>
+
+<div class="lab">④ 차트</div>
+<div class="s s4"><div class="eb">III. 신뢰 경제</div><h1>제로파티 데이터가 신뢰도를 지배함</h1><div class="insight">직접 받은 데이터가 외부 구매 데이터의 <b>2.7배</b> 신뢰도</div><div class="gb"><div class="b hot"><div class="v">4.8</div><div class="f" style="height:224px;background:var(--d)"></div><div class="x">제로파티<br>(직접 제공)</div></div><div class="b"><div class="v">4.2</div><div class="f" style="height:196px;background:var(--gray)"></div><div class="x">퍼스트파티</div></div><div class="b"><div class="v">3.1</div><div class="f" style="height:145px;background:var(--gray)"></div><div class="x">세컨드파티</div></div><div class="b"><div class="v">1.8</div><div class="f" style="height:84px;background:var(--gray)"></div><div class="x">서드파티<br>(외부 구매)</div></div></div><div class="anno"><div class="h">신뢰도 척도 <em>5점 만점</em></div></div><div class="foot"><span>TickDeck · 2026 마케팅 트렌드</span><span>출처: 산업 어트리뷰션 데이터(2024) · 05</span></div></div>
+
+</body></html>

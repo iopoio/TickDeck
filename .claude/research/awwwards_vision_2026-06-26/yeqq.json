@@ -1,0 +1,27 @@
+{
+  "is_error_page": false,
+  "one_line": "Minimalist web design with bold typography overlaying a central image, using purple pixel accents and centered symmetric layout",
+  "palette": [
+    "#FFFFFF",
+    "#000000",
+    "#800080",
+    "#CCCCCC"
+  ],
+  "typography": "Bold sans-serif for primary text (large size), light sans-serif for secondary (small size); significant size jump between primary and secondary",
+  "layout_grid": "Centered alignment with symmetric margins, central image as focal point, text overlaying image, secondary elements (time, menu) positioned at top/bottom edges",
+  "color_shape_legibility": "High-contrast black/white text hierarchy ensures readability; purple pixel-shaped accents add visual interest without cluttering; bold typography maintains legibility of overlay text on image",
+  "deck_transferable": [
+    "1. Centered symmetric layout with a central image as the focal point",
+    "2. Bold sans-serif typography overlaying the central image",
+    "3. Purple pixel-shaped accent elements for visual interest",
+    "4. High-contrast text hierarchy (primary vs secondary)"
+  ],
+  "web_only_skip": [
+    "Scroll interaction",
+    "Hover effects",
+    "3D elements",
+    "Motion graphics"
+  ],
+  "rating_balance_clean_legible": 9,
+  "_site": "yeqq"
+}

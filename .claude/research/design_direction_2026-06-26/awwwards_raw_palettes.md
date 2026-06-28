@@ -1,0 +1,15 @@
+# awwwards 수상작 원본 팔레트 (GLM-4.6v 추출·2026-06-26)
+
+- acor (9/10): #000000 #FFFFFF #808080
+- adamhickey (9/10): #000000 #5a7a5a #ffffff #e8f0e8
+- calarts (8/10): #000000 #FFFFFF #FFEB3B #00E5C8 #FF69B4
+- ciao (8/10): #000000 #404040 #808080
+- himachal (9/10): #FFFFFF #F0F0F0 #000000 #D0D0D0
+- kei (9/10): #000000 #FFFFFF #E6F0F5
+- obys (8/10): #000000 #FFFFFF
+- storezar (8/10): #2D1B69 #FFFFFF #CCCCCC #F0F0F0
+- terry (8/10): #FF0000 #FFCC00 #000000 #FFFFFF #F5DEB3
+- urbi (8/10): #E8E0F8 #8A2BE2 #FFD700 #FF69B4
+- wip (8/10): #000000 #FFFFFF #F5F5F5
+- yeqq (9/10): #FFFFFF #000000 #800080 #CCCCCC
+- yoo (8/10): #FFFFFF #D32F2F #000000 #1A1A1A

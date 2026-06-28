@@ -1,0 +1,27 @@
+{
+  "is_error_page": true,
+  "one_line": "Minimal error page with centered text, high-contrast dark background, and two action buttons",
+  "palette": [
+    "#0a0a0a",
+    "#ffffff",
+    "#888888",
+    "#1a1a1a"
+  ],
+  "typography": "Modern sans-serif, bold large main text with lighter smaller subtext, clear hierarchy",
+  "layout_grid": "Centered layout with ample negative space, vertical/horizontal centering of all elements",
+  "color_shape_legibility": "High contrast (dark background + white text) for readability, minimal elements to avoid visual noise",
+  "deck_transferable": [
+    "Use centered alignment for key content to draw focus",
+    "Apply generous negative space around elements to reduce clutter",
+    "Adopt high-contrast color scheme (dark + light) for legibility",
+    "Limit element count to keep slide focused"
+  ],
+  "web_only_skip": [
+    "Scroll interactions",
+    "Hover effects",
+    "3D animations",
+    "Dynamic loading states"
+  ],
+  "rating_balance_clean_legible": 9,
+  "_site": "blackbook"
+}

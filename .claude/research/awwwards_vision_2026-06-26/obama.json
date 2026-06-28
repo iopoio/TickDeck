@@ -1,0 +1,24 @@
+{
+  "is_error_page": true,
+  "one_line": "Minimalist 403 error page with clear typography hierarchy and high contrast for readability",
+  "palette": [
+    "#FFFFFF",
+    "#000000",
+    "#E0E0E0"
+  ],
+  "typography": "Sans-serif, large bold title (403 ERROR) → medium bold subheading → small regular body text, significant size/weight jumps for hierarchy",
+  "layout_grid": "Left-aligned single column with generous top/bottom margins, minimal padding, consistent spacing between text blocks",
+  "color_shape_legibility": "High contrast (black on white) for maximum readability; thin light gray separator lines to group content without distraction; typography hierarchy (size/weight) guides visual flow",
+  "deck_transferable": [
+    "Use ample white space around text to reduce clutter",
+    "Implement clear typography hierarchy (bold large titles, smaller body) for quick comprehension",
+    "Maintain high contrast (dark text on light background) for legibility in presentations",
+    "Left-align text with consistent margins for a clean, organized look"
+  ],
+  "web_only_skip": [
+    "Technical error details (CloudFront, request ID)",
+    "Web-specific error messaging"
+  ],
+  "rating_balance_clean_legible": 9,
+  "_site": "obama"
+}

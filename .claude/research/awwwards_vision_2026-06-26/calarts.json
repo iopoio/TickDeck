@@ -1,0 +1,28 @@
+{
+  "is_error_page": false,
+  "one_line": "Bold, high-contrast graphic design page with layered text and bright accent colors on a black background",
+  "palette": [
+    "#000000",
+    "#FFFFFF",
+    "#FFEB3B",
+    "#00E5C8",
+    "#FF69B4"
+  ],
+  "typography": "Geometric sans-serif (bold, large main title with significant size jump; smaller sans-serif for subtext)",
+  "layout_grid": "Centered main content; top horizontal navigation with equal-width tabs; bottom three aligned columns (left/center/right) with yellow underlines",
+  "color_shape_legibility": "High contrast (black + bright colors) ensures text readability; layered semi-transparent teal/pink text adds depth without obscuring main white text; yellow underlines distinguish sections",
+  "deck_transferable": [
+    "Using a bold, centered sans-serif title with layered accent colors (teal/pink) for visual interest",
+    "High-contrast color scheme (black background + bright accents) to make text stand out",
+    "Horizontal navigation bar with equal-width tabs (like the top menu)",
+    "Bottom section with three aligned columns (socials, past years, credits) using yellow underlines for emphasis"
+  ],
+  "web_only_skip": [
+    "Scroll functionality",
+    "Hover effects on links/buttons",
+    "3D elements",
+    "Motion/animation"
+  ],
+  "rating_balance_clean_legible": 8,
+  "_site": "calarts"
+}

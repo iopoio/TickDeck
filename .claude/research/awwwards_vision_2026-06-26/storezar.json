@@ -1,0 +1,27 @@
+{
+  "is_error_page": false,
+  "one_line": "Editor-focused platform with bold typography and dark, moody hero imagery",
+  "palette": [
+    "#2D1B69",
+    "#FFFFFF",
+    "#CCCCCC",
+    "#F0F0F0"
+  ],
+  "typography": "Modern sans-serif, bold headline with large size jump (3-4x secondary text), clean secondary text",
+  "layout_grid": "Fixed header with left-aligned logo, center-aligned menu, right-aligned login; hero section with left-aligned headline, right-aligned CTA buttons, balanced negative space around text",
+  "color_shape_legibility": "High contrast between dark background and white text; white buttons with dark borders for CTA visibility; bold headline stands out against moody hero imagery",
+  "deck_transferable": [
+    "Bold, large-size headline with 3-4x size jump over secondary text",
+    "High-contrast text (white on dark) for readability",
+    "Two side-by-side CTA buttons with white fill and dark borders",
+    "Fixed header layout with logo, menu, and login aligned left/center/right"
+  ],
+  "web_only_skip": [
+    "Scroll functionality",
+    "Hover effects on menu/buttons",
+    "3D/parallax hero imagery",
+    "Dynamic loading animations"
+  ],
+  "rating_balance_clean_legible": 8,
+  "_site": "storezar"
+}

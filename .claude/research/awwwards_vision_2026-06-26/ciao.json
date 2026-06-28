@@ -1,0 +1,26 @@
+{
+  "is_error_page": false,
+  "one_line": "Minimalist vertical logo with high contrast on black background, centered for focus",
+  "palette": [
+    "#000000",
+    "#404040",
+    "#808080"
+  ],
+  "typography": "Custom bold sans-serif (logo) + smaller sans-serif uppercase (subtext)",
+  "layout_grid": "Centered vertical/horizontal alignment, large negative space",
+  "color_shape_legibility": "High contrast (black vs gray) makes logo stand out; vertical orientation adds visual interest",
+  "deck_transferable": [
+    "Centered alignment of primary elements (logo + text) to create focus",
+    "Use of high contrast (dark background with light text) for immediate visibility",
+    "Minimalist negative space to reduce clutter and emphasize key content",
+    "Custom typography for brand identity paired with simple sans-serif for subtext hierarchy"
+  ],
+  "web_only_skip": [
+    "Loading percentage indicator",
+    "Scroll functionality",
+    "Hover/interactive effects",
+    "3D/motion graphics"
+  ],
+  "rating_balance_clean_legible": 8,
+  "_site": "ciao"
+}

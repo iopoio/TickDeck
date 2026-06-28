@@ -1,0 +1,278 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  :root{--g:#EEF1F3;--d:#1B2630;--ac:#4A6B7C;--gray:#CDD5D9;--lose:#E4E8EA;--mut:#7C8794;}
+  @page{size:1240px 698px;margin:0}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Pretendard,'Malgun Gothic',sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#bdb9b0}
+  .s{width:1240px;height:698px;position:relative;overflow:hidden;background:var(--g);padding:44px 58px;page-break-after:always}
+  .s:last-child{page-break-after:auto}
+  .nav{color:var(--mut);font-size:14px;font-weight:600;letter-spacing:.02em}
+  h1{color:var(--d);font-weight:800;font-size:41px;line-height:1.18;margin:9px 0 4px;letter-spacing:-.01em}
+  h1 mark{background:none;color:var(--ac)}
+  .lead{color:var(--mut);font-size:15.5px;line-height:1.45}
+  .foot{position:absolute;left:58px;right:58px;bottom:24px;display:flex;justify-content:space-between;font-size:13px;color:var(--mut);border-top:1px solid var(--gray);padding-top:9px}
+  .body{position:absolute;left:58px;right:58px;top:160px;bottom:54px;display:flex;flex-direction:column;justify-content:center}
+  .dk{background:var(--d)}.dk h1{color:#fff}.dk .lead{color:#c3d0cd}.dk .nav{color:#A7C2CE}.dk .foot{color:rgba(255,255,255,.45);border-color:rgba(255,255,255,.14)}.dk mark{color:#A7C2CE}
+
+  /* 커버/결론 */
+  .cv .eb{color:#A7C2CE;font-weight:700;letter-spacing:.16em;font-size:15px}
+  .cv .big{margin-top:130px;color:#fff;font-weight:800;font-size:58px;line-height:1.16}
+  .cv .big mark{background:linear-gradient(transparent 60%,rgba(74,107,124,.5) 0)}
+  .cv .sub{margin-top:22px;color:#c3d0cd;font-size:20px;font-weight:300}
+
+  /* 어젠다 */
+  .ag .r{display:flex;align-items:baseline;gap:20px;padding:14px 0;border-bottom:1px solid var(--gray)}
+  .ag .n{color:var(--ac);font-weight:800;font-size:26px;width:46px;flex:none}
+  .ag .k{color:var(--d);font-weight:700;font-size:21px;width:150px;flex:none}
+  .ag .l{color:var(--mut);font-size:18px}
+
+  /* KPI hero + 카드 */
+  .hero{display:flex;align-items:center;gap:44px}
+  .hero .n{color:var(--ac);font-weight:800;font-size:150px;line-height:.86;flex:none;letter-spacing:-.02em}
+  .hero .n small{font-size:60px}
+  .hero .nt{color:var(--d);font-size:22px;font-weight:700;border-left:4px solid var(--ac);padding-left:20px;line-height:1.4}
+  .grid4{display:flex;gap:14px;margin-top:34px}
+  .grid4 .c{flex:1;background:#fff;border-top:3px solid var(--ac);border-radius:0 0 8px 8px;padding:24px 20px}
+  .grid4 .c .v{color:var(--d);font-weight:800;font-size:34px}
+  .grid4 .c .t{color:var(--mut);font-size:17px;margin-top:8px;line-height:1.4}
+
+  /* 2열 split (함정·craft) */
+  .two{display:flex;gap:16px;flex:1}
+  .two .c{flex:1;background:#fff;border-radius:10px;padding:26px 26px;display:flex;flex-direction:column;justify-content:center}
+  .two .c.dkc{background:var(--d);color:#fff}
+  .two .c .h{font-weight:800;font-size:21px;color:var(--d);margin-bottom:12px}
+  .two .c.dkc .h{color:#fff}
+  .two .c .li{color:#55616a;font-size:18.5px;line-height:1.7}
+  .two .c.dkc .li{color:#cfe0dc}
+  .two .c .li b{color:var(--ac)}
+
+  /* 분기(안5) */
+  .fork2{display:flex;gap:0;flex:1}
+  .seed{width:124px;flex:none;background:var(--d);color:#fff;border-radius:12px 0 0 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:700;font-size:16px;line-height:1.4;padding:0 12px}
+  .seed .s2{color:#A7C2CE;font-size:12.5px;margin-top:8px;font-weight:600}
+  .branches{flex:1;display:flex;flex-direction:column;gap:12px;padding-left:30px}
+  .br{flex:1;border-radius:12px;padding:0 28px;display:flex;align-items:center;gap:24px}
+  .br.win{background:var(--d);color:#fff;border:2px solid var(--ac)}.br.lose{background:var(--lose)}
+  .br .big{font-weight:800;font-size:66px;line-height:1;flex:none;width:158px}
+  .br.lose .big{color:#9aa6ac}.br.win .big{color:#fff}
+  .br .t{font-weight:800;font-size:20px}.br.win .t{color:#fff}.br.lose .t{color:var(--d)}
+  .br .d{font-size:16px;margin-top:5px;line-height:1.5}.br.win .d{color:#cfe0dc}.br.lose .d{color:#6b757c}
+  .br .d b{color:#A7C2CE}.br.lose .d b{color:var(--ac)}
+  .br .pin{margin-left:auto;text-align:right;flex:none;font-weight:800;font-size:14px}.br.win .pin{color:#A7C2CE}.br.lose .pin{color:#8a949a}
+
+  /* 막대(사다리·차트) */
+  .gb{display:flex;flex-direction:column;gap:18px;flex:1;justify-content:center}
+  .gb .row{display:flex;align-items:center;gap:14px}
+  .gb .nm{width:118px;flex:none;text-align:right;font-size:15px;color:var(--mut)}
+  .gb .row.hot .nm{color:var(--d);font-weight:700}
+  .gb .bar{height:38px;border-radius:0 6px 6px 0;background:var(--gray)}
+  .gb .row.hot .bar{background:var(--ac)}
+  .gb .v{font-weight:800;font-size:22px;color:var(--mut)}.gb .row.hot .v{color:var(--ac)}
+  .side{position:absolute;right:58px;top:57%;transform:translateY(-50%);width:260px;text-align:right}
+  .side .n{color:var(--ac);font-weight:800;font-size:92px;line-height:1;letter-spacing:-.02em}
+  .side .c{color:var(--d);font-size:15px;font-weight:600;margin-top:4px}
+  .side .x{color:var(--mut);font-size:14px;margin-top:14px;line-height:1.5}
+
+  /* 3카드 */
+  .cards3{display:flex;gap:16px;min-height:300px}
+  .cards3 .c{flex:1;background:#fff;border-radius:10px;border-top:3px solid var(--ac);padding:24px 22px;display:flex;flex-direction:column}
+  .cards3 .c .t{color:var(--d);font-weight:800;font-size:19px;margin-bottom:10px}
+  .cards3 .c .b{color:#55616a;font-size:17.5px;line-height:1.6}
+  .cards3 .c .ex{flex:1;display:flex;align-items:center;color:var(--mut);font-size:15px;line-height:1.55;border-top:1px dashed var(--gray);margin-top:14px;padding-top:14px}
+  .cards3 .c .m{color:var(--ac);font-weight:800;font-size:30px;margin-top:12px}
+  .cards3 .c.dkc{background:var(--d);border-color:var(--ac)}
+  .cards3 .c.dkc .t{color:#fff}.cards3 .c.dkc .b{color:#cfe0dc}.cards3 .c.dkc .ex{color:#A7C2CE;border-color:rgba(255,255,255,.22)}
+  .cards3 .ar3{display:flex;align-items:center;color:var(--ac);font-size:26px;font-weight:700;padding:0 4px}
+
+  /* VS 비교표(관계) */
+  .cmp{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0}
+  .cmp .h{display:flex;font-size:14px;font-weight:700;color:var(--mut);padding:0 18px 10px}
+  .cmp .h .lbl{flex:1}.cmp .h .a{width:130px;text-align:center}.cmp .h .b{width:130px;text-align:center;color:var(--ac)}
+  .cmp .r{display:flex;align-items:center;padding:13px 18px;border-radius:8px}
+  .cmp .r:nth-child(even){background:#fff}
+  .cmp .r .lbl{flex:1;color:var(--d);font-size:18px}
+  .cmp .r .a{width:130px;text-align:center;font-weight:700;font-size:23px;color:#9aa6ac}
+  .cmp .r .b{width:130px;text-align:center;font-weight:800;font-size:28px;color:var(--ac)}
+
+  /* 루프 */
+  .loop{display:flex;align-items:center;justify-content:center;gap:0;flex:1}
+  .loop .node{background:#fff;border:1.5px solid var(--gray);border-radius:10px;padding:16px 18px;text-align:center;width:150px}
+  .loop .node.acc{background:var(--d);color:#fff;border-color:var(--ac)}
+  .loop .node .t{font-weight:800;font-size:16px;color:var(--d)}.loop .node.acc .t{color:#fff}
+  .loop .node .sub{font-size:12.5px;color:var(--mut);margin-top:4px}.loop .node.acc .sub{color:#A7C2CE}
+  .loop .ar{color:var(--ac);font-size:22px;padding:0 8px;font-weight:700}
+  /* 플라이휠 플로우 */
+  .flow{display:flex;align-items:stretch;gap:0}
+  .flow .st{flex:1;background:#fff;border:1.5px solid var(--gray);border-radius:10px;padding:22px 16px;display:flex;flex-direction:column;justify-content:center;min-height:170px}
+  .flow .st.acc{background:var(--d);border-color:var(--ac)}
+  .flow .st .num{color:var(--ac);font-weight:800;font-size:14px}
+  .flow .st .nt{color:var(--d);font-weight:800;font-size:19px;margin:7px 0}.flow .st.acc .nt{color:#fff}.flow .st.acc .num{color:#A7C2CE}
+  .flow .st .dt{color:var(--mut);font-size:15.5px;line-height:1.5}.flow .st.acc .dt{color:#cfe0dc}
+  .flow .ar{display:flex;align-items:center;color:var(--ac);font-size:22px;font-weight:700;padding:0 10px}
+  .retn{margin-top:16px;background:#E7EFEC;border-left:4px solid var(--ac);border-radius:8px;padding:16px 24px;color:var(--d);font-size:16px;font-weight:600}.retn b{color:var(--ac)}
+  .contrast{display:flex;gap:14px;margin-top:14px}
+  .contrast .h{flex:1;border-radius:8px;padding:16px 22px;font-size:15px;line-height:1.5}
+  .contrast .lose{background:var(--lose);color:#6b757c}.contrast .win{background:var(--d);color:#cfe0dc}
+  .contrast .h b{font-weight:800}.contrast .win b{color:#A7C2CE}.contrast .lose b{color:#55616a}
+
+  /* 실행 3카드 + 결론 액션 */
+  .act{display:flex;gap:18px;margin-top:24px}
+  .act .a{flex:1;border-left:2px solid var(--ac);padding-left:15px;font-size:15px;line-height:1.55}
+  .dk .act .a{color:#c3d0cd}.dk .act .a b{color:#fff;display:block;margin-bottom:4px}
+</style></head><body>
+
+<!-- 1 커버 -->
+<div class="s dk cv"><div class="eb">2026 MARKETING TREND</div><div class="big">효율은 기본값,<br>차이는 <mark>재투자</mark>에서</div><div class="sub">AI가 만든 여유를 인간 자산에 되돌리는 자가 2026을 가져간다.</div><div class="foot"><span>TickDeck</span><span>01</span></div></div>
+
+<!-- 2 어젠다 -->
+<div class="s"><div class="nav">AGENDA</div><h1>모두가 AI로 효율을 얻는다 — 진짜 질문은 "그 효율로 <mark>무엇을 하나</mark>"</h1>
+<div class="body ag" style="justify-content:flex-start;top:140px">
+<div class="r"><div class="n">01</div><div class="k">변화</div><div class="l">AI가 마케팅 효율을 평준화 — 효율은 더 이상 차별점이 아님</div></div>
+<div class="r"><div class="n">02</div><div class="k">함정</div><div class="l">절감에만 쓰면 더 싼 commodity 경쟁뿐</div></div>
+<div class="r"><div class="n">03</div><div class="k">분기</div><div class="l">절감이냐 재투자냐 — 숫자가 가른다</div></div>
+<div class="r"><div class="n">04</div><div class="k">어디에</div><div class="l">인간 자산에 재투자 — 발견 · 관계 · craft</div></div>
+<div class="r"><div class="n">05</div><div class="k">실행</div><div class="l">효율 지표를 재투자 원장으로</div></div>
+</div><div class="foot"><span>TickDeck · 2026 마케팅 트렌드</span><span>02</span></div></div>
+
+<!-- 3 변화 -->
+<div class="s"><div class="nav">01 변화</div><h1>AI는 마케팅 효율을 <mark>평준화</mark>했다 — 효율은 더 이상 차별점이 아님</h1>
+<div class="body">
+<div class="hero"><div class="n">50<small>%</small></div><div class="nt">gen AI = 마케터 '증액 우선 투자' <b>1순위</b><br><span style="color:var(--mut);font-weight:400;font-size:15px">2027년까지 마케팅의 90%가 AI 기반</span></div></div>
+<div class="grid4">
+<div class="c"><div class="v">20~50%↓</div><div class="t">제작·미디어 비용</div></div>
+<div class="c"><div class="v">3~10배</div><div class="t">콘텐츠 제작 속도</div></div>
+<div class="c"><div class="v">88%</div><div class="t">이미 AI 에이전트 구축 중</div></div>
+<div class="c"><div class="v">84%</div><div class="t">마케터 AI 활용 (→100% 수렴)</div></div>
+</div></div>
+<div class="foot"><span>출처: McKinsey SoME · PwC · KPMG · GWI (2026)</span><span>03</span></div></div>
+
+<!-- 4 함정 -->
+<div class="s"><div class="nav">02 함정</div><h1>효율을 '절감'에만 쓰면 — 더 싸고 더 많은 <mark>commodity 경쟁</mark>뿐</h1>
+<div class="body"><div class="two">
+<div class="c"><div class="h">효율 = 동전 줍기</div><div class="li">비용 절감에만 쓰면 남보다 조금 싸고 많은 <b>평준화 콘텐츠</b>뿐 — 바닥으로의 경주.<br><br>누구나 같은 AI를 쓰니 '얼마나 싸게'의 가격 경쟁만 남고 차별화는 0이 됨.<br><span style="color:var(--ac);font-weight:600">→ 효율 = 동전 줍기 / 효과 = 금맥 찾기 (PwC)</span></div></div>
+<div class="c dkc"><div class="h" style="color:#A7C2CE">평준화의 그늘</div><div class="li"><b>65%</b> 진짜·가짜 콘텐츠 구분 불가 · <b>98%</b> AI 음악 구별 못 함 · 2025 올해의 단어 = 'slop'<br><span style="color:#A7C2CE">→ 효율 경쟁이 콘텐츠를 흔하게 만들수록, 진짜가 비싸진다</span></div></div>
+</div></div>
+<div class="foot"><span>출처: PwC · WPP Media · Ogilvy/Deezer (2026)</span><span>04</span></div></div>
+
+<!-- 5 분기 (안5) -->
+<div class="s"><div class="nav">03 분기</div><h1>같은 AI, 정반대 결과 — <mark>절감이냐 재투자냐</mark>가 가른다</h1>
+<div class="body"><div class="fork2">
+<div class="seed">같은<br>AI 효율<div class="s2">제작비 20~50%↓<br>속도 3~10배</div></div>
+<div class="branches">
+<div class="br win"><div class="big">2.6x</div><div><div class="t">↗ 재투자 (matter more)</div><div class="d">인간 자산에 재투자 → 추가 이익 <b>+183%</b> · 차별화·성장</div></div><div class="pin">효율gain<br>선도 22%</div></div>
+<div class="br lose"><div class="big">2.0x</div><div><div class="t">↘ 절감 (cost less)</div><div class="d">비용 절감만 → 더 싼 가격 경쟁(commodity)</div></div><div class="pin">효율gain<br>후발 1%</div></div>
+</div></div></div>
+<div class="foot"><span>출처: PwC — Marketing in the AI Era · McKinsey SoME 2026 · mROI 기준</span><span>05</span></div></div>
+
+<!-- 6 증거 -->
+<div class="s"><div class="nav">04 어디에 — 증거</div><h1>재투자한 기업이 시장을 <mark>이긴다</mark> — 마케팅이 곧 주가다</h1>
+<div class="body"><div class="gb" style="max-width:760px">
+<div class="row"><div class="nm">3대 역량 낙후</div><div class="bar" style="width:200px"></div><div class="v">9.0%</div></div>
+<div class="row"><div class="nm">실행 선도</div><div class="bar" style="width:213px"></div><div class="v">9.6%</div></div>
+<div class="row"><div class="nm">+브랜드 선도</div><div class="bar" style="width:284px"></div><div class="v">12.8%</div></div>
+<div class="row hot"><div class="nm">+수익승수 선도</div><div class="bar" style="width:358px"></div><div class="v">16.1%</div></div>
+</div>
+<div class="side"><div class="n">+79%</div><div class="c">선도기업 TSR 우위</div><div class="x">ROI는 투자액 아닌 패턴 — 고성과자 4.5x · 선도 ETF 5년 23.3% vs S&P 14.5%</div></div></div>
+<div class="foot"><span>출처: PwC (연환산 TSR 2019~2024) · KPMG Global Tech 2026</span><span>06</span></div></div>
+
+<!-- 7 어디에 인간자산 -->
+<div class="s dk"><div class="nav">04 어디에</div><h1>효율로 번 것을 <mark>'인간 자산'</mark>에 재투자 — AI가 못 사는 것</h1>
+<div class="body">
+<div style="font-size:25px;font-weight:700;color:#fff;border-left:4px solid var(--ac);padding-left:20px;margin-bottom:10px">"Win the humans, and the algorithm will follow." <span style="color:#9fb0bd;font-size:15px;font-weight:400">— Ogilvy Social 2026</span></div>
+<div class="lead" style="margin-bottom:18px">62% "인간 창의팀은 대체 불가" · 97% authentic이 신뢰 핵심 — 효율을 세 곳에 다시 심는다</div>
+<div class="cards3">
+<div class="c"><div class="t">01 발견</div><div class="b">사람을 만나는 새 입구(스크롤·AI 답변)에</div><div class="ex">검색이 더 이상 첫 입구가 아님 — 피드·AI 답변으로 이동</div><div class="m">→ GEO</div></div>
+<div class="c"><div class="t">02 관계</div><div class="b">reach가 아니라 공명·팬덤·커뮤니티에</div><div class="ex">도달(reach)이 아니라 공명이 고객 생애 가치(LTV)를 만듦</div><div class="m">→ resonance</div></div>
+<div class="c"><div class="t">03 craft</div><div class="b">위조 불가한 진짜다움·인간 craft에</div><div class="ex">위조 불가한 인간의 손길이 거꾸로 희소해짐</div><div class="m">→ proof</div></div>
+</div></div>
+<div class="foot"><span>출처: McKinsey SoME · Ogilvy · AMA (2026)</span><span>07</span></div></div>
+
+<!-- 8 발견 -->
+<div class="s"><div class="nav">04 재투자 01 발견</div><h1>발견의 입구에 재투자 — 검색에서 <mark>스크롤·AI 답변</mark>으로</h1>
+<div class="body"><div class="gb" style="max-width:730px">
+<div class="row hot"><div class="nm">소셜미디어</div><div class="bar" style="width:430px"></div><div class="v">7.1h</div></div>
+<div class="row hot"><div class="nm">숏폼 영상</div><div class="bar" style="width:400px"></div><div class="v">6.6h</div></div>
+<div class="row"><div class="nm">스트리밍</div><div class="bar" style="width:303px"></div><div class="v">5.0h</div></div>
+<div class="row"><div class="nm">방송 TV</div><div class="bar" style="width:297px"></div><div class="v">4.9h</div></div>
+<div class="row"><div class="nm">온라인 기사</div><div class="bar" style="width:182px"></div><div class="v">3.0h</div></div>
+</div>
+<div class="side"><div class="n" style="font-size:54px">$247B</div><div class="c">소셜이 유료검색 추월(2024)</div><div class="x">zero-click 70% · organic 55%+ 하락 → SEO에서 GEO·earned로 재설계</div></div></div>
+<div class="foot"><span>출처: GWI Connecting the Dots 2026 (주간 소비, 글로벌 평균) · AMA</span><span>08</span></div></div>
+
+<!-- 9 관계 -->
+<div class="s"><div class="nav">04 재투자 02 관계</div><h1>reach가 아니라 <mark>resonance</mark>에 — 팬은 측정 가능한 자산</h1>
+<div class="body"><div class="cmp">
+<div class="h"><div class="lbl"></div><div class="a">팬 아님</div><div class="b">팬</div></div>
+<div class="r"><div class="lbl">유료 스트리밍(SVOD) 가입</div><div class="a">77%</div><div class="b">92%</div></div>
+<div class="r"><div class="lbl">게이머 비율</div><div class="a">52%</div><div class="b">75%</div></div>
+<div class="r"><div class="lbl">유료 음악 스트리밍</div><div class="a">40%</div><div class="b">67%</div></div>
+<div class="r"><div class="lbl">일 미디어 소비 (팬 아님 대비)</div><div class="a">기준</div><div class="b">+51분</div></div>
+</div></div>
+<div class="foot"><span>출처: Deloitte Digital Media Trends 2026 · 86%가 스스로를 '팬'으로 인식(Ogilvy)</span><span>09</span></div></div>
+
+<!-- 10 craft -->
+<div class="s"><div class="nav">04 재투자 03 craft</div><h1>진짜다움과 <mark>craft</mark>에 재투자 — 위조 시대의 마지막 차별점</h1>
+<div class="body"><div class="cards3">
+<div class="c"><div class="t">진짜다움의 희소성</div><div class="b">98%가 AI 음악과 인간 음악을 구별 못 함 → 인간의 손길·시간이 쌓인 흔적이 거꾸로 희소 자산</div><div class="ex">사례: Hermès 카메라 직접 촬영 · Absolut 비하인드 4배 organic engagement</div></div>
+<div class="c dkc"><div class="t">storytelling → proof design</div><div class="b">"위조 가능한 시대, 신뢰성이 마지막 차별점" — 말하지 말고 '진짜임'을 설계로 증명</div><div class="ex">→ 후기·실측·제작 과정 공개로 '진짜'를 보이게</div></div>
+<div class="c"><div class="t">trust equity</div><div class="b">신뢰를 NPS·인지도처럼 추적하는 KPI로 — 투명·일관·개방이 새 메시지 축</div><div class="ex">→ transparent · consistent · open 3축으로 운영</div></div>
+</div></div>
+<div class="foot"><span>출처: Ogilvy Social(Deezer/Ipsos) · AMA Future Trends 2026</span><span>10</span></div></div>
+
+<!-- 11 종합 루프 -->
+<div class="s"><div class="nav">종합</div><h1>재투자 루프가 <mark>해자</mark>다 — 효율을 인간에 되돌리는 플라이휠</h1>
+<div class="body">
+<div class="flow">
+<div class="st"><div class="num">01</div><div class="nt">AI 효율</div><div class="dt">시간·예산 확보 — 제작비 20~50%↓ · 속도 3~10배</div></div><div class="ar">→</div>
+<div class="st acc"><div class="num">02</div><div class="nt">인간 자산 재투자</div><div class="dt">발견·관계·craft에 다시 심음</div></div><div class="ar">→</div>
+<div class="st"><div class="num">03</div><div class="nt">차별화·공명</div><div class="dt">살 수 없는 자산 — 62% '인간팀 대체불가'</div></div><div class="ar">→</div>
+<div class="st"><div class="num">04</div><div class="nt">성장·수익승수</div><div class="dt">TSR +79% · 재원 확보</div></div>
+</div>
+<div class="retn">↺ &nbsp;성장으로 번 재원을 다시 인간 자산에 — <b>바퀴가 돌수록 격차가 복리로 벌어진다</b></div>
+<div class="contrast">
+<div class="h lose">절감만 하면 → 바퀴가 멈추고 <b>가격 경쟁(commodity)</b>으로 추락</div>
+<div class="h win">재투자하면 → 바퀴가 가속, <b>소수만 격차를 벌린다</b></div>
+</div>
+</div>
+<div class="foot"><span>플라이휠 = PwC 마케팅 가치창출 5단계 응용</span><span>11</span></div></div>
+
+<!-- 12 실행 -->
+<div class="s"><div class="nav">05 실행</div><h1>내일부터 — 효율 지표를 <mark>'재투자 원장'</mark>으로 바꿔라</h1>
+<div class="body"><div class="cards3">
+<div class="c"><div class="t">01 지표를 재정의</div><div class="b">효율 지표만 보지 말고 비즈니스와 연결된 '골든 지표' 7개 이내로 (지표 피라미드)</div><div class="ex">예: ROI·인지도 단일지표 → 매출·수익승수 연계 체계</div></div>
+<div class="ar3">&#8594;</div>
+<div class="c"><div class="t">02 재투자 원장</div><div class="b">절감액의 일정 %를 발견·관계·craft 중 한 곳에 강제 배정 — 절감이 commodity로 새지 않게</div><div class="ex">예: 절감액의 30%를 '인간 자산 예산'으로 락인</div></div>
+<div class="ar3">&#8594;</div>
+<div class="c"><div class="t">03 측정·운영화</div><div class="b">결정론적→확률론적 측정(미디어믹스모델·리프트)으로 실질 증분 기여도(incrementality) 추정</div><div class="ex">예: 실험→통합→에이전틱→측정·재투자 4단계로 상승</div></div>
+</div></div>
+<div class="foot"><span>출처: PwC 지표 피라미드 · McKinsey SoME 2026</span><span>12</span></div></div>
+
+<!-- 13 결론 -->
+<div class="s dk"><div class="nav">결론</div><h1>효율은 기본값 — 2026은 그것을 <mark>인간에 재투자한 자</mark>의 것</h1>
+<div class="body" style="justify-content:flex-start;top:150px">
+<div class="act">
+<div class="a"><b>01 단기</b>절감액을 모으는 '재투자 원장'부터 만든다</div>
+<div class="a"><b>02 중기</b>발견·관계·craft 중 한 곳에 집중 재투자</div>
+<div class="a"><b>03 장기</b>골든 지표로 재투자 ROI를 추적·복리화</div>
+</div>
+<div style="margin-top:60px;color:#fff;font-weight:800;font-size:33px;line-height:1.4">절감은 누구나 한다. <span style="color:#A7C2CE">재투자는 소수만 한다</span><br>— 그 소수가 2026의 격차다.</div></div>
+<div class="foot"><span>수치는 기관별로 갈리는 '방향 신호' — 단일 합의 아님, 방향은 전 출처 일관</span><span>13</span></div></div>
+
+<!-- 14 참고 -->
+<div class="s"><div class="nav">SOURCES</div><h1>참고자료</h1>
+<div class="body" style="justify-content:flex-start;top:138px"><div style="columns:2;column-gap:50px;font-size:14px;color:#55616a;line-height:2">
+<div>1 · McKinsey — State of Marketing Europe 2026</div>
+<div>2 · PwC — Marketing in the AI Era</div>
+<div>3 · KPMG — Global Tech Report 2026</div>
+<div>4 · GWI — Connecting the Dots 2026</div>
+<div>5 · AMA — 2026 Future Trends in Marketing</div>
+<div>6 · Ogilvy Social — Social Trends 2026</div>
+<div>7 · Deloitte — 2026 Digital Media Trends</div>
+<div>8 · WPP Media — UK Trends 2026</div>
+<div>9 · WGSN — Future Consumer 2026</div>
+<div>10 · Havas Red — Brand Experience 2026</div>
+</div></div>
+<div class="foot"><span>TickDeck · 2026 마케팅 트렌드</span><span>14</span></div></div>
+
+</body></html>

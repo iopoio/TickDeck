@@ -1,0 +1,459 @@
+[
+  {
+    "is_error_page": true,
+    "one_line": "완전히 검은 에러 페이지로, 디자인 요소 없음",
+    "palette": [
+      "#000000"
+    ],
+    "typography": "텍스트 없음",
+    "layout_grid": "그리드/정렬 시스템 없음",
+    "color_shape_legibility": "색/도형을 이용한 가독성 장치 없음",
+    "deck_transferable": [],
+    "web_only_skip": [],
+    "rating_balance_clean_legible": 1,
+    "_site": "2xa"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "미니멀리스트 블랙 배경에 중앙 정렬된 모노그램 로고와 텍스트 구성",
+    "palette": [
+      "#000000",
+      "#FFFFFF",
+      "#808080"
+    ],
+    "typography": "세련된 산세리프(로고/텍스트), 로고는 시각적 중심, 텍스트는 작은 크기 점프로 위계 형성",
+    "layout_grid": "수직/수평 중앙 정렬, 극심한 네거티브 스페이스(배경 대부분 비움), 요소 간 간격 균일",
+    "color_shape_legibility": "블랙-화이트 고대비로 로고/텍스트 돋보임, 모노그램은 단순 선으로 명확한 형태 전달",
+    "deck_transferable": [
+      "중앙 정렬 레이아웃 유지",
+      "고대비 컬러 스킴 적용",
+      "모노그램 로고를 슬라이드 중심 요소로 배치",
+      "널널한 네거티브 스페이스 사용"
+    ],
+    "web_only_skip": [
+      "스크롤 인터랙션",
+      "호버 효과",
+      "동적 모션"
+    ],
+    "rating_balance_clean_legible": 9,
+    "_site": "acor"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Portfolio page for a designer showcasing enterprise product experience design with client logos and service cards",
+    "palette": [
+      "#000000",
+      "#5a7a5a",
+      "#ffffff",
+      "#e8f0e8"
+    ],
+    "typography": "Clean sans-serif, large title (2-3x body), subtitle smaller, service card titles bold",
+    "layout_grid": "Two-column top section (portrait + text), centered logo row, three-column service card grid with equal spacing",
+    "color_shape_legibility": "Green accent for key terms, light green service card backgrounds with icons for section differentiation",
+    "deck_transferable": [
+      "1. Two-column layout with portrait and headline text on the same slide. 2. Centered row of client logos below the headline. 3. Three-column grid of service cards with icons and descriptions. 4. Use of a single accent color (green) for key terms to emphasize hierarchy"
+    ],
+    "web_only_skip": [
+      "Scroll interaction, hover effects on logos/cards, 3D graphics, animated transitions"
+    ],
+    "rating_balance_clean_legible": 9,
+    "_site": "adamhickey"
+  },
+  {
+    "is_error_page": true,
+    "one_line": "Minimal error page with centered text, high-contrast dark background, and two action buttons",
+    "palette": [
+      "#0a0a0a",
+      "#ffffff",
+      "#888888",
+      "#1a1a1a"
+    ],
+    "typography": "Modern sans-serif, bold large main text with lighter smaller subtext, clear hierarchy",
+    "layout_grid": "Centered layout with ample negative space, vertical/horizontal centering of all elements",
+    "color_shape_legibility": "High contrast (dark background + white text) for readability, minimal elements to avoid visual noise",
+    "deck_transferable": [
+      "Use centered alignment for key content to draw focus",
+      "Apply generous negative space around elements to reduce clutter",
+      "Adopt high-contrast color scheme (dark + light) for legibility",
+      "Limit element count to keep slide focused"
+    ],
+    "web_only_skip": [
+      "Scroll interactions",
+      "Hover effects",
+      "3D animations",
+      "Dynamic loading states"
+    ],
+    "rating_balance_clean_legible": 9,
+    "_site": "blackbook"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Bold, high-contrast graphic design page with layered text and bright accent colors on a black background",
+    "palette": [
+      "#000000",
+      "#FFFFFF",
+      "#FFEB3B",
+      "#00E5C8",
+      "#FF69B4"
+    ],
+    "typography": "Geometric sans-serif (bold, large main title with significant size jump; smaller sans-serif for subtext)",
+    "layout_grid": "Centered main content; top horizontal navigation with equal-width tabs; bottom three aligned columns (left/center/right) with yellow underlines",
+    "color_shape_legibility": "High contrast (black + bright colors) ensures text readability; layered semi-transparent teal/pink text adds depth without obscuring main white text; yellow underlines distinguish sections",
+    "deck_transferable": [
+      "Using a bold, centered sans-serif title with layered accent colors (teal/pink) for visual interest",
+      "High-contrast color scheme (black background + bright accents) to make text stand out",
+      "Horizontal navigation bar with equal-width tabs (like the top menu)",
+      "Bottom section with three aligned columns (socials, past years, credits) using yellow underlines for emphasis"
+    ],
+    "web_only_skip": [
+      "Scroll functionality",
+      "Hover effects on links/buttons",
+      "3D elements",
+      "Motion/animation"
+    ],
+    "rating_balance_clean_legible": 8,
+    "_site": "calarts"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Minimalist vertical logo with high contrast on black background, centered for focus",
+    "palette": [
+      "#000000",
+      "#404040",
+      "#808080"
+    ],
+    "typography": "Custom bold sans-serif (logo) + smaller sans-serif uppercase (subtext)",
+    "layout_grid": "Centered vertical/horizontal alignment, large negative space",
+    "color_shape_legibility": "High contrast (black vs gray) makes logo stand out; vertical orientation adds visual interest",
+    "deck_transferable": [
+      "Centered alignment of primary elements (logo + text) to create focus",
+      "Use of high contrast (dark background with light text) for immediate visibility",
+      "Minimalist negative space to reduce clutter and emphasize key content",
+      "Custom typography for brand identity paired with simple sans-serif for subtext hierarchy"
+    ],
+    "web_only_skip": [
+      "Loading percentage indicator",
+      "Scroll functionality",
+      "Hover/interactive effects",
+      "3D/motion graphics"
+    ],
+    "rating_balance_clean_legible": 8,
+    "_site": "ciao"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "미니멀리스트 산라인 일러스트레이션과 중앙 정렬 텍스트 위계를 가진 히마찰프라데시 지역 소개 디자인",
+    "palette": [
+      "#FFFFFF",
+      "#F0F0F0",
+      "#000000",
+      "#D0D0D0"
+    ],
+    "typography": "주요 제목은 볼드 세리프(대형), 서브타이틀은 작은 산세리프/라이트 세리프(수직 위계 명확)",
+    "layout_grid": "수평/수직 중앙 정렬, 요소 간 충분한 여백(슬라이드 너비 20-30% 마진), 산라인 일러스트레이션 좌우 배치로 균형",
+    "color_shape_legibility": "모노크롬 팔레트(흰/회/검)로 시각적 잡음 최소화, 산라인은 가벼운 회색으로 텍스트와 구분, 텍스트는 검은색으로 명확한 가독성 확보",
+    "deck_transferable": [
+      "1) 중앙 정렬된 텍스트 위계(주요 제목-서브타이틀-보조 텍스트) 적용",
+      "2) 단순 라인 일러스트레이션(산/지형)을 배경/액센트로 사용",
+      "3) 슬라이드 전체에 걸친 충분한 음성 공간(여백) 유지",
+      "4) 모노크롬 색상 체계로 일관된 분위기 구현"
+    ],
+    "web_only_skip": [
+      "스크롤 인터랙션",
+      "호버 효과",
+      "3D 요소",
+      "로딩 애니메이션"
+    ],
+    "rating_balance_clean_legible": 9,
+    "_site": "himachal"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "미니멀리스트 디자인 스튜디오 웹사이트로, 대형 타이포그래피와 충분한 여백을 통해 균형 잡힌 레이아웃을 보여줌",
+    "palette": [
+      "#000000",
+      "#FFFFFF",
+      "#E6F0F5"
+    ],
+    "typography": "굵은 산세리프/산세리프 디스플레이 폰트(대형 문자)와 작은 산세리프 본문 폰트(네비게이션)의 위계",
+    "layout_grid": "중앙 정렬된 네비게이션, 좌우 정렬된 대형 타이포그래피, 충분한 여백을 가진 느슨한 그리드",
+    "color_shape_legibility": "흑백 고대비 텍스트; 대형 타이포그래피를 시각적 앵커로 사용; 부드러운 라이트 블루 이미지로 약간의 대비 추가",
+    "deck_transferable": [
+      "대형, 굵은 타이포그래피를 주요 시각 요소로 사용(예: 'K', 'E', 'I' 문자)",
+      "모든 요소 사이에 충분한 여백을 유지하여 가독성 향상",
+      "네비게이션 링크를 중앙 정렬하고 명확한 크기 위계 적용",
+      "연락처 정보를 오른쪽 정렬하여 균형 잡힌 구성"
+    ],
+    "web_only_skip": [
+      "스크롤 상호작용(덱은 정적)",
+      "네비게이션 호버 효과(웹 전용)",
+      "3D 요소(웹에만 있을 수 있음)",
+      "모션/애니메이션(웹 전용)"
+    ],
+    "rating_balance_clean_legible": 9,
+    "_site": "kei"
+  },
+  {
+    "is_error_page": true,
+    "one_line": "Minimal error page with a warning icon, clear text hierarchy, and two action buttons",
+    "palette": [
+      "#FF0000",
+      "#FFFFFF",
+      "#666666",
+      "#007BFF"
+    ],
+    "typography": "Sans-serif, bold larger title > regular smaller body > gray smallest details",
+    "layout_grid": "Centered vertical stack with generous white space and consistent margins",
+    "color_shape_legibility": "Red triangle as error cue, blue button for primary action, text hierarchy via size/weight",
+    "deck_transferable": [
+      "Centered warning icon with ample surrounding white space",
+      "Clear text hierarchy (title > body > details) using size and weight",
+      "Single accent color (blue) for primary action button",
+      "Minimalist white space to focus on key elements"
+    ],
+    "web_only_skip": [
+      "Scroll",
+      "Hover effects",
+      "3D elements",
+      "Motion animations"
+    ],
+    "rating_balance_clean_legible": 9,
+    "_site": "madrepunk"
+  },
+  {
+    "is_error_page": true,
+    "one_line": "Minimalist 403 error page with clear typography hierarchy and high contrast for readability",
+    "palette": [
+      "#FFFFFF",
+      "#000000",
+      "#E0E0E0"
+    ],
+    "typography": "Sans-serif, large bold title (403 ERROR) → medium bold subheading → small regular body text, significant size/weight jumps for hierarchy",
+    "layout_grid": "Left-aligned single column with generous top/bottom margins, minimal padding, consistent spacing between text blocks",
+    "color_shape_legibility": "High contrast (black on white) for maximum readability; thin light gray separator lines to group content without distraction; typography hierarchy (size/weight) guides visual flow",
+    "deck_transferable": [
+      "Use ample white space around text to reduce clutter",
+      "Implement clear typography hierarchy (bold large titles, smaller body) for quick comprehension",
+      "Maintain high contrast (dark text on light background) for legibility in presentations",
+      "Left-align text with consistent margins for a clean, organized look"
+    ],
+    "web_only_skip": [
+      "Technical error details (CloudFront, request ID)",
+      "Web-specific error messaging"
+    ],
+    "rating_balance_clean_legible": 9,
+    "_site": "obama"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Minimalist black background with a thin white horizontal divider and footer text elements",
+    "palette": [
+      "#000000",
+      "#FFFFFF"
+    ],
+    "typography": "Sans-serif, small text size with minimal hierarchy (footer text)",
+    "layout_grid": "Horizontal divider line separating top/bottom, left-aligned text on left, right-aligned number on right",
+    "color_shape_legibility": "High contrast between black background and white line/text for clear separation",
+    "deck_transferable": [
+      "Thin horizontal white divider for section breaks",
+      "Left-aligned footer text (e.g., brand name)",
+      "Right-aligned page number",
+      "Black-and-white high-contrast color scheme"
+    ],
+    "web_only_skip": [
+      "Scroll functionality",
+      "Hover effects",
+      "3D elements",
+      "Motion animations"
+    ],
+    "rating_balance_clean_legible": 8,
+    "_site": "obys"
+  },
+  {
+    "_unparsed": "",
+    "_site": "sentient"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Editor-focused platform with bold typography and dark, moody hero imagery",
+    "palette": [
+      "#2D1B69",
+      "#FFFFFF",
+      "#CCCCCC",
+      "#F0F0F0"
+    ],
+    "typography": "Modern sans-serif, bold headline with large size jump (3-4x secondary text), clean secondary text",
+    "layout_grid": "Fixed header with left-aligned logo, center-aligned menu, right-aligned login; hero section with left-aligned headline, right-aligned CTA buttons, balanced negative space around text",
+    "color_shape_legibility": "High contrast between dark background and white text; white buttons with dark borders for CTA visibility; bold headline stands out against moody hero imagery",
+    "deck_transferable": [
+      "Bold, large-size headline with 3-4x size jump over secondary text",
+      "High-contrast text (white on dark) for readability",
+      "Two side-by-side CTA buttons with white fill and dark borders",
+      "Fixed header layout with logo, menu, and login aligned left/center/right"
+    ],
+    "web_only_skip": [
+      "Scroll functionality",
+      "Hover effects on menu/buttons",
+      "3D/parallax hero imagery",
+      "Dynamic loading animations"
+    ],
+    "rating_balance_clean_legible": 8,
+    "_site": "storezar"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Terry Ho's Yum Yum Sauce website with a split layout of product and food imagery, emphasizing versatility",
+    "palette": [
+      "#FF0000",
+      "#FFCC00",
+      "#000000",
+      "#FFFFFF",
+      "#F5DEB3"
+    ],
+    "typography": "Handwritten serif logo; bold sans-serif main headings (large size jump), sans-serif body with red accents",
+    "layout_grid": "Two-column split layout (product left, food right), centered header/footer, consistent vertical spacing",
+    "color_shape_legibility": "Red background isolates product; yellow header highlights promotion; high-contrast 'SHOP NOW' button; split layout separates product and usage visuals",
+    "deck_transferable": [
+      "1. Two-column split to display product and its application (e.g., sauce bottle vs. food with sauce); 2. Bold, oversized sans-serif heading (e.g., 'Good On Everything') with smaller subheading for hierarchy; 3. Color blocking (vibrant red for product section, neutral for food section) to create visual separation; 4. Prominent call-to-action button (e.g., 'SHOP NOW') with high contrast (white text on black background); 5. Handwritten brand logo as a unique visual identifier"
+    ],
+    "web_only_skip": [
+      "Scroll functionality, hover state interactions, 3D product rendering, animated transitions between sections"
+    ],
+    "rating_balance_clean_legible": 8,
+    "_site": "terry"
+  },
+  {
+    "is_error_page": true,
+    "one_line": "Minimal error page with centered warning icon, hierarchical text, and two action buttons",
+    "palette": [
+      "#FFFFFF",
+      "#000000",
+      "#333333"
+    ],
+    "typography": "Sans-serif, clear size hierarchy (icon > main text > subtext > buttons)",
+    "layout_grid": "Centered vertical stack with generous white space around content",
+    "color_shape_legibility": "Warning icon (triangle with exclamation) as a universal error symbol; high contrast black text on white background",
+    "deck_transferable": [
+      "Centered vertical alignment of key elements",
+      "Use of a symbolic icon (e.g., warning or award) to convey meaning",
+      "Hierarchical text structure (main message > subtext > actions)",
+      "Generous white space to reduce clutter and focus attention"
+    ],
+    "web_only_skip": [
+      "Scroll functionality",
+      "Hover effects on buttons/links",
+      "3D visual elements",
+      "Animated transitions"
+    ],
+    "rating_balance_clean_legible": 9,
+    "_site": "trionn"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Colorful 3D abstract shapes frame a centered headline about precision data, with a top navigation bar and bright CTA buttons",
+    "palette": [
+      "#E8E0F8",
+      "#8A2BE2",
+      "#FFD700",
+      "#FF69B4"
+    ],
+    "typography": "Modern sans-serif (e.g., Inter) with bold, large headline and smaller navigation text",
+    "layout_grid": "Top navigation bar (logo left, menu center, contact right) with centered main content (headline + CTAs) below a large 3D graphic",
+    "color_shape_legibility": "Dark navy headline contrasts with light purple background; bright yellow CTA button stands out against colorful 3D shapes",
+    "deck_transferable": [
+      "Centered headline with dark color on light background",
+      "Large, colorful 3D graphic as a focal point",
+      "Bright yellow CTA button for emphasis",
+      "Top navigation bar with logo, menu, and contact link"
+    ],
+    "web_only_skip": [
+      "Scroll interaction",
+      "Hover effects on navigation/buttons",
+      "3D animation of the graphic",
+      "Dynamic loading"
+    ],
+    "rating_balance_clean_legible": 8,
+    "_site": "urbi"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Minimalist monochrome event page with a bold organic logo and clear typographic hierarchy",
+    "palette": [
+      "#000000",
+      "#FFFFFF",
+      "#F5F5F5"
+    ],
+    "typography": "Custom organic sans-serif logo (fluid, hand-drawn feel) > clean sans-serif event name > bold sans-serif date/location > smaller sans-serif service list (hierarchy via size/weight)",
+    "layout_grid": "Left-aligned logo (occupying ~1/3 width), right-aligned date/location (1/3 width), middle-right service list (1/3 width), bottom-right CTA button—grid-aligned with generous white space for balance",
+    "color_shape_legibility": "High-contrast black-on-white for maximum readability; organic logo shape adds visual personality without cluttering, using negative space to keep focus on key text",
+    "deck_transferable": [
+      "Using a bold, custom organic logo as the slide's primary visual focal point",
+      "Aligning key text elements (event name, date, location) to a left-right grid for balanced composition",
+      "Employing a high-contrast monochrome palette (black on white) to ensure clarity in static slides",
+      "Placing a call-to-action button in a fixed bottom-right position for clear next steps",
+      "Leveraging ample white space to avoid visual overload and guide attention"
+    ],
+    "web_only_skip": [
+      "Scroll functionality (slides are static)",
+      "Hover effects (no interactive elements)",
+      "3D depth or motion graphics (static deck format)",
+      "Dynamic content loading (pre-rendered slides)"
+    ],
+    "rating_balance_clean_legible": 8,
+    "_site": "wip"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Minimalist web design with bold typography overlaying a central image, using purple pixel accents and centered symmetric layout",
+    "palette": [
+      "#FFFFFF",
+      "#000000",
+      "#800080",
+      "#CCCCCC"
+    ],
+    "typography": "Bold sans-serif for primary text (large size), light sans-serif for secondary (small size); significant size jump between primary and secondary",
+    "layout_grid": "Centered alignment with symmetric margins, central image as focal point, text overlaying image, secondary elements (time, menu) positioned at top/bottom edges",
+    "color_shape_legibility": "High-contrast black/white text hierarchy ensures readability; purple pixel-shaped accents add visual interest without cluttering; bold typography maintains legibility of overlay text on image",
+    "deck_transferable": [
+      "1. Centered symmetric layout with a central image as the focal point",
+      "2. Bold sans-serif typography overlaying the central image",
+      "3. Purple pixel-shaped accent elements for visual interest",
+      "4. High-contrast text hierarchy (primary vs secondary)"
+    ],
+    "web_only_skip": [
+      "Scroll interaction",
+      "Hover effects",
+      "3D elements",
+      "Motion graphics"
+    ],
+    "rating_balance_clean_legible": 9,
+    "_site": "yeqq"
+  },
+  {
+    "is_error_page": false,
+    "one_line": "Centered cookie consent modal with blurred background, using clean sans-serif typography and high-contrast buttons",
+    "palette": [
+      "#FFFFFF",
+      "#D32F2F",
+      "#000000",
+      "#1A1A1A"
+    ],
+    "typography": "Clean sans-serif (e.g., Arial/Helvetica) with clear hierarchy: headline (larger, bold), body (smaller, regular), buttons (medium, bold)",
+    "layout_grid": "Centered modal (fixed width, vertical/horizontal alignment) with padding, text left-aligned, buttons centered below",
+    "color_shape_legibility": "White modal stands out against dark blurred background; red highlights key terms ('cookies') for emphasis; high-contrast buttons (red/black on white) ensure clarity",
+    "deck_transferable": [
+      "1) Centered content block with blurred background image (full-screen slide with a centered box and blurred backdrop)",
+      "2) Use of color to highlight key terms (e.g., 'cookies' in red to draw attention)",
+      "3) High-contrast, clearly labeled buttons (red 'DECLINE' and black 'ALLOW' for clear call-to-actions)",
+      "4) Clean sans-serif typography with distinct size hierarchy (headline > body > buttons) for readability"
+    ],
+    "web_only_skip": [
+      "Scroll interactions (decks are static)",
+      "Hover effects (no mouse interaction in decks)",
+      "3D elements (decks are 2D)",
+      "Modal animations (decks don't support dynamic popups)"
+    ],
+    "rating_balance_clean_legible": 8,
+    "_site": "yoo"
+  }
+]

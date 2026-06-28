@@ -1,0 +1,22 @@
+{
+  "is_error_page": false,
+  "one_line": "Terry Ho's Yum Yum Sauce website with a split layout of product and food imagery, emphasizing versatility",
+  "palette": [
+    "#FF0000",
+    "#FFCC00",
+    "#000000",
+    "#FFFFFF",
+    "#F5DEB3"
+  ],
+  "typography": "Handwritten serif logo; bold sans-serif main headings (large size jump), sans-serif body with red accents",
+  "layout_grid": "Two-column split layout (product left, food right), centered header/footer, consistent vertical spacing",
+  "color_shape_legibility": "Red background isolates product; yellow header highlights promotion; high-contrast 'SHOP NOW' button; split layout separates product and usage visuals",
+  "deck_transferable": [
+    "1. Two-column split to display product and its application (e.g., sauce bottle vs. food with sauce); 2. Bold, oversized sans-serif heading (e.g., 'Good On Everything') with smaller subheading for hierarchy; 3. Color blocking (vibrant red for product section, neutral for food section) to create visual separation; 4. Prominent call-to-action button (e.g., 'SHOP NOW') with high contrast (white text on black background); 5. Handwritten brand logo as a unique visual identifier"
+  ],
+  "web_only_skip": [
+    "Scroll functionality, hover state interactions, 3D product rendering, animated transitions between sections"
+  ],
+  "rating_balance_clean_legible": 8,
+  "_site": "terry"
+}

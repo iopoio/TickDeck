@@ -1,0 +1,25 @@
+{
+  "is_error_page": false,
+  "one_line": "Minimalist black background with a thin white horizontal divider and footer text elements",
+  "palette": [
+    "#000000",
+    "#FFFFFF"
+  ],
+  "typography": "Sans-serif, small text size with minimal hierarchy (footer text)",
+  "layout_grid": "Horizontal divider line separating top/bottom, left-aligned text on left, right-aligned number on right",
+  "color_shape_legibility": "High contrast between black background and white line/text for clear separation",
+  "deck_transferable": [
+    "Thin horizontal white divider for section breaks",
+    "Left-aligned footer text (e.g., brand name)",
+    "Right-aligned page number",
+    "Black-and-white high-contrast color scheme"
+  ],
+  "web_only_skip": [
+    "Scroll functionality",
+    "Hover effects",
+    "3D elements",
+    "Motion animations"
+  ],
+  "rating_balance_clean_legible": 8,
+  "_site": "obys"
+}
