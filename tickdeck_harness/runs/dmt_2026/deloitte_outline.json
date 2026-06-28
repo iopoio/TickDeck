@@ -1,46 +1,66 @@
 {
-  "thesis": "긴축 소비심리가 AI 투자 가속과 결합해 마케팅 조직의 가치증명 구조를 ROI 회계 중심으로 재편한다",
-  "title": "지출은 줄고 투자는 늘었다 — AI 시대 마케팅의 증명 압박",
-  "chapters": [
-    {
-      "num": "01",
-      "title": "소비자는 지갑을 닫고 발견 경로는 검색에서 커뮤니티로 옮겨갔다",
-      "frame": "Tension",
-      "ced_indices": [1, 0],
-      "layout_hint": "kpi",
-      "so_what": "마케터에게 — 예산 줄이며 채널 전략을 검색 의존에서 소셜·추천으로 재배치해야 하는 이중 압박의 출발점"
-    },
-    {
-      "num": "02",
-      "title": "AI 투자는 거의 전원이 늘리지만 유의미한 ROI를 내는 곳은 열에 하나뿐이다",
-      "frame": "Diagnosis",
-      "ced_indices": [7, 4],
-      "layout_hint": "statgrid",
-      "so_what": "경영진에게 — 투자 합의(85/91%)와 성과 현실(10%)의 간극이 2~4년 회수 기간 동안 조직을 시험한다"
-    },
-    {
-      "num": "03",
-      "title": "CMO는 수익성 우선순위와 가치증명 사이에서 통제력 없이 끼여 있다",
-      "frame": "Mechanism",
-      "ced_indices": [8, 9, 11, 10],
-      "layout_hint": "statgrid",
-      "so_what": "CMO에게 — C레벨과의 수익성 인식 격차(33 vs 67%)·예산 통제력 제한·인재 확보가 가치증명 과제를 구조적으로 가둔다"
-    },
-    {
-      "num": "04",
-      "title": "신뢰 적자가 개인화·윤리 AI의 효과를 갉아먹는다",
-      "frame": "Mechanism",
-      "ced_indices": [6, 3, 2],
-      "layout_hint": "statgrid",
-      "so_what": "CX·브랜드 담당자에게 — 노력-인식 격차(43%)와 윤리 AI 불신(42%)이 엔드투엔드 CX의 20% 개선 효과를 제약한다"
-    },
-    {
-      "num": "05",
-      "title": "증명 가능한 가치만이 다음 투자 사이클에서 살아남는다",
-      "frame": "Action",
-      "ced_indices": [9, 11, 4],
-      "layout_hint": "cards",
-      "so_what": "리더에게 — 매출연동 예산 관성을 깨고 ROI 측정 체계를 갖춘 조직만이 AI 투자를 지속할 명분을 확보한다. (근거 표본: Deloitte 2025 EMEA 임원 1,854명)"
-    }
-  ]
+ "thesis": "긴축 예산 환경에서 AI 투자 효과가 가시화되지 않자, 마케팅 조직이 ROI 증명 압박을 받고 있다",
+ "title": "지출은 줄고 투자는 늘었다 — AI 시대 마케팅의 증명 압박",
+ "chapters": [
+  {
+   "num": "01",
+   "title": "소비자는 지갑을 닫고 발견 경로는 검색에서 커뮤니티로 옮겨갔다",
+   "frame": "Tension",
+   "ced_indices": [
+    1,
+    0
+   ],
+   "layout_hint": "kpi",
+   "so_what": "마케터에게 — 예산 줄이며 채널 전략을 검색 의존에서 소셜·추천으로 재배치해야 하는 이중 압박의 출발점"
+  },
+  {
+   "num": "02",
+   "title": "AI 투자는 거의 전원이 늘리지만 유의미한 ROI를 내는 곳은 열에 하나뿐이다",
+   "frame": "Diagnosis",
+   "ced_indices": [
+    7,
+    4
+   ],
+   "layout_hint": "statgrid",
+   "so_what": "경영진에게 — 투자 합의(85/91%)와 성과 현실(10%)의 간극이 2~4년 회수 기간 동안 조직을 시험한다"
+  },
+  {
+   "num": "03",
+   "title": "CMO는 수익성 우선순위와 가치증명 사이에서 통제력 없이 끼여 있다",
+   "frame": "Mechanism",
+   "ced_indices": [
+    8,
+    9,
+    11,
+    10
+   ],
+   "layout_hint": "statgrid",
+   "so_what": "CMO에게 — C레벨과의 수익성 인식 격차(33 vs 67%)·예산 통제력 제한·인재 확보가 가치증명 과제를 구조적으로 가둔다"
+  },
+  {
+   "num": "04",
+   "title": "신뢰 적자가 개인화·윤리 AI의 효과를 갉아먹는다",
+   "frame": "Mechanism",
+   "ced_indices": [
+    6,
+    3,
+    2
+   ],
+   "layout_hint": "statgrid",
+   "so_what": "CX·브랜드 담당자에게 — 노력-인식 격차(43%)와 윤리 AI 불신(42%)이 엔드투엔드 CX의 20% 개선 효과를 제약한다"
+  },
+  {
+   "num": "05",
+   "title": "증명 가능한 가치만이 다음 투자 사이클에서 살아남는다",
+   "frame": "Action",
+   "ced_indices": [
+    9,
+    11,
+    4
+   ],
+   "layout_hint": "cards",
+   "so_what": "리더에게 — 매출연동 예산 관성을 깨고 ROI 측정 체계를 갖춘 조직만이 AI 투자를 지속할 명분을 확보한다. (근거 표본: Deloitte 2025 EMEA 임원 1,854명)"
+  }
+ ],
+ "_thesis_original": "긴축 소비심리가 AI 투자 가속과 결합해 마케팅 조직의 가치증명 구조를 ROI 회계 중심으로 재편한다"
 }
