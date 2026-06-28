@@ -6,17 +6,20 @@
 
 ## 루프 (PDF → 덱) — 앞 절반 자동화 완료 (2026-06-28)
 
+> ⭐ **이건 이 마케팅 덱 전용이 아니라, 자료 모아 만드는 모든 PPT의 범용 방법론이다(주제 무관).** 아무 PDF·주제나 던져도 같은 루프. 단발 덱마다 다시 짜지 말 것.
+
 ```
-1. 인풋        주제 / RFP / 보고서 원본(PDF 등)
+1. 인풋        주제 / RFP / 보고서 원본(PDF 등) — 어떤 주제든
 2. ingestion   pipeline/dig_source.py — pdftotext, 이미지 PDF는 tesseract OCR 폴백   [자동]
 3. 디깅        pipeline/dig_agent.py — 에이전트가 텍스트 읽어 CED JSON(티어링·재인용·신뢰도)  [자동]
 4. 추적        pipeline/dig_trace.py — 재인용 4-way(match 승격/scope_diff 라벨/contradiction DROP/notfound)  [반자동]
 5. 검증·강등   pipeline/ced.py — CED + DWS 라우팅(MAIN/정성/방향/삭제) + 렌더 게이트     [자동]
 6. 스토리      pipeline/story_assist.py — 디렉터가 thesis·챕터·레이아웃 outline 제안 → compose_deck 자동 조립  [반자동·라벨 다듬기 사람]
 7. 렌더        engine.py build_deck(slides, theme) → HTML → PDF/PNG                 [자동]
-8. 리뷰        Codex/Gemini 비전 평가 → 수정(1순위=출처/근거)                       [사람]
+8. 리뷰        비저자 냉정 리뷰(destroyer 서브에이전트 / 신야 비전) — 저자 자가평가 금지(klcha #7). [사람+에이전트]
+              ⚖️ 균형: 냉정 리뷰는 약점 지도지 삭제 체크리스트 X. 강등+라벨로 재료 유지·stakes에 맞춤(틀=runs/<run>/cold_review.md 상단)
 ```
-> HITL(사람만): 어떤 Tension이 전략적 울림인지·statgrid 라벨/내러티브 다듬기·최종 어조·결재. = Part D.3.
+> HITL(사람만): 어떤 Tension이 전략적 울림인지·statgrid 라벨/내러티브 다듬기·최종 어조·결재 + **뭘 살리고/라벨하고/뺄지 판단(비평가에게 안 넘김)**. = Part D.3.
 
 ## 구성
 
