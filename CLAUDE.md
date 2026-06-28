@@ -60,3 +60,19 @@ cd backend && .venv/Scripts/celery -A worker.celery_app worker --pool=solo --con
 - Gemini surrogate 문자 → `_clean_surrogates()` 처리 (gemini_client.py, slides.py)
 - 다운로드 엔드포인트 auth-free (UUID가 접근 제어 역할)
 - Samsung SEM 등 JS-heavy 사이트 → httpx 크롤러로는 내용 부족
+
+## TickDeck 하네스 v4 포인터
+
+트리거:
+- 발표자료, 덱, 트렌드 리포트, 주제 발표자료, 다시, 업데이트, 보완 요청은 `.claude/skills/deck-harness/SKILL.md`를 먼저 사용한다.
+- 트렌드 리포트 장르는 `.claude/skills/genre-trend-report/SKILL.md`를 함께 사용한다.
+- 일반 주제 발표 장르는 `.claude/skills/genre-topic-deck/SKILL.md`를 함께 사용한다.
+- 완료 전 5대 계약은 `.claude/skills/harness-contracts/scripts/test_contracts.py`로 실행 확인한다.
+
+주의:
+- `.claude/commands/`는 만들지 않는다.
+- 디자인은 page-plan 이후에만 수행한다.
+- 검증 메타데이터를 사용자용 슬라이드 콘텐츠에 노출하지 않는다.
+
+변경 이력:
+- 2026-06-28: PRD v4.1 기준 에이전트+스킬 하네스 포인터 추가.
