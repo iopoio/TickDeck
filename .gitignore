@@ -40,3 +40,12 @@ tmp/
 *.log
 *.tmp
 *.bak
+
+# TickDeck 덱 작업 산출물 (재생성 가능·코드 아님)
+_workspace/
+tickdeck_harness/runs/
+**/shots/
+*.pdf
+*.png
+.pytest_cache/
+.DS_Store

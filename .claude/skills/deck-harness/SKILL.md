@@ -20,12 +20,34 @@ All runs use `_workspace/<run_id>/` as the file handoff area.
 
 1. `intake-director` creates `_workspace/<run_id>/00_intake.json`.
 2. `collector` creates `_workspace/<run_id>/01_evidence_pool.json`.
-3. `verifier` creates `_workspace/<run_id>/02_verified_evidence.json`.
+3. `verifier` creates `_workspace/<run_id>/02_verified.json` with `source_registry` and `metric_registry`.
 4. `analyst` creates `_workspace/<run_id>/03_insights.json`.
 5. `editorial-director` creates `_workspace/<run_id>/04_proposition_dag.json`.
-6. `page-planner` creates `_workspace/<run_id>/05_page_plan.json`.
-7. `designer` creates `_workspace/<run_id>/06_render_manifest.json` and render artifacts.
-8. `qa-reviewer` creates `_workspace/<run_id>/07_qa_report.json`.
+6. `page-planner` creates `_workspace/<run_id>/05_page_plan.json` with `short_title`, `allowed_source_ids`, and `allowed_metric_ids` per page.
+7. `designer` creates `_workspace/<run_id>/06_deck_spec.json` only. It may choose layout and shorten text, but must reference sources/metrics only by `src_id`/`metric_id`.
+8. Code renderer creates HTML from deck_spec and registry:
+
+```bash
+python .claude/skills/deck-harness/scripts/render_deck.py \
+  _workspace/<run_id>/06_deck_spec.json \
+  _workspace/<run_id>/02_verified.json \
+  -o _workspace/<run_id>/deck.html
+```
+
+9. Run C6 content-authority gate before QA.
+10. `qa-reviewer` creates `_workspace/<run_id>/07_qa_report.json`.
+
+## 검토 단계 (4층)
+
+1. 1층 자동 체크(만드는 내내): `contract_checks` + `naturalness_check` + 커버리지. 거의 공짜라 초안·수정본마다 돌린다.
+2. 2층 총괄 게이트(내용/스토리 완성 후·디자인 전): 클차장이 "제대로된·잘 읽히는 보고서인가"를 통째 판정한다.
+3. 3층 외부 리뷰(최종 직전 1회): 코덱스 + 제미나이 교차 후 클차장이 트리아지한다. 둘 다 그대로 받지 않는다.
+4. 4층 시각 QA(디자인 후): **렌더가 자동 생성한 `<output>.pdf`를 필수 입력으로 받는다** — `render_deck.py`가 끝나며 `capture_deck.sh`를 호출해 HTML 쓸 때 PDF가 자동 생성된다(규율 아닌 코드 강제). 클차장/`qa-reviewer`가 이 PDF를 *직접 Read로 읽고* 잘림·겹침·밀도·차트 렌더·그레이아웃 강조·깨짐을 판정해 `07_qa_report.json`에 `visual_verdict`(본 슬라이드·발견·pass/fail)를 기록한다. **이 시각 판정 기록 없이는 done 불가**(보고서/덱 전달 금지). "안 보고 됐다" 차단의 코드/배선 버전.
+
+원칙:
+- 싼 자동 체크는 내내 돌린다.
+- 비싼 외부 리뷰는 거의 완성본에 1회만 돌린다.
+- 큰 구멍은 2층 총괄 게이트에서 디자인 전에 일찍 잡는다.
 
 ## Agent Team
 - `intake-director`: genre, audience, evidence profile, analysis recipe.
@@ -33,9 +55,9 @@ All runs use `_workspace/<run_id>/` as the file handoff area.
 - `verifier`: DWS, duplicate, zombie, laundering, circular citation checks.
 - `analyst`: structured Insight[] and adversarial self review.
 - `editorial-director`: thesis and proposition DAG.
-- `page-planner`: page-level meaning design.
-- `designer`: fit check and final render after page-plan only.
-- `qa-reviewer`: C1~C5 contract scan and cold review.
+- `page-planner`: page-level meaning design and page source/metric allowlists.
+- `designer`: layout/fit/deck_spec only. No fact, metric, citation, HTML authority.
+- `qa-reviewer`: C1~C6 contract scan and cold review.
 
 ## Genre Routing
 - Trend report: load `genre-trend-report`; trend means state transition, not static statistics.
@@ -77,6 +99,8 @@ Not allowed:
 - change the thesis because a layout looks nicer
 - choose content by template
 - start rendering before page-plan
+- type a numeric value, publisher name, URL, or source label directly
+- add facts not present in story/page-plan
 
 Loop B handoff format:
 
@@ -108,9 +132,54 @@ python .claude/skills/harness-contracts/scripts/test_contracts.py
 
 For an actual deck artifact, call `validate_all_contracts(deck_json)` from `.claude/skills/harness-contracts/scripts/contract_checks.py`.
 
+Actual deck contract payload for C6:
+
+```json
+{
+  "deck_spec": {},
+  "content_registry": {
+    "source_registry": {},
+    "metric_registry": {}
+  },
+  "rendered_html": "<!doctype html>..."
+}
+```
+
+C6 fails when:
+- deck_spec references unknown `src_id` or `metric_id`
+- referenced IDs are outside that page's `allowed_source_ids` / `allowed_metric_ids`
+- rendered HTML contains untagged numbers
+- rendered HTML contains manual `출처:` labels instead of generated citations
+- `viz` blocks use unsupported chart types, omit `series[].metric_id`, or put raw numbers in `title`, `series[].label`, or `note`
+
+## Viz Blocks
+
+Use `viz` when a page needs a compact visual comparison, flow, or concept diagram that text/metric cards cannot express.
+
+```json
+{
+  "type": "viz",
+  "chart": "before_after|dumbbell|flow|big_number|gap_map|shift",
+  "title": "짧은 제목. 숫자 금지",
+  "series": [
+    {"label": "비교군 라벨. 숫자 금지", "metric_id": "metric_001", "role": "baseline|highlight"}
+  ],
+  "note": "선택 설명. 숫자 금지"
+}
+```
+
+Rules:
+- Numeric values, units, and source strings are injected only from `02_verified.json` registries.
+- `series[].metric_id` must be listed in the same page's `allowed_metric_ids`.
+- Metric source ids must be listed in the same page's `allowed_source_ids`.
+- Renderer supports six inline SVG chart types only: `before_after`, `dumbbell`, `flow`, `big_number`, `gap_map`, `shift`.
+- Comparison groups render gray; the highlighted claim uses the active trend/accent color. No external images or chart libraries.
+
 ## Test Scenarios
 - Trend report with no supplied files: must collect Tier-A evidence before analysis.
 - Trend report with one strong report only: must trigger C4 or Loop A rather than repackage.
 - Static-stat trend page: must fail C3 unless state transition fields exist.
 - Designer before page-plan: must fail C5.
 - Rendered page title containing validation metadata terms: must fail C2.
+- Designer-written metric values or manual source labels in rendered HTML: must fail C6.
+- Viz block with raw title/label/note numbers or out-of-allowlist metric ids: must fail C6.

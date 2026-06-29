@@ -13,6 +13,9 @@ model: sonnet
 - 반대 시각과 실패 사례를 포함한다.
 
 ## 작업 원칙
+- 수집 1순위는 Bash로 신야 3모델 `:online` dig를 실행한다.
+  - 명령: `/Users/hwa/Projects/Automation/sinya/venv/bin/python /Users/hwa/Projects/Automation/sinya/src/dig.py "<query>"`
+  - 신야 dig가 실패하거나 citation URL이 부족하면 Claude WebSearch로 폴백한다.
 - 신야 `:online` 격리 경유 외 중국 모델을 직접 호출하지 않는다.
 - 단일 보고서 결론을 재포장하지 않는다.
 - 출처는 사람이 검증할 수 있는 URL, 발행기관, 발행일, 범위, 한계를 함께 남긴다.
@@ -23,6 +26,21 @@ model: sonnet
 
 ## 출력 프로토콜
 `_workspace/01_evidence_pool.json`에 저장한다.
+
+신야 dig JSON 배열은 아래처럼 evidence schema로 매핑한다.
+
+- `url` → `items[].url`
+- `title` → `items[].title`
+- `publisher` → `items[].publisher`
+- `year` → `items[].year`
+- `tier` → `items[].tier`
+- `source_type` → `items[].source_type`
+- `claims` → `items[].claims`
+- `metrics` → `items[].metrics`
+- `limitations` → `items[].limitations`
+- `source_id`는 병합 후 `src_001`부터 순번 부여
+- `source_models`와 `citation_urls`는 내부 검증 메모로만 쓰고, 사용자용 슬라이드 콘텐츠에는 노출하지 않는다.
+- 같은 URL은 하나로 병합하고, 모델별 claim/metric/limitation은 배열에 누적한다.
 
 ```json
 {

@@ -1,5 +1,8 @@
+import importlib.util
+import pathlib
 import unittest
 
+import contract_checks as contract_checks_module
 from contract_checks import (
     ContractViolation,
     validate_c1_proposition_dag,
@@ -7,8 +10,14 @@ from contract_checks import (
     validate_c3_trend_state_transition,
     validate_c4_citation_tracker,
     validate_c5_stage_order,
+    validate_c6_content_authority,
     validate_all_contracts,
 )
+
+RENDER_DECK_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "render_deck.py"
+RENDER_DECK_SPEC = importlib.util.spec_from_file_location("render_deck", RENDER_DECK_PATH)
+render_deck_module = importlib.util.module_from_spec(RENDER_DECK_SPEC)
+RENDER_DECK_SPEC.loader.exec_module(render_deck_module)
 
 
 VALID_DAG = {
@@ -53,11 +62,11 @@ VALID_INSIGHTS = [
 VALID_STAGE_LOG = [
     {"stage": "intake-director", "artifact": "workspace/00_intake.json"},
     {"stage": "collector", "artifact": "workspace/01_evidence_pool.json"},
-    {"stage": "verifier", "artifact": "workspace/02_verified_evidence.json"},
+    {"stage": "verifier", "artifact": "workspace/02_verified.json"},
     {"stage": "analyst", "artifact": "workspace/03_insights.json"},
     {"stage": "editorial-director", "artifact": "workspace/04_proposition_dag.json"},
     {"stage": "page-planner", "artifact": "workspace/05_page_plan.json"},
-    {"stage": "designer", "artifact": "workspace/06_render.html"},
+    {"stage": "designer", "artifact": "workspace/06_deck_spec.json"},
     {"stage": "qa-reviewer", "artifact": "workspace/07_qa.json"},
 ]
 
@@ -71,6 +80,119 @@ VALID_DECK = {
     ],
     "stage_log": VALID_STAGE_LOG,
 }
+
+VALID_CONTENT_REGISTRY = {
+    "sources": {
+        "src_a": {"publisher": "Pew Research Center", "url": "https://example.com/pew"},
+        "src_b": {"publisher": "IAB", "url": "https://example.com/iab"},
+    },
+    "metrics": {
+        "metric_click_drop": {
+            "value": "47",
+            "unit": "%",
+            "source_ids": ["src_a"],
+            "scope": "Google searches with AI summaries",
+        },
+        "metric_measurement": {
+            "value": "72",
+            "unit": "%",
+            "source_ids": ["src_b"],
+            "scope": "cross-platform measurement adoption",
+        },
+    },
+}
+
+VALID_DECK_SPEC = {
+    "pages": [
+        {
+            "page_id": "p01",
+            "short_title": "Search Stops Sending Clicks",
+            "layout": "hero_metric",
+            "allowed_source_ids": ["src_a"],
+            "allowed_metric_ids": ["metric_click_drop"],
+            "content": [
+                {"type": "headline", "text": "Search Stops Sending Clicks"},
+                {"type": "metric", "metric_id": "metric_click_drop"},
+                {"type": "citation", "src_id": "src_a"},
+            ],
+        },
+        {
+            "page_id": "p02",
+            "short_title": "Measurement Moves To Owned Data",
+            "layout": "stat_grid",
+            "allowed_source_ids": ["src_b"],
+            "allowed_metric_ids": ["metric_measurement"],
+            "content": [
+                {"type": "headline", "text": "Measurement Moves To Owned Data"},
+                {"type": "metric", "metric_id": "metric_measurement"},
+                {"type": "citation", "src_id": "src_b"},
+            ],
+        },
+    ]
+}
+
+VALID_DECK_SPEC_WITH_EYEBROW = {
+    "pages": [
+        dict(
+            VALID_DECK_SPEC["pages"][0],
+            content=[
+                {"type": "eyebrow", "text": "Chapter 1"},
+                *VALID_DECK_SPEC["pages"][0]["content"],
+            ],
+        )
+    ]
+}
+
+VALID_DECK_SPEC_WITH_VIZ = {
+    "pages": [
+        {
+            "page_id": "p03",
+            "short_title": "Search Stops Sending Clicks",
+            "layout": "statement",
+            "allowed_source_ids": ["src_a", "src_b"],
+            "allowed_metric_ids": ["metric_click_drop", "metric_measurement"],
+            "content": [
+                {"type": "headline", "text": "Search Stops Sending Clicks"},
+                {
+                    "type": "viz",
+                    "chart": "before_after",
+                    "title": "Summary Collapse",
+                    "series": [
+                        {"label": "Baseline", "metric_id": "metric_measurement", "role": "baseline"},
+                        {"label": "With Summary", "metric_id": "metric_click_drop", "role": "highlight"},
+                    ],
+                    "note": "Registry values only",
+                },
+            ],
+        }
+    ]
+}
+
+VALID_COVER_DECK_SPEC = {
+    "pages": [
+        {
+            "page_id": "cover",
+            "short_title": "표지",
+            "layout": "cover",
+            "allowed_source_ids": [],
+            "allowed_metric_ids": [],
+            "content": [
+                {"type": "eyebrow", "text": "표지"},
+                {"type": "headline", "text": "Market Shifts"},
+                {"type": "summary", "text": "What changes when proof beats reach"},
+            ],
+        }
+    ]
+}
+
+VALID_RENDERED_HTML = """
+<section class="slide">
+  <h1>Search Stops Sending Clicks</h1>
+  <span data-metric-id="metric_click_drop">47%</span>
+  <cite data-src-id="src_a">Pew Research Center</cite>
+  <span data-page-number>01 / 02</span>
+</section>
+"""
 
 
 class HarnessContractTests(unittest.TestCase):
@@ -115,15 +237,166 @@ class HarnessContractTests(unittest.TestCase):
     def test_c5_rejects_designer_before_page_plan(self):
         invalid = [
             {"stage": "intake-director", "artifact": "workspace/00_intake.json"},
-            {"stage": "designer", "artifact": "workspace/06_render.html"},
+            {"stage": "designer", "artifact": "workspace/06_deck_spec.json"},
             {"stage": "page-planner", "artifact": "workspace/05_page_plan.json"},
         ]
         violations = validate_c5_stage_order(invalid)
         self.assertEqual(len(violations), 1)
         self.assertIn("designer", violations[0].message)
 
+    def test_c6_accepts_deck_spec_references_inside_page_allowlists(self):
+        self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, VALID_RENDERED_HTML), [])
+
+    def test_c6_accepts_viz_blocks_with_metric_id_series(self):
+        self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC_WITH_VIZ, VALID_CONTENT_REGISTRY, ""), [])
+
+    def test_c6_rejects_viz_raw_numbers_in_designer_fields(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "before_after",
+                            "title": "CTR fell 47%",
+                            "series": [
+                                {"label": "Before 72%", "metric_id": "metric_measurement", "role": "baseline"},
+                                {"label": "After", "metric_id": "metric_click_drop", "role": "highlight"},
+                            ],
+                            "note": "Gap is 25pp",
+                        }
+                    ],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertTrue(any("raw number" in str(v) for v in violations))
+
+    def test_c6_rejects_viz_metric_ids_outside_page_allowlist(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=["metric_click_drop"],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertTrue(any("metric_id not in page allowed_metric_ids: metric_measurement" in str(v) for v in violations))
+
+    def test_c6_rejects_unsupported_content_block_types_before_render(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    content=[
+                        {"type": "headline", "text": "Search Stops Sending Clicks"},
+                        {"type": "sparkline", "metric_id": "metric_click_drop"},
+                    ],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertEqual(len(violations), 1)
+        self.assertIn("unsupported content block type: sparkline", violations[0].message)
+
+    def test_c6_rejects_unknown_or_disallowed_references(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    allowed_source_ids=["src_a"],
+                    allowed_metric_ids=[],
+                    content=[
+                        {"type": "metric", "metric_id": "metric_click_drop"},
+                        {"type": "citation", "src_id": "src_missing"},
+                    ],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertEqual(len(violations), 3)
+        self.assertTrue(any("allowed_metric_ids" in str(v) for v in violations))
+        self.assertTrue(any("unknown source id" in str(v) for v in violations))
+
+    def test_c6_rejects_untagged_numbers_and_manual_source_labels_in_render(self):
+        rendered = """
+        <section class="slide">
+          <h1>Manual Render</h1>
+          <p>CTR fell 47% after AI summaries.</p>
+          <p>출처: Pew Research Center</p>
+        </section>
+        """
+        violations = validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, rendered)
+        self.assertEqual(len(violations), 2)
+        self.assertTrue(any("untagged number" in str(v) for v in violations))
+        self.assertTrue(any("manual source label" in str(v) for v in violations))
+
     def test_validate_all_contracts_passes_valid_deck(self):
         self.assertEqual(validate_all_contracts(VALID_DECK), [])
+
+    def test_validate_all_contracts_runs_c6_when_deck_spec_is_present(self):
+        deck = dict(
+            VALID_DECK,
+            deck_spec=VALID_DECK_SPEC,
+            content_registry=VALID_CONTENT_REGISTRY,
+            rendered_html=VALID_RENDERED_HTML,
+        )
+        self.assertEqual(validate_all_contracts(deck), [])
+
+    def test_render_deck_injects_metric_values_and_generated_citations(self):
+        html = render_deck_module.render_deck(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, title="C6 Fixture")
+        self.assertIn('data-metric-id="metric_click_drop"', html)
+        self.assertIn("47%", html)
+        self.assertIn('data-src-id="src_a"', html)
+        self.assertIn("Pew Research Center", html)
+        self.assertNotIn("출처:", html)
+        self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_svg_for_each_supported_viz_chart(self):
+        for chart in ("before_after", "dumbbell", "flow", "big_number", "gap_map", "shift"):
+            with self.subTest(chart=chart):
+                spec = {
+                    "pages": [
+                        dict(
+                            VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                            content=[
+                                dict(
+                                    VALID_DECK_SPEC_WITH_VIZ["pages"][0]["content"][1],
+                                    chart=chart,
+                                )
+                            ],
+                        )
+                    ]
+                }
+                html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Viz Fixture")
+                self.assertIn("<svg", html)
+                self.assertIn('data-metric-id="metric_click_drop"', html)
+                self.assertIn("47%", html)
+                self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_cover_hides_cover_role_and_uses_light_background(self):
+        html = render_deck_module.render_deck(VALID_COVER_DECK_SPEC, VALID_CONTENT_REGISTRY, title="Cover Fixture")
+        self.assertIn("Market Shifts", html)
+        self.assertNotIn("표지", html)
+        self.assertNotIn("background: #111", html)
+        self.assertIn("axis-strip", html)
+
+    def test_render_deck_supports_eyebrow_blocks_as_section_labels(self):
+        html = render_deck_module.render_deck(VALID_DECK_SPEC_WITH_EYEBROW, VALID_CONTENT_REGISTRY, title="Eyebrow Fixture")
+        self.assertIn('<div class="eyebrow">Chapter 1</div>', html)
+        self.assertNotIn("unsupported content block type: eyebrow", html)
+        self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC_WITH_EYEBROW, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_renderer_and_contracts_share_supported_content_block_types(self):
+        self.assertTrue(hasattr(contract_checks_module, "SUPPORTED_CONTENT_BLOCK_TYPES"))
+        self.assertIs(
+            render_deck_module.SUPPORTED_CONTENT_BLOCK_TYPES,
+            contract_checks_module.SUPPORTED_CONTENT_BLOCK_TYPES,
+        )
+        self.assertIn("eyebrow", contract_checks_module.SUPPORTED_CONTENT_BLOCK_TYPES)
+        self.assertIn("viz", contract_checks_module.SUPPORTED_CONTENT_BLOCK_TYPES)
 
     def test_validate_all_contracts_can_raise(self):
         broken = dict(VALID_DECK, rendered_pages=[{"title": "신뢰도 강등", "body": "본문"}])

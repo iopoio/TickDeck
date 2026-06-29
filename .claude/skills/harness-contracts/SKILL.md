@@ -1,6 +1,6 @@
 ---
 name: harness-contracts
-description: TickDeck v4 contract definitions and executable tests for Insight schema, proposition DAG, citation tracker, validation metadata scan, trend state transition, and stage order.
+description: TickDeck v4 contract definitions and executable tests for Insight schema, proposition DAG, citation tracker, validation metadata scan, trend state transition, stage order, and render content authority.
 ---
 
 # Harness Contracts
@@ -10,12 +10,16 @@ Use this skill before accepting any TickDeck v4 harness output as complete.
 ## Files
 
 - `scripts/contract_checks.py`: executable contract validators.
-- `scripts/test_contracts.py`: unittest coverage for C1~C5.
+- `scripts/test_contracts.py`: unittest coverage for C1~C6.
+- `scripts/naturalness_check.py`: markdown naturalness scanner for AI translationese and borrowed cliches.
+- `scripts/test_naturalness.py`: unittest coverage for the naturalness scanner.
 
 Run:
 
 ```bash
 python .claude/skills/harness-contracts/scripts/test_contracts.py
+python .claude/skills/harness-contracts/scripts/test_naturalness.py
+python .claude/skills/harness-contracts/scripts/naturalness_check.py <report.md>
 ```
 
 ## Insight Schema
@@ -118,6 +122,41 @@ Pass condition:
 - first occurrences follow the PRD order from intake to QA.
 - designer runs after page-planner.
 - Loop B back to page-planner is allowed only for space, density, overflow, 공간, 과밀, or 잘림.
+
+## Contract C6: Render Content Authority
+
+Validator: `validate_c6_content_authority`.
+
+Supported block type SoT: `scripts/contract_checks.py`의 `SUPPORTED_CONTENT_BLOCK_TYPES`.
+
+Current supported block types:
+- `eyebrow`
+- `headline`, `title`
+- `body`, `text`, `summary`
+- `callout`, `note`
+- `citation`, `source`
+- `metric`
+- `metrics`, `metric_grid`, `stat_grid`
+- `bullets`, `list`
+
+Pass condition:
+- every `deck_spec.pages[].content` block type is in `SUPPORTED_CONTENT_BLOCK_TYPES`
+- every `src_id` referenced by `deck_spec.pages[].content` exists in `content_registry.sources` or `content_registry.source_registry`
+- every `metric_id` referenced by `deck_spec.pages[].content` exists in `content_registry.metrics` or `content_registry.metric_registry`
+- referenced IDs are inside that page's `allowed_source_ids` / `allowed_metric_ids`
+- metric source_ids are also inside that page's `allowed_source_ids`
+- rendered HTML has no untagged numbers
+- rendered HTML has no manual `출처:` labels
+
+Expected render tags:
+
+```html
+<span data-metric-id="metric_001">47%</span>
+<a data-src-id="src_001" href="https://example.com">Publisher</a>
+<span data-page-number>01 / 10</span>
+```
+
+The designer must not type publisher names, URLs, or numeric values into `deck_spec`. Code rendering injects them from the registry.
 
 ## Use In A Deck Run
 

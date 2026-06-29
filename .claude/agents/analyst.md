@@ -19,7 +19,7 @@ model: opus
 - 적대적 셀프리뷰 후 같은 지적이 반복되면 해당 Insight를 재작성한다.
 
 ## 입력 프로토콜
-`_workspace/02_verified_evidence.json`와 `analysis_recipe`.
+`_workspace/<run_id>/02_verified.json`와 `analysis_recipe`.
 
 ## 출력 프로토콜
 `_workspace/03_insights.json`에 저장한다.

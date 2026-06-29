@@ -1,0 +1,34 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "uvicorn", "backend.main:app", "--reload", "--port", "8000"],
+      "port": 8000
+    },
+    {
+      "name": "frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "frontend", "run", "dev"],
+      "port": 5173
+    },
+    {
+      "name": "celery-worker",
+      "runtimeExecutable": "celery",
+      "runtimeArgs": ["-A", "worker.celery_app", "worker", "--pool=solo", "--concurrency=1", "--loglevel=info"]
+    },
+    {
+      "name": "redis",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "redis"],
+      "port": 6379
+    },
+    {
+      "name": "db",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "db"],
+      "port": 5432
+    }
+  ]
+}

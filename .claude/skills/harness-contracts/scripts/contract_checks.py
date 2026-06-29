@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
+from html.parser import HTMLParser
 from typing import Any
 
 
@@ -27,6 +29,34 @@ PIPELINE_ORDER = (
     "page-planner",
     "designer",
     "qa-reviewer",
+)
+SUPPORTED_CONTENT_BLOCK_TYPES = frozenset(
+    {
+        "eyebrow",
+        "headline",
+        "title",
+        "body",
+        "text",
+        "summary",
+        "callout",
+        "note",
+        "citation",
+        "source",
+        "metric",
+        "metrics",
+        "metric_grid",
+        "stat_grid",
+        "viz",
+        "bullets",
+        "list",
+    }
+)
+SUPPORTED_VIZ_CHART_TYPES = frozenset(
+    {"before_after", "dumbbell", "flow", "big_number", "gap_map", "shift"}
+)
+RAW_NUMBER_PATTERN = re.compile(
+    r"(?<![A-Za-z0-9_])[+-]?\d+(?:[.,]\d+)*(?:\.\d+)?"
+    r"(?:\s?(?:%|\$|조|억|만|명|개|건|pp|p|B|M|K|원|달러|USD|YoY))?(?![A-Za-z0-9_])"
 )
 
 
@@ -210,6 +240,80 @@ def validate_c5_stage_order(stage_log: list[dict[str, Any]]) -> list[ContractVio
     return violations
 
 
+def validate_c6_content_authority(
+    deck_spec: dict[str, Any],
+    content_registry: dict[str, Any],
+    rendered_html: str = "",
+) -> list[ContractViolation]:
+    violations: list[ContractViolation] = []
+    pages = deck_spec.get("pages")
+    if not isinstance(pages, list):
+        return [ContractViolation("C6", "deck_spec must include pages list", "deck_spec.pages")]
+
+    source_registry = _registry_map(content_registry, ("sources", "source_registry"))
+    metric_registry = _registry_map(content_registry, ("metrics", "metric_registry"))
+
+    for page_index, page in enumerate(pages):
+        if not isinstance(page, dict):
+            violations.append(ContractViolation("C6", "page must be an object", f"deck_spec.pages[{page_index}]"))
+            continue
+
+        page_path = f"deck_spec.pages[{page_index}]"
+        allowed_source_ids = _string_set(page.get("allowed_source_ids"))
+        allowed_metric_ids = _string_set(page.get("allowed_metric_ids"))
+        content = page.get("content", page.get("blocks", []))
+
+        for block_type, type_path in _iter_content_block_types(content, f"{page_path}.content"):
+            if block_type not in SUPPORTED_CONTENT_BLOCK_TYPES:
+                violations.append(
+                    ContractViolation("C6", f"unsupported content block type: {block_type}", type_path)
+                )
+
+        for viz_block, viz_path in _iter_viz_blocks(content, f"{page_path}.content"):
+            violations.extend(_validate_viz_block(viz_block, viz_path))
+
+        for src_id, ref_path in _iter_content_refs(content, "src", f"{page_path}.content"):
+            if src_id not in source_registry:
+                violations.append(ContractViolation("C6", f"unknown source id referenced: {src_id}", ref_path))
+            if src_id not in allowed_source_ids:
+                violations.append(ContractViolation("C6", f"src_id not in page allowed_source_ids: {src_id}", ref_path))
+
+        for metric_id, ref_path in _iter_content_refs(content, "metric", f"{page_path}.content"):
+            metric = metric_registry.get(metric_id)
+            if metric is None:
+                violations.append(ContractViolation("C6", f"unknown metric id referenced: {metric_id}", ref_path))
+                continue
+            if metric_id not in allowed_metric_ids:
+                violations.append(
+                    ContractViolation("C6", f"metric_id not in page allowed_metric_ids: {metric_id}", ref_path)
+                )
+
+            metric_source_ids = _string_set(metric.get("source_ids") if isinstance(metric, dict) else [])
+            for src_id in metric_source_ids:
+                if src_id not in source_registry:
+                    violations.append(
+                        ContractViolation("C6", f"metric source_id missing from source registry: {src_id}", ref_path)
+                    )
+                if src_id not in allowed_source_ids:
+                    violations.append(
+                        ContractViolation(
+                            "C6",
+                            f"metric source_id not in page allowed_source_ids: {src_id}",
+                            ref_path,
+                        )
+                    )
+
+        if page.get("short_title") is None:
+            violations.append(ContractViolation("C6", "page must include short_title", f"{page_path}.short_title"))
+        if page.get("layout") is None:
+            violations.append(ContractViolation("C6", "page must include layout", f"{page_path}.layout"))
+
+    if rendered_html:
+        violations.extend(_validate_rendered_content_authority(rendered_html))
+
+    return violations
+
+
 def validate_all_contracts(deck: dict[str, Any], raise_on_error: bool = False) -> list[ContractViolation]:
     violations: list[ContractViolation] = []
     violations.extend(validate_c1_proposition_dag(deck.get("proposition_dag", {})))
@@ -217,6 +321,14 @@ def validate_all_contracts(deck: dict[str, Any], raise_on_error: bool = False) -
     violations.extend(validate_c3_trend_state_transition(deck.get("genre", ""), deck.get("insights", [])))
     violations.extend(validate_c4_citation_tracker(deck.get("insights", [])))
     violations.extend(validate_c5_stage_order(deck.get("stage_log", [])))
+    if "deck_spec" in deck or "content_registry" in deck or "rendered_html" in deck:
+        violations.extend(
+            validate_c6_content_authority(
+                deck.get("deck_spec", {}),
+                deck.get("content_registry", {}),
+                deck.get("rendered_html", ""),
+            )
+        )
 
     if raise_on_error and violations:
         raise ContractViolation("CONTRACTS", "; ".join(str(item) for item in violations))
@@ -232,3 +344,156 @@ def _iter_strings(value: Any, path: str):
     elif isinstance(value, list):
         for index, nested in enumerate(value):
             yield from _iter_strings(nested, f"{path}[{index}]")
+
+
+def _registry_map(registry: dict[str, Any], keys: tuple[str, ...]) -> dict[str, Any]:
+    for key in keys:
+        value = registry.get(key) if isinstance(registry, dict) else None
+        if isinstance(value, dict):
+            return {str(item_key): item_value for item_key, item_value in value.items()}
+    return {}
+
+
+def _string_set(value: Any) -> set[str]:
+    if isinstance(value, list):
+        return {str(item) for item in value if str(item).strip()}
+    if isinstance(value, tuple):
+        return {str(item) for item in value if str(item).strip()}
+    return set()
+
+
+def _iter_content_refs(value: Any, ref_type: str, path: str = "deck_spec.pages[].content"):
+    scalar_keys = {"src": {"src_id", "source_id"}, "metric": {"metric_id"}}[ref_type]
+    list_keys = {"src": {"src_ids", "source_ids"}, "metric": {"metric_ids"}}[ref_type]
+
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            next_path = f"{path}.{key}"
+            if key in scalar_keys and str(nested).strip():
+                yield str(nested), next_path
+            elif key in list_keys and isinstance(nested, list):
+                for index, item in enumerate(nested):
+                    if str(item).strip():
+                        yield str(item), f"{next_path}[{index}]"
+            else:
+                yield from _iter_content_refs(nested, ref_type, next_path)
+    elif isinstance(value, list):
+        for index, nested in enumerate(value):
+            yield from _iter_content_refs(nested, ref_type, f"{path}[{index}]")
+
+
+def _iter_content_block_types(value: Any, path: str):
+    if isinstance(value, dict):
+        if "type" in value:
+            yield str(value.get("type", "text")), f"{path}.type"
+        for key, nested in value.items():
+            yield from _iter_content_block_types(nested, f"{path}.{key}")
+    elif isinstance(value, list):
+        for index, nested in enumerate(value):
+            yield from _iter_content_block_types(nested, f"{path}[{index}]")
+
+
+def _iter_viz_blocks(value: Any, path: str):
+    if isinstance(value, dict):
+        if value.get("type") == "viz":
+            yield value, path
+        for key, nested in value.items():
+            yield from _iter_viz_blocks(nested, f"{path}.{key}")
+    elif isinstance(value, list):
+        for index, nested in enumerate(value):
+            yield from _iter_viz_blocks(nested, f"{path}[{index}]")
+
+
+def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolation]:
+    violations: list[ContractViolation] = []
+    chart = str(block.get("chart", "")).strip()
+    if chart not in SUPPORTED_VIZ_CHART_TYPES:
+        violations.append(ContractViolation("C6", f"unsupported viz chart type: {chart}", f"{path}.chart"))
+
+    for field in ("title", "note"):
+        text = block.get(field)
+        if isinstance(text, str) and RAW_NUMBER_PATTERN.search(text):
+            violations.append(ContractViolation("C6", f"viz {field} contains raw number", f"{path}.{field}"))
+
+    for field in ("value", "unit", "values", "data"):
+        if field in block:
+            violations.append(ContractViolation("C6", f"viz block must not include direct {field}", f"{path}.{field}"))
+
+    series = block.get("series")
+    if not isinstance(series, list) or not series:
+        violations.append(ContractViolation("C6", "viz block must include non-empty series", f"{path}.series"))
+        return violations
+
+    for index, item in enumerate(series):
+        item_path = f"{path}.series[{index}]"
+        if not isinstance(item, dict):
+            violations.append(ContractViolation("C6", "viz series item must be an object", item_path))
+            continue
+        if not str(item.get("metric_id", "")).strip():
+            violations.append(ContractViolation("C6", "viz series item must include metric_id", f"{item_path}.metric_id"))
+        label = item.get("label")
+        if isinstance(label, str) and RAW_NUMBER_PATTERN.search(label):
+            violations.append(ContractViolation("C6", "viz label contains raw number", f"{item_path}.label"))
+        for field in ("value", "unit", "values", "data"):
+            if field in item:
+                violations.append(ContractViolation("C6", f"viz series must not include direct {field}", f"{item_path}.{field}"))
+
+    return violations
+
+
+def _validate_rendered_content_authority(rendered_html: str) -> list[ContractViolation]:
+    parser = _RenderedAuthorityParser()
+    parser.feed(rendered_html)
+    return parser.violations
+
+
+class _RenderedAuthorityParser(HTMLParser):
+    _NUMBER_PATTERN = RAW_NUMBER_PATTERN
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.stack: list[dict[str, str]] = []
+        self.violations: list[ContractViolation] = []
+        self._manual_source_seen = False
+        self._untagged_number_seen = False
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attr_map = {key: value or "" for key, value in attrs}
+        attr_map["_tag"] = tag
+        self.stack.append(attr_map)
+
+    def handle_endtag(self, tag: str) -> None:
+        for index in range(len(self.stack) - 1, -1, -1):
+            if self.stack[index].get("_tag") == tag:
+                del self.stack[index:]
+                break
+
+    def handle_data(self, data: str) -> None:
+        if not data.strip() or self._inside_ignored_tag():
+            return
+        if "출처:" in data and not self._manual_source_seen:
+            self._manual_source_seen = True
+            self.violations.append(
+                ContractViolation("C6", "manual source label in rendered output; citations must be generated", "rendered_html")
+            )
+        if self._NUMBER_PATTERN.search(data) and not self._inside_authorized_numeric_context() and not self._untagged_number_seen:
+            self._untagged_number_seen = True
+            self.violations.append(
+                ContractViolation("C6", "untagged number in rendered output; use metric_id injection", "rendered_html")
+            )
+
+    def _inside_ignored_tag(self) -> bool:
+        return any(item.get("_tag") in {"script", "style"} for item in self.stack)
+
+    def _inside_authorized_numeric_context(self) -> bool:
+        for item in self.stack:
+            classes = set(item.get("class", "").split())
+            if "data-metric-id" in item or "data-src-id" in item or "data-page-number" in item:
+                return True
+            if classes & {"page-number", "citation-index", "source-index", "eyebrow"}:
+                return True
+            # 제목·헤드라인·표지 lockup = 서사 텍스트(연도·순번·개수). 본문 통계 수치는
+            # 이 면제가 없어 여전히 metric_id 주입을 강제 — C6 본문 규율은 그대로 유지.
+            if item.get("_tag") in {"h1", "h2"} or classes & {"block-title", "cover-lockup"}:
+                return True
+        return False
