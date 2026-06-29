@@ -79,7 +79,7 @@ flowchart TD
 | `analyst` | 분석가(팀·토론) | opus | 장르 렌즈로 **Insight[] 구조화** 도출(아래 7절). 적대 셀프리뷰 |
 | `editorial-director` | 에디터 | opus | 관통 명제 + **명제 DAG(JSON)**. 큐레이션=서사 판단(dict X) |
 | `page-planner` | 페이지 기획 | opus | 페이지별 의미 설계(형식 아닌 의미). 루프B 재기획 수용 |
-| `designer` | 디자이너/렌더러 | 가벼운+코드 | 디자인-맞춤검사(공간/밀도 코드) → 양식·팔레트·렌더 (맨 마지막) |
+| `designer` | 디자이너/렌더러 | 가벼운+코드 | 디자인-맞춤검사(공간/밀도 코드) → 양식·팔레트·**viz 블록**(차트 6종: before_after·dumbbell·flow·big_number·gap_map·shift — `series`는 metric_id로만·차트당 핵심 2~3개)·렌더 (맨 마지막) |
 | `qa-reviewer` | 검수가 | opus(general-purpose) | 5대 계약 위반 스캔 + 비저자 냉정 리뷰 |
 
 **품질 게이트(안전장치):** 가벼운 모델 단계의 산출이 다음 단계 입력 계약을 미달하면 **opus로 자동 승격** 후 재수행. (후추님 "품질 안 떨어지면 하이브리드 ㄱㄱ" 조건 충족 장치)
@@ -105,6 +105,7 @@ flowchart TD
 | C3 | 트렌드=방향(정적 통계 헤드라인 금지) | 트렌드 장르 헤드라인 Insight는 `from_state·to_state·mechanism` 필수(상태 전이 스키마). 단순 수치=불가 |
 | C4 | 원본 분석 생산(재포장 금지) | **Citation Tracker**: Insight의 `evidence_ids≥2` & `source_overlap_score`로 서로 다른 Source ID 융합 검증. 자가 태그만 = 실패 |
 | C5 | 디자인-우선 금지(순서 강제) | designer는 page-plan 받고서야 가동. 루프B는 *공간 제약*만 ⑤로 되돌림 |
+| C6 | 렌더 콘텐츠 권한(날조 차단) | 렌더 HTML의 모든 수치·출처는 registry(metric_id/src_id) 주입만 — designer가 raw 숫자·출처 라벨 직접 작성 금지. **viz 블록**(차트)도 `series[].metric_id`로만 수치 표시. 단 제목·헤드라인·표지 lockup의 연도·순번 등 *서사 숫자*는 예외(본문 통계는 엄격). 강제 = render 전 deck_spec C6 게이트 + `validate_c6_content_authority`(렌더 HTML 스캔) |
 
 ## 8. 실행 모드 (하이브리드)
 수집 팬아웃(서브·가벼운) → 검증(코드+가벼운) → 분석 팀(opus·토론) → 스토리·페이지(opus) → 디자인(가벼운+코드) → QA(opus·점진). 오케스트레이터가 조율(파일 기반 `_workspace/` 산출물 + 태스크/메시지). 두 피드백 루프 포함.
@@ -130,6 +131,7 @@ flowchart TD
 | 2026-06-28 | 피드백 루프 A(재수집)·B(페이지↔디자인) 추가 | codex·제미나이 |
 | 2026-06-28 | C1/C3/C4 구조화(명제 DAG·상태전이·Insight 스키마+Citation Tracker) | codex·제미나이 |
 | 2026-06-28 | 하이브리드 모델 라우팅 + 품질 게이트 | codex·제미나이·후추님(품질 조건부) |
+| 2026-06-29 | C6 렌더 권한 계약 명문화 + viz 블록 6종(designer→render_deck SVG·registry 주입)·제목 연도 C6 예외·PDF `@page`(--headless=new) 캡처·일회용 드라이버 은퇴 | 클차장(구현 선행분 PRD 반영)·codex 빌드·Workflow 적대검증 |
 
 ## 14. 빌드 후 결정된 기본값 (v4.1 빌드 cross-check·클차장 결정)
 코덱스 빌드가 PRD에 안 정해져 '미정'으로 남긴 것을 클차장이 결정(유실 방지로 기록):
