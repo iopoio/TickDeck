@@ -9,7 +9,10 @@ from pathlib import Path
 
 # Add one-off translationese or cliche patterns here.
 REGEX_BLACKLIST: list[tuple[str, str]] = [
-    ("월요일_미국식클리셰", r"월요일에\s*시작(?:할|하는|하기|한다|합니다)?"),
+    # "월요일에 시작/채울/하라" 류 = Monday morning actions 번역 클리셰. 행동을 '월요일'에 거는
+    # 미국식 표현 전반을 잡는다(2026-06-30 후추님 p14 재발 지적 — 영구 차단).
+    ("월요일_미국식클리셰", r"월요일에\s*\S*(?:시작|채울|채워|하라|할|적|해)"),
+    ("월요일아침_클리셰", r"월요일\s*아침"),
     ("monday_morning_cliche", r"Monday\s+morning(?:\s+actions?)?"),
     ("게임체인저_클리셰", r"게임\s*체인저"),
     ("다름아니다_직역투", r"에\s*다름\s*아니다"),

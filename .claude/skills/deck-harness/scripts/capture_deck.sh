@@ -22,4 +22,40 @@ ABS="$(cd "$(dirname "$DECK")" && pwd)/$(basename "$DECK")"
 # --headless=new 라야 CSS @page size(슬라이드 1280x720)를 지킴 — 구 --headless는 Letter 고정이라 가로 슬라이드 아래에 회색 여백이 남는다.
 "$CHROME" --headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf="$OUT" "file://$ABS" >/dev/null 2>&1
 echo "CAPTURED: $OUT"
+
+# --- 4층 시각 QA 보강: 세로 오버플로(본문이 푸터로 넘쳐 잘림)·과소밀도 프로그램 검출 ---
+# 렌더러가 overflow:hidden로 '조용히' 잘라낸 본문은 PDF만 봐선 안 보인다 → 코드로 신호를 남긴다.
+# ponytail: Chrome dump-dom 측정. 측정 실패 시 SKIP만 출력(차단 아님) — 더 정밀하면 puppeteer로 교체.
+FIT="${ABS%.html}.__fit__.html"
+cp "$ABS" "$FIT"
+cat >> "$FIT" <<'EOF'
+<script>
+(function(){
+  var ovf=[], sparse=[];
+  document.querySelectorAll('.slide').forEach(function(s){
+    var b=s.querySelector('.body'); if(!b) return;
+    var gap=b.clientHeight-b.scrollHeight, id=s.dataset.pageId||'?';
+    if(gap < -2) ovf.push(id);
+    else if(gap > 240 && !/layout-(divider|closing|cover|index|matrix)/.test(s.className)) sparse.push(id);
+  });
+  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',');
+})();
+</script>
+EOF
+RAW="$("$CHROME" --headless=new --disable-gpu --dump-dom "file://$FIT" 2>/dev/null | grep -o 'FITREPORT|[^<]*' | head -1 || true)"
+rm -f "$FIT"
+if [ -n "$RAW" ]; then
+  _t="${RAW#*ovf:}"; OVF="${_t%%|*}"; SPARSE="${RAW##*sparse:}"
+  if [ -n "$OVF" ]; then
+    echo "FIT_OVERFLOW: $OVF — 본문이 세로 공간을 초과해 잘림. Loop B(designer→page-planner)로 분리/압축 필요."
+  else
+    echo "FIT_OK: 세로 오버플로 없음."
+  fi
+  if [ -n "$SPARSE" ]; then
+    echo "FIT_SPARSE: $SPARSE — 본문 과소밀도(빈 공간 과다). 최소 밀도 가이드 검토(병합·시각 추가)."
+  fi
+else
+  echo "FIT_CHECK_SKIP: DOM 측정 실패(Chrome dump-dom 미동작) — 시각 QA 수동 확인 필요."
+fi
+
 echo "→ 다음: 클차장이 이 PDF를 Read로 직접 읽고 시각 QA (차트 렌더·그레이아웃·깨짐·여백). 보고 안 하고 '됐다' 금지."

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from typing import Any
@@ -42,6 +43,7 @@ SUPPORTED_CONTENT_BLOCK_TYPES = frozenset(
         "note",
         "citation",
         "source",
+        "footnote",
         "metric",
         "metrics",
         "metric_grid",
@@ -52,11 +54,34 @@ SUPPORTED_CONTENT_BLOCK_TYPES = frozenset(
     }
 )
 SUPPORTED_VIZ_CHART_TYPES = frozenset(
-    {"before_after", "dumbbell", "flow", "big_number", "gap_map", "shift"}
+    {"before_after", "dumbbell", "flow", "big_number", "gap_map", "shift", "funnel"}
+)
+SUPPORTED_LAYOUTS = frozenset(
+    {
+        "cover",
+        "statement",
+        "hero_metric",
+        "stat_grid",
+        "metric_grid",
+        "cards",
+        "timeline",
+        "split",
+        "stepper",
+        "node",
+        "matrix",
+        "index",
+        "divider",
+        "closing",
+        "outro",
+        "source_appendix",
+    }
 )
 RAW_NUMBER_PATTERN = re.compile(
     r"(?<![A-Za-z0-9_])[+-]?\d+(?:[.,]\d+)*(?:\.\d+)?"
     r"(?:\s?(?:%|\$|조|억|만|명|개|건|pp|p|B|M|K|원|달러|USD|YoY))?(?![A-Za-z0-9_])"
+)
+ENCLOSED_NUMERAL_PATTERN = re.compile(
+    "[\u2460-\u249b\u24ea-\u24ff\u2776-\u2793\u3251-\u325f\u32b1-\u32bf]"
 )
 
 
@@ -263,6 +288,17 @@ def validate_c6_content_authority(
         allowed_metric_ids = _string_set(page.get("allowed_metric_ids"))
         content = page.get("content", page.get("blocks", []))
 
+        for text_path, text in _iter_strings(page, page_path):
+            enclosed = ENCLOSED_NUMERAL_PATTERN.search(text)
+            if enclosed:
+                violations.append(
+                    ContractViolation(
+                        "C6",
+                        f"enclosed numeral is not allowed: {enclosed.group(0)}",
+                        text_path,
+                    )
+                )
+
         for block_type, type_path in _iter_content_block_types(content, f"{page_path}.content"):
             if block_type not in SUPPORTED_CONTENT_BLOCK_TYPES:
                 violations.append(
@@ -305,8 +341,11 @@ def validate_c6_content_authority(
 
         if page.get("short_title") is None:
             violations.append(ContractViolation("C6", "page must include short_title", f"{page_path}.short_title"))
-        if page.get("layout") is None:
+        layout = page.get("layout")
+        if layout is None:
             violations.append(ContractViolation("C6", "page must include layout", f"{page_path}.layout"))
+        elif str(layout).strip() not in SUPPORTED_LAYOUTS:
+            violations.append(ContractViolation("C6", f"unsupported layout: {layout}", f"{page_path}.layout"))
 
     if rendered_html:
         violations.extend(_validate_rendered_content_authority(rendered_html))
@@ -449,6 +488,7 @@ def _validate_rendered_content_authority(rendered_html: str) -> list[ContractVio
 
 class _RenderedAuthorityParser(HTMLParser):
     _NUMBER_PATTERN = RAW_NUMBER_PATTERN
+    _ENCLOSED_NUMERAL_PATTERN = ENCLOSED_NUMERAL_PATTERN
 
     def __init__(self) -> None:
         super().__init__()
@@ -456,6 +496,7 @@ class _RenderedAuthorityParser(HTMLParser):
         self.violations: list[ContractViolation] = []
         self._manual_source_seen = False
         self._untagged_number_seen = False
+        self._enclosed_numeral_seen = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attr_map = {key: value or "" for key, value in attrs}
@@ -476,6 +517,16 @@ class _RenderedAuthorityParser(HTMLParser):
             self.violations.append(
                 ContractViolation("C6", "manual source label in rendered output; citations must be generated", "rendered_html")
             )
+        enclosed = self._ENCLOSED_NUMERAL_PATTERN.search(data)
+        if enclosed and not self._enclosed_numeral_seen:
+            self._enclosed_numeral_seen = True
+            self.violations.append(
+                ContractViolation(
+                    "C6",
+                    f"enclosed numeral in rendered output: {enclosed.group(0)}",
+                    "rendered_html",
+                )
+            )
         if self._NUMBER_PATTERN.search(data) and not self._inside_authorized_numeric_context() and not self._untagged_number_seen:
             self._untagged_number_seen = True
             self.violations.append(
@@ -490,10 +541,23 @@ class _RenderedAuthorityParser(HTMLParser):
             classes = set(item.get("class", "").split())
             if "data-metric-id" in item or "data-src-id" in item or "data-page-number" in item:
                 return True
-            if classes & {"page-number", "citation-index", "source-index", "eyebrow"}:
+            if classes & {"page-number", "citation-index", "source-index", "eyebrow", "cover-eyebrow", "copyright"}:
                 return True
             # 제목·헤드라인·표지 lockup = 서사 텍스트(연도·순번·개수). 본문 통계 수치는
             # 이 면제가 없어 여전히 metric_id 주입을 강제 — C6 본문 규율은 그대로 유지.
             if item.get("_tag") in {"h1", "h2"} or classes & {"block-title", "cover-lockup"}:
                 return True
         return False
+
+
+def normalize_enclosed_numerals(text: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        try:
+            number = unicodedata.numeric(match.group(0))
+        except (TypeError, ValueError):
+            return ""
+        if float(number).is_integer():
+            return f"{int(number)}."
+        return ""
+
+    return ENCLOSED_NUMERAL_PATTERN.sub(replace, text)

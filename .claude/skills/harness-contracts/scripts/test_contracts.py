@@ -185,6 +185,33 @@ VALID_COVER_DECK_SPEC = {
     ]
 }
 
+VALID_CLOSING_DECK_SPEC = {
+    "theme": "tech",
+    "pages": [
+        {
+            "page_id": "p15",
+            "short_title": "전이를 가려내는 일이 분기점이다",
+            "layout": "closing",
+            "allowed_source_ids": ["src_a"],
+            "allowed_metric_ids": [],
+            "content": [
+                {"type": "eyebrow", "text": "맺음 · 핵심 시사점"},
+                {"type": "headline", "text": "전이를 가려내는 일이 분기점이다"},
+                {
+                    "type": "bullets",
+                    "items": [
+                        {"text": "도구 · 인프라 — 비가역적 투자에 올라탄다", "source_ids": ["src_a"]},
+                        {"text": "자율화 — 통제된 파일럿으로 가둔다"},
+                        {"text": "신흥 기술 — 관찰 대상으로 둔다"},
+                    ],
+                },
+                {"type": "callout", "text": "승부는 어느 전이가 끝났느냐를 먼저 가려내는 데서 갈린다."},
+                {"type": "citation", "src_id": "src_a"},
+            ],
+        }
+    ],
+}
+
 VALID_RENDERED_HTML = """
 <section class="slide">
   <h1>Search Stops Sending Clicks</h1>
@@ -249,6 +276,23 @@ class HarnessContractTests(unittest.TestCase):
 
     def test_c6_accepts_viz_blocks_with_metric_id_series(self):
         self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC_WITH_VIZ, VALID_CONTENT_REGISTRY, ""), [])
+
+    def test_c6_accepts_closing_layout_in_supported_layout_enum(self):
+        self.assertIn("closing", contract_checks_module.SUPPORTED_LAYOUTS)
+        self.assertEqual(validate_c6_content_authority(VALID_CLOSING_DECK_SPEC, VALID_CONTENT_REGISTRY, ""), [])
+
+    def test_c6_rejects_unsupported_layouts(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    layout="unknown_layout",
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertEqual(len(violations), 1)
+        self.assertIn("unsupported layout: unknown_layout", violations[0].message)
 
     def test_c6_rejects_viz_raw_numbers_in_designer_fields(self):
         invalid = {
@@ -378,10 +422,33 @@ class HarnessContractTests(unittest.TestCase):
 
     def test_render_deck_cover_hides_cover_role_and_uses_light_background(self):
         html = render_deck_module.render_deck(VALID_COVER_DECK_SPEC, VALID_CONTENT_REGISTRY, title="Cover Fixture")
+        rendered_body = html.split("</style>", 1)[1]
         self.assertIn("Market Shifts", html)
-        self.assertNotIn("표지", html)
+        self.assertNotIn("표지", rendered_body)
+        self.assertNotIn('<footer class="slide-foot">', html)
         self.assertNotIn("background: #111", html)
         self.assertIn("axis-strip", html)
+
+    def test_render_deck_keeps_footer_in_flow_so_page_number_stays_visible(self):
+        # 푸터를 정상 흐름(flex 아이템)에 두고 본문은 overflow:hidden로 잘리게 해서
+        # 과밀 슬라이드에서도 본문이 푸터/페이지번호 위로 겹치지 못하게 한다(겹침 버그의 근본 차단).
+        html = render_deck_module.render_deck(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, title="Footer Fixture")
+        self.assertIn(".slide-foot {", html)
+        self.assertIn("flex: 0 0 auto;", html)
+        self.assertIn("overflow: hidden;", html)
+        self.assertIn('class="page-number" data-page-number>01 / 02</span>', html)
+
+    def test_render_deck_outputs_closing_layout(self):
+        html = render_deck_module.render_deck(VALID_CLOSING_DECK_SPEC, VALID_CONTENT_REGISTRY, title="Closing Fixture")
+        self.assertIn("layout-closing", html)
+        self.assertIn("closing-body", html)
+        self.assertIn("closing-point", html)
+        self.assertIn("closing-label", html)
+        self.assertIn("도구 · 인프라", html)
+        self.assertIn("closing-callout", html)
+        self.assertIn("어느 전이가 끝났느냐", html)
+        self.assertIn('class="page-number" data-page-number>01 / 01</span>', html)
+        self.assertEqual(validate_c6_content_authority(VALID_CLOSING_DECK_SPEC, VALID_CONTENT_REGISTRY, html), [])
 
     def test_render_deck_supports_eyebrow_blocks_as_section_labels(self):
         html = render_deck_module.render_deck(VALID_DECK_SPEC_WITH_EYEBROW, VALID_CONTENT_REGISTRY, title="Eyebrow Fixture")
