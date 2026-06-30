@@ -6,6 +6,10 @@
 
 컨셉: "딸깍" — URL 하나 넣으면 PPTX 바로 다운로드
 
+## 제품화 (2026-06-30 추가)
+- **이거 자체가 유료 제품(B형=라이브 생성기)으로 갈 로드맵 = `PRODUCT_ROADMAP.md`** (Phase 0 베타 쇼케이스 ~ Phase 6 유료 오픈·간트형). 트렐로 "TickDeck 제품화" 리스트로 추적.
+- A형(베타 쇼케이스: 펩핀치 진열대 임베드)·B형(유료) 결정 = `[[project_tickdeck_showcase_plan]]`. v4 덱 하네스(`.claude/skills/deck-harness/`)가 품질 엔진.
+
 ## 역할 분리
 | 작업 | 담당 |
 |------|------|
