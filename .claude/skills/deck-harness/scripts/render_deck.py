@@ -194,8 +194,11 @@ def render_deck(
 
     palette = _resolve_palette(deck_spec, theme)
     deck_cited_source_ids = _deck_cited_source_ids(pages, registry)
-    # 표지 밴드 수 = 실제 파트(간지) 수. 의미 없는 고정 5밴드 금지(팔레트 SoT "의미 없는 색칠 금지").
-    part_count = sum(1 for page in pages if isinstance(page, dict) and str(page.get("layout")) == "divider")
+    # 표지 밴드 수 = 실제 파트 수. 간지 수로 세되, 페이지에 명시된 part_count가 있으면 그게 정답
+    # (간지 없는 1부가 있는 덱에서 표지 2밴드 vs 간지 티커 3의 불일치 방지·7/2).
+    divider_n = sum(1 for page in pages if isinstance(page, dict) and str(page.get("layout")) == "divider")
+    explicit_counts = [int(page.get("part_count")) for page in pages if isinstance(page, dict) and str(page.get("part_count", "")).isdigit()]
+    part_count = max([divider_n] + explicit_counts) if (divider_n or explicit_counts) else 0
     rendered_pages = [
         _render_page(page, index + 1, len(pages), registry, palette, deck_cited_source_ids, part_count)
         for index, page in enumerate(pages)
@@ -383,6 +386,8 @@ def _render_source_appendix_page(
     eyebrow_text = _page_eyebrow_text(page, content, "source_appendix") or "출처"
     title_text = _page_title_text(page, content, "source_appendix") or "출처"
     src_ids = _as_list(page.get("allowed_source_ids")) or deck_cited_source_ids
+    # 출처가 많으면(>10행) 행 간격·폰트를 압축 — 14출처 덱에서 appendix가 넘치던 근본 결함(7/2).
+    compact = " appendix-compact" if len(src_ids) > 10 else ""
     rows = []
     for idx, src_id in enumerate(src_ids, 1):
         source = _require_source(src_id, page_id, registry)
@@ -404,7 +409,7 @@ def _render_source_appendix_page(
     <div class="eyebrow">{_escape(eyebrow_text)}</div>
     <h1>{_escape(title_text)}</h1>
   </header>
-  <main class="body layout-body appendix-body"><section class="appendix-list">{"".join(rows)}</section></main>
+  <main class="body layout-body appendix-body{compact}"><section class="appendix-list">{"".join(rows)}</section></main>
   <footer class="slide-foot">
     <span class="foot-side"></span>
     {_copyright_html()}
@@ -773,11 +778,8 @@ def _cover_decor_html(palette: dict[str, str], part_count: int = 0) -> str:
     if theme == "tech":
         # 표지·outro 상단 코너 꺽쇠 제거(후추님 #7·#9). 표지/outro 모두 장식 없이 타이포만.
         return ""
-    if theme == "marketing":
-        bands = "".join(
-            f'<span style="--band:{_escape(palette[f"t{i}"])}"><b>T{i}</b></span>' for i in range(1, 6)
-        )
-        return f'<div class="axis-strip marketing-axis">{bands}</div>'
+    # (구) marketing 테마의 T1~T5 라벨 밴드는 2026 마케팅 5트렌드 덱 전용 유물 —
+    # 무관한 덱에 복붙되던 하드코딩 제거(7/2). marketing도 아래 파트 수 밴드로 통일.
     if theme == "health":
         return '<div class="cover-health-curve" aria-hidden="true"></div>'
     # 기본(editorial·peppinch): 밴드 수 = 덱의 실제 파트(간지) 수 — 간지 진행 티커와 같은 어휘라
@@ -1438,11 +1440,19 @@ def _svg_point(item: dict[str, Any], x: float, y: int, fill: str, value_class: s
     # font-size를 SVG user 단위(attribute)로 박는다 — CSS px는 viewBox 스케일과 안 맞아
     # 값이 노드 중앙에서 좌우로 밀려 보임(후추님 #3 정렬 어긋남 근본). attr 크기는 viewBox와 함께 스케일.
     value_size = 27 if value_class.endswith("accent") else 23  # 그래프 안 텍스트 축소(후추님 6/30 — 위계)
+    # 라벨이 viewBox 밖으로 잘리지 않게 가장자리에서 anchor 전환(7/2 — 좌측 노드 라벨 잘림 fix).
+    label_len = len(str(item["label"])) * 16  # 한글 15px 근사폭
+    if x - label_len / 2 < 8:
+        label_anchor, label_x = "start", max(8.0, x - 24)
+    elif x + label_len / 2 > 992:
+        label_anchor, label_x = "end", min(992.0, x + 24)
+    else:
+        label_anchor, label_x = "middle", x
     return f"""
       <g data-metric-id="{_escape(item["metric_id"])}">
         <circle cx="{x:.1f}" cy="{y}" r="20" fill="{fill}" stroke="#CBD5E1" stroke-width="2"/>
         <text x="{x:.1f}" y="{y - 34}" text-anchor="middle" font-size="{value_size}" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
-        <text x="{x:.1f}" y="{y + 48}" text-anchor="middle" font-size="15" class="visual-note" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+        <text x="{label_x:.1f}" y="{y + 48}" text-anchor="{label_anchor}" font-size="15" class="visual-note" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
       </g>"""
 
 
@@ -2057,6 +2067,11 @@ h1 {{
   border-bottom: 1px solid var(--line);
 }}
 .appendix-num {{ font-family: var(--mono-font); font-size: 14px; font-weight: 700; color: var(--accent); }}
+/* 다출처(>10행) 압축 모드 — 행 간격·폰트 축소로 한 장에 수용. */
+.appendix-compact .appendix-row {{ padding: 5px 0; gap: 16px; }}
+.appendix-compact .appendix-pub {{ font-size: 14px; }}
+.appendix-compact .appendix-title {{ font-size: 13px; }}
+.appendix-compact .appendix-num {{ font-size: 12px; }}
 .appendix-pub {{ font-size: 16px; font-weight: 700; color: var(--ink); word-break: keep-all; }}
 .appendix-title {{ font-size: 15px; color: var(--muted); line-height: 1.45; word-break: keep-all; }}
 .split-body {{
