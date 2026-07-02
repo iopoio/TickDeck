@@ -94,6 +94,26 @@ def main() -> int:
     if not rendered_html:
         print("WARN 렌더 HTML 없음 — C6 rendered_html 검사 생략")
 
+    # 레지스트리 위생 lint(7/2 사고: unit 오염 36/60·영어 라벨) — 경고(비차단), verifier 반송 근거.
+    import re as _re
+
+    lint = []
+    for mid, metric in (verified.get("metric_registry") or {}).items():
+        value, unit = str(metric.get("value", "")), str(metric.get("unit", ""))
+        label = str(metric.get("label") or metric.get("scope") or "")
+        if not _re.fullmatch(r"-?[\d.,~\-]+", value):
+            lint.append(f"{mid}: value가 순수 숫자가 아님 → {value!r}")
+        if "(" in unit or _re.search(r"[A-Za-z]{3,}", unit):
+            lint.append(f"{mid}: unit 오염 → {unit!r} (한정어는 scope로)")
+        if _re.search(r"[A-Za-z]{4,}", label) and not _re.search(r"[가-힣]", label):
+            lint.append(f"{mid}: 라벨이 영어 원문 → {label[:40]!r} (한국어 label 필수)")
+    if lint:
+        print(f"WARN 레지스트리 위생 {len(lint)}건 (verifier 반송 근거):")
+        for line in lint[:10]:
+            print(f"  - {line}")
+        if len(lint) > 10:
+            print(f"  … 외 {len(lint) - 10}건")
+
     violations = validate_all_contracts(deck)
     print(f"run: {run_dir.name} · html: {html_path.name if html_path else '-'}")
     if violations:

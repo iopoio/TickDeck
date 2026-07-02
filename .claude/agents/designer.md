@@ -101,6 +101,11 @@ model: sonnet
 - `citation|source`: `src_id`만. 기관명·URL 직접 입력 금지.
 - `bullets|list`: 텍스트 축약 가능. 수치가 필요하면 별도 `metric_id` 블록으로 분리.
 
+## 밀도 규칙 + FIT 자가 확인 (7/2 실run 사고 — 초판 8/13장 과밀)
+- **페이지당 주 비주얼 1개.** viz와 stat_grid를 한 페이지에 겹치지 않는다(제목 주장을 직접 증명하는 쪽만). 보조 수치는 단일 `metric` 1개까지, note는 페이지당 1개·한 문장.
+- 두 비주얼이 정말 필요하면 `split` 레이아웃(좌 주 비주얼 / 우 보조) — 부제는 렌더가 전폭 상단으로 올린다.
+- **저장 후 렌더로 FIT 자가 확인 의무**: `python3 .claude/skills/deck-harness/scripts/render_deck.py <spec> <registry> -o /tmp/fit.html` 실행해 FIT_OK를 확인하고 보고에 결과를 적는다. "넘치지 않을 것 같다"는 판단은 인정되지 않는다 — 실측만.
+
 ## 에러 핸들링
 - page-plan이 없으면 즉시 중단한다.
 - page-plan의 `allowed_source_ids`, `allowed_metric_ids` 밖 ID가 필요하면 즉시 중단하고 page-planner/verifier로 되돌린다.

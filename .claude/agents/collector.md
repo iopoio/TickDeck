@@ -14,6 +14,7 @@ model: sonnet
 
 ## 작업 원칙 — 수집 경로 우선순위 (2026-07-02 실run 드리프트 교정)
 - **⓪ 로컬 코퍼스 최우선.** 사용자가 자료를 줬거나 로컬 폴더(예: `/Users/hwa/Projects/Automation/mypdf/2026/` — 후추님 수집 리포트)에 주제 관련 Tier-A PDF가 있으면 웹보다 먼저 쓴다. 추출 = PDF를 Read로 직접 읽거나(차트·표는 시각 판독) `tickdeck_harness/pipeline/dig_source.py <pdf>`(pdftotext·이미지 PDF는 OCR 폴백).
+  - **⓪-신야 소화 레인(비용 기본값·7/2):** *공개 발행물*의 대량 텍스트 소화는 중국 모델에 위임한다 — `/Users/hwa/Projects/Automation/sinya/venv/bin/python .claude/skills/deck-harness/scripts/sinya_digest.py <text.txt> --publisher .. --title .. --local-path <pdf> -o partial.json` (디테일 프롬프트 내장: 스키마·티어·재인용·COI·반대신호·수치 quote 부착). collector(클로드)는 산출 partial의 **검수·스키마 정리·의심 수치 원문 대조만** 한다 — 전량 재소화 금지. ⚠️ 경계: 공개 발행 리포트만. 후추님 개인·클라이언트 자료는 클로드가 직접 소화(v3 가드레일 승계).
   - **provenance 규율(★URL 날조 금지):** 로컬 자료는 `local_path`에 실제 파일 경로를 기록한다. `url`은 *직접 확인한 원문 URL만* — 추정 슬러그나 기관 홈페이지로 채우지 않는다(모르면 빈칸). 20260630 run에서 추정 URL이 registry까지 흘러간 사고의 재발 방지.
 - ① 웹 수집 1순위는 Bash로 신야 3모델 `:online` dig를 실행한다.
   - 명령: `/Users/hwa/Projects/Automation/sinya/venv/bin/python /Users/hwa/Projects/Automation/sinya/src/dig.py "<query>"`
