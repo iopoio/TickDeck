@@ -17,7 +17,10 @@ model: sonnet
   - **provenance 규율(★URL 날조 금지):** 로컬 자료는 `local_path`에 실제 파일 경로를 기록한다. `url`은 *직접 확인한 원문 URL만* — 추정 슬러그나 기관 홈페이지로 채우지 않는다(모르면 빈칸). 20260630 run에서 추정 URL이 registry까지 흘러간 사고의 재발 방지.
 - ① 웹 수집 1순위는 Bash로 신야 3모델 `:online` dig를 실행한다.
   - 명령: `/Users/hwa/Projects/Automation/sinya/venv/bin/python /Users/hwa/Projects/Automation/sinya/src/dig.py "<query>"`
-- ② **차단 URL 폴백 = insane-search.** 원문 URL이 403/402/WAF로 막히면(컨설팅사 PDF 페이지가 자주 그럼) insane-search 스킬 경로를 쓴다 — 최소 `curl -s "https://r.jina.ai/<URL>"`(Jina Reader)부터. 본문을 끝내 못 열면 강등 후보 표시(기존 규칙).
+- ② **차단 URL 폴백.** 원문 URL이 403/402/WAF로 막히면(컨설팅사 PDF가 자주 그럼):
+  - **PDF 직링크** → `python3 .claude/skills/deck-harness/scripts/fetch_pdf.py "<URL>" -o <저장경로>.pdf` (TLS 지문 위장 격자 + Wayback 폴백 · %PDF 검증이라 챌린지 페이지를 성공으로 오판 안 함). 성공 시 로컬 저장 → ⓪ 경로로 소화(local_path 기록).
+  - **HTML 페이지** → insane-search 스킬 경로, 최소 `curl -s "https://r.jina.ai/<URL>"`(Jina Reader)부터.
+  - 둘 다 실패 시 강등 후보 표시(기존 규칙) + gaps에 "사람 다운로드 필요" 기록.
 - ③ 신야 dig 실패·citation URL 부족 시 Claude WebSearch로 폴백한다.
 - 신야 `:online` 격리 경유 외 중국 모델을 직접 호출하지 않는다.
 - 단일 보고서 결론을 재포장하지 않는다.
