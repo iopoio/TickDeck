@@ -510,13 +510,22 @@ def _render_layout_body(
 
 
 def _render_split(body_parts: list[str]) -> str:
-    midpoint = max(1, (len(body_parts) + 1) // 2)
+    # 거버닝 부제(block-title)는 왼쪽 칸에 가두지 않고 전폭으로 끌어올린다 —
+    # 제목 아래 부제가 오는 일반 양식과 통일·좌우 밸런스 회복(후추님 7/2 p05·p07).
+    lead = ""
+    if body_parts and body_parts[0].lstrip().startswith('<h2 class="block-title"'):
+        lead, body_parts = body_parts[0], body_parts[1:]
+    # 홀수 블록이면 나머지는 우측(보조 칸)으로 — 좌측은 주 비주얼 하나가 원칙(7/2 p06 좌측 과적 fix).
+    midpoint = max(1, len(body_parts) // 2)
     left = "".join(body_parts[:midpoint])
     right = "".join(body_parts[midpoint:])
     return f"""
-<main class="body layout-body split-body">
-  <section class="split-pane split-primary">{left}</section>
-  <section class="split-pane split-secondary">{right}</section>
+<main class="body layout-body split-outer">
+  {lead}
+  <div class="split-body">
+    <section class="split-pane split-primary">{left}</section>
+    <section class="split-pane split-secondary">{right}</section>
+  </div>
 </main>""".strip()
 
 
@@ -2074,7 +2083,21 @@ h1 {{
 .appendix-compact .appendix-num {{ font-size: 12px; }}
 .appendix-pub {{ font-size: 16px; font-weight: 700; color: var(--ink); word-break: keep-all; }}
 .appendix-title {{ font-size: 15px; color: var(--muted); line-height: 1.45; word-break: keep-all; }}
+/* split 외곽: 부제 전폭 + 그 아래 2단 그리드(후추님 7/2 — 부제는 제목 아래 일반 양식과 통일). */
+.split-outer {{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}}
+.split-outer .block-title {{ margin: 0; }}
+/* 부제가 전폭으로 올라간 만큼 칸 안 요소는 낮게 — 카드 축소·칸 내 간격 압축. */
+.split-pane .metric-card {{ min-height: 132px; padding: 18px; }}
+.split-pane .metric-card .metric-value {{ font-size: 48px; }}
+.split-pane {{ gap: 16px; }}
 .split-body {{
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 48px;
