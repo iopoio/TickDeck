@@ -566,6 +566,10 @@ class _RenderedAuthorityParser(HTMLParser):
             # 단 각주로 본문 통계를 밀반입하는 건 qa-reviewer 판정 대상(designer.md 명시).
             if classes & {"divider-items", "footnote-row"}:
                 return True
+            # 조용한 간지 뼈대(divider_style:"quiet")의 거대 숫자 = 파트 순번(PART N과 동일 성격의
+            # 구조 표시) — standard 뼈대의 "eyebrow divider-part"(PART n)와 같은 면제 근거(7/3).
+            if classes & {"divider-quiet-num"}:
+                return True
             # 제목·헤드라인·표지 lockup = 서사 텍스트(연도·순번·개수). 본문 통계 수치는
             # 이 면제가 없어 여전히 metric_id 주입을 강제 — C6 본문 규율은 그대로 유지.
             if item.get("_tag") in {"h1", "h2"} or classes & {"block-title", "cover-lockup"}:

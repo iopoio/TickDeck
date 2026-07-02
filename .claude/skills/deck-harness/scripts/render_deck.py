@@ -555,11 +555,17 @@ def _render_split(body_parts: list[str], page: dict[str, Any] | None = None) -> 
 
 def _render_hero_metric(body_parts: list[str]) -> str:
     # 오버사이즈 빅넘버 전면장(드리블 흡수 2라운드 — 숫자가 곧 비주얼인 장).
-    # metric 카드 하나 + 짧은 텍스트만 두고 숫자를 화면 절반 크기로 키운다.
+    # 첫 블록(viz 또는 metric)만 초대형 — 나머지(보조 카드·note·citation)는 hero-row에
+    # 정상 크기로 둔다. (7/3 실측 버그: 전부 hero-stage에 넣어 보조 metric까지 210px로
+    # 부풀어 FIT_OVERFLOW 발생 — p08 viz+보조metric 조합에서 발견.)
     lead = ""
     if body_parts and body_parts[0].lstrip().startswith('<h2 class="block-title"'):
         lead, body_parts = body_parts[0], body_parts[1:]
-    return f'<main class="body layout-body hero-body">{lead}<div class="hero-stage">{"".join(body_parts)}</div></main>'
+    if not body_parts:
+        return f'<main class="body layout-body hero-body">{lead}</main>'
+    top, rest = body_parts[0], body_parts[1:]
+    row = f'<div class="hero-row">{"".join(rest)}</div>' if rest else ""
+    return f'<main class="body layout-body hero-body">{lead}<div class="hero-stage">{top}</div>{row}</main>'
 
 
 def _render_stack(body_parts: list[str]) -> str:
@@ -2316,12 +2322,15 @@ h1 {{
 .split-body.split-wide-left {{ grid-template-columns: 1.7fr 1fr; }}
 .split-body.split-wide-right {{ grid-template-columns: 1fr 1.7fr; }}
 /* hero_metric — 숫자가 곧 비주얼인 전면장(드리블 초대형 타이포 문법의 수치 버전). */
-.hero-body {{ justify-content: center; }}
-.hero-stage {{ display: flex; flex-direction: column; gap: 18px; max-width: 980px; }}
+.hero-body {{ justify-content: center; gap: 10px; }}
+.hero-stage {{ display: flex; flex-direction: column; gap: 8px; max-width: 980px; }}
 .hero-stage .metric-card {{ border: 0; background: transparent; padding: 0; min-height: 0; }}
 .hero-stage .metric-label {{ font-size: 26px; font-weight: 800; color: var(--ink); }}
 .hero-stage .metric-value {{ font-size: 210px; line-height: .96; letter-spacing: -.02em; }}
 .hero-stage .callout {{ max-width: 720px; }}
+/* 보조 카드/note/citation 열 — hero-stage(초대형)와 분리, 정상 크기 유지(7/3 fix). */
+.hero-row {{ display: flex; align-items: flex-start; gap: 22px; flex-wrap: wrap; max-width: 980px; }}
+.hero-row .metric-card {{ max-width: 320px; }}
 .split-pane {{
   min-width: 0;
   display: flex;
