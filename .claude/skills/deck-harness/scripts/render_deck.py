@@ -312,7 +312,7 @@ def _render_page(
 <section class="slide theme-{_class_name(palette["theme"])} layout-{_class_name(layout)}" data-page-id="{_escape(page_id)}">
   {motif_html}
   <header class="slide-head">
-    <div class="eyebrow">{_escape(eyebrow_text)}</div>
+    <div class="eyebrow{" eyebrow-chip" if page.get("eyebrow_chip") else ""}">{_escape(eyebrow_text)}</div>
     <h1>{_rich(title_text)}</h1>
   </header>
   {body_html}{foot_html}
@@ -335,8 +335,11 @@ def _render_cover_page(
     eyebrow_html = f'<p class="cover-eyebrow">{_escape(eyebrow)}</p>' if eyebrow else ""
     subtitle_html = f'<p class="cover-subtitle">{_escape(subtitle)}</p>' if subtitle else ""
     credit_html = _cover_credit_html()
+    # 표지 변형(덱 간 차별화·후추님 7/2 "레이아웃이 너무 유사"): "dark" = 잉크 파생 다크 히어로
+    # (간지와 같은 파생 문법·다크 북엔드). 미지정 = 기존 라이트.
+    variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" else ""
     return f"""
-<section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide" data-page-id="{_escape(page_id)}">
+<section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide{variant}" data-page-id="{_escape(page_id)}">
   {credit_html}
   <main class="cover-body">
     <div class="cover-lockup">
@@ -1769,6 +1772,28 @@ body {{
   letter-spacing: .28em;
 }}
 .eyebrow::before {{ content: ""; width: 24px; height: 2px; background: var(--accent); }}
+/* 카테고리 칩 변형(CB 흡수 1번·page.eyebrow_chip=true) — 배경색 칩으로 강조. 덱 간 변주 레버. */
+.eyebrow.eyebrow-chip {{
+  display: inline-flex;
+  align-self: flex-start;
+  background: var(--accent);
+  color: #FFFFFF;
+  padding: 6px 14px;
+  border-radius: 999px;
+  letter-spacing: .18em;
+}}
+.eyebrow.eyebrow-chip::before {{ display: none; }}
+/* 다크 표지 변형(cover_variant:"dark") — 간지와 같은 잉크 파생 문법. 덱 간 차별화 레버(후추님 7/2). */
+.cover-slide.cover-dark {{
+  background:
+    radial-gradient(circle at 82% 20%, color-mix(in srgb, var(--accent) 20%, transparent) 0, transparent 40%),
+    linear-gradient(150deg, color-mix(in srgb, var(--ink) 88%, white) 0%, var(--ink) 62%, color-mix(in srgb, var(--ink) 80%, black) 100%);
+  color: #F8FAFC;
+}}
+.cover-slide.cover-dark h1 {{ color: #F8FAFC; }}
+.cover-slide.cover-dark .cover-subtitle {{ color: rgba(248,250,252,.82); }}
+.cover-slide.cover-dark .cover-credit,
+.cover-slide.cover-dark .presenter-email {{ color: rgba(248,250,252,.6); }}
 .block-eyebrow {{ align-self: flex-start; }}
 h1 {{
   margin: 14px 0 0;
