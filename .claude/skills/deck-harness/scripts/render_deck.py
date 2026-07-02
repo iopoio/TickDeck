@@ -2062,10 +2062,9 @@ h1 {{
   font-family: var(--mono-font);
 }}
 .theme-tech .eyebrow::before {{ background: var(--accent2); }}
-.theme-marketing .metric-card,
-.theme-marketing .callout {{ box-shadow: 0 16px 38px rgba(240, 95, 75, .10); }}
-.theme-health .metric-card,
-.theme-health .callout {{ box-shadow: 0 14px 32px rgba(45, 125, 210, .08); }}
+/* (구) marketing/health 카드·콜아웃 코랄/블루 그림자 제거(후추님 7/2) — 반투명 배경 + 그림자가
+   그라디언트 위에서 '뒤에 박스가 있는' 얼룩으로 보임. 톤다운 원칙: 깊이감은 보더·여백으로. */
+.callout {{ background: color-mix(in srgb, #FFFFFF 88%, var(--c30)); }}
 .layout-body {{
   width: 100%;
 }}
