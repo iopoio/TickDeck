@@ -341,7 +341,7 @@ def _render_cover_page(
   <main class="cover-body">
     <div class="cover-lockup">
       {eyebrow_html}
-      <h1>{_rich(title)}</h1>
+      <h1>{"<br>".join(_rich(part) for part in title.split(chr(10)))}</h1>
       {subtitle_html}
     </div>
     {decor_html}
@@ -389,14 +389,14 @@ def _render_source_appendix_page(
     # 출처가 많으면(>10행) 행 간격·폰트를 압축 — 14출처 덱에서 appendix가 넘치던 근본 결함(7/2).
     compact = " appendix-compact" if len(src_ids) > 10 else ""
     rows = []
-    for idx, src_id in enumerate(src_ids, 1):
+    for src_id in src_ids:
         source = _require_source(src_id, page_id, registry)
         publisher = str(source.get("publisher") or src_id)
         sttl = str(source.get("title") or "")
+        # 넘버링·구분선 없이 "기관 — 리포트명" 한 줄 플랫 리스트(후추님 7/2).
         rows.append(
             f"""
         <article class="appendix-row" data-src-id="{_escape(src_id)}">
-          <span class="appendix-num" data-src-id="{_escape(src_id)}">{idx:02d}</span>
           <span class="appendix-pub" data-src-id="{_escape(src_id)}">{_escape(publisher)}</span>
           <span class="appendix-title" data-src-id="{_escape(src_id)}">{_escape(sttl)}</span>
         </article>"""
@@ -2068,24 +2068,21 @@ h1 {{
 .layout-body {{
   width: 100%;
 }}
-/* 출처 appendix: 번호 · 기관 · 리포트명 한 줄씩. data-src-id로 C6 authorized. */
-.appendix-list {{ display: flex; flex-direction: column; gap: 0; width: min(100%, 1010px); }}
+/* 출처 appendix: 넘버·구분선 없이 "기관 — 리포트명" 한 줄 플랫 리스트(후추님 7/2). data-src-id로 C6 authorized. */
+.appendix-list {{ display: flex; flex-direction: column; gap: 10px; width: min(100%, 1090px); }}
 .appendix-row {{
-  display: grid;
-  grid-template-columns: 44px 240px minmax(0, 1fr);
-  gap: 22px;
+  display: flex;
+  gap: 14px;
   align-items: baseline;
-  padding: 13px 0;
-  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
 }}
-.appendix-num {{ font-family: var(--mono-font); font-size: 14px; font-weight: 700; color: var(--accent); }}
 /* 다출처(>10행) 압축 모드 — 행 간격·폰트 축소로 한 장에 수용. */
-.appendix-compact .appendix-row {{ padding: 5px 0; gap: 16px; }}
-.appendix-compact .appendix-pub {{ font-size: 14px; }}
+.appendix-compact.appendix-body .appendix-list {{ gap: 7px; }}
+.appendix-compact .appendix-pub {{ font-size: 13.5px; }}
 .appendix-compact .appendix-title {{ font-size: 13px; }}
-.appendix-compact .appendix-num {{ font-size: 12px; }}
-.appendix-pub {{ font-size: 16px; font-weight: 700; color: var(--ink); word-break: keep-all; }}
-.appendix-title {{ font-size: 15px; color: var(--muted); line-height: 1.45; word-break: keep-all; }}
+.appendix-pub {{ flex: none; font-size: 15px; font-weight: 700; color: var(--ink); }}
+.appendix-title {{ min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: var(--muted); }}
 /* split 외곽: 부제 전폭 + 그 아래 2단 그리드(후추님 7/2 — 부제는 제목 아래 일반 양식과 통일). */
 .split-outer {{
   display: flex;
