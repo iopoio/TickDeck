@@ -1362,6 +1362,76 @@ def _svg_donut(
     return _svg_shell("donut", title, note, cy + radius + 42, body, page_id)
 
 
+def _svg_pictogram(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 픽토그램/도트 채움(엔바토 흡수 3라운드 7/3 — PE5HT4N·3M6NRPR·6QAF86G·DYMFYCD 4곳 교차검증).
+    # "10명 중 3명"류 정성적 카운트 프레이밍에 적합 — 값은 0~100 비중일 때만 의미(그 외 clamp).
+    item = _highlight_or_first(series)
+    number = item.get("number") if isinstance(item.get("number"), (int, float)) else 0.0
+    val = max(0.0, min(100.0, abs(number)))
+    cols, rows = 10, 5
+    total = cols * rows
+    filled = round(val / 100 * total)
+    radius, gap_x, gap_y = 17, 76, 58
+    start_x, start_y = radius + 4, CHART_TITLE_GAP + radius + 4
+    dots = []
+    for index in range(total):
+        col, row = index % cols, index // cols
+        cx = start_x + col * gap_x
+        cy = start_y + row * gap_y
+        fill = accent if index < filled else "#E5E7EB"
+        dots.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{radius}" fill="{fill}"/>')
+    grid_bottom = start_y + (rows - 1) * gap_y + radius
+    label_y = grid_bottom + 46
+    value_y = label_y + 52
+    body = f"""
+      <g data-metric-id="{_escape(item["metric_id"])}">
+        {"".join(dots)}
+        <text x="0" y="{label_y}" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+        <text x="0" y="{value_y}" font-size="48" font-weight="900" fill="{accent}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+      </g>"""
+    height = value_y + 16 + (30 if note else 0)
+    return _svg_shell("pictogram", title, note, height, body, page_id)
+
+
+def _svg_gauge(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 반원 게이지(엔바토 흡수 3라운드 7/3 — M4FX5T4 스피드 다이얼·6QAF86G 넘긴 아크 교차검증).
+    # 도넛(원형)과 대비되는 "계기판" 느낌 — 단일 % 강조에 쓴다. 값은 0~100 비중일 때만 의미.
+    item = _highlight_or_first(series)
+    number = item.get("number") if isinstance(item.get("number"), (int, float)) else 0.0
+    val = max(0.0, min(100.0, abs(number)))
+    cx, cy, r, stroke = 500, 214, 190, 34
+    fraction = val / 100
+    theta_end = math.radians(180 * (1 - fraction))
+    ex, ey = cx + r * math.cos(theta_end), cy - r * math.sin(theta_end)
+    # sweep-flag=1: 왼쪽→오른쪽을 시계방향(위쪽 반원)으로 — 0을 쓰면 아래쪽 반원이 그려짐(실측 발견 버그).
+    value_arc = ""
+    if fraction > 0:
+        value_arc = f'<path d="M {cx - r} {cy} A {r} {r} 0 0 1 {ex:.1f} {ey:.1f}" fill="none" stroke="{accent}" stroke-width="{stroke}" stroke-linecap="round"/>'
+    body = f"""
+      <g data-metric-id="{_escape(item["metric_id"])}">
+        <path d="M {cx - r} {cy} A {r} {r} 0 1 1 {cx + r} {cy}" fill="none" stroke="#E5E7EB" stroke-width="{stroke}" stroke-linecap="round"/>
+        {value_arc}
+        <text x="{cx}" y="{cy - 6}" text-anchor="middle" font-size="64" font-weight="900" fill="{accent}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+        <text x="{cx}" y="{cy + 36}" text-anchor="middle" class="visual-note" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+      </g>"""
+    height = cy + 64 + (30 if note else 0)
+    return _svg_shell("gauge", title, note, height, body, page_id)
+
+
 def _svg_mirror_bars(
     series: list[dict[str, Any]],
     title: str,
@@ -1475,6 +1545,8 @@ _CHART_RENDERERS = {
     "donut": _svg_donut,
     "mirror_bars": _svg_mirror_bars,
     "rising_columns": _svg_rising_columns,
+    "pictogram": _svg_pictogram,
+    "gauge": _svg_gauge,
 }
 
 

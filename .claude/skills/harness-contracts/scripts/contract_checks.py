@@ -66,6 +66,9 @@ SUPPORTED_VIZ_CHART_TYPES = frozenset(
         "donut",
         "mirror_bars",
         "rising_columns",
+        # 2026-07-03 엔바토 흡수 3라운드: 픽토그램(도트채움)·게이지(반원) — 4곳·3곳 교차검증
+        "pictogram",
+        "gauge",
     }
 )
 SUPPORTED_LAYOUTS = frozenset(
