@@ -132,6 +132,50 @@ PALETTES = {
         "t5": "#647680",
     },
 }
+PALETTES["forest"] = {
+    # 드리블 2026 인기 트렌드 흡수(팔레트 SoT 참조) — 딥그린×라임·웜아이보리. agri/프로덕티비티/지속가능 주제.
+    "theme": "forest",
+    "c60": "#F4F3EE",
+    "c30": "#EBE9E0",
+    "accent": "#1E4033",
+    "accent2": "#A6C34C",
+    "ink": "#17251F",
+    "muted": "#5F6B62",
+    "line": "rgba(30,64,51,.16)",
+    "grid_line": "transparent",
+    "slide_bg": "#F4F3EE",
+    "slide_bg_size": "auto",
+    "body_bg": "#EBE9E0",
+    "card": "rgba(255, 255, 255, .72)",
+    "radius": "12px",
+    "t1": "#1E4033",
+    "t2": "#A6C34C",
+    "t3": "#5F6B62",
+    "t4": "#9DB8A5",
+    "t5": "#17251F",
+}
+PALETTES["violet"] = {
+    # 드리블 2026 인기 트렌드 흡수 — 바이올렛×라벤더 틴트램프. AI/SaaS 주제.
+    "theme": "violet",
+    "c60": "#F8F7FC",
+    "c30": "#EFEDF8",
+    "accent": "#7C4DE8",
+    "accent2": "#B49BF2",
+    "ink": "#221C33",
+    "muted": "#6B647E",
+    "line": "rgba(124,77,232,.16)",
+    "grid_line": "transparent",
+    "slide_bg": "#F8F7FC",
+    "slide_bg_size": "auto",
+    "body_bg": "#EFEDF8",
+    "card": "rgba(255, 255, 255, .8)",
+    "radius": "14px",
+    "t1": "#7C4DE8",
+    "t2": "#B49BF2",
+    "t3": "#6B647E",
+    "t4": "#CFC3F5",
+    "t5": "#221C33",
+}
 PALETTES["pantone"] = dict(PALETTES["editorial"])
 PALETTES["breeze"] = dict(PALETTES["marketing"], theme="marketing")
 PALETTES["cobalt"] = dict(PALETTES["tech"], theme="tech")
@@ -1297,8 +1341,9 @@ def _svg_rising_columns(
     # 상승컬럼 + 멀티플라이어 브래킷(백로그 Phase 2·PwC) — 점증 세로 막대(명도램프) + 첫→끝 ×N 콜아웃.
     rows = series[:5]
     max_value = _max_metric_number(rows)
-    base_y = CHART_TITLE_GAP + 236
-    max_h = 175
+    # 높이는 테마 서체가 커도(기본 24px 부제) 720px 슬라이드에 안 넘치는 값 — peppinch(20px)만 통과하던 걸 보정(7/2).
+    base_y = CHART_TITLE_GAP + 206
+    max_h = 148
     area_x, area_w = 80, 840
     col_w = min(140, area_w / max(1, len(rows)) * 0.56)
     step = area_w / max(1, len(rows))
