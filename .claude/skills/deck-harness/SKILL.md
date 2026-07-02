@@ -41,7 +41,10 @@ python .claude/skills/deck-harness/scripts/render_deck.py \
 
 1. 1층 자동 체크(만드는 내내): `contract_checks` + `naturalness_check` + 커버리지. 거의 공짜라 초안·수정본마다 돌린다.
 2. 2층 총괄 게이트(내용/스토리 완성 후·디자인 전): 클차장이 "제대로된·잘 읽히는 보고서인가"를 통째 판정한다.
-3. 3층 외부 리뷰(최종 직전 1회): 코덱스 + 제미나이 교차 후 클차장이 트리아지한다. 둘 다 그대로 받지 않는다.
+3. 3층 외부 리뷰(최종 직전 1회·**skip 금지 — 미수행이면 done 불가, 07_qa_report에 `external_review_layer3` 기록 의무**): 코덱스 + 제미나이 교차 후 클차장이 트리아지한다. 둘 다 그대로 받지 않는다(기각 사유도 기록).
+   - 입력: deck.html에서 페이지별 텍스트 추출 + 냉정 리뷰 프롬프트(논리 비약·어색한 한국어·제목/부제 관계·흐름 단절, 페이지 명시, 최대 10건).
+   - 코덱스: `codex exec --skip-git-repo-check "$(cat review_input.txt)"`
+   - 제미나이: `Think/.venv/bin/python Think/.claude/scripts/gemini_call_wrapper.py --prompt "..." --no-cache` (시스템 python엔 google-genai 없음 — Think/.venv가 wrapper 전용 venv, 7/3 복구)
 4. 4층 시각 QA(디자인 후): **렌더가 자동 생성한 `<output>.pdf`를 필수 입력으로 받는다** — `render_deck.py`가 끝나며 `capture_deck.sh`를 호출해 HTML 쓸 때 PDF가 자동 생성된다(규율 아닌 코드 강제). 클차장/`qa-reviewer`가 이 PDF를 *직접 Read로 읽고* 잘림·겹침·밀도·차트 렌더·그레이아웃 강조·깨짐을 판정해 `07_qa_report.json`에 `visual_verdict`(본 슬라이드·발견·pass/fail)를 기록한다. **밀도·단조·닫는 장·제목 기호 잔재 4개 판정(qa-reviewer.md 필수 항목·7/2)도 visual_verdict에 포함해야 한다** — "틀린 것"만 잡고 "부족한 것"을 통과시키던 구멍의 판정 게이트. **이 시각 판정 기록 없이는 done 불가**(보고서/덱 전달 금지). "안 보고 됐다" 차단의 코드/배선 버전.
 
 원칙:
