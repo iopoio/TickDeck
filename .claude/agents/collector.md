@@ -12,14 +12,18 @@ model: sonnet
 - Tier-A: 컨설팅사, 투자사, 증권사 리서치 PDF, 정부/통계 1차 자료를 최우선으로 둔다.
 - 반대 시각과 실패 사례를 포함한다.
 
-## 작업 원칙
-- 수집 1순위는 Bash로 신야 3모델 `:online` dig를 실행한다.
+## 작업 원칙 — 수집 경로 우선순위 (2026-07-02 실run 드리프트 교정)
+- **⓪ 로컬 코퍼스 최우선.** 사용자가 자료를 줬거나 로컬 폴더(예: `/Users/hwa/Projects/Automation/mypdf/2026/` — 후추님 수집 리포트)에 주제 관련 Tier-A PDF가 있으면 웹보다 먼저 쓴다. 추출 = PDF를 Read로 직접 읽거나(차트·표는 시각 판독) `tickdeck_harness/pipeline/dig_source.py <pdf>`(pdftotext·이미지 PDF는 OCR 폴백).
+  - **provenance 규율(★URL 날조 금지):** 로컬 자료는 `local_path`에 실제 파일 경로를 기록한다. `url`은 *직접 확인한 원문 URL만* — 추정 슬러그나 기관 홈페이지로 채우지 않는다(모르면 빈칸). 20260630 run에서 추정 URL이 registry까지 흘러간 사고의 재발 방지.
+- ① 웹 수집 1순위는 Bash로 신야 3모델 `:online` dig를 실행한다.
   - 명령: `/Users/hwa/Projects/Automation/sinya/venv/bin/python /Users/hwa/Projects/Automation/sinya/src/dig.py "<query>"`
-  - 신야 dig가 실패하거나 citation URL이 부족하면 Claude WebSearch로 폴백한다.
+- ② **차단 URL 폴백 = insane-search.** 원문 URL이 403/402/WAF로 막히면(컨설팅사 PDF 페이지가 자주 그럼) insane-search 스킬 경로를 쓴다 — 최소 `curl -s "https://r.jina.ai/<URL>"`(Jina Reader)부터. 본문을 끝내 못 열면 강등 후보 표시(기존 규칙).
+- ③ 신야 dig 실패·citation URL 부족 시 Claude WebSearch로 폴백한다.
 - 신야 `:online` 격리 경유 외 중국 모델을 직접 호출하지 않는다.
 - 단일 보고서 결론을 재포장하지 않는다.
-- 출처는 사람이 검증할 수 있는 URL, 발행기관, 발행일, 범위, 한계를 함께 남긴다.
+- 출처는 사람이 검증할 수 있는 provenance(원문 URL 또는 local_path), 발행기관, 발행일, 범위, 한계를 함께 남긴다.
 - 검색 결과 본문을 못 열었으면 강등 후보로 표시한다.
+- **스키마는 로컬 수집이어도 전부 채운다** — 실run에서 `url`·`year`·`metrics`·플래그가 통째로 빠진 채 verifier로 넘어간 드리프트 있었음. 수치 후보는 반드시 `items[].metrics`에 구조화(verifier 승격 입력).
 
 ## 입력 프로토콜
 `_workspace/00_intake.json`의 `evidence_profile`.
@@ -48,6 +52,7 @@ model: sonnet
     {
       "source_id": "src_001",
       "url": "",
+      "local_path": "",
       "title": "",
       "publisher": "",
       "year": "",

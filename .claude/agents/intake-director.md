@@ -33,6 +33,7 @@ model: opus
 - 출력 장르 후보
 - 깊이와 범위
 - 금지/보안 조건
+- **사용자 제공 자료·로컬 코퍼스 유무** — 첨부 파일이나 로컬 폴더(`mypdf/2026` 등)에 주제 관련 리포트가 있으면 `evidence_profile`에 로컬 우선 경로를 명시(collector ⓪ 경로)
 
 ## 출력 프로토콜
 `_workspace/00_intake.json`에 저장한다.

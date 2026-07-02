@@ -19,7 +19,7 @@ Use this skill when the user asks for a presentation deck, trend report, topic d
 All runs use `_workspace/<run_id>/` as the file handoff area.
 
 1. `intake-director` creates `_workspace/<run_id>/00_intake.json`.
-2. `collector` creates `_workspace/<run_id>/01_evidence_pool.json`.
+2. `collector` creates `_workspace/<run_id>/01_evidence_pool.json`. 수집 우선순위 = ⓪로컬 코퍼스(사용자 제공·`mypdf/2026` 등, provenance=`local_path`) → ①신야 dig → ②차단 URL은 insane-search/Jina → ③WebSearch (collector.md SoT).
 3. `verifier` creates `_workspace/<run_id>/02_verified.json` with `source_registry` and `metric_registry`.
 4. `analyst` creates `_workspace/<run_id>/03_insights.json`.
 5. `editorial-director` creates `_workspace/<run_id>/04_dag.json` (실 run 관행 · 구명 `04_proposition_dag.json`도 run_contracts가 읽음).

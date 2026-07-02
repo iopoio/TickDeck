@@ -20,6 +20,7 @@ model: sonnet
 - 검증 통과 수치는 자유문 claim 안에만 두지 않는다.
 - 모든 렌더 가능 수치는 `metric_id -> {value, unit, source_ids, scope}` 구조로 등록한다.
 - 수치값과 출처명은 verifier registry가 단일 권한이다. designer/page-planner는 ID만 참조한다.
+- **URL 날조 금지(7/2):** `source_registry[].url`은 collector가 확인한 원문 URL만 승계한다. 로컬 자료는 `local_path`를 승계하고 url은 비워둔다 — 추정 슬러그·기관 홈페이지로 채우지 않는다(렌더 출처 링크가 가짜 주소를 달게 됨).
 - 검증 실패, 보조 신호, 2차 간접 수치는 `metric_registry`에 올리지 않는다. 필요하면 downgraded/rejected 쪽에 이유를 남긴다.
 
 ## 입력 프로토콜
