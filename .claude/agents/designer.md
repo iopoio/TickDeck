@@ -51,18 +51,18 @@ model: sonnet
     {
       "page_id": "p01",
       "short_title": "짧은 제목",
-      "layout": "cover|statement|hero_metric|stat_grid|cards|timeline|closing",
+      "layout": "(SoT: contract_checks.py SUPPORTED_LAYOUTS — cover·statement·hero_metric·stat_grid·metric_grid·cards·timeline·split·stepper·node·matrix·index·divider·closing·outro·source_appendix)",
       "allowed_source_ids": ["src_001"],
       "allowed_metric_ids": ["metric_001"],
       "content": [
-        {"type": "headline", "text": "스토리 메시지를 축약한 제목"},
+        {"type": "headline", "text": "스토리 메시지를 축약한 제목. ==키워드== 로 강조어만 accent 가능"},
         {"type": "metric", "metric_id": "metric_001"},
         {
           "type": "viz",
-          "chart": "before_after|dumbbell|flow|big_number|gap_map|shift",
+          "chart": "(SoT: contract_checks.py SUPPORTED_VIZ_CHART_TYPES — 아래 차트 선택 가이드)",
           "title": "짧은 제목. 숫자 금지",
           "series": [
-            {"label": "비교군 라벨. 숫자 금지", "metric_id": "metric_001", "role": "baseline|highlight"}
+            {"label": "비교군 라벨. 숫자 금지", "metric_id": "metric_001", "role": "baseline|highlight|left|right|benchmark"}
           ],
           "note": "선택 설명. 숫자 금지"
         },
@@ -78,14 +78,25 @@ model: sonnet
 }
 ```
 
+차트 선택 가이드 (chart enum SoT = `contract_checks.py SUPPORTED_VIZ_CHART_TYPES` · 렌더러와 1:1 테스트 강제):
+- `before_after` 시간 전·후 (2행이면 변화량 %p/×N 델타가 자동으로 붙는다 — `"delta": false`로 끔)
+- `dumbbell` 같은 척도 두 대상의 격차 / `gap_map` 순위·구성 비례 막대 (`"sort": "desc"` 내림차순 옵션 · role `benchmark` = 업계평균 유령막대)
+- `flow` 개념 흐름 / `shift` 기준→현재 이동 / `funnel` 동일 코호트 단계 / `big_number` 단일 충격 수치
+- `donut` 단일 핵심 비중(0~100%) + 우측 보조 수치 ≤3 (2026-07-02 신규 · 차트캐논 A4)
+- `mirror_bars` 중앙 스파인 양면 비교 — role `left`(비교군·틴트) / `right`(주장·액센트) 필수 (신규 · Deloitte)
+- `rising_columns` 점증 세로 막대 + 첫→끝 배율 브래킷 자동 (신규 · PwC)
+
+텍스트 강조: `headline|title|body|text|summary|callout|note`의 텍스트에 `==키워드==`를 쓰면 그 단어만 accent색으로 렌더된다(백로그 Phase 1·KPMG). 슬라이드당 1~2개만 — 다 칠하면 아무것도 안 보인다. 새 사실·수치 창작 금지는 동일.
+
 허용 블록 타입:
-- 코드 SoT는 `.claude/skills/harness-contracts/scripts/contract_checks.py`의 `SUPPORTED_CONTENT_BLOCK_TYPES`다.
-- 허용 목록: `eyebrow`, `headline`, `title`, `body`, `text`, `summary`, `callout`, `note`, `citation`, `source`, `metric`, `metrics`, `metric_grid`, `stat_grid`, `viz`, `bullets`, `list`.
+- 코드 SoT는 `.claude/skills/harness-contracts/scripts/contract_checks.py`의 `SUPPORTED_CONTENT_BLOCK_TYPES`다. 이 문서의 목록이 코드와 어긋나면 코드가 맞다.
+- 허용 목록: `eyebrow`, `headline`, `title`, `body`, `text`, `summary`, `callout`, `note`, `footnote`, `citation`, `source`, `metric`, `metrics`, `metric_grid`, `stat_grid`, `viz`, `bullets`, `list`.
 - `eyebrow`: 페이지당 1개 이하의 작은 챕터/섹션 라벨. 새 사실·새 수치 금지.
-- `headline|title|body|text|summary|callout|note`: 스토리 텍스트 축약만. 새 사실·새 수치 금지.
-- `metric`: `metric_id`만. `value`, `unit` 직접 입력 금지.
+- `headline|title|body|text|summary|callout|note`: 스토리 텍스트 축약만. 새 사실·새 수치 금지. `==키워드==` 강조 가능(위 텍스트 강조 규칙).
+- `footnote`: 일반 청중용 용어 풀이 각주 — `{"term": "...", "def": "..."}`. 페이지 하단에 작게 렌더(writing-standard C-10b).
+- `metric`: `metric_id`만. `value`, `unit` 직접 입력 금지. registry에 `delta`/`delta_dir(up|down)`가 있으면 카드에 ▲/▼ 델타가 자동 렌더된다(값은 verifier 소유).
 - `metrics|metric_grid|stat_grid`: `metric_ids`만.
-- `viz`: `chart` enum과 `series[].metric_id`만으로 수치를 요청한다. `title`, `series[].label`, `note`에는 숫자·단위·기관명·URL을 쓰지 않는다. 차트 타입은 `before_after`, `dumbbell`, `flow`, `big_number`, `gap_map`, `shift`만 허용한다.
+- `viz`: `chart` enum과 `series[].metric_id`만으로 수치를 요청한다. `title`, `series[].label`, `note`에는 숫자·단위·기관명·URL을 쓰지 않는다. 차트 enum SoT = `SUPPORTED_VIZ_CHART_TYPES`(위 차트 선택 가이드).
 - `citation|source`: `src_id`만. 기관명·URL 직접 입력 금지.
 - `bullets|list`: 텍스트 축약 가능. 수치가 필요하면 별도 `metric_id` 블록으로 분리.
 

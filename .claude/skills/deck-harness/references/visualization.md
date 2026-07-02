@@ -128,3 +128,11 @@ A(동사 신호)와 함께 쓰는 보완 렌즈. 그 페이지가 던지는 질�
 6. **단일 강한 액센트 [디자인 게이트]** — CB는 브랜드색 하나를 과감히(간지 풀블리드·강조 박스·막대 2톤). 우리 톤다운 기조와 어디까지 과감할지는 후추님 디자인 게이트. 권고로만.
 
 > 흡수 우선순위: 1·3은 designer가 지금 바로 적용(구성·구도). 2는 렌더 소폭 확장. 4·5는 렌더 확장 후보(별도 task — 정성 증거·기업 신호가 많은 리포트에 큰 값). 6은 게이트.
+
+## ★ 2층 어휘 v4 렌더러 반영 (2026-07-02 — 스테이징→코드 흡수 1라운드)
+> 소스: 차트캐논(`tickdeck_harness/knowledge/charts/00_SYNTHESIS_차트캐논.md`) + engine.py 기증 + 백로그 Phase 1·2(`v3/review/DESIGN_ABSORPTION_BACKLOG.md`). enum SoT = `contract_checks.py SUPPORTED_VIZ_CHART_TYPES` · 렌더러 1:1 테스트 강제.
+
+- **신규 차트 3종**: `donut`(단일 핵심 비중 + 우측 보조 ≤3 · 캐논 A4 · 후추님 선호 도넛게이지) / `mirror_bars`(중앙 스파인 양면 비교 · role left/right · Deloitte) / `rising_columns`(점증 컬럼 명도램프 + ×N 브래킷 자동 · PwC).
+- **캐논 디테일 소급**: before_after 2행 델타 주석 자동(%p 또는 ×N · 렌더러 계산·`delta:false`로 끔) / gap_map `sort:"desc"` 내림차순 옵션 + role `benchmark` 유령막대(Qwen 발산 렌즈) / metric 카드 registry `delta`+`delta_dir` 3단 위계(▲녹 `#2E9E6B`/▼적 `#C8553D` · 캐논 A5·tabular-nums).
+- **Phase 1 규약**: `==키워드==` 헤드라인 색전환(KPMG · 슬라이드당 1~2개) — h1·부제·본문·콜아웃·간지·표지 전부.
+- 미이식(다음 라운드): line 시계열(연도 라벨의 C6 계약 설계 필요 — metric에 `period` 메타 추가 후) · heatmap_matrix · 비교 매트릭스 표 · 좌레일+2차트 적층 · Phase 4 동적 색.

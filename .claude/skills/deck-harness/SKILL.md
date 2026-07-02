@@ -22,7 +22,7 @@ All runs use `_workspace/<run_id>/` as the file handoff area.
 2. `collector` creates `_workspace/<run_id>/01_evidence_pool.json`.
 3. `verifier` creates `_workspace/<run_id>/02_verified.json` with `source_registry` and `metric_registry`.
 4. `analyst` creates `_workspace/<run_id>/03_insights.json`.
-5. `editorial-director` creates `_workspace/<run_id>/04_proposition_dag.json`.
+5. `editorial-director` creates `_workspace/<run_id>/04_dag.json` (실 run 관행 · 구명 `04_proposition_dag.json`도 run_contracts가 읽음).
 6. `page-planner` creates `_workspace/<run_id>/05_page_plan.json` with `short_title`, `allowed_source_ids`, and `allowed_metric_ids` per page.
 7. `designer` creates `_workspace/<run_id>/06_deck_spec.json` only. It may choose layout and shorten text, but must reference sources/metrics only by `src_id`/`metric_id`.
 8. Code renderer creates HTML from deck_spec and registry:
@@ -42,7 +42,7 @@ python .claude/skills/deck-harness/scripts/render_deck.py \
 1. 1층 자동 체크(만드는 내내): `contract_checks` + `naturalness_check` + 커버리지. 거의 공짜라 초안·수정본마다 돌린다.
 2. 2층 총괄 게이트(내용/스토리 완성 후·디자인 전): 클차장이 "제대로된·잘 읽히는 보고서인가"를 통째 판정한다.
 3. 3층 외부 리뷰(최종 직전 1회): 코덱스 + 제미나이 교차 후 클차장이 트리아지한다. 둘 다 그대로 받지 않는다.
-4. 4층 시각 QA(디자인 후): **렌더가 자동 생성한 `<output>.pdf`를 필수 입력으로 받는다** — `render_deck.py`가 끝나며 `capture_deck.sh`를 호출해 HTML 쓸 때 PDF가 자동 생성된다(규율 아닌 코드 강제). 클차장/`qa-reviewer`가 이 PDF를 *직접 Read로 읽고* 잘림·겹침·밀도·차트 렌더·그레이아웃 강조·깨짐을 판정해 `07_qa_report.json`에 `visual_verdict`(본 슬라이드·발견·pass/fail)를 기록한다. **이 시각 판정 기록 없이는 done 불가**(보고서/덱 전달 금지). "안 보고 됐다" 차단의 코드/배선 버전.
+4. 4층 시각 QA(디자인 후): **렌더가 자동 생성한 `<output>.pdf`를 필수 입력으로 받는다** — `render_deck.py`가 끝나며 `capture_deck.sh`를 호출해 HTML 쓸 때 PDF가 자동 생성된다(규율 아닌 코드 강제). 클차장/`qa-reviewer`가 이 PDF를 *직접 Read로 읽고* 잘림·겹침·밀도·차트 렌더·그레이아웃 강조·깨짐을 판정해 `07_qa_report.json`에 `visual_verdict`(본 슬라이드·발견·pass/fail)를 기록한다. **밀도·단조·닫는 장·제목 기호 잔재 4개 판정(qa-reviewer.md 필수 항목·7/2)도 visual_verdict에 포함해야 한다** — "틀린 것"만 잡고 "부족한 것"을 통과시키던 구멍의 판정 게이트. **이 시각 판정 기록 없이는 done 불가**(보고서/덱 전달 금지). "안 보고 됐다" 차단의 코드/배선 버전.
 
 원칙:
 - 싼 자동 체크는 내내 돌린다.
@@ -130,7 +130,11 @@ Before final handoff, run:
 python .claude/skills/harness-contracts/scripts/test_contracts.py
 ```
 
-For an actual deck artifact, call `validate_all_contracts(deck_json)` from `.claude/skills/harness-contracts/scripts/contract_checks.py`.
+For an actual deck artifact, run (payload를 손으로 조립하지 않는다 — 조립 누락 사고 방지·7/2):
+
+```bash
+python .claude/skills/harness-contracts/scripts/run_contracts.py _workspace/<run_id>
+```
 
 Actual deck contract payload for C6:
 
@@ -159,10 +163,10 @@ Use `viz` when a page needs a compact visual comparison, flow, or concept diagra
 ```json
 {
   "type": "viz",
-  "chart": "before_after|dumbbell|flow|big_number|gap_map|shift",
+  "chart": "(SoT: contract_checks.py SUPPORTED_VIZ_CHART_TYPES)",
   "title": "짧은 제목. 숫자 금지",
   "series": [
-    {"label": "비교군 라벨. 숫자 금지", "metric_id": "metric_001", "role": "baseline|highlight"}
+    {"label": "비교군 라벨. 숫자 금지", "metric_id": "metric_001", "role": "baseline|highlight|left|right|benchmark"}
   ],
   "note": "선택 설명. 숫자 금지"
 }
@@ -172,8 +176,9 @@ Rules:
 - Numeric values, units, and source strings are injected only from `02_verified.json` registries.
 - `series[].metric_id` must be listed in the same page's `allowed_metric_ids`.
 - Metric source ids must be listed in the same page's `allowed_source_ids`.
-- Renderer supports six inline SVG chart types only: `before_after`, `dumbbell`, `flow`, `big_number`, `gap_map`, `shift`.
+- Chart enum SoT = `contract_checks.py SUPPORTED_VIZ_CHART_TYPES` (renderer 1:1 coverage is test-enforced). 현재: `before_after`(2행이면 델타 자동), `dumbbell`, `flow`, `big_number`, `gap_map`(role `benchmark`=유령막대·`"sort":"desc"` 옵션), `shift`, `funnel`, `donut`, `mirror_bars`(role left/right 필수), `rising_columns`(배율 브래킷 자동). 선택 기준은 designer.md 차트 선택 가이드 + `references/visualization.md`.
 - Comparison groups render gray; the highlighted claim uses the active trend/accent color. No external images or chart libraries.
+- 텍스트 블록의 `==키워드==`는 강조어 색전환으로 렌더된다(슬라이드당 1~2개). 델타 주석·배율 브래킷은 렌더러가 계산한다 — designer가 변화량을 손으로 쓰지 않는다.
 
 ## Test Scenarios
 - Trend report with no supplied files: must collect Tier-A evidence before analysis.

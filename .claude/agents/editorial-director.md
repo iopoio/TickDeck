@@ -31,7 +31,7 @@ model: opus
 `_workspace/03_insights.json`.
 
 ## 출력 프로토콜
-`_workspace/04_proposition_dag.json`에 저장한다.
+`_workspace/<run_id>/04_dag.json`에 저장한다.
 
 ```json
 {

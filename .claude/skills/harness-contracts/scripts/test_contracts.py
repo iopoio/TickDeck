@@ -465,6 +465,13 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("eyebrow", contract_checks_module.SUPPORTED_CONTENT_BLOCK_TYPES)
         self.assertIn("viz", contract_checks_module.SUPPORTED_CONTENT_BLOCK_TYPES)
 
+    def test_every_supported_viz_chart_has_a_renderer(self):
+        # 계약 enum에 있는데 렌더러 분기가 없으면 "조용한 no-op"이 된다 — 1:1을 코드로 강제.
+        self.assertEqual(
+            set(render_deck_module._CHART_RENDERERS),
+            set(contract_checks_module.SUPPORTED_VIZ_CHART_TYPES),
+        )
+
     def test_validate_all_contracts_can_raise(self):
         broken = dict(VALID_DECK, rendered_pages=[{"title": "신뢰도 강등", "body": "본문"}])
         with self.assertRaises(ContractViolation):

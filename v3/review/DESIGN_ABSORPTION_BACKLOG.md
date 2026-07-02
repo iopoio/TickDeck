@@ -102,6 +102,16 @@
 - [x] 디자인 미세 마감: p13 화살표 머리 7/5→5/4 · p19 계단 명도램프 상한 94→84(리니어) · 표지/백커버 선 3→2px · p20 결론 카드 대비(panel #26443E·line #577D75)+세로 균형.
 > **논리/데이터(덱 콘텐츠, 엔진 아님)**: 출처불명 "22% vs 1%"(원본 run에 0건) 제거→정성화 · p7 "동시에 구체화"→"확인된다"·p9 "지배"→"쏠림" 과장완화 · **실행 일관성**(p18 "셋"→"다섯 갈래를 세 레버로", 진정성·팬덤 실행단 복원 + p19 단계별 산출물). **교훈: 판매 샘플 = 납품 품질 기준. 단 '없는 데이터로 각주 채우기'(날조)가 아니라 '논리·실행을 단단히'로 충족.**
 
+### ★ v4 렌더러 반영 (2026-07-02 · 위 [x]는 v3 엔진 기준 — v4는 이 절이 SoT)
+> v4 = `.claude/skills/deck-harness/scripts/render_deck.py`. 흡수 완료 정의 = v4 코드 + contracts enum + visualization.md 포인터 + 본 절 표기.
+- [x] **키워드 색전환**(Phase 1) — `==키워드==` → `.kw` accent. h1·부제·본문·콜아웃·간지·표지.
+- [x] **델타 주석**(Phase 1) — before_after 2행 %p/×N 자동(렌더러 계산·C6 안전).
+- [x] **덤벨/미러/상승컬럼 중 미러·상승컬럼**(Phase 2) — `mirror_bars`(role left/right)·`rising_columns`(×N 브래킷). 덤벨은 v4 기존 `dumbbell` 유지.
+- [x] **donut**(차트캐논 A4·engine.py L_donut 기증) + **metric 델타 3단 위계**(캐논 A5·L_statgrid 기증 — registry `delta`/`delta_dir`).
+- [x] **유령막대**(캐논 발산 렌즈) — gap_map role `benchmark`. **내림차순 정렬**(캐논 A3) — gap_map `sort:"desc"`.
+- [ ] v4 미이식: 히트맵(Phase 2) · 비교 매트릭스 표·틴티드 스탯카드·좌레일 2차트 적층(Phase 3) · Figure 캡션(Phase 1) · Phase 4·5.
+- [ ] engine.py 은퇴 보류 — `L_line`(시계열) 미이식. 연도 라벨이 C6 raw-number에 걸려 metric `period` 메타 계약 설계 후 이식 → 그때 은퇴 도장.
+
 ## 권고
 1. **Phase 1(규약)은 비용 대비 효과 최고 → 먼저.** 차트 제목 액션타이틀·델타 주석·Figure 캡션·키워드 색전환만 해도 "컨설팅 리포트" 격이 올라감.
 2. **Phase 2~3은 우리 약점(비교·구조·다항통계) 직격 → 우선순위 높은 6~8개만 선별 구현**(전부 X).

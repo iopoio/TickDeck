@@ -10,6 +10,7 @@ Use this skill before accepting any TickDeck v4 harness output as complete.
 ## Files
 
 - `scripts/contract_checks.py`: executable contract validators.
+- `scripts/run_contracts.py`: run 디렉토리에서 payload 자동 조립 후 C1~C6 일괄 검증 (`run_contracts.py <run_dir>` — 수동 조립 금지).
 - `scripts/test_contracts.py`: unittest coverage for C1~C6.
 - `scripts/naturalness_check.py`: markdown naturalness scanner for AI translationese and borrowed cliches.
 - `scripts/test_naturalness.py`: unittest coverage for the naturalness scanner.

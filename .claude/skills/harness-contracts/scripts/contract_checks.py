@@ -54,7 +54,19 @@ SUPPORTED_CONTENT_BLOCK_TYPES = frozenset(
     }
 )
 SUPPORTED_VIZ_CHART_TYPES = frozenset(
-    {"before_after", "dumbbell", "flow", "big_number", "gap_map", "shift", "funnel"}
+    {
+        "before_after",
+        "dumbbell",
+        "flow",
+        "big_number",
+        "gap_map",
+        "shift",
+        "funnel",
+        # 2026-07-02 2층 어휘 흡수: 차트캐논 A4(도넛) + 백로그 Phase 2(미러·상승컬럼)
+        "donut",
+        "mirror_bars",
+        "rising_columns",
+    }
 )
 SUPPORTED_LAYOUTS = frozenset(
     {
@@ -534,7 +546,9 @@ class _RenderedAuthorityParser(HTMLParser):
             )
 
     def _inside_ignored_tag(self) -> bool:
-        return any(item.get("_tag") in {"script", "style"} for item in self.stack)
+        # <title>은 문서 메타(브라우저 탭)지 슬라이드 콘텐츠가 아니다 — 연도 포함 제목이
+        # C6에 걸려 문서 제목에서 연도를 빼는 우회가 반복되던 문제의 근본 풀이(7/2).
+        return any(item.get("_tag") in {"script", "style", "title"} for item in self.stack)
 
     def _inside_authorized_numeric_context(self) -> bool:
         for item in self.stack:

@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import math
 import re
 import subprocess
 import sys
@@ -149,8 +150,10 @@ def render_deck(
 
     palette = _resolve_palette(deck_spec, theme)
     deck_cited_source_ids = _deck_cited_source_ids(pages, registry)
+    # 표지 밴드 수 = 실제 파트(간지) 수. 의미 없는 고정 5밴드 금지(팔레트 SoT "의미 없는 색칠 금지").
+    part_count = sum(1 for page in pages if isinstance(page, dict) and str(page.get("layout")) == "divider")
     rendered_pages = [
-        _render_page(page, index + 1, len(pages), registry, palette, deck_cited_source_ids)
+        _render_page(page, index + 1, len(pages), registry, palette, deck_cited_source_ids, part_count)
         for index, page in enumerate(pages)
         if isinstance(page, dict)
     ]
@@ -200,6 +203,7 @@ def _render_page(
     registry: dict[str, dict[str, Any]],
     palette: dict[str, str],
     deck_cited_source_ids: list[str],
+    part_count: int = 0,
 ) -> str:
     page_id = str(page.get("page_id", f"p{page_number:02d}"))
     layout = str(page.get("layout", "statement"))
@@ -212,7 +216,7 @@ def _render_page(
         raise ValueError(f"{page_id}: content must be a list")
 
     if layout == "cover":
-        return _render_cover_page(page, page_number, page_count, content, palette)
+        return _render_cover_page(page, page_number, page_count, content, palette, part_count)
     if layout == "outro":
         return _render_outro_page(page, page_number, page_count, content, palette)
 
@@ -262,7 +266,7 @@ def _render_page(
   {motif_html}
   <header class="slide-head">
     <div class="eyebrow">{_escape(eyebrow_text)}</div>
-    <h1>{_escape(title_text)}</h1>
+    <h1>{_rich(title_text)}</h1>
   </header>
   {body_html}{foot_html}
 </section>""".strip()
@@ -274,12 +278,13 @@ def _render_cover_page(
     page_count: int,
     content: list[Any],
     palette: dict[str, str],
+    part_count: int = 0,
 ) -> str:
     page_id = str(page.get("page_id", f"p{page_number:02d}"))
-    title = _first_block_text(content, {"headline", "title"}) or _non_cover_text(str(page.get("short_title", "")))
+    title = _clean_title_text(_first_block_text(content, {"headline", "title"}) or _non_cover_text(str(page.get("short_title", ""))))
     subtitle = _first_block_text(content, {"summary", "body", "text", "note"})
     eyebrow = _non_cover_text(_first_block_text(content, {"eyebrow"}))
-    decor_html = _cover_decor_html(palette)
+    decor_html = _cover_decor_html(palette, part_count)
     eyebrow_html = f'<p class="cover-eyebrow">{_escape(eyebrow)}</p>' if eyebrow else ""
     subtitle_html = f'<p class="cover-subtitle">{_escape(subtitle)}</p>' if subtitle else ""
     credit_html = _cover_credit_html()
@@ -289,7 +294,7 @@ def _render_cover_page(
   <main class="cover-body">
     <div class="cover-lockup">
       {eyebrow_html}
-      <h1>{_escape(title)}</h1>
+      <h1>{_rich(title)}</h1>
       {subtitle_html}
     </div>
     {decor_html}
@@ -448,6 +453,10 @@ def _render_layout_body(
     if layout == "closing":
         return _render_closing(content)
     body_class = "body body-grid" if layout in {"stat_grid", "metric_grid", "cards"} else "body"
+    # 저밀도 페이지(블록 ≤3)는 세로 중앙 정렬 — 하단 40%가 '남은 공간'으로 읽히던 문제(7/2).
+    # ponytail: 블록 수 휴리스틱. 4+ 블록 페이지가 여전히 비면 렌더 높이 실측으로 교체.
+    if layout not in {"stat_grid", "metric_grid", "cards"} and len(body_parts) <= 3:
+        body_class += " body-center"
     return f'<main class="{body_class}">{"".join(body_parts)}</main>'
 
 
@@ -526,7 +535,7 @@ def _render_index(body_parts: list[str], content: list[Any]) -> str:
 
 
 def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) -> str:
-    title = _first_block_text(content, {"headline", "title"}) or str(page.get("short_title", "")).strip()
+    title = _clean_title_text(_first_block_text(content, {"headline", "title"}) or str(page.get("short_title", "")).strip())
     subtitle = _first_block_text(content, {"summary", "body", "text", "note"})
     part_index, part_label = _divider_part_meta(page, content, page_number)
     # 헤드라인이 파트명("설정 —"·"증거·")으로 시작하면 제거 — 바로 위 "PART n · 설정"과 중복(후추님 6/30).
@@ -539,7 +548,7 @@ def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) 
     )
     subtitle_html = f'<p class="divider-subtitle">{_escape(subtitle)}</p>' if subtitle else ""
     # 헤드라인의 의도적 줄바꿈(\n)을 <br>로(나머지는 escape). 발표자가 끊고 싶은 지점 존중.
-    title_html = "<br>".join(_escape(part) for part in title.split("\n"))
+    title_html = "<br>".join(_rich(part) for part in title.split("\n"))
     # 파트 표시는 진척 막대 + 한 줄(PART n · 라벨) 하나로 통일(후추님 #3 — 3중 중복 제거).
     return f"""
 <main class="body layout-body divider-body">
@@ -703,7 +712,7 @@ def _divider_part_count(page: dict[str, Any], part_index: int) -> int:
     return max(part_index, count, 1)
 
 
-def _cover_decor_html(palette: dict[str, str]) -> str:
+def _cover_decor_html(palette: dict[str, str], part_count: int = 0) -> str:
     theme = palette["theme"]
     if theme == "tech":
         # 표지·outro 상단 코너 꺽쇠 제거(후추님 #7·#9). 표지/outro 모두 장식 없이 타이포만.
@@ -715,8 +724,18 @@ def _cover_decor_html(palette: dict[str, str]) -> str:
         return f'<div class="axis-strip marketing-axis">{bands}</div>'
     if theme == "health":
         return '<div class="cover-health-curve" aria-hidden="true"></div>'
-    bands = "".join(f'<span style="--band:{_escape(palette[f"t{i}"])}"></span>' for i in range(1, 6))
-    return f'<div class="axis-strip editorial-axis" aria-hidden="true">{bands}</div>'
+    # 기본(editorial·peppinch): 밴드 수 = 덱의 실제 파트(간지) 수 — 간지 진행 티커와 같은 어휘라
+    # 표지가 덱 구조를 예고한다. 파트가 없으면 장식 생략(무의미한 고정 5밴드 금지·7/2).
+    if part_count <= 0:
+        return ""
+    bands = "".join(
+        f'<span style="--band:{_escape(palette[f"t{min(i, 5)}"])}"></span>' for i in range(1, part_count + 1)
+    )
+    width = min(760, part_count * 160)
+    return (
+        f'<div class="axis-strip editorial-axis" aria-hidden="true" '
+        f'style="grid-template-columns: repeat({part_count}, 1fr); max-width: {width}px;">{bands}</div>'
+    )
 
 
 def _render_block(
@@ -734,13 +753,13 @@ def _render_block(
     if block_type == "eyebrow":
         return f'<div class="eyebrow block-eyebrow">{_escape(str(block.get("text", "")))}</div>', []
     if block_type in {"headline", "title"}:
-        return f'<h2 class="block-title">{_escape(str(block.get("text", "")))}</h2>', []
+        return f'<h2 class="block-title">{_rich(str(block.get("text", "")))}</h2>', []
     if block_type in {"body", "text", "summary"}:
-        return f'<p class="body-text">{_escape(str(block.get("text", "")))}</p>', []
+        return f'<p class="body-text">{_rich(str(block.get("text", "")))}</p>', []
     if block_type in {"callout", "note"}:
         # emphasis:true면 펀치라인용으로 크게(제언·맺음 등). 기본은 일반 callout.
         cls = "callout callout-lead" if block.get("emphasis") else "callout"
-        return f'<aside class="{cls}">{_escape(str(block.get("text", "")))}</aside>', []
+        return f'<aside class="{cls}">{_rich(str(block.get("text", "")))}</aside>', []
     if block_type in {"citation", "source"}:
         src_id = str(block.get("src_id", block.get("source_id", ""))).strip()
         if src_id:
@@ -815,10 +834,18 @@ def _render_metric(
             pub = str(registry.get("sources", {}).get(src_ids[0], {}).get("publisher") or "").strip()
             if pub:
                 src_html = f'\n  <div class="metric-source" data-src-id="{_escape(src_ids[0])}">{_escape(pub)}</div>'
+    # 델타 3단 위계(차트캐논 A5·engine.py L_statgrid 기증) — registry가 delta를 가질 때만.
+    # 값은 verifier 소유(metric_registry) → C6 안전. delta_dir = up|down.
+    delta_html = ""
+    delta = str(metric.get("delta") or "").strip()
+    if delta:
+        direction = str(metric.get("delta_dir") or "").strip()
+        arrow = {"up": "▲ ", "down": "▼ "}.get(direction, "")
+        delta_html = f'\n  <div class="metric-delta {_escape(direction)}" data-metric-id="{_escape(metric_id)}">{arrow}{_escape(delta)}</div>'
     return f"""
 <article class="metric-card" data-metric-id="{_escape(metric_id)}">
   <div class="metric-label" data-metric-id="{_escape(metric_id)}">{_escape(label)}</div>
-  <div class="metric-value" data-metric-id="{_escape(metric_id)}">{_escape(value)}</div>{src_html}
+  <div class="metric-value" data-metric-id="{_escape(metric_id)}">{_escape(value)}</div>{delta_html}{src_html}
 </article>""".strip()
 
 
@@ -835,18 +862,10 @@ def _render_viz(
     title = str(block.get("title", "")).strip()
     note = str(block.get("note", "")).strip()
     accent = _viz_accent(block, palette)
-    if chart == "big_number":
-        # arrow=false면 화살표 생략 — 비중(%)은 변화량이 아니라 상태라 ↑가 "상승했다"로 오독됨(후추님 6/30).
-        svg = _svg_big_number(series, title, note, accent, page_id, arrow=block.get("arrow", True))
-    else:
-        svg = {
-            "before_after": _svg_before_after,
-            "dumbbell": _svg_dumbbell,
-            "flow": _svg_flow,
-            "gap_map": _svg_gap_map,
-            "shift": _svg_shift,
-            "funnel": _svg_funnel,
-        }[chart](series, title, note, accent, page_id)
+    renderer = _CHART_RENDERERS.get(chart)
+    if renderer is None:
+        raise ValueError(f"{page_id}: viz chart has no renderer: {chart}")
+    svg = renderer(series, title, note, accent, page_id, block)
     return f'<aside class="visual-card visual-{_class_name(chart)}">{svg}</aside>'
 
 
@@ -896,8 +915,12 @@ def _svg_before_after(
     note: str,
     accent: str,
     page_id: str,
+    block: dict[str, Any] | None = None,
 ) -> str:
     rows = series[:4]
+    # 델타 주석(백로그 Phase 1·McKinsey/PwC) — 전·후 2행이면 변화량을 코드가 계산해
+    # highlight 행 라벨줄 우측에 표기. 렌더러 계산·data-metric-id 컨텍스트 → C6 안전.
+    delta_text = _delta_annotation(rows) if (block or {}).get("delta", True) else ""
     # 라벨을 막대 위 줄에 올린다(막대와 겹침 차단·후추님 #2). 한 행 = 라벨줄 + 막대줄.
     row_h = 78
     # 소제목(visual-title y=20)과 첫 요소 사이 여백을 전 차트 공통 CHART_TITLE_GAP로 통일(후추님 6/30).
@@ -911,18 +934,37 @@ def _svg_before_after(
         top = CHART_TITLE_GAP + index * row_h
         bar_y = top + 26
         width = _scale_metric_width(item, scale_base, bar_full)
-        color = accent if _is_highlight(item, index, rows) else "#B0A491"  # 비강조 막대 진슬레이트(트랙과 구분)
+        highlight = _is_highlight(item, index, rows)
+        color = accent if highlight else "#B0A491"  # 비강조 막대 진슬레이트(트랙과 구분)
         value_x = min(980, width + 22)
         value_class = "visual-value-accent" if color == accent else "visual-value"
+        # 델타는 값 바로 옆 tspan — 떨어뜨려 놓으면 어느 막대의 변화량인지 붕 뜬다(7/2 데모 QA).
+        delta_tspan = f'<tspan dx="20" class="visual-delta">{_escape(delta_text)}</tspan>' if highlight and delta_text else ""
         body.append(
             f"""
             <g data-metric-id="{_escape(item["metric_id"])}">
               <text x="0" y="{top + 8}" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
               <rect x="0" y="{bar_y}" width="{width:.1f}" height="24" rx="12" fill="{color}"/>
-              <text x="{value_x:.1f}" y="{bar_y + 19}" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+              <text x="{value_x:.1f}" y="{bar_y + 19}" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}{delta_tspan}</text>
             </g>"""
         )
     return _svg_shell("before-after", title, note, height, "".join(body), page_id)
+
+
+def _delta_annotation(rows: list[dict[str, Any]]) -> str:
+    """전·후 2행의 변화량 요약 — %끼리는 %p 차이, 그 외는 배율(×N). 렌더러 소유 계산."""
+    if len(rows) != 2:
+        return ""
+    first, last = rows[0].get("number"), rows[1].get("number")
+    if not isinstance(first, (int, float)) or not isinstance(last, (int, float)):
+        return ""
+    if _is_bounded_percent_series(rows):
+        diff = last - first
+        return f"{diff:+.0f}%p" if diff else ""
+    if first > 0 and last / first >= 1.5:
+        ratio = last / first
+        return f"×{ratio:.0f}" if ratio >= 10 else f"×{ratio:.1f}"
+    return ""
 
 
 def _svg_dumbbell(
@@ -931,6 +973,7 @@ def _svg_dumbbell(
     note: str,
     accent: str,
     page_id: str,
+    block: dict[str, Any] | None = None,
 ) -> str:
     points = (series[:2] if len(series) >= 2 else [series[0], series[0]])
     max_value = _max_metric_number(points)
@@ -962,6 +1005,7 @@ def _svg_flow(
     note: str,
     accent: str,
     page_id: str,
+    block: dict[str, Any] | None = None,
 ) -> str:
     nodes = series[:4]
     arrow_id = f"arrow-{_class_name(page_id)}-flow"
@@ -999,8 +1043,10 @@ def _svg_big_number(
     note: str,
     accent: str,
     page_id: str,
-    arrow: bool = True,
+    block: dict[str, Any] | None = None,
 ) -> str:
+    # arrow=false면 화살표 생략 — 비중(%)은 변화량이 아니라 상태라 ↑가 "상승했다"로 오독됨(후추님 6/30).
+    arrow = (block or {}).get("arrow", True)
     item = _highlight_or_first(series)
     # arrow=false면 화살표 tspan 자체를 빼서 % 비중이 "상승"으로 안 읽히게(후추님 6/30).
     arrow_glyph = "↓" if (item["number"] or 0) < 0 else "↑"
@@ -1020,8 +1066,12 @@ def _svg_gap_map(
     note: str,
     accent: str,
     page_id: str,
+    block: dict[str, Any] | None = None,
 ) -> str:
     rows = series[:5]
+    # 내림차순 정렬(차트캐논 A3 — 순위 비교는 정렬이 기본, 시계열 제외). opt-in: "sort":"desc".
+    if (block or {}).get("sort") == "desc":
+        rows = sorted(rows, key=lambda r: abs(r["number"]) if isinstance(r.get("number"), (int, float)) else -1, reverse=True)
     # 라벨을 막대 위 줄로 올려 겹침 차단(후추님 #2).
     row_h = 68
     height = (CHART_TITLE_GAP - 16) + len(rows) * row_h + (30 if note else 0)
@@ -1034,17 +1084,22 @@ def _svg_gap_map(
         top = CHART_TITLE_GAP + index * row_h
         bar_y = top + 24
         width = _scale_metric_width(item, scale_base, track)
-        is_highlight = _is_highlight(item, index, rows)
+        is_benchmark = item.get("role") == "benchmark"
+        is_highlight = _is_highlight(item, index, rows) and not is_benchmark
         if is_highlight and not isinstance(item.get("number"), (int, float)):
             width = track
-        color = accent if is_highlight else "#B0A491"  # 비강조 막대: 연회색→진슬레이트(트랙과 구분·채워진 값으로 또렷·후추님 6/30)
+        # 유령막대(차트캐논 발산 렌즈·Qwen): role=benchmark는 업계평균/목표선 — 옅게 깔려 비교 기준만 제공.
+        if is_benchmark:
+            color, opacity = "#1F2733", ' fill-opacity=".14"'
+        else:
+            color, opacity = (accent if is_highlight else "#B0A491"), ""  # 비강조 막대: 진슬레이트(트랙과 구분·후추님 6/30)
         value_class = "visual-value-accent" if is_highlight else "visual-value"
         body.append(
             f"""
             <g data-metric-id="{_escape(item["metric_id"])}">
               <text x="0" y="{top + 8}" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
               <rect x="0" y="{bar_y}" width="{track}" height="16" rx="8" fill="#E5E7EB"/>
-              <rect x="0" y="{bar_y}" width="{width:.1f}" height="16" rx="8" fill="{color}"/>
+              <rect x="0" y="{bar_y}" width="{width:.1f}" height="16" rx="8" fill="{color}"{opacity}/>
               <text x="{track + 18}" y="{bar_y + 14}" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
             </g>"""
         )
@@ -1057,6 +1112,7 @@ def _svg_shift(
     note: str,
     accent: str,
     page_id: str,
+    block: dict[str, Any] | None = None,
 ) -> str:
     nodes = series[:5]
     arrow_id = f"arrow-{_class_name(page_id)}-shift"
@@ -1094,6 +1150,7 @@ def _svg_funnel(
     note: str,
     accent: str,
     page_id: str,
+    block: dict[str, Any] | None = None,
 ) -> str:
     rows = series[:5]
     # 한 행 = [좌측 라벨] · [좌측 정렬 막대] · [막대 오른쪽 값]. 막대 길이는 값에 정비례(좌정렬)해
@@ -1120,6 +1177,166 @@ def _svg_funnel(
             </g>"""
         )
     return _svg_shell("funnel", title, note, height, "".join(body), page_id)
+
+
+def _svg_donut(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 단일 핵심 비중(차트캐논 A4·engine.py L_donut 기증) — 중앙 KPI + 우측 보조 수치(series[1:] ≤3).
+    # 후추님 선호 목록(도넛게이지)의 v4 어휘화. 값은 0~100 비중일 때만 의미(그 외 clamp).
+    item = _highlight_or_first(series)
+    number = item.get("number") if isinstance(item.get("number"), (int, float)) else 0.0
+    val = max(0.0, min(100.0, abs(number)))
+    radius, stroke = 104, 26
+    cx = 168
+    cy = CHART_TITLE_GAP + 126
+    circumference = 2 * math.pi * radius
+    dash = circumference * val / 100
+    aux_rows = []
+    aux_items = [s for s in series if s is not item][:3]
+    for index, aux in enumerate(aux_items):
+        y = cy - 74 + index * 68
+        aux_rows.append(
+            f"""
+            <g data-metric-id="{_escape(aux["metric_id"])}">
+              <text x="420" y="{y}" class="visual-label" data-metric-id="{_escape(aux["metric_id"])}">{_escape(aux["label"])}</text>
+              <text x="960" y="{y}" text-anchor="end" class="visual-value" data-metric-id="{_escape(aux["metric_id"])}">{_escape(aux["value"])}</text>
+              <line x1="420" y1="{y + 18}" x2="960" y2="{y + 18}" stroke="#E5E7EB" stroke-width="1"/>
+            </g>"""
+        )
+    center_label_lines = _wrap_text(item["label"], 12)[:2]
+    label_tspans = "".join(
+        f'<tspan x="{cx}" dy="{0 if i == 0 else 19}">{_escape(line)}</tspan>' for i, line in enumerate(center_label_lines)
+    )
+    body = f"""
+      <g data-metric-id="{_escape(item["metric_id"])}">
+        <circle cx="{cx}" cy="{cy}" r="{radius}" fill="none" stroke="#E5E7EB" stroke-width="{stroke}"/>
+        <circle cx="{cx}" cy="{cy}" r="{radius}" fill="none" stroke="{accent}" stroke-width="{stroke}" stroke-linecap="round"
+          stroke-dasharray="{dash:.1f} {circumference - dash:.1f}" transform="rotate(-90 {cx} {cy})"/>
+        <text x="{cx}" y="{cy - 2}" text-anchor="middle" font-size="56" font-weight="900" fill="{accent}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+        <text x="{cx}" y="{cy + 34}" text-anchor="middle" class="visual-note" data-metric-id="{_escape(item["metric_id"])}">{label_tspans}</text>
+      </g>{"".join(aux_rows)}"""
+    return _svg_shell("donut", title, note, cy + radius + 42, body, page_id)
+
+
+def _svg_mirror_bars(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 미러 분기 막대(백로그 Phase 2·Deloitte) — 중앙 스파인 양면 비교. role=left(비교군·틴트)/right(주장·액센트).
+    lefts = [s for s in series if s.get("role") == "left"][:4]
+    rights = [s for s in series if s.get("role") == "right"][:4]
+    if not lefts or not rights:
+        raise ValueError(f"{page_id}: mirror_bars needs series with role left and right")
+    row_count = max(len(lefts), len(rights))
+    both = lefts + rights
+    scale_base = 100.0 if _is_bounded_percent_series(both) else _max_metric_number(both)
+    spine, half = 500, 340
+    row_h = 82
+    height = CHART_TITLE_GAP + row_count * row_h + (30 if note else 0)
+    body = [
+        f'<line x1="{spine}" y1="{CHART_TITLE_GAP - 8}" x2="{spine}" y2="{CHART_TITLE_GAP + row_count * row_h - 26}" stroke="#1F2733" stroke-width="1.5" opacity=".3"/>'
+    ]
+    for index in range(row_count):
+        top = CHART_TITLE_GAP + index * row_h
+        bar_y = top + 28
+        if index < len(lefts):
+            item = lefts[index]
+            width = _scale_metric_width(item, scale_base, half)
+            body.append(
+                f"""
+                <g data-metric-id="{_escape(item["metric_id"])}">
+                  <text x="{spine - 14}" y="{top + 10}" text-anchor="end" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+                  <rect x="{spine - 10 - width:.1f}" y="{bar_y}" width="{width:.1f}" height="22" rx="11" fill="#B0A491"/>
+                  <text x="{spine - 22 - width:.1f}" y="{bar_y + 17}" text-anchor="end" class="visual-value" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+                </g>"""
+            )
+        if index < len(rights):
+            item = rights[index]
+            width = _scale_metric_width(item, scale_base, half)
+            body.append(
+                f"""
+                <g data-metric-id="{_escape(item["metric_id"])}">
+                  <text x="{spine + 14}" y="{top + 10}" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+                  <rect x="{spine + 10}" y="{bar_y}" width="{width:.1f}" height="22" rx="11" fill="{accent}"/>
+                  <text x="{spine + 22 + width:.1f}" y="{bar_y + 17}" class="visual-value-accent" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+                </g>"""
+            )
+    return _svg_shell("mirror-bars", title, note, height, "".join(body), page_id)
+
+
+def _svg_rising_columns(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 상승컬럼 + 멀티플라이어 브래킷(백로그 Phase 2·PwC) — 점증 세로 막대(명도램프) + 첫→끝 ×N 콜아웃.
+    rows = series[:5]
+    max_value = _max_metric_number(rows)
+    base_y = CHART_TITLE_GAP + 236
+    max_h = 175
+    area_x, area_w = 80, 840
+    col_w = min(140, area_w / max(1, len(rows)) * 0.56)
+    step = area_w / max(1, len(rows))
+    delta_text = _delta_annotation([rows[0], rows[-1]]) if len(rows) >= 2 and (block or {}).get("delta", True) else ""
+    body = []
+    tops: list[tuple[float, float]] = []
+    for index, item in enumerate(rows):
+        number = abs(item["number"]) if isinstance(item.get("number"), (int, float)) else 0.0
+        h = max(10.0, (number / max_value) * max_h) if max_value else 10.0
+        x = area_x + step * index + (step - col_w) / 2
+        y = base_y - h
+        tops.append((x + col_w / 2, y))
+        is_last = index == len(rows) - 1
+        opacity = 0.34 + (0.66 * index / max(1, len(rows) - 1))
+        value_class = "visual-value-accent" if is_last else "visual-value"
+        body.append(
+            f"""
+            <g data-metric-id="{_escape(item["metric_id"])}">
+              <rect x="{x:.1f}" y="{y:.1f}" width="{col_w:.1f}" height="{h:.1f}" rx="6" fill="{accent}" fill-opacity="{opacity:.2f}"/>
+              <text x="{x + col_w / 2:.1f}" y="{y - 12:.1f}" text-anchor="middle" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+              <text x="{x + col_w / 2:.1f}" y="{base_y + 26}" text-anchor="middle" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+            </g>"""
+        )
+    if delta_text and len(tops) >= 2:
+        (x1, y1), (x2, y2) = tops[0], tops[-1]
+        bracket_y = min(y1, y2) - 54
+        last_id = rows[-1]["metric_id"]
+        body.append(
+            f"""
+            <g data-metric-id="{_escape(last_id)}">
+              <path d="M {x1:.1f} {y1 - 34:.1f} L {x1:.1f} {bracket_y:.1f} L {x2:.1f} {bracket_y:.1f} L {x2:.1f} {y2 - 34:.1f}" fill="none" stroke="{accent}" stroke-width="2" opacity=".55"/>
+              <text x="{(x1 + x2) / 2:.1f}" y="{bracket_y - 10:.1f}" text-anchor="middle" class="visual-delta" data-metric-id="{_escape(last_id)}">{_escape(delta_text)}</text>
+            </g>"""
+        )
+    return _svg_shell("rising-columns", title, note, base_y + 44 + (28 if note else 0), "".join(body), page_id)
+
+
+# chart enum(계약 SoT)과 렌더러 1:1 — 빠지면 테스트가 잡는다(test_contracts 커버리지).
+_CHART_RENDERERS = {
+    "before_after": _svg_before_after,
+    "dumbbell": _svg_dumbbell,
+    "flow": _svg_flow,
+    "big_number": _svg_big_number,
+    "gap_map": _svg_gap_map,
+    "shift": _svg_shift,
+    "funnel": _svg_funnel,
+    "donut": _svg_donut,
+    "mirror_bars": _svg_mirror_bars,
+    "rising_columns": _svg_rising_columns,
+}
 
 
 def _wrap_text(text: str, max_chars: int) -> list[str]:
@@ -1363,8 +1580,14 @@ def _page_eyebrow_text(page: dict[str, Any], content: list[Any], layout: str) ->
 
 def _page_title_text(page: dict[str, Any], content: list[Any], layout: str) -> str:
     if layout == "closing":
-        return _first_block_text(content, {"headline", "title"}) or str(page.get("short_title", "")).strip()
-    return str(page.get("short_title", "")).strip()
+        return _clean_title_text(_first_block_text(content, {"headline", "title"}) or str(page.get("short_title", "")).strip())
+    return _clean_title_text(str(page.get("short_title", "")).strip())
+
+
+def _clean_title_text(text: str) -> str:
+    # 제목 앞머리의 마크다운·기호 잔재(*, #, - 등) 제거 — p12 '* 한국의…' 별표가 그대로
+    # 렌더된 재발 방지(7/2). C6 제목 면제 구역이라 계약이 못 잡으니 렌더에서 strip.
+    return re.sub(r"^[\s*#>•·~\-]+", "", text).strip()
 
 
 def _first_block_text(content: list[Any], block_types: set[str]) -> str:
@@ -1386,6 +1609,15 @@ def _class_name(value: str) -> str:
 
 def _escape(value: str) -> str:
     return html.escape(normalize_enclosed_numerals(value), quote=True)
+
+
+_KEYWORD_PATTERN = re.compile(r"==([^=]+?)==")
+
+
+def _rich(value: str) -> str:
+    # 헤드라인 키워드 색전환(백로그 Phase 1·KPMG) — ==키워드== 만 accent로.
+    # escape 후 치환이라 안전. 새 사실·수치 창작이 아니라 기존 텍스트의 강조 표시만.
+    return _KEYWORD_PATTERN.sub(r'<b class="kw">\1</b>', _escape(value))
 
 
 def _css(palette: dict[str, str]) -> str:
@@ -1479,6 +1711,8 @@ h1 {{
 /* statement/hero/stat 차트 슬라이드는 제목 바로 아래 상단 정렬(후추님 #4 — bottom-weighted 통일).
    divider·index·matrix·closing·cover는 각자 -body에서 justify-content를 따로 잡아 영향 없음. */
 .body-grid {{ justify-content: center; }}
+/* 저밀도 페이지(블록 ≤3) 세로 중앙 — 하단 공백이 의도된 여백으로 읽히게(7/2). */
+.body-center {{ justify-content: center; }}
 /* headline 블록 = h1 아래의 단일 부제. h1(44px) 대비 크기 점프를 확실히(후추님 #9 위계 단순화). */
 .block-title {{
   font-size: 24px;
@@ -1489,10 +1723,10 @@ h1 {{
   max-width: 960px;
   word-break: keep-all;
 }}
-.body-text {{ font-size: 18px; line-height: 1.56; max-width: 900px; word-break: keep-all; }}
+.body-text {{ font-size: 18px; line-height: 1.56; max-width: 980px; word-break: keep-all; }}
 /* callout = 박스 강조 takeaway. note(body-text 18px)와 위계: 굵기600+박스+약간 큼(20)·위 여백 (후추님 6/30).
    크기를 너무 키우면 dense 슬라이드가 넘쳐 굵기로 위계를 준다. */
-.callout {{ font-size: 20px; font-weight: 600; line-height: 1.5; max-width: 940px; word-break: keep-all;
+.callout {{ font-size: 20px; font-weight: 600; line-height: 1.5; max-width: 1020px; word-break: keep-all;
   border-left: 4px solid var(--accent);
   background: var(--card);
   border-radius: var(--radius);
@@ -1537,6 +1771,12 @@ h1 {{
   color: var(--muted);
   letter-spacing: .02em;
 }}
+/* 델타 3단 위계(차트캐논 A5) — 라벨→큰숫자→델타. 의미색 = 증가 녹 / 감소 적(3사 수렴). */
+.metric-delta {{ font-size: 14px; font-weight: 800; margin-top: 8px; font-variant-numeric: tabular-nums; }}
+.metric-delta.up {{ color: #2E9E6B; }}
+.metric-delta.down {{ color: #C8553D; }}
+/* 키워드 색전환(==키워드==·백로그 Phase 1) — 강조어만 accent. 슬라이드당 절제. */
+.kw {{ color: var(--accent); }}
 .bullet-list {{
   margin: 0;
   padding: 0;
@@ -2113,7 +2353,7 @@ h1 {{
   word-break: keep-all;
 }}
 .visual-card {{
-  width: min(100%, 1000px);
+  width: min(100%, 1040px);
   border-top: 1px solid var(--line);
   padding-top: 16px;
   margin: 8px 0 6px;  /* 차트 위아래 약간의 숨 (후추님 6/30 — 조금씩·dense 슬라이드 안 넘치게) */
@@ -2129,6 +2369,8 @@ h1 {{
 .visual-label {{ fill: var(--ink); font-size: 20px; font-weight: 500; }}
 .visual-value {{ fill: var(--ink); font-size: 28px; font-weight: 900; }}
 .visual-value-accent {{ fill: var(--accent); font-size: 35px; font-weight: 900; }}
+/* 델타 주석(전·후 변화량·×N 브래킷) — 렌더러 계산값. accent2로 값과 위계 분리. */
+.visual-delta {{ fill: var(--accent2); font-size: 22px; font-weight: 900; }}
 .visual-fo-label {{
   color: var(--ink);
   font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;

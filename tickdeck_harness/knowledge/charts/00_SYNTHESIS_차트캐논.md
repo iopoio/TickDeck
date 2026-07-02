@@ -59,4 +59,10 @@
 - ✅ tabular-nums(kpi·statgrid)
 - ⬜ 백로그: `L_slope`(2시점)·`L_dot`(10+)·막대 내림차순 정렬+유령막대 옵션(`L_bar` 보강)·단위 통합 헬퍼
 
+## PART D. v4 렌더러(render_deck.py) 기증 현황 (2026-07-02)
+- ✅ `L_donut` → v4 `donut` viz (중앙 KPI + 우측 보조 ≤3)
+- ✅ `L_statgrid` 델타 3단 위계 → v4 metric 카드 (registry `delta`/`delta_dir`·의미색·tabular-nums)
+- ✅ A3 내림차순(gap_map `sort:"desc"`) · 유령막대(role `benchmark`) · 델타 주석(before_after 자동 %p/×N)
+- ⬜ `L_line` — 연도 라벨의 C6 계약 설계(metric `period` 메타) 후 이식. 이식 완료 시 engine.py 은퇴 도장.
+
 > 갱신: 흡수 라운드 추가 시 본 문서 PART A/B 갱신 + engine 반영분 PART C 체크.
