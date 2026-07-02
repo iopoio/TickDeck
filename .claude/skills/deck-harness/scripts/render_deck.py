@@ -338,9 +338,16 @@ def _render_cover_page(
     # 표지 변형(덱 간 차별화·후추님 7/2 "레이아웃이 너무 유사"): "dark" = 잉크 파생 다크 히어로
     # (간지와 같은 파생 문법·다크 북엔드). 미지정 = 기존 라이트.
     variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" else ""
+    # 광택 대각 오버레이(엔바토 흡수 3라운드 7/3 — 브랜드 가이드 표지 다수 관찰): 순수 CSS, 이미지 없음.
+    sheen_html = '<div class="cover-sheen" aria-hidden="true"></div>' if page.get("cover_sheen") else ""
+    # 세로 책등 라벨: 표지 오른쪽 여백에 회전된 짧은 단어 — 브랜드북 스파인 문법(AWQHGT7·7HAH9XQ 관찰).
+    spine = str(page.get("spine_label", "")).strip()
+    spine_html = f'<p class="cover-spine">{_escape(spine)}</p>' if spine else ""
     return f"""
 <section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide{variant}" data-page-id="{_escape(page_id)}">
+  {sheen_html}
   {credit_html}
+  {spine_html}
   <main class="cover-body">
     <div class="cover-lockup">
       {eyebrow_html}
@@ -657,10 +664,18 @@ def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) 
             break
     # 헤드라인의 의도적 줄바꿈(\n)을 <br>로(나머지는 escape). 발표자가 끊고 싶은 지점 존중.
     title_html = "<br>".join(_rich(part) for part in title.split("\n"))
+    # 고스트 배경 타이포(엔바토 흡수 3라운드 7/3 — JJ3Z2TF 등 다수 관찰): 파트 라벨을
+    # 아주 크게·연하게 뒤에 깔아 배경 자체를 타이포로 채운다. hero_title과 함께 쓰면 과밀 — 배타적.
+    ghost_html = ""
+    if page.get("ghost_word") and not page.get("hero_title"):
+        ghost_word = str(page.get("ghost_word")).strip() or part_label
+        if ghost_word:
+            ghost_html = f'<div class="divider-ghost" aria-hidden="true">{_escape(ghost_word)}</div>'
     # 파트 표시는 진척 막대 + 한 줄(PART n · 라벨) 하나로 통일(후추님 #3 — 3중 중복 제거).
     return f"""
 <main class="body layout-body divider-body">
   <div class="divider-motif" aria-hidden="true"></div>
+  {ghost_html}
   <div class="divider-progress" aria-label="part progress">{progress}</div>
   <p class="eyebrow divider-part">PART {part_index} · {_escape(part_label)}</p>
   <h2 class="divider-title">{title_html}</h2>
@@ -2008,7 +2023,32 @@ h1 {{
 }}
 .layout-closing .copyright,
 .layout-divider .copyright {{ color: inherit; opacity: .82; }}
-.cover-slide {{ padding: 64px 72px 36px; }}
+.cover-slide {{ padding: 64px 72px 36px; position: relative; }}
+/* 광택 대각 오버레이(엔바토 흡수 3라운드 7/3) — 순수 CSS 사선 하이라이트, 이미지 불필요. */
+.cover-sheen {{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 38%, color-mix(in srgb, white 22%, transparent) 50%, transparent 62%);
+}}
+/* 세로 책등 라벨 — 표지 우측 여백에 회전된 짧은 단어(브랜드북 스파인 문법). */
+.cover-spine {{
+  position: absolute;
+  top: 50%;
+  right: 28px;
+  margin: 0;
+  z-index: 2;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  color: var(--muted);
+  opacity: .6;
+}}
+.cover-dark .cover-spine {{ color: rgba(248,250,252,.5); }}
 /* 커버 우상단 작성자 크레딧(후추님 #10) — 절제된 작은 글씨·우측 정렬·타이틀과 비충돌. */
 .cover-credit {{
   position: absolute;
@@ -2555,6 +2595,23 @@ h1 {{
   font-size: 72px;
   line-height: 1.08;
   letter-spacing: 0;
+  word-break: keep-all;
+  position: relative;
+  z-index: 1;
+}}
+/* 고스트 배경 타이포 — 파트 라벨을 초대형·투명하게 깔아 여백을 타이포로 채운다. */
+.divider-ghost {{
+  position: absolute;
+  right: -4%;
+  bottom: 14%;
+  z-index: 0;
+  font-size: 240px;
+  font-weight: 900;
+  line-height: .8;
+  letter-spacing: -.03em;
+  color: color-mix(in srgb, white 8%, transparent);
+  white-space: nowrap;
+  pointer-events: none;
   word-break: keep-all;
 }}
 .divider-subtitle {{
