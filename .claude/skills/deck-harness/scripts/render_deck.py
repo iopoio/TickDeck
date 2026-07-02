@@ -530,11 +530,15 @@ def _render_split(body_parts: list[str]) -> str:
 
 
 def _render_stepper(body_parts: list[str]) -> str:
+    # split과 동일 양식 통일(후추님 7/2): 거버닝 부제(block-title)는 카드가 아니라 전폭 상단.
+    lead = ""
+    if body_parts and body_parts[0].lstrip().startswith('<h2 class="block-title"'):
+        lead, body_parts = body_parts[0], body_parts[1:]
     items = "".join(
         f'<article class="stepper-item"><div class="stepper-content">{part}</div></article>'
         for part in body_parts
     )
-    return f'<main class="body layout-body stepper-body"><div class="stepper-track">{items}</div></main>'
+    return f'<main class="body layout-body stepper-body">{lead}<div class="stepper-track">{items}</div></main>'
 
 
 def _render_node(body_parts: list[str]) -> str:
@@ -2101,7 +2105,8 @@ h1 {{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 48px;
-  align-items: center;
+  /* 상단 정렬 — 키 다른 두 칸이 중앙 정렬로 어긋나 보이던 문제(후추님 7/2). 차트 제목 라인이 맞는다. */
+  align-items: start;
 }}
 .split-pane {{
   min-width: 0;
