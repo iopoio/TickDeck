@@ -95,7 +95,7 @@ model: sonnet
 - 허용 목록: `eyebrow`, `headline`, `title`, `body`, `text`, `summary`, `callout`, `note`, `footnote`, `citation`, `source`, `metric`, `metrics`, `metric_grid`, `stat_grid`, `viz`, `bullets`, `list`.
 - `eyebrow`: 페이지당 1개 이하의 작은 챕터/섹션 라벨. 새 사실·새 수치 금지.
 - `headline|title|body|text|summary|callout|note`: 스토리 텍스트 축약만. 새 사실·새 수치 금지. `==키워드==` 강조 가능(위 텍스트 강조 규칙).
-- `footnote`: 일반 청중용 용어 풀이 각주 — `{"term": "...", "def": "..."}`. 페이지 하단에 작게 렌더(writing-standard C-10b).
+- `footnote`: 일반 청중용 용어 풀이 각주 — `{"term": "...", "def": "..."}`. 페이지 하단에 작게 렌더(writing-standard C-10b). 각주 안 숫자는 *조사 정의 병기·조건부 캐비앗 용도만* 허용(C6 면제 컨텍스트) — 본문에 실을 통계를 각주로 밀반입하면 qa-reviewer 판정에서 fail.
 - `metric`: `metric_id`만. `value`, `unit` 직접 입력 금지. registry에 `delta`/`delta_dir(up|down)`가 있으면 카드에 ▲/▼ 델타가 자동 렌더된다(값은 verifier 소유).
 - `metrics|metric_grid|stat_grid`: `metric_ids`만.
 - `viz`: `chart` enum과 `series[].metric_id`만으로 수치를 요청한다. `title`, `series[].label`, `note`에는 숫자·단위·기관명·URL을 쓰지 않는다. 차트 enum SoT = `SUPPORTED_VIZ_CHART_TYPES`(위 차트 선택 가이드).

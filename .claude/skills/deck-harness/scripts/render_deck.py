@@ -366,9 +366,11 @@ def _render_outro_page(
     eyebrow = _non_cover_text(_first_block_text(content, {"eyebrow"}))
     eyebrow_html = f'<p class="cover-eyebrow">{_escape(eyebrow)}</p>' if eyebrow else ""
     contact_html = _presenter_contact_html()
+    # 다크 북엔드 미러링 — outro도 cover_variant:"dark"를 읽는다(7/3 tech_v2 designer 발견 구멍).
+    variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" else ""
     # eyebrow를 감사 인사 바로 위에 붙여 한 묶음(상단~중상단), 연락처는 하단(후추님 6/30).
     return f"""
-<section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide layout-outro outro-slide" data-page-id="{_escape(page_id)}">
+<section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide layout-outro outro-slide{variant}" data-page-id="{_escape(page_id)}">
   <div class="outro-main">{eyebrow_html}<h1>{_escape(title)}</h1></div>
   <div class="outro-contact-zone">{contact_html}</div>
 </section>""".strip()
