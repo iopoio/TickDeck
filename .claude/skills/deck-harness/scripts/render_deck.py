@@ -309,7 +309,7 @@ def _render_page(
     <span class="page-number" data-page-number>{page_number:02d} / {page_count:02d}</span>
   </footer>"""
     return f"""
-<section class="slide theme-{_class_name(palette["theme"])} layout-{_class_name(layout)}" data-page-id="{_escape(page_id)}">
+<section class="slide theme-{_class_name(palette["theme"])} layout-{_class_name(layout)}{" divider-accent" if page.get("divider_variant") == "accent" else ""}{" divider-hero" if page.get("hero_title") else ""}" data-page-id="{_escape(page_id)}">
   {motif_html}
   <header class="slide-head">
     <div class="eyebrow{" eyebrow-chip" if page.get("eyebrow_chip") else ""}">{_escape(eyebrow_text)}</div>
@@ -493,9 +493,11 @@ def _render_layout_body(
     page_number: int,
 ) -> str:
     if layout == "split":
-        return _render_split(body_parts)
+        return _render_split(body_parts, page)
     if layout == "stack":
         return _render_stack(body_parts)
+    if layout == "hero_metric":
+        return _render_hero_metric(body_parts)
     if layout == "stepper":
         return _render_stepper(body_parts)
     if layout == "node":
@@ -516,7 +518,7 @@ def _render_layout_body(
     return f'<main class="{body_class}">{"".join(body_parts)}</main>'
 
 
-def _render_split(body_parts: list[str]) -> str:
+def _render_split(body_parts: list[str], page: dict[str, Any] | None = None) -> str:
     # 거버닝 부제(block-title)는 왼쪽 칸에 가두지 않고 전폭으로 끌어올린다 —
     # 제목 아래 부제가 오는 일반 양식과 통일·좌우 밸런스 회복(후추님 7/2 p05·p07).
     lead = ""
@@ -526,14 +528,27 @@ def _render_split(body_parts: list[str]) -> str:
     midpoint = max(1, len(body_parts) // 2)
     left = "".join(body_parts[:midpoint])
     right = "".join(body_parts[midpoint:])
+    # 비대칭 레버(7/3 드리블 흡수 2라운드): split_ratio "wide-left"|"wide-right" — 주 비주얼 쪽을 넓게.
+    ratio_class = {"wide-left": " split-wide-left", "wide-right": " split-wide-right"}.get(
+        str((page or {}).get("split_ratio", "")), ""
+    )
     return f"""
 <main class="body layout-body split-outer">
   {lead}
-  <div class="split-body">
+  <div class="split-body{ratio_class}">
     <section class="split-pane split-primary">{left}</section>
     <section class="split-pane split-secondary">{right}</section>
   </div>
 </main>""".strip()
+
+
+def _render_hero_metric(body_parts: list[str]) -> str:
+    # 오버사이즈 빅넘버 전면장(드리블 흡수 2라운드 — 숫자가 곧 비주얼인 장).
+    # metric 카드 하나 + 짧은 텍스트만 두고 숫자를 화면 절반 크기로 키운다.
+    lead = ""
+    if body_parts and body_parts[0].lstrip().startswith('<h2 class="block-title"'):
+        lead, body_parts = body_parts[0], body_parts[1:]
+    return f'<main class="body layout-body hero-body">{lead}<div class="hero-stage">{"".join(body_parts)}</div></main>'
 
 
 def _render_stack(body_parts: list[str]) -> str:
@@ -1720,6 +1735,23 @@ def _rich(value: str) -> str:
     return _KEYWORD_PATTERN.sub(r'<b class="kw">\1</b>', _escape(value))
 
 
+def _hex_luminance(color: str) -> float:
+    color = color.lstrip("#")
+    if len(color) != 6:
+        return 0.5
+    r, g, b = (int(color[i : i + 2], 16) / 255 for i in (0, 2, 4))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def _divider_accent_color(palette: dict[str, str]) -> str:
+    # accent 풀블리드 간지용 색 — accent가 잉크와 명도가 붙으면(forest처럼 둘 다 딥톤)
+    # 풀블리드가 기본 간지와 구분이 안 되므로 accent2로 폴백.
+    accent, ink = palette["accent"], palette["ink"]
+    if abs(_hex_luminance(accent) - _hex_luminance(ink)) < 0.16:
+        return palette["accent2"]
+    return accent
+
+
 def _css(palette: dict[str, str]) -> str:
     return f"""
 :root {{
@@ -1727,6 +1759,8 @@ def _css(palette: dict[str, str]) -> str:
   --c30: {palette["c30"]};
   --accent: {palette["accent"]};
   --accent2: {palette["accent2"]};
+  --divider-accent: {_divider_accent_color(palette)};
+  --divider-accent-fg: {"#F8FAFC" if _hex_luminance(_divider_accent_color(palette)) < 0.45 else "color-mix(in srgb, " + palette["ink"] + " 92%, black)"};
   --ink: {palette["ink"]};
   --muted: {palette["muted"]};
   --line: {palette["line"]};
@@ -2146,6 +2180,16 @@ h1 {{
   /* 상단 정렬 — 키 다른 두 칸이 중앙 정렬로 어긋나 보이던 문제(후추님 7/2). 차트 제목 라인이 맞는다. */
   align-items: start;
 }}
+/* 비대칭 split(드리블 흡수 2라운드) — 주 비주얼 쪽을 넓게. */
+.split-body.split-wide-left {{ grid-template-columns: 1.7fr 1fr; }}
+.split-body.split-wide-right {{ grid-template-columns: 1fr 1.7fr; }}
+/* hero_metric — 숫자가 곧 비주얼인 전면장(드리블 초대형 타이포 문법의 수치 버전). */
+.hero-body {{ justify-content: center; }}
+.hero-stage {{ display: flex; flex-direction: column; gap: 18px; max-width: 980px; }}
+.hero-stage .metric-card {{ border: 0; background: transparent; padding: 0; min-height: 0; }}
+.hero-stage .metric-label {{ font-size: 26px; font-weight: 800; color: var(--ink); }}
+.hero-stage .metric-value {{ font-size: 210px; line-height: .96; letter-spacing: -.02em; }}
+.hero-stage .callout {{ max-width: 720px; }}
 .split-pane {{
   min-width: 0;
   display: flex;
@@ -2267,7 +2311,7 @@ h1 {{
 .index-row {{
   counter-increment: index;
   display: grid;
-  grid-template-columns: 86px minmax(112px, .35fr) minmax(0, 1fr);
+  grid-template-columns: 128px minmax(112px, .35fr) minmax(0, 1fr);
   gap: 24px;
   align-items: center;
   min-height: 96px;
@@ -2279,8 +2323,11 @@ h1 {{
   content: counter(index, decimal-leading-zero);
   color: var(--accent);
   font-family: var(--mono-font);
-  font-size: 30px;
+  /* 넘버링 오브제(드리블 흡수 2라운드) — 번호가 장식이 아니라 오브제. 크기 위계 과감하게. */
+  font-size: 64px;
   font-weight: 900;
+  line-height: 1;
+  opacity: .92;
 }}
 .index-part {{
   color: var(--ink);
@@ -2388,6 +2435,22 @@ h1 {{
     linear-gradient(140deg, color-mix(in srgb, var(--ink) 90%, white) 0%, var(--ink) 62%, color-mix(in srgb, var(--ink) 82%, black) 100%);
   color: #F8FAFC;
 }}
+/* accent 풀블리드 간지(드리블 흡수 2라운드 — 컬러 블록 리듬): 잉크 파생 대신 테마색 전면.
+   4~6장마다 색 리듬 전환용 레버(divider_variant:"accent") — 기본값은 여전히 잉크 파생. */
+.layout-divider.slide.divider-accent {{
+  background:
+    radial-gradient(circle at 84% 28%, color-mix(in srgb, white 16%, transparent) 0, transparent 38%),
+    linear-gradient(140deg, color-mix(in srgb, var(--divider-accent) 92%, white) 0%, var(--divider-accent) 58%, color-mix(in srgb, var(--divider-accent) 78%, black) 100%);
+  color: var(--divider-accent-fg);
+}}
+.divider-accent .divider-title {{ color: var(--divider-accent-fg); }}
+.divider-accent .divider-subtitle {{ color: color-mix(in srgb, var(--divider-accent-fg) 74%, transparent); }}
+.divider-accent .divider-part {{ color: color-mix(in srgb, var(--divider-accent-fg) 82%, transparent); }}
+.divider-accent .divider-progress span.is-active {{ background: var(--divider-accent-fg); }}
+/* 초대형 타이포 오브제(드리블 흡수 2라운드): 제목이 화면 절반 — 이 장엔 차트·장식 금지.
+   레버 hero_title:true, 간지·전환 장에서 한 단어급 제목과 함께 쓴다. */
+.divider-hero .divider-title {{ font-size: 168px; line-height: .98; letter-spacing: -.02em; }}
+.divider-hero .divider-subtitle {{ font-size: 24px; margin-top: 18px; }}
 /* 펩핀치 다크 섹션 = 브랜드 히어로(차콜 #2A2F33) + 오렌지 #FF9B3D 글로우. 표지·맺음. */
 .theme-peppinch.cover-slide {{
   background:
