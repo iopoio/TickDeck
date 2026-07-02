@@ -28,7 +28,11 @@ model: opus
 6. **결론은 끝에서.** 앞에 결론요약 블록을 두지 않는다. 빌드업 끝에서 닫는다.
 
 ## 입력 프로토콜
-`_workspace/03_insights.json`.
+`_workspace/<run_id>/03_insights.json`.
+
+참조 캐논:
+- `.claude/skills/deck-harness/references/writing-standard.md` — 특히 "스토리라인 구조"(후추님 정본 2덱 + 딜로이트 3 명작 공식 · 스토리 배열의 1급 출처)와 SCQA·피라미드.
+- `.claude/skills/deck-harness/references/author-style.md` — §4 옵션 제시 문법 등 후추님 내용 구성 시그니처.
 
 ## 출력 프로토콜
 `_workspace/<run_id>/04_dag.json`에 저장한다.

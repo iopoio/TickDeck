@@ -115,6 +115,10 @@ Loop B handoff format:
 }
 ```
 
+## Loop L: 표현 학습 (상시·append-only — 게이트 아님)
+
+컨설팅사·투자사 PDF를 메인 수집원으로 삼는 이유의 절반은 *문체 학습*이다. 매 run에서 collector/analyst가 Tier-A 원문 소화 중 관찰한 새 표현(말투·어휘·수치 어법·구성 관례)을 `references/writing-standard.md` 톤 가이드에 출처와 함께 누적한다(규칙은 그 파일 머리·collector.md). 덱 텍스트를 쓰는 단계(editorial→page-planner→designer)는 그 누적본을 읽는다 — **수집이 문체를 키우고 문체가 다음 덱에 반영되는 닫힌 루프.**
+
 ## Error Handling
 - If a stage misses the next input contract, retry once or escalate to the heavier model specified in PRD §5.
 - If still missing, record the gap in the next artifact and continue only when the absence is explicit.
