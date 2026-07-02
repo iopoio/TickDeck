@@ -547,6 +547,17 @@ def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) 
         for index in range(1, part_count + 1)
     )
     subtitle_html = f'<p class="divider-subtitle">{_escape(subtitle)}</p>' if subtitle else ""
+    # 간지 하위 목차 프리뷰(author-style §5 — 후추님 정본 2덱 시그니처): bullets/list 블록이
+    # 있으면 "이 파트에서 볼 것"을 짧은 리스트로. 청중이 파트 시작마다 지도를 다시 받는다.
+    items_html = ""
+    for block in content:
+        if _block_type(block) in {"bullets", "list"} and isinstance(block.get("items"), list):
+            rows = "".join(
+                f'<li>{_escape(str(item.get("text", "")) if isinstance(item, dict) else str(item))}</li>'
+                for item in block["items"][:5]
+            )
+            items_html = f'<ul class="divider-items">{rows}</ul>'
+            break
     # 헤드라인의 의도적 줄바꿈(\n)을 <br>로(나머지는 escape). 발표자가 끊고 싶은 지점 존중.
     title_html = "<br>".join(_rich(part) for part in title.split("\n"))
     # 파트 표시는 진척 막대 + 한 줄(PART n · 라벨) 하나로 통일(후추님 #3 — 3중 중복 제거).
@@ -557,6 +568,7 @@ def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) 
   <p class="eyebrow divider-part">PART {part_index} · {_escape(part_label)}</p>
   <h2 class="divider-title">{title_html}</h2>
   {subtitle_html}
+  {items_html}
 </main>""".strip()
 
 
@@ -2351,6 +2363,30 @@ h1 {{
   font-size: 24px;
   line-height: 1.42;
   word-break: keep-all;
+}}
+/* 간지 하위 목차 프리뷰(author-style §5) — "이 파트에서 볼 것" 짧은 리스트. */
+.divider-items {{
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}}
+.divider-items li {{
+  position: relative;
+  padding-left: 24px;
+  color: rgba(248,250,252,.78);
+  font-size: 19px;
+  word-break: keep-all;
+}}
+.divider-items li::before {{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .62em;
+  width: 12px;
+  height: 2px;
+  background: var(--accent2);
 }}
 .visual-card {{
   width: min(100%, 1040px);

@@ -110,6 +110,8 @@
 - [x] **donut**(차트캐논 A4·engine.py L_donut 기증) + **metric 델타 3단 위계**(캐논 A5·L_statgrid 기증 — registry `delta`/`delta_dir`).
 - [x] **유령막대**(캐논 발산 렌즈) — gap_map role `benchmark`. **내림차순 정렬**(캐논 A3) — gap_map `sort:"desc"`.
 - [ ] v4 미이식: 히트맵(Phase 2) · 비교 매트릭스 표·틴티드 스탯카드·좌레일 2차트 적층(Phase 3) · Figure 캡션(Phase 1) · Phase 4·5.
+  - ↑ 근거 강화(7/2): 후추님 정본 2덱(롯데푸드·아우디 A5/Q7)에서 **히트맵 비교표·대칭 비용 비교표·로테이션 매트릭스의 실물 원형 확인** — 외부 레퍼런스가 아니라 후추님 자기 문법. 스타일 캐논 = `.claude/skills/deck-harness/references/author-style.md`.
+- [x] **간지 하위 목차 프리뷰**(author-style §5·후추님 정본 시그니처) — v4 divider가 bullets/list 블록을 파트 미니 목차로 렌더(7/2).
 - [ ] engine.py 은퇴 보류 — `L_line`(시계열) 미이식. 연도 라벨이 C6 raw-number에 걸려 metric `period` 메타 계약 설계 후 이식 → 그때 은퇴 도장.
 
 ## 권고

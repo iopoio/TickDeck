@@ -42,9 +42,12 @@ model: opus
 
 ## 입력 프로토콜
 필수 입력:
-- `_workspace/<run_id>/04_proposition_dag.json`
+- `_workspace/<run_id>/04_dag.json`
 - `_workspace/<run_id>/03_insights.json`
 - `_workspace/<run_id>/02_verified.json`
+
+참조 캐논:
+- `.claude/skills/deck-harness/references/author-style.md` — 특히 §4 옵션 제시 문법(복수 안+장단점+단정 권고 세트 · 제안/의사결정 장르), §2 거버닝 메시지(페이지 message를 서술형 결론 한 문장으로), §5 간지 하위 목차 프리뷰(divider 페이지에 해당 파트 항목 리스트를 내려줄 것).
 
 ## 출력 프로토콜
 `_workspace/<run_id>/05_page_plan.json`에 저장한다.

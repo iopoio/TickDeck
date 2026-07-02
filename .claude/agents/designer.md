@@ -41,6 +41,7 @@ model: sonnet
 - `.claude/skills/deck-harness/references/visualization.md` — 시각화 결정 로직(메시지→그림·그레이아웃·추가 게이트·도형화 규율)
 - `.claude/skills/deck-harness/references/palettes.md` — 라이트 펜톤·트렌드별 의미색
 - `.claude/skills/deck-harness/references/writing-standard.md` — 슬라이드 규칙·자연스러운 한국어
+- `.claude/skills/deck-harness/references/author-style.md` — 후추님 정본 2덱 스타일 캐논(거버닝 메시지·브랜드 헌정·표 판정 문법·간지 프리뷰·옵션 제시)
 
 ## 출력 프로토콜
 `_workspace/<run_id>/06_deck_spec.json`에 저장한다.
