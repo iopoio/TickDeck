@@ -78,6 +78,7 @@ SUPPORTED_LAYOUTS = frozenset(
         "cards",
         "timeline",
         "split",
+        "stack",
         "stepper",
         "node",
         "matrix",

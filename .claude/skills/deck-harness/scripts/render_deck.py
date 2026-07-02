@@ -494,6 +494,8 @@ def _render_layout_body(
 ) -> str:
     if layout == "split":
         return _render_split(body_parts)
+    if layout == "stack":
+        return _render_stack(body_parts)
     if layout == "stepper":
         return _render_stepper(body_parts)
     if layout == "node":
@@ -532,6 +534,19 @@ def _render_split(body_parts: list[str]) -> str:
     <section class="split-pane split-secondary">{right}</section>
   </div>
 </main>""".strip()
+
+
+def _render_stack(body_parts: list[str]) -> str:
+    # 상하 컴포지션(후추님 7/3 p04·p05): 주 비주얼 전폭 상단 + 나머지 블록 하단 가로 배열.
+    # split(좌우)와 대구를 이루는 문법 — 좌우 밸런스가 안 맞거나 차트가 눌릴 때 쓴다.
+    lead = ""
+    if body_parts and body_parts[0].lstrip().startswith('<h2 class="block-title"'):
+        lead, body_parts = body_parts[0], body_parts[1:]
+    if not body_parts:
+        return f'<main class="body layout-body stack-outer">{lead}</main>'
+    top, rest = body_parts[0], body_parts[1:]
+    row = f'<div class="stack-row">{"".join(rest)}</div>' if rest else ""
+    return f'<main class="body layout-body stack-outer">{lead}{top}{row}</main>'
 
 
 def _render_stepper(body_parts: list[str]) -> str:
@@ -1053,9 +1068,9 @@ def _svg_dumbbell(
 ) -> str:
     points = (series[:2] if len(series) >= 2 else [series[0], series[0]])
     max_value = _max_metric_number(points)
-    # 좌측 정렬·좌측 가중(후추님 6/30 재지적): 트랙을 좌측 거터(60)에서 시작하고 span을 줄여
-    # 그래프가 슬라이드 좌측 약 60%만 차지(우측 끝까지 안 뻗음) → 덜 퍼지고 왼쪽에 모인다.
-    gutter, span = 60, 560
+    # 좌측 정렬·좌측 가중(후추님 6/30 재지적): 트랙을 좌측 거터(60)에서 시작, 우측 끝까지 안 뻗게.
+    # 단 60%는 전폭(stack)에서 공백으로 읽혀 76%로 상향(7/3 p05).
+    gutter, span = 60, 700
     x1 = gutter + (_metric_position_ratio(points[0], max_value) * span)
     x2 = gutter + (_metric_position_ratio(points[1], max_value) * span)
     left, right = sorted((x1, x2))
@@ -2150,7 +2165,14 @@ h1 {{
   gap: 22px;
   align-items: stretch;
 }}
-/* 스텝퍼 카드 안 callout = 카드 속 카드(이중 박스) 방지 — 박스 벗기고 강조 텍스트만(후추님 7/2 p11 #04). */
+/* 스텝퍼 카드 안 callout/metric = 카드 속 카드(이중 박스) 방지 — 박스 벗기고 내용만(후추님 7/2 p11 #04 · 7/3 테크 p15 #02). */
+.stepper-item .metric-card {{
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+  border-radius: 0;
+}}
 .stepper-item .callout {{
   border-left: 0;
   background: transparent;
@@ -2180,15 +2202,7 @@ h1 {{
   font-weight: 900;
   letter-spacing: .16em;
 }}
-.stepper-item::after {{
-  content: "";
-  position: absolute;
-  top: 29px;
-  left: 64px;
-  right: 22px;
-  height: 1px;
-  background: var(--line);
-}}
+/* 넘버 옆 가로선(::after) 제거 — 카드 테두리+선 4개 = 선 과다(후추님 7/3 테크 p15). */
 .node-body {{ justify-content: center; }}
 .node-map {{
   position: relative;
@@ -2519,6 +2533,19 @@ h1 {{
   margin: 8px 0 6px;  /* 차트 위아래 약간의 숨 (후추님 6/30 — 조금씩·dense 슬라이드 안 넘치게) */
 }}
 .visual-card svg {{ display: block; width: 100%; height: auto; overflow: visible; }}
+/* statement(상하 전폭) flow — SVG가 전폭 비율로 부풀어 세로가 터지는 것 방지(7/3 p04·p05). */
+.body:not(.layout-body) > .visual-card {{ width: min(100%, 820px); }}
+.body:not(.layout-body) > .metric-card {{ max-width: 460px; }}
+/* stack 컴포지션 — 전폭 차트도 세로 비율이 안 터지게 상한. */
+.stack-outer > .visual-card {{ width: min(100%, 760px); }}
+.stack-row {{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+  align-items: stretch;
+  margin-top: 14px;
+}}
+.stack-row .metric-card {{ min-height: 0; }}
 .visual-card text {{
   font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;
   letter-spacing: 0;

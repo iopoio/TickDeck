@@ -114,6 +114,47 @@ def main() -> int:
         if len(lint) > 10:
             print(f"  … 외 {len(lint) - 10}건")
 
+    # 디자인 위생 lint(7/3 후추님: 출처 혼합 차트·양식 돌려쓰기) — 경고(비차단), designer 반송 근거.
+    design_lint = []
+    metric_reg = verified.get("metric_registry") or {}
+    body_layouts = []  # 간지 등 비본문은 None — 연속-run을 끊는다(간지가 리듬을 리셋).
+    for page in deck_spec.get("pages", []):
+        layout = str(page.get("layout", "statement"))
+        if layout not in {"cover", "index", "divider", "closing", "outro", "source_appendix"}:
+            body_layouts.append(layout)
+        else:
+            body_layouts.append(None)
+        for block in page.get("content", []) or []:
+            if not (isinstance(block, dict) and block.get("type") == "viz"):
+                continue
+            src_sets = [
+                set(metric_reg.get(s.get("metric_id"), {}).get("source_ids", []))
+                for s in block.get("series", [])
+                if isinstance(s, dict)
+            ]
+            src_sets = [s for s in src_sets if s]
+            if len(src_sets) >= 2 and not set.intersection(*src_sets):
+                design_lint.append(
+                    f"{page.get('page_id')}: 한 차트에 출처 혼합(공통 src 없음) — 단일 출처 시리즈로 재구성"
+                )
+    body_only = [l for l in body_layouts if l]
+    if len(body_only) >= 4:
+        from collections import Counter
+
+        top_layout, top_n = Counter(body_only).most_common(1)[0]
+        if top_n / len(body_only) > 0.6:
+            design_lint.append(
+                f"본문 {len(body_only)}장 중 '{top_layout}' {top_n}장(>60%) — 양식 돌려쓰기. 내용에 맞는 컴포지션 다양화"
+            )
+        for i in range(len(body_layouts) - 2):
+            if body_layouts[i] and body_layouts[i] == body_layouts[i + 1] == body_layouts[i + 2]:
+                design_lint.append(f"동일 layout '{body_layouts[i]}' 3장 연속 — 리듬 단조")
+                break
+    if design_lint:
+        print(f"WARN 디자인 위생 {len(design_lint)}건 (designer 반송 근거):")
+        for line in design_lint:
+            print(f"  - {line}")
+
     violations = validate_all_contracts(deck)
     print(f"run: {run_dir.name} · html: {html_path.name if html_path else '-'}")
     if violations:
