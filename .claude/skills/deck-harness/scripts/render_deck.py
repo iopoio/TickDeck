@@ -2099,6 +2099,16 @@ h1 {{
   gap: 22px;
   align-items: stretch;
 }}
+/* 스텝퍼 카드 안 callout = 카드 속 카드(이중 박스) 방지 — 박스 벗기고 강조 텍스트만(후추님 7/2 p11 #04). */
+.stepper-item .callout {{
+  border-left: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin-top: 0;
+  font-weight: 800;
+  box-shadow: none !important;
+}}
 .stepper-item {{
   counter-increment: step;
   position: relative;
@@ -2305,10 +2315,12 @@ h1 {{
   font-family: var(--mono-font);
 }}
 .layout-divider .slide-head {{ display: none; }}
+/* 간지 배경 = 테마 잉크색 파생(글로우는 테마 액센트) — 네이비 하드코딩이 웜 테마 본문과
+   부조화하던 문제의 근본 풀이(후추님 7/2 마케팅 덱 지적). 테크 잉크는 기존 네이비와 근사. */
 .layout-divider.slide {{
   background:
-    radial-gradient(circle at 84% 28%, rgba(23, 166, 196, .24) 0, transparent 34%),
-    linear-gradient(140deg, #101827 0%, #16202E 68%, #0B111B 100%);
+    radial-gradient(circle at 84% 28%, color-mix(in srgb, var(--accent) 22%, transparent) 0, transparent 36%),
+    linear-gradient(140deg, color-mix(in srgb, var(--ink) 90%, white) 0%, var(--ink) 62%, color-mix(in srgb, var(--ink) 82%, black) 100%);
   color: #F8FAFC;
 }}
 /* 펩핀치 다크 섹션 = 브랜드 히어로(차콜 #2A2F33) + 오렌지 #FF9B3D 글로우. 표지·맺음. */
@@ -2338,9 +2350,9 @@ h1 {{
 .theme-peppinch.cover-slide .cover-credit,
 .theme-peppinch.cover-slide .presenter-email {{ color: rgba(241,236,224,.6); }}
 .theme-peppinch.cover-slide .presenter-name {{ color: #F1ECE0; }}
-/* 회색 간지엔 그리드(회로망) 미적용 — 회색 위에선 얼룩·잡티로 보임(후추님 6/30). */
-.theme-peppinch.layout-divider::after {{ display: none; }}
-.layout-divider::after {{
+/* 회로망 그리드·레이더 링 = 테크 은유 — 테크 테마 전용으로 격리(7/2). 타 테마 간지는
+   잉크 다크 + 액센트 글로우만(주제 무관 은유 복붙 금지·visualization.md C). */
+.theme-tech.layout-divider::after {{
   content: "";
   position: absolute;
   inset: 0;
@@ -2351,6 +2363,7 @@ h1 {{
   mask-image: linear-gradient(90deg, transparent 0%, black 16%, black 82%, transparent 100%);
   pointer-events: none;
 }}
+.slide:not(.theme-tech) .divider-motif {{ display: none; }}
 .layout-divider .slide-foot {{
   z-index: 1;
   border-top-color: rgba(255,255,255,.16);
