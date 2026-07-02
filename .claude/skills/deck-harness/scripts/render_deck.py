@@ -535,6 +535,17 @@ def _render_split(body_parts: list[str], page: dict[str, Any] | None = None) -> 
     lead = ""
     if body_parts and body_parts[0].lstrip().startswith('<h2 class="block-title"'):
         lead, body_parts = body_parts[0], body_parts[1:]
+    # note(단, ~ 캐비앗)는 좌우 칸에 섞지 않고 하단 전폭 한 줄로 뺀다(7/3 후추님 p07·p10 지적
+    # — 오른쪽 칸에 박스로 갇혀 있던 게 어색했다). split/stack 공통 규칙.
+    note_row = ""
+    rest_parts = []
+    for part in body_parts:
+        stripped = part.lstrip()
+        if not note_row and stripped.startswith('<aside class="callout') and "note-row" in stripped[:60]:
+            note_row = part
+        else:
+            rest_parts.append(part)
+    body_parts = rest_parts
     # 홀수 블록이면 나머지는 우측(보조 칸)으로 — 좌측은 주 비주얼 하나가 원칙(7/2 p06 좌측 과적 fix).
     midpoint = max(1, len(body_parts) // 2)
     left = "".join(body_parts[:midpoint])
@@ -543,6 +554,7 @@ def _render_split(body_parts: list[str], page: dict[str, Any] | None = None) -> 
     ratio_class = {"wide-left": " split-wide-left", "wide-right": " split-wide-right"}.get(
         str((page or {}).get("split_ratio", "")), ""
     )
+    note_html = f'<div class="split-note-row">{note_row}</div>' if note_row else ""
     return f"""
 <main class="body layout-body split-outer">
   {lead}
@@ -550,6 +562,7 @@ def _render_split(body_parts: list[str], page: dict[str, Any] | None = None) -> 
     <section class="split-pane split-primary">{left}</section>
     <section class="split-pane split-secondary">{right}</section>
   </div>
+  {note_html}
 </main>""".strip()
 
 
@@ -730,7 +743,9 @@ def _index_items(content: list[Any]) -> list[dict[str, str]]:
         if not isinstance(items, list):
             continue
         parsed = []
-        for item in items[:3]:
+        # 목차-간지 파트 수 불일치(후추님 7/3): 3개로 캡되어 5부 덱에서 목차엔 3개만 보이던 버그.
+        # 캡을 없앤다 — 목차는 실제 파트 수만큼 전부 보여야 간지 진척바와 맞는다.
+        for item in items:
             text = str(item.get("text", "")) if isinstance(item, dict) else str(item)
             text = re.sub(r"^\s*(?:\d{1,2}[\).\s-]+)", "", text).strip()
             part, description = _split_index_item(text)
@@ -902,7 +917,10 @@ def _render_block(
         return f'<p class="body-text">{_rich(str(block.get("text", "")))}</p>', []
     if block_type in {"callout", "note"}:
         # emphasis:true면 펀치라인용으로 크게(제언·맺음 등). 기본은 일반 callout.
+        # note-row 마커(7/3 후추님): split 계열이 이 조각을 하단 전폭 한 줄로 빼낼 수 있게 식별.
         cls = "callout callout-lead" if block.get("emphasis") else "callout"
+        if block_type == "note":
+            cls += " note-row"
         return f'<aside class="{cls}">{_rich(str(block.get("text", "")))}</aside>', []
     if block_type in {"citation", "source"}:
         src_id = str(block.get("src_id", block.get("source_id", ""))).strip()
@@ -2001,6 +2019,20 @@ h1 {{
 }}
 /* 펀치라인 callout(emphasis) — 제언·맺음의 한 줄을 크게. 박스 톤은 유지, 글자만 키움. */
 .callout-lead {{ font-size: 30px; font-weight: 800; color: var(--ink); padding: 22px 26px; }}
+/* split-note-row — note(단, ~ 캐비앗)를 좌우 칸 박스가 아니라 하단 전폭 한 줄로(7/3 후추님).
+   박스 톤 벗기고 얇은 상단 선 + 작은 텍스트만 — 캐비앗은 각주 톤이지 카드가 아니다. */
+.split-note-row {{ margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }}
+.split-note-row .callout {{
+  border-left: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin-top: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--muted);
+  max-width: none;
+}}
 .metric-grid {{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -2455,9 +2487,9 @@ h1 {{
   grid-template-columns: 128px minmax(112px, .35fr) minmax(0, 1fr);
   gap: 24px;
   align-items: center;
-  min-height: 96px;
+  min-height: 74px;
   border-top: 1px solid var(--line);
-  padding: 22px 0;
+  padding: 15px 0;
 }}
 .index-row:last-child {{ border-bottom: 1px solid var(--line); }}
 .index-row::before {{
