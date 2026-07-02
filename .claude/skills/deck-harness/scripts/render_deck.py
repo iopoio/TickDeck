@@ -2019,20 +2019,11 @@ h1 {{
 }}
 /* 펀치라인 callout(emphasis) — 제언·맺음의 한 줄을 크게. 박스 톤은 유지, 글자만 키움. */
 .callout-lead {{ font-size: 30px; font-weight: 800; color: var(--ink); padding: 22px 26px; }}
-/* split-note-row — note(단, ~ 캐비앗)를 좌우 칸 박스가 아니라 하단 전폭 한 줄로(7/3 후추님).
-   박스 톤 벗기고 얇은 상단 선 + 작은 텍스트만 — 캐비앗은 각주 톤이지 카드가 아니다. */
-.split-note-row {{ margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }}
-.split-note-row .callout {{
-  border-left: 0;
-  background: transparent;
-  border-radius: 0;
-  padding: 0;
-  margin-top: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--muted);
-  max-width: none;
-}}
+/* split-note-row — note(단, ~ 캐비앗)를 좌우 칸에 끼워 넣지 않고 하단 전폭으로 뺀다(7/3 후추님
+   1차 지적: 우측 칸에 박스로 갇혀 어색함). 단, 박스 톤 자체는 유지 — 각주 같은 민무늬 한 줄로
+   벗기니 "안내문 같다"는 재지적(7/3 2차) — 원래 callout 박스 그대로, 폭만 전폭. */
+.split-note-row {{ margin-top: 18px; }}
+.split-note-row .callout {{ max-width: none; }}
 .metric-grid {{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -2533,6 +2524,9 @@ h1 {{
   width: 34px;
   background: var(--accent2);
 }}
+/* closing 전용 .eyebrow color 재정의가 칩(.eyebrow-chip)의 흰 글자색을 덮어써 배경(accent)과
+   같은 색이 되어 텍스트가 안 보이던 버그(7/3 실측 발견 — p14 "CLOSING" 칩 빈 도형으로 보임). */
+.layout-closing .eyebrow.eyebrow-chip {{ color: #FFFFFF; }}
 .layout-closing .slide-head h1 {{
   margin-top: 18px;
   max-width: 1040px;
