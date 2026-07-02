@@ -336,15 +336,19 @@ def _render_cover_page(
     subtitle_html = f'<p class="cover-subtitle">{_escape(subtitle)}</p>' if subtitle else ""
     credit_html = _cover_credit_html()
     # 표지 변형(덱 간 차별화·후추님 7/2 "레이아웃이 너무 유사"): "dark" = 잉크 파생 다크 히어로
-    # (간지와 같은 파생 문법·다크 북엔드). 미지정 = 기존 라이트.
+    # (간지와 같은 파생 문법·다크 북엔드). 미지정 = 기존 라이트. 색 축(장식) — 뼈대와 독립.
     variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" else ""
+    # 표지 뼈대 축(구조·엔바토 흡수 3라운드 7/3 — XBUQSG2·7FE9Y7G 관찰): "center"(기본, 수직 중앙
+    # 락업) | "corner"(하단 앵커 — 텍스트가 화면 하단 1/3에, 더 다큐먼트/브랜드북 느낌).
+    # 색 축(cover_variant)과 직교 — 조합 자유(예: corner+dark). 후추님 7/3 "뼈대를 세트로" 요청.
+    skeleton = " cover-corner" if str(page.get("cover_layout", "")).lower() == "corner" else ""
     # 광택 대각 오버레이(엔바토 흡수 3라운드 7/3 — 브랜드 가이드 표지 다수 관찰): 순수 CSS, 이미지 없음.
     sheen_html = '<div class="cover-sheen" aria-hidden="true"></div>' if page.get("cover_sheen") else ""
     # 세로 책등 라벨: 표지 오른쪽 여백에 회전된 짧은 단어 — 브랜드북 스파인 문법(AWQHGT7·7HAH9XQ 관찰).
     spine = str(page.get("spine_label", "")).strip()
     spine_html = f'<p class="cover-spine">{_escape(spine)}</p>' if spine else ""
     return f"""
-<section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide{variant}" data-page-id="{_escape(page_id)}">
+<section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide{variant}{skeleton}" data-page-id="{_escape(page_id)}">
   {sheen_html}
   {credit_html}
   {spine_html}
@@ -671,6 +675,19 @@ def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) 
         ghost_word = str(page.get("ghost_word")).strip() or part_label
         if ghost_word:
             ghost_html = f'<div class="divider-ghost" aria-hidden="true">{_escape(ghost_word)}</div>'
+
+    # 조용한 뼈대(엔바토 흡수 3라운드 7/3 — KZS3K63 관찰): 진척바·PART접두어·불릿 다 빼고
+    # 거대 숫자 하나 + 라벨 한 줄만. 뼈대 자체가 다른 간지 — 장식이 아니라 구조 변형.
+    # 후추님 지적("목차·간지 양식은 그대로") 대응 — 장식 레버만 늘리고 뼈대를 안 늘렸던 누락.
+    if str(page.get("divider_style", "")).lower() == "quiet":
+        return f"""
+<main class="body layout-body divider-body divider-quiet">
+  <p class="eyebrow divider-part">{_escape(part_label)}</p>
+  <div class="divider-quiet-num" aria-hidden="true">{part_index:02d}</div>
+  <h2 class="divider-title">{title_html}</h2>
+  {subtitle_html}
+</main>""".strip()
+
     # 파트 표시는 진척 막대 + 한 줄(PART n · 라벨) 하나로 통일(후추님 #3 — 3중 중복 제거).
     return f"""
 <main class="body layout-body divider-body">
@@ -2049,6 +2066,9 @@ h1 {{
   opacity: .6;
 }}
 .cover-dark .cover-spine {{ color: rgba(248,250,252,.5); }}
+/* 표지 뼈대 "corner" — 텍스트 하단 앵커(에디토리얼/문서 느낌). center 뼈대와 나란한 대안. */
+.cover-corner .cover-body {{ justify-content: flex-end; gap: 28px; }}
+.cover-corner .cover-lockup h1 {{ font-size: 54px; line-height: 1.14; }}
 /* 커버 우상단 작성자 크레딧(후추님 #10) — 절제된 작은 글씨·우측 정렬·타이틀과 비충돌. */
 .cover-credit {{
   position: absolute;
@@ -2599,6 +2619,18 @@ h1 {{
   position: relative;
   z-index: 1;
 }}
+/* 조용한 간지 뼈대(엔바토 흡수 3라운드 7/3) — 진척바·PART접두어·불릿 없이 거대 숫자+라벨 한 줄. */
+.divider-quiet {{ justify-content: center; gap: 8px; }}
+.divider-quiet .divider-part {{ margin: 0; }}
+.divider-quiet-num {{
+  font-family: var(--mono-font);
+  font-weight: 300;
+  font-size: 168px;
+  line-height: 1;
+  color: color-mix(in srgb, #F8FAFC 46%, transparent);
+  margin: 4px 0 0;
+}}
+.divider-quiet .divider-title {{ font-size: 52px; margin-top: 4px; }}
 /* 고스트 배경 타이포 — 파트 라벨을 초대형·투명하게 깔아 여백을 타이포로 채운다. */
 .divider-ghost {{
   position: absolute;
