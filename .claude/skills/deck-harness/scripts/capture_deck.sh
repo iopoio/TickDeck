@@ -31,21 +31,49 @@ cp "$ABS" "$FIT"
 cat >> "$FIT" <<'EOF'
 <script>
 (function(){
-  var ovf=[], sparse=[];
+  var ovf=[], sparse=[], hovf=[], lowc=[];
   document.querySelectorAll('.slide').forEach(function(s){
     var b=s.querySelector('.body'); if(!b) return;
     var gap=b.clientHeight-b.scrollHeight, id=s.dataset.pageId||'?';
     if(gap < -2) ovf.push(id);
     else if(gap > 240 && !/layout-(divider|closing|cover|index|matrix)/.test(s.className)) sparse.push(id);
+    if(b.scrollWidth - b.clientWidth > 4) hovf.push(id);
   });
-  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',');
+  // 저대비 무독 텍스트 — closing 칩 navy-on-navy처럼 글자색≈배경색이라 실측으로만 잡히던 클래스(7/3).
+  // 텍스트 leaf의 색 vs 가장 가까운 불투명 배경색의 명도차. 그라디언트(background-image) 조상은 판정 불가라 skip.
+  function lum(c){var m=c.match(/\d+(\.\d+)?/g);if(!m)return null;return (0.2126*m[0]+0.7152*m[1]+0.0722*m[2])/255;}
+  document.querySelectorAll('.slide *').forEach(function(el){
+    if(!el.childNodes.length||el.offsetParent===null) return;
+    var hasText=[].some.call(el.childNodes,function(n){return n.nodeType===3&&n.textContent.trim();});
+    if(!hasText) return;
+    var cs=getComputedStyle(el); if(parseFloat(cs.opacity)<0.05) return;
+    var fg=lum(cs.color); if(fg===null) return;
+    var p=el, bg=null;
+    while(p && p.nodeType===1){
+      var pcs=getComputedStyle(p);
+      if(pcs.backgroundImage!=='none') return;             // 그라디언트 위 = 판정 불가
+      var b2=pcs.backgroundColor;
+      if(b2 && !/rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*0\s*\)/.test(b2) && b2!=='transparent'){bg=lum(b2);break;}
+      p=p.parentElement;
+    }
+    if(bg===null) return;
+    if(Math.abs(fg-bg)<0.08){                              // 근소 명도차 = 사실상 무독만 잡는다(스타일 취향 X)
+      var sl=el.closest('.slide');
+      var pid=(sl&&sl.dataset.pageId)||'?';
+      if(lowc.indexOf(pid)<0) lowc.push(pid);
+    }
+  });
+  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',')+'|hovf:'+hovf.join(',')+'|lowc:'+lowc.join(',');
 })();
 </script>
 EOF
 RAW="$("$CHROME" --headless=new --disable-gpu --dump-dom "file://$FIT" 2>/dev/null | grep -o 'FITREPORT|[^<]*' | head -1 || true)"
 rm -f "$FIT"
 if [ -n "$RAW" ]; then
-  _t="${RAW#*ovf:}"; OVF="${_t%%|*}"; SPARSE="${RAW##*sparse:}"
+  _t="${RAW#*ovf:}"; OVF="${_t%%|*}"
+  _t="${RAW#*sparse:}"; SPARSE="${_t%%|*}"
+  _t="${RAW#*hovf:}"; HOVF="${_t%%|*}"
+  LOWC="${RAW##*lowc:}"
   if [ -n "$OVF" ]; then
     echo "FIT_OVERFLOW: $OVF — 본문이 세로 공간을 초과해 잘림. Loop B(designer→page-planner)로 분리/압축 필요."
   else
@@ -53,6 +81,12 @@ if [ -n "$RAW" ]; then
   fi
   if [ -n "$SPARSE" ]; then
     echo "FIT_SPARSE: $SPARSE — 본문 과소밀도(빈 공간 과다). 최소 밀도 가이드 검토(병합·시각 추가)."
+  fi
+  if [ -n "$HOVF" ]; then
+    echo "FIT_HOVERFLOW: $HOVF — 본문 가로 초과(칩·nowrap·SVG 폭). 잘린 글자 확인 필요."
+  fi
+  if [ -n "$LOWC" ]; then
+    echo "FIT_LOWCONTRAST: $LOWC — 글자색≈배경색 무독 의심(closing 칩 navy-on-navy 클래스). 실측 확인 필요."
   fi
 else
   echo "FIT_CHECK_SKIP: DOM 측정 실패(Chrome dump-dom 미동작) — 시각 QA 수동 확인 필요."
