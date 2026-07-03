@@ -128,6 +128,13 @@ model: sonnet
 
 SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md`. 덱 설계 전 반드시 읽고, 아래 순서로 고른다.
 
+**변주 장부(variation ledger) 의무** — "혼자 몇 번 써도 매번 다른 물건" 기준(후추님 7/4):
+- 설계 전 `_workspace/_variation_ledger.json`을 읽는다. **최근 2개 항목과 같은 theme(시스템) 금지**,
+  최근 항목과 signature_pages·charts_used가 절반 이상 겹치면 다른 선택으로 변주.
+- deck_spec 저장 후 자기 run 항목을 장부에 append 한다(Bash·python 한 줄):
+  `{"run_id","date","theme","layouts_used","charts_used","signature_pages"}`.
+- 장부가 없거나 비어 있으면 첫 항목으로 시작(차단 아님).
+
 1. **시스템(§A)**: intake가 지정하면 그것, 아니면 직전 덱과 **다른 시스템** (변주 의무의 최상위 축).
 2. **페이지 골격(§B)**: 선택한 시스템의 시그니처 골격(poster·hero_bleed·magazine_spread·dashboard 등)을 덱에 **최소 1페이지** 배치 — 단 내용이 맞을 때만(포스터=한 문장 결론, 블리드=압도적 수치 1개, 스프레드=긴 서술, 대시보드=지표 다발). 억지 배치 금지.
 3. **다이어그램(§C)**: 내용의 관계 유형이 고른다 — 인과·단계=arrow_flow, 생태계·관계=hub_cycle, 순서·구간=timeline_bars, 지표 나열 4행+=data_table, 수치 비교=기존 12종. "차트가 필요해서"가 아니라 "이 관계를 그리려고" 선택했는지 자문.
