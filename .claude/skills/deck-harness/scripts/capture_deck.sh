@@ -42,6 +42,8 @@ cat >> "$FIT" <<'EOF'
   // 저대비 무독 텍스트 — closing 칩 navy-on-navy처럼 글자색≈배경색이라 실측으로만 잡히던 클래스(7/3).
   // 텍스트 leaf의 색 vs 가장 가까운 불투명 배경색의 명도차. 그라디언트(background-image) 조상은 판정 불가라 skip.
   function lum(c){var m=c.match(/\d+(\.\d+)?/g);if(!m)return null;return (0.2126*m[0]+0.7152*m[1]+0.0722*m[2])/255;}
+  // 반투명 배경(알파<0.9)은 실효색을 모름 — 다크 테마의 rgba 카드가 "흰 배경"으로 오판되던 사각(7/4). 판정 불가 취급.
+  function alphaOf(c){var m=c.match(/rgba\([^)]*,\s*([\d.]+)\s*\)/);return m?parseFloat(m[1]):1;}
   document.querySelectorAll('.slide *').forEach(function(el){
     if(!el.childNodes.length||el.offsetParent===null) return;
     var hasText=[].some.call(el.childNodes,function(n){return n.nodeType===3&&n.textContent.trim();});
@@ -53,7 +55,10 @@ cat >> "$FIT" <<'EOF'
       var pcs=getComputedStyle(p);
       if(pcs.backgroundImage!=='none') return;             // 그라디언트 위 = 판정 불가
       var b2=pcs.backgroundColor;
-      if(b2 && !/rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*0\s*\)/.test(b2) && b2!=='transparent'){bg=lum(b2);break;}
+      if(b2 && !/rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*0\s*\)/.test(b2) && b2!=='transparent'){
+        if(alphaOf(b2)<0.9) return;                        // 반투명 = 실효색 판정 불가
+        bg=lum(b2);break;
+      }
       p=p.parentElement;
     }
     if(bg===null) return;

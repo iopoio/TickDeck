@@ -233,6 +233,54 @@ PALETTES["data_mono"] = {
     "font_head": 'ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Pretendard", "Apple SD Gothic Neo", monospace',
     "font_body": '"Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif',
 }
+PALETTES["dark_premium"] = {
+    # 파일럿 3(레퍼런스 흡수 1라운드·_grammar/dark_premium.md 8/8 실측) — 전면 다크 시스템.
+    # 공통 문법만: 명도 3단(바탕→카드→액센트)·단일 지배 액센트(웜 골드)·본문은 순백 아닌 눌린 회색·
+    # depth 카드 부양·차트 강조1+무채. ink=밝은 글자색(다크 반전) — 본문 회색은 CSS에서 muted로 강등.
+    "theme": "dark_premium",
+    "c60": "#0E0F11",
+    "c30": "#17181B",
+    "accent": "#C6A15B",
+    "accent2": "#8C8577",
+    "ink": "#F2EFE7",
+    "muted": "#A9A49A",
+    "line": "rgba(242,239,231,.14)",
+    "grid_line": "transparent",
+    "slide_bg": "radial-gradient(circle at 88% 12%, rgba(198,161,91,.07) 0, transparent 42%), #0E0F11",
+    "slide_bg_size": "auto",
+    "body_bg": "#0A0B0C",
+    "card": "rgba(255,255,255,.055)",
+    "radius": "14px",
+    "t1": "#C6A15B",
+    "t2": "#8C8577",
+    "t3": "#5E5A52",
+    "t4": "#3A3833",
+    "t5": "#F2EFE7",
+}
+PALETTES["minimal_typo"] = {
+    # 파일럿 4(레퍼런스 흡수 1라운드·_grammar/minimal_typo.md 8/8 실측) — 미니멀 타이포 시스템.
+    # B형(웜 에디토리얼 방언)만 채택: 오프화이트 웜 바탕·단일 뮤트 액센트(플럼)·헤드:본문 극단
+    # 크기비(본문 캡션급)·무장식(여백·룰이 장식)·빅넘버 스탯. A형(모노크롬 사무형)은 혼합 금지.
+    "theme": "minimal_typo",
+    "c60": "#FAF7F1",
+    "c30": "#F3EFE7",
+    "accent": "#7A4A5F",
+    "accent2": "#A67B4F",
+    "ink": "#26231F",
+    "muted": "#7A756C",
+    "line": "rgba(38,35,31,.14)",
+    "grid_line": "transparent",
+    "slide_bg": "#FAF7F1",
+    "slide_bg_size": "auto",
+    "body_bg": "#F3EFE7",
+    "card": "transparent",
+    "radius": "0px",
+    "t1": "#7A4A5F",
+    "t2": "#A67B4F",
+    "t3": "#5C6258",
+    "t4": "#8E8678",
+    "t5": "#26231F",
+}
 
 
 def render_deck(
@@ -3077,6 +3125,96 @@ h1 {{
   background: transparent;
   padding: 0;
 }}
+
+/* ══ 파일럿 3: dark_premium — 전면 다크(레퍼런스 흡수·_grammar/dark_premium.md 공통 문법만) ══ */
+/* 무독 1: 본문은 순백 아닌 눌린 회색 — 제목(밝음)과의 명도 대비가 위계. */
+.theme-dark-premium .body-text,
+.theme-dark-premium .bullet-list li,
+.theme-dark-premium .closing-copy {{ color: var(--muted); }}
+.theme-dark-premium .block-title {{ color: color-mix(in srgb, var(--ink) 78%, transparent); }}
+/* depth 레이어링: 카드 = 바탕+1단 밝은 면(팔레트 card)·라운드. 액센트 윗줄은 다색 유혹이라 제거. */
+.theme-dark-premium .metric-card {{
+  border: 1px solid rgba(255,255,255,.08);
+  border-top: 1px solid rgba(255,255,255,.08);
+  background: var(--card);
+  min-height: 120px;
+  padding: 20px;
+}}
+.theme-dark-premium .callout {{ background: var(--card); border-left-color: var(--accent); }}
+/* 무독 3: 액센트(골드) 칩 위 글자는 밝은색 반전 금지 — 어두운 잉크로 스왑(navy-on-navy 동종 선제). */
+.theme-dark-premium .eyebrow.eyebrow-chip {{ color: #14130E; }}
+/* 무독 2: 다크 차트 — 비교군 트랙/보조 요소의 명도 하한을 배경 대비로 확보(라이트 램프가 묻힘). */
+.theme-dark-premium .visual-card rect[fill="#E2E8F0"],
+.theme-dark-premium .visual-card rect[fill="#E7EBEF"] {{ fill: rgba(255,255,255,.16); }}
+.theme-dark-premium .visual-note {{ fill: var(--muted); }}
+.theme-dark-premium .visual-card {{ border-top-color: rgba(255,255,255,.14); }}
+/* 간지: 잉크 파생 그라디언트가 밝은 ink에 오염되지 않게 명시 다크 + 골드 글로우. */
+.theme-dark-premium.layout-divider.slide {{
+  background:
+    radial-gradient(circle at 84% 24%, rgba(198,161,91,.12) 0, transparent 40%),
+    linear-gradient(140deg, #1A1B1F 0%, #101114 60%, #0A0B0D 100%);
+}}
+/* 표지·outro도 동일 다크(이 시스템은 전면 다크라 별도 dark variant 불필요). 부제는 눌린 회색. */
+.theme-dark-premium .cover-subtitle {{ color: var(--muted); }}
+.theme-dark-premium .slide-foot {{ color: rgba(242,239,231,.45); }}
+/* 제목: 헤비 + 넓은 트래킹(올캡 관례의 한글 번안 — 자간·무게로 프리미엄 스케일). */
+.theme-dark-premium .slide-head h1 {{ font-weight: 800; letter-spacing: .01em; }}
+/* stack 차트 세로 예산(-7px 실측) — 폭 상한 하향. */
+.theme-dark-premium .stack-outer > .visual-card {{ width: min(100%, 680px); }}
+
+/* ══ 파일럿 4: minimal_typo — 미니멀 타이포(레퍼런스 흡수·_grammar/minimal_typo.md B형 방언) ══ */
+/* 핵심 파라미터 = 서체가 아니라 위계비: 헤드 크게·얇게, 본문은 캡션급 초소형. */
+.theme-minimal-typo .slide-head h1 {{ font-size: 58px; font-weight: 350; letter-spacing: -.01em; max-width: none; line-height: 1.12; }}
+.theme-minimal-typo .body-text {{ font-size: 15px; line-height: 1.7; max-width: 640px; }}
+.theme-minimal-typo .bullet-list li {{ font-size: 15px; line-height: 1.6; }}
+.theme-minimal-typo .block-title {{ font-size: 17px; font-weight: 600; color: var(--ink); }}
+/* 키커 라벨: 초소형·자간 극대(공통 5/8). */
+.theme-minimal-typo .eyebrow {{ font-size: 10px; letter-spacing: .4em; font-weight: 700; }}
+.theme-minimal-typo .eyebrow::before {{ width: 18px; height: 1px; }}
+/* 무장식 원칙: 여백·룰이 장식. 마진을 전 테마 최대로. */
+.theme-minimal-typo.slide {{ padding: 56px 96px 40px; }}
+.theme-minimal-typo .stack-outer > .visual-card {{ width: min(100%, 660px); }}
+.theme-minimal-typo .slide-motif {{ display: none; }}
+/* 빅넘버 스탯(공통 5/8) — 카드 벗기고 숫자 자체가 블록. 오프셋 컬러블록(B형 서명)을 뒤에 깐다. */
+.theme-minimal-typo .metric-card {{
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 14px 18px;
+  min-height: 0;
+  position: relative;
+  /* 오프셋 블록(-10px 우하)이 컨테이너를 삐져나가 가로 오버플로 나던 것 — 마진으로 자리 확보. */
+  margin: 0 10px 10px 0;
+}}
+.theme-minimal-typo .metric-card::before {{
+  content: "";
+  position: absolute;
+  inset: 10px -10px -10px 10px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  z-index: -1;
+}}
+.theme-minimal-typo .metric-value {{ font-size: 76px; font-weight: 300; letter-spacing: -.02em; }}
+.theme-minimal-typo .metric-label {{ font-size: 12px; letter-spacing: .12em; }}
+/* 콜아웃: 박스·마커 전부 제거 — 큰 글자 한 줄이 곧 콜아웃(덜어냄이 정체성). */
+.theme-minimal-typo .callout {{
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.55;
+}}
+.theme-minimal-typo .callout-lead {{ font-size: 27px; font-weight: 700; }}
+/* 스텝퍼·매트릭스 셀 오프셋 블록 중첩 방지 — 셀 안에선 오프셋 제거. */
+.theme-minimal-typo .stepper-item .metric-card::before,
+.theme-minimal-typo .matrix-cell .metric-card::before {{ display: none; }}
+/* 차트: 단색 최소 — 보조·트랙 요소 명도 낮추고 각진 얇은 인상은 유지하지 않음(B형은 부드러움). */
+.theme-minimal-typo .visual-title {{ font-size: 19px; font-weight: 700; }}
+/* 표지도 얇은 위계 일관 + 클로징 바는 1액센트 원칙(accent2 금지). */
+.theme-minimal-typo .cover-lockup h1 {{ font-weight: 350; letter-spacing: -.01em; }}
+.theme-minimal-typo .closing-callout {{ border-left-color: var(--accent); }}
+.theme-minimal-typo .visual-note {{ font-size: 14px; }}
 """.strip()
 
 
