@@ -3028,6 +3028,15 @@ h1 {{
 /* 불릿 마커 = 사각 틱(기본 가로선·세리프 상속과 구분) */
 .theme-data-mono .bullet-list li::before {{ width: 8px; height: 8px; top: .5em; }}
 .theme-data-mono .divider-items li::before {{ width: 8px; height: 8px; top: .5em; }}
+/* 위 콜아웃/메트릭 박스 규칙이 전역 "카드 속 카드 방지" 리셋(.stepper-item·.hero-stage)을
+   소스 순서로 덮어써 이중박스 재발(후추님 7/3 p15 실측 — 스텝 02·04 박스 속 박스). 재리셋. */
+.theme-data-mono .stepper-item .callout,
+.theme-data-mono .stepper-item .metric-card,
+.theme-data-mono .hero-stage .metric-card {{
+  border: 0;
+  background: transparent;
+  padding: 0;
+}}
 """.strip()
 
 
