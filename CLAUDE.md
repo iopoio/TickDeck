@@ -21,6 +21,18 @@
 
 → 작업 시작 전 판단: 2파일 이상 or 디버깅 사이클 2회 이상 예상 → 제대리에게 넘김
 
+## 모델 역할 분담 (2026-07-04 후추님 지시)
+| 역할 | 모델 | 방법 |
+|------|------|------|
+| 아키텍처·설계·판단·트리아지·**최종 검수** | Fable 5 (클차장 본체) | 스펙 작성 → 위임 → diff·실측 검수만. **직접 구현 금지**(예외: 5줄 이하 수술) |
+| 코드 작성·구현 | **Codex** | `codex exec --skip-git-repo-check "<스펙>"` — 스펙에 파일·수용 기준·테스트 명령 명시 |
+| 반복 수정·테스트·서브 파이프라인 | Sonnet 서브에이전트 | Agent 툴 (v4 하네스 에이전트들 포함) |
+| 토큰 무거운 선처리 (코드베이스 분석·긴 로그·PDF 대량 읽기·대량 요약) | Sonnet/제대리 | 압축 결과만 본체 컨텍스트로 |
+
+- 검증 게이트는 모델 무관 항상: `test_contracts.py` 28건 + `run_contracts.py` + FIT_OK + PDF 실측.
+- 위임 스펙 필수 요소: 대상 파일 경로 / 수용 기준(테스트 명령과 기대 출력) / 건드리지 말 것 목록.
+- Codex 결과는 클차장이 diff 검수 후 커밋 (Codex 자체 커밋 금지).
+
 ## 기술 스택
 - Backend: FastAPI + SQLAlchemy(asyncpg) + PostgreSQL
 - Frontend: React + Vite + TypeScript + Tailwind CSS
