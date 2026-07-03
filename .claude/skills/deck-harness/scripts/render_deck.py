@@ -2857,6 +2857,9 @@ h1 {{
 .theme-editorial-serif .slide-head {{ text-align: right; }}
 .theme-editorial-serif .eyebrow {{ justify-content: flex-end; }}
 .theme-editorial-serif .eyebrow::before {{ order: 2; }}
+/* h1 max-width(980/1040px) 상자가 콘텐츠 폭보다 좁아 우측정렬이 상자 끝에 걸림 — 진짜 우측
+   여백까지 못 가서 "어중간하게 쏠려" 보이던 문제(후추님 7/3 클로징 지적). 상자 제약 해제. */
+.theme-editorial-serif .slide-head h1 {{ max-width: none; }}
 /* (2) 간지 거대숫자 — 인라인 흐름(제목 위 한 줄)에서 빼내 우하단에 블리드하는 배경 넘버로.
    tech·기본 뼈대는 좌측 인라인 숫자라 "같은 자리"였던 것을 위치 자체로 이탈. */
 .theme-editorial-serif .divider-quiet {{ justify-content: flex-start; padding-top: 72px; }}
