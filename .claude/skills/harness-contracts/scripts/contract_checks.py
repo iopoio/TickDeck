@@ -69,6 +69,11 @@ SUPPORTED_VIZ_CHART_TYPES = frozenset(
         # 2026-07-03 엔바토 흡수 3라운드: 픽토그램(도트채움)·게이지(반원) — 4곳·3곳 교차검증
         "pictogram",
         "gauge",
+        # 2026-07-04 다이어그램 어휘(후추님 — 관계·순환·프로세스·표 인포그래픽 공백 지적):
+        "hub_cycle",       # 중심+궤도 노드 순환 허브 (series[0]=중심·값 선택)
+        "arrow_flow",      # 두꺼운 셰브런 프로세스 (단계가 화살표 도형·값 선택)
+        "timeline_bars",   # 간트형 계단 타임라인 (값 선택)
+        "data_table",      # 액센트 헤더 + 줄무늬 데이터 표 (값=registry)
     }
 )
 SUPPORTED_LAYOUTS = frozenset(

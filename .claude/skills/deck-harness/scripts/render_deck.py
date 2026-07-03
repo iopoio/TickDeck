@@ -257,6 +257,30 @@ PALETTES["dark_premium"] = {
     "t4": "#3A3833",
     "t5": "#F2EFE7",
 }
+PALETTES["pop_dark"] = {
+    # 파일럿 5(후추님 7/4 스샷 스타일 — creative_bold 다크 방언, 흡수 라운드에서 내가 걸렀던 것 정정).
+    # 블랙 지면 + 오렌지 풀블리드 북엔드 + 다색 팝(오렌지·블루·핑크·퍼플 t램프 순환) + 필/블롭 도형.
+    # 단일 액센트 원칙의 의도적 예외 — 다이어그램 어휘(hub/arrow/timeline/table)와 짝인 시스템.
+    "theme": "pop_dark",
+    "c60": "#131118",
+    "c30": "#1C1922",
+    "accent": "#FF5A1F",
+    "accent2": "#2B3BE8",
+    "ink": "#F5F2EC",
+    "muted": "#A7A2AE",
+    "line": "rgba(245,242,236,.16)",
+    "grid_line": "transparent",
+    "slide_bg": "#131118",
+    "slide_bg_size": "auto",
+    "body_bg": "#0D0B11",
+    "card": "rgba(255,255,255,.06)",
+    "radius": "22px",
+    "t1": "#FF5A1F",
+    "t2": "#2B3BE8",
+    "t3": "#E8347C",
+    "t4": "#8A2BE8",
+    "t5": "#F5F2EC",
+}
 PALETTES["minimal_typo"] = {
     # 파일럿 4(레퍼런스 흡수 1라운드·_grammar/minimal_typo.md 8/8 실측) — 미니멀 타이포 시스템.
     # B형(웜 에디토리얼 방언)만 채택: 오프화이트 웜 바탕·단일 뮤트 액센트(플럼)·헤드:본문 극단
@@ -1782,7 +1806,135 @@ def _svg_rising_columns(
 
 
 # chart enum(계약 SoT)과 렌더러 1:1 — 빠지면 테스트가 잡는다(test_contracts 커버리지).
+# ── 다이어그램 어휘(2026-07-04 후추님 "이런 레이아웃은 전혀 없잖아" — 수치 비교 계열만 있고
+#    관계·순환·프로세스·표를 그리는 인포그래픽 어휘가 0종이던 공백). 색은 팔레트 t램프 순환(var(--tN))
+#    — 다색 팝 테마에선 팝으로, 단일 액센트 테마에선 근접 톤으로 각자 착지.
+
+def _t_fill(index: int) -> str:
+    return f"var(--t{(index % 4) + 1})"
+
+
+def _svg_hub_cycle(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 순환 허브: series[0] = 중심, 나머지 = 궤도 노드(최대 6). 개념 관계 다이어그램 — 값은 선택.
+    import math
+    center, orbit = series[0], series[1:7]
+    cx, cy, r = 500, 190, 118
+    body = [f'<circle cx="{cx}" cy="{cy}" r="64" fill="var(--ink)" opacity=".12"/>']
+    body.append(f'<circle cx="{cx}" cy="{cy}" r="52" fill="{accent}"/>')
+    body.append(f'<text x="{cx}" y="{cy + 6}" text-anchor="middle" fill="#FFFFFF" font-size="17" font-weight="900">{_escape(center["label"])}</text>')
+    n = max(1, len(orbit))
+    for i, item in enumerate(orbit):
+        ang = -math.pi / 2 + (2 * math.pi / n) * i
+        nx, ny = cx + math.cos(ang) * 320, cy + math.sin(ang) * r
+        lx, ly = cx + math.cos(ang) * 58, cy + math.sin(ang) * 48
+        body.append(f'<line x1="{lx:.0f}" y1="{ly:.0f}" x2="{nx:.0f}" y2="{ny:.0f}" stroke="var(--line)" stroke-width="2"/>')
+        fill = _t_fill(i)
+        body.append(f'<g data-metric-id="{_escape(item["metric_id"])}"><rect x="{nx - 82:.0f}" y="{ny - 26:.0f}" width="164" height="52" rx="26" fill="{fill}"/>')
+        vy = ny + (0 if item["value"] else 6)
+        body.append(f'<text x="{nx:.0f}" y="{vy - 4:.0f}" text-anchor="middle" fill="#FFFFFF" font-size="15" font-weight="800">{_escape(item["label"])}</text>')
+        if item["value"]:
+            body.append(f'<text x="{nx:.0f}" y="{ny + 17:.0f}" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="900" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+        body.append("</g>")
+    return _svg_shell("hub_cycle", title, note, 392, "".join(body), page_id)
+
+
+def _svg_arrow_flow(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 두꺼운 셰브런 프로세스: 단계 자체가 화살표 도형(기존 flow의 가는 화살표와 다른 인포그래픽 문법).
+    nodes = series[:5]
+    n = len(nodes)
+    total_w, notch = 920, 34
+    step_w = (total_w - notch) / n
+    y0, h = CHART_TITLE_GAP - 14, 96
+    body = []
+    for i, item in enumerate(nodes):
+        x = 40 + step_w * i
+        tip = x + step_w + notch
+        tail = f"{x},{y0} {x + step_w},{y0} {tip},{y0 + h / 2} {x + step_w},{y0 + h} {x},{y0 + h}"
+        head = f" {x + notch},{y0 + h / 2}" if i > 0 else ""
+        body.append(f'<g data-metric-id="{_escape(item["metric_id"])}"><polygon points="{tail}{head}" fill="{_t_fill(i)}"/>')
+        tx = x + step_w / 2 + (notch / 2 if i > 0 else 8)
+        vy = y0 + h / 2 + (0 if item["value"] else 7)
+        body.append(f'<text x="{tx:.0f}" y="{vy - 6:.0f}" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="900">{_escape(item["label"])}</text>')
+        if item["value"]:
+            body.append(f'<text x="{tx:.0f}" y="{y0 + h / 2 + 22:.0f}" text-anchor="middle" fill="#FFFFFF" font-size="19" font-weight="900" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+        body.append("</g>")
+    return _svg_shell("arrow_flow", title, note, 208, "".join(body), page_id)
+
+
+def _svg_timeline_bars(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 간트형 타임라인: 행마다 시작점이 계단식으로 밀리는 가로 바 — 순서·구간감(값은 선택).
+    rows = series[:5]
+    n = len(rows)
+    row_h, bar_h = 58, 30
+    y0 = CHART_TITLE_GAP - 10
+    lane_x, lane_w = 250, 700
+    stagger = lane_w / (n + 1.2)
+    body = [f'<line x1="{lane_x}" y1="{y0 - 8}" x2="{lane_x}" y2="{y0 + row_h * n - 18}" stroke="var(--line)" stroke-width="2"/>']
+    for i, item in enumerate(rows):
+        y = y0 + row_h * i
+        bx = lane_x + stagger * i
+        bw = max(150, lane_w - stagger * i - 40)
+        body.append(f'<text x="{lane_x - 16}" y="{y + bar_h / 2 + 6:.0f}" text-anchor="end" class="visual-label" font-size="17">{_escape(item["label"])}</text>')
+        body.append(f'<g data-metric-id="{_escape(item["metric_id"])}"><rect x="{bx:.0f}" y="{y}" width="{bw:.0f}" height="{bar_h}" rx="{bar_h / 2}" fill="{_t_fill(i)}"/>')
+        if item["value"]:
+            body.append(f'<text x="{bx + bw - 16:.0f}" y="{y + bar_h / 2 + 6:.0f}" text-anchor="end" fill="#FFFFFF" font-size="16" font-weight="900" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+        body.append("</g>")
+    return _svg_shell("timeline_bars", title, note, y0 + row_h * n + 26, "".join(body), page_id)
+
+
+def _svg_data_table(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 데이터 테이블: 액센트 헤더 행 + 줄무늬 본문(다크 프리미엄·팝 계열 공통 관례). 값=registry.
+    rows = series[:6]
+    row_h = 46
+    y0 = CHART_TITLE_GAP - 16
+    body = [
+        f'<rect x="0" y="{y0}" width="1000" height="{row_h}" rx="6" fill="{accent}"/>',
+        f'<text x="24" y="{y0 + row_h / 2 + 6:.0f}" fill="#FFFFFF" font-size="16" font-weight="900">항목</text>',
+        f'<text x="976" y="{y0 + row_h / 2 + 6:.0f}" text-anchor="end" fill="#FFFFFF" font-size="16" font-weight="900">값</text>',
+    ]
+    for i, item in enumerate(rows):
+        y = y0 + row_h * (i + 1)
+        if i % 2 == 0:
+            body.append(f'<rect x="0" y="{y}" width="1000" height="{row_h}" fill="var(--ink)" opacity=".05"/>')
+        body.append(f'<text x="24" y="{y + row_h / 2 + 6:.0f}" class="visual-label" font-size="17">{_escape(item["label"])}</text>')
+        body.append(f'<text x="976" y="{y + row_h / 2 + 6:.0f}" text-anchor="end" class="visual-value" font-size="21" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+        body.append(f'<line x1="0" y1="{y + row_h}" x2="1000" y2="{y + row_h}" stroke="var(--line)" stroke-width="1"/>')
+    return _svg_shell("data_table", title, note, y0 + row_h * (len(rows) + 1) + 30, "".join(body), page_id)
+
+
 _CHART_RENDERERS = {
+    "hub_cycle": _svg_hub_cycle,
+    "arrow_flow": _svg_arrow_flow,
+    "timeline_bars": _svg_timeline_bars,
+    "data_table": _svg_data_table,
     "before_after": _svg_before_after,
     "dumbbell": _svg_dumbbell,
     "flow": _svg_flow,
@@ -3387,6 +3539,59 @@ h1 {{
 .dash-tile .callout {{ border: 0; background: transparent; padding: 0; margin: 0; font-size: 16px; }}
 .dash-tile .visual-card {{ border-top: 0; padding-top: 0; margin: 0; width: 100%; }}
 .theme-data-mono .dash-tile {{ background: color-mix(in srgb, #FFFFFF 44%, transparent); }}
+
+/* ══ 파일럿 5: pop_dark — 팝 다크(후추님 7/4 스샷 스타일·다색 팝 + 도형 오브제) ══ */
+/* 본문은 눌린 회색(다크 공통 문법) + 헤비 제목. */
+.theme-pop-dark .body-text,
+.theme-pop-dark .bullet-list li,
+.theme-pop-dark .closing-copy {{ color: var(--muted); }}
+.theme-pop-dark .slide-head h1 {{ font-weight: 850; letter-spacing: -.01em; }}
+/* 메트릭 = 컬러 필 블록(스샷의 라운드 블롭 카드) — 카드가 곧 팝 오브제. t램프 순환. */
+.theme-pop-dark .metric-card {{
+  border: none;
+  background: var(--t2);
+  min-height: 128px;
+  padding: 20px 22px;
+}}
+.theme-pop-dark .metric-grid .metric-card:nth-child(3n+1) {{ background: var(--t1); }}
+.theme-pop-dark .metric-grid .metric-card:nth-child(3n) {{ background: var(--t3); }}
+.theme-pop-dark .metric-card .metric-label,
+.theme-pop-dark .metric-card .metric-value,
+.theme-pop-dark .metric-card .metric-source {{ color: #FFFFFF; }}
+.theme-pop-dark .metric-card .metric-delta.up,
+.theme-pop-dark .metric-card .metric-delta.down {{ color: rgba(255,255,255,.85); }}
+/* 콜아웃 = 필 캡슐. 액센트 칩 위 글자는 어두운 잉크(무독). */
+.theme-pop-dark .callout {{ background: var(--card); border-left: 6px solid var(--t3); border-radius: 18px; }}
+.theme-pop-dark .eyebrow.eyebrow-chip {{ color: #15120C; }}
+/* 표지·간지 = 오렌지 풀블리드 북엔드(스샷 커버 문법) — 다크 본문과 강한 리듬 교차. */
+.theme-pop-dark.cover-slide,
+.theme-pop-dark.layout-divider.slide {{ background: #E8551A; color: #17120E; }}
+.theme-pop-dark.cover-slide h1,
+.theme-pop-dark .divider-title {{ color: #17120E; }}
+.theme-pop-dark.cover-slide .cover-eyebrow,
+.theme-pop-dark .divider-part {{ color: rgba(23,18,14,.72); }}
+.theme-pop-dark.cover-slide .cover-subtitle {{ color: rgba(23,18,14,.78); }}
+.theme-pop-dark.cover-slide .cover-credit,
+.theme-pop-dark.cover-slide .presenter-email {{ color: rgba(23,18,14,.6); }}
+.theme-pop-dark.cover-slide .presenter-company,
+.theme-pop-dark.cover-slide .presenter-name {{ color: #17120E; }}
+.theme-pop-dark .divider-quiet-num {{ color: rgba(23,18,14,.28); font-weight: 850; }}
+.theme-pop-dark .divider-subtitle {{ color: rgba(23,18,14,.75); }}
+.theme-pop-dark .divider-progress span {{ background: rgba(23,18,14,.25); }}
+.theme-pop-dark .divider-progress .is-active {{ background: #17120E; }}
+.theme-pop-dark .divider-items li {{ color: rgba(23,18,14,.8); }}
+.theme-pop-dark .divider-items li::before {{ background: #17120E; }}
+/* outro는 다크 유지(북엔드는 표지·간지만) — 연락처 밝게. */
+.theme-pop-dark .slide-foot {{ color: rgba(245,242,236,.45); }}
+/* 다크 차트 보정: 라이트 전용 회색 트랙 명도 하한(dark_premium과 동일 클래스). */
+.theme-pop-dark .visual-card rect[fill="#E2E8F0"],
+.theme-pop-dark .visual-card rect[fill="#E7EBEF"] {{ fill: rgba(255,255,255,.18); }}
+.theme-pop-dark .visual-note {{ fill: var(--muted); }}
+.theme-pop-dark .visual-card {{ border-top-color: rgba(245,242,236,.16); }}
+/* 오렌지 북엔드 위 ==키워드== 강조색(오렌지)이 배경과 동화되던 무독(자동검출 lowc 실검출) — 잉크로. */
+.theme-pop-dark.cover-slide .kw,
+.theme-pop-dark.layout-divider .kw {{ color: #17120E; text-decoration: underline; text-underline-offset: 6px; }}
+.theme-pop-dark .stack-outer > .visual-card {{ width: min(100%, 680px); }}
 
 /* ══ 최종 컨텍스트 평탄화 — 반드시 스타일시트 맨 끝 ══
    스텝퍼·히어로·매트릭스 셀·대시 타일 안의 카드류는 테마 불문 박스를 벗긴다(카드 속 카드 방지).
