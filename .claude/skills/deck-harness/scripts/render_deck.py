@@ -2849,6 +2849,48 @@ h1 {{
   border-left: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
 }}
 .theme-editorial-serif .split-body {{ grid-template-columns: 1.35fr 1fr; gap: 64px; }}
+/* 그리드 리팩터 2차(7/3 "레이아웃 전체를 변경해서 다양해 보이는거" — 후추님 확인) — 토큰·분할비율까지
+   손댄 1차로도 "테두리만 없앤 버전"이라 재지적. 이번엔 제목 앵커·거대숫자 위치·콜아웃 문법 자체를 바꾼다. */
+/* (1) 제목 앵커 — 전 테마 공통 top-left 헤더를 우측 정렬로 뒤집는다(제본선 border-left와 짝 —
+   본문이 왼쪽 스파인에서 시작하고 제목은 오른쪽 끝에서 시작하는 매거진 마스트헤드 문법). 커버는 제외
+   (표지는 이미 spine_label·cover_variant 등 자체 변주 축이 있어 충돌 방지). */
+.theme-editorial-serif .slide-head {{ text-align: right; }}
+.theme-editorial-serif .eyebrow {{ justify-content: flex-end; }}
+.theme-editorial-serif .eyebrow::before {{ order: 2; }}
+/* (2) 간지 거대숫자 — 인라인 흐름(제목 위 한 줄)에서 빼내 우하단에 블리드하는 배경 넘버로.
+   tech·기본 뼈대는 좌측 인라인 숫자라 "같은 자리"였던 것을 위치 자체로 이탈. */
+.theme-editorial-serif .divider-quiet {{ justify-content: flex-start; padding-top: 72px; }}
+.theme-editorial-serif .divider-quiet-num {{
+  position: absolute;
+  right: 64px;
+  bottom: 40px;
+  font-size: 320px;
+  font-weight: 200;
+  z-index: 0;
+}}
+.theme-editorial-serif .divider-quiet .divider-part,
+.theme-editorial-serif .divider-quiet .divider-title,
+.theme-editorial-serif .divider-quiet .divider-subtitle {{ position: relative; z-index: 1; }}
+/* (3) 콜아웃 — "테두리만 벗긴 카드"가 아니라 각주형 인용부호 없이 세로 룰선 하나로 본문에 녹인다
+   (러닝텍스트형 풀쿼트). metric-card 그리드는 이번 라운드 스코프 밖(별도 승인 필요 — 진입점 참고). */
+.theme-editorial-serif .callout {{
+  border-left: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 4px 0 4px 28px;
+  position: relative;
+  font-style: italic;
+  font-family: var(--font-head);
+}}
+.theme-editorial-serif .callout::before {{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .15em;
+  bottom: .15em;
+  width: 2px;
+  background: var(--accent);
+}}
 .visual-title {{ fill: var(--ink); font-size: 23px; font-weight: 900; }}
 .visual-note {{ fill: var(--muted); font-size: 17px; font-weight: 500; }}
 /* 막대 설명 라벨은 받침 — 일반 굵기로 낮춰 헤더·값만 도드라지게(후추님 #6). */
