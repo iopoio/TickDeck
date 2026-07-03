@@ -28,6 +28,9 @@
 | PG-mosaic_tiles | 크기가변 사진/블록 모자이크(관찰 6/8 magazine) | 화보 타일 | serif | ⬜ |
 | PG-running_head | 상단 3점 러닝헤드 프레임(관찰 7/8 magazine) | 좌 페이지·중 브랜드·우 날짜 | serif | ⬜ |
 | PG-pricing_cards | 가격/플랜 카드 열(pop 스샷 관찰) | 옵션 비교 카드 | pop·dark | ⬜ |
+| PG-nav_chrome | 상단 탭바/아이콘 러닝헤드 전 슬라이드 반복(관찰 2 — report_ops) | SaaS/상태보고 톤 | mono·pop | ⬜ |
+| PG-split_status | 좌 정성서술 + 우 정량지표칩 상태페이지(관찰 2 — report_ops) | 상태·리스크 보고 | 전체 | ⬜ |
+| PG-profile_row | 아바타+이름 인물 카드 열(관찰 3 — report_ops) | 팀·전문가 소개 | 전체 | ⬜(사진 자산 정책 미정) |
 
 ## C. 차트·다이어그램 (수치 비교 12종 + 관계·프로세스 4종)
 
@@ -38,8 +41,12 @@
 | CH-arrow_flow | 셰브런 화살표 프로세스 | 인과·단계 | ✅ |
 | CH-timeline_bars | 간트형 계단 타임라인 | 순서·구간 | ✅ |
 | CH-data_table | 액센트 헤더 데이터 표 | 지표 나열 | ✅ |
-| CH-multi_line | 다계열 라인(관찰 8/8 dashboard) | 시계열 비교 | ⬜ |
-| CH-kpi_delta_card | 숫자+델타+미니추세 KPI 블록(관찰 8/8 dashboard) | 계기판 단위 | ⬜(델타까지는 ✅) |
+| CH-multi_line | 다계열 라인(관찰 8/8 dashboard + 4/5 report_ops — **승격 1순위**) | 시계열 비교 | ⬜ |
+| CH-progress_bar | 목표 대비 진척 막대: 트랙+채움 %(관찰 3 — report_ops) | OKR/상태 진척 | ⬜ |
+| CH-target_vs_actual | 계획 vs 실제 2계열 대비쌍(관찰 3 — report_ops) | 목표-달성 비교 | ⬜ |
+| CH-rating_dots | N/10 도트 채움 레이팅(관찰 3 — report_ops) | 정성 점수 | ⬜ |
+| CH-radial_progress | 단일 링 진척 게이지·% 중앙(관찰 3 — report_ops) | 단일 KPI 진척 | ⬜ |
+| CH-kpi_delta_card | 숫자+델타+미니추세 KPI 블록(관찰 8/8 dashboard + 3/5 report_ops) | 계기판 단위 | ⬜(델타까지는 ✅) |
 | CH-puzzle/gear/polygon | 퍼즐·기어·다각형 인포그래픽(pop 스샷 관찰) | 구성요소·맞물림 은유 | ⬜ |
 | CH-choropleth | 지도 코로플레스(관찰 corporate 1) | 지역 분포 | ⬜(관찰 1 — 보류) |
 
@@ -62,7 +69,8 @@
 | CL-multi_pop | 다색 팝 t램프 순환 — pop 계열만 예외 허용 | pop 스샷 | ✅(pop 한정) |
 | CL-muted_body_on_dark | 다크 본문은 순백 금지·60~75% 회색 (6/8) | _grammar/dark | ✅ |
 | TY-extreme_ratio | 헤드:본문 극단 크기비 (미니멀 8/8) | _grammar/minimal | ✅(minimal) |
-| TY-kicker | 초소형 자간 키커 라벨 (5/8+) | _grammar | ✅ |
+| TY-kicker | 초소형 자간 키커 라벨 (5/8+ · report_ops 다수) | _grammar | ✅ |
+| CL-gradient_accent | 그라디언트 액센트를 지배색으로 (관찰 2 — report_ops) | inbox 실측 | ⬜ |
 
 ## 갱신 규칙
 
