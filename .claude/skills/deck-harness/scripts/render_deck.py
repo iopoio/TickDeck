@@ -179,6 +179,32 @@ PALETTES["violet"] = {
 PALETTES["pantone"] = dict(PALETTES["editorial"])
 PALETTES["breeze"] = dict(PALETTES["marketing"], theme="marketing")
 PALETTES["cobalt"] = dict(PALETTES["tech"], theme="tech")
+PALETTES["editorial_serif"] = {
+    # 파일럿 1 — 별도 디자인 시스템(팔레트 아님). 세리프 헤드라인 + 카드 억제(line/card
+    # transparent로 박스 대신 룰선만 남김) + 절제된 단색조. deck-visual-language-ceiling
+    # 메모 대응 — 파라미터 변주가 아니라 타이포/카드철학 자체가 다른 엔진 변형.
+    "theme": "editorial_serif",
+    "c60": "#FAF7F2",
+    "c30": "#F1EBE1",
+    "accent": "#6B2E2E",
+    "accent2": "#8C7A5B",
+    "ink": "#211D18",
+    "muted": "#6E6559",
+    "line": "transparent",
+    "grid_line": "transparent",
+    "slide_bg": "#FAF7F2",
+    "slide_bg_size": "auto",
+    "body_bg": "#F1EBE1",
+    "card": "transparent",
+    "radius": "0px",
+    "t1": "#6B2E2E",
+    "t2": "#8C7A5B",
+    "t3": "#4B5A54",
+    "t4": "#A9967A",
+    "t5": "#211D18",
+    "font_head": '"Nanum Myeongjo", "Noto Serif KR", Georgia, "Times New Roman", serif',
+    "font_body": '"Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif',
+}
 
 
 def render_deck(
@@ -1899,6 +1925,8 @@ def _css(palette: dict[str, str]) -> str:
   --card: {palette["card"]};
   --radius: {palette["radius"]};
   --mono-font: ui-monospace, "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", monospace;
+  --font-body: {palette.get("font_body") or '"Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif'};
+  --font-head: {palette.get("font_head") or '"Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif'};
   --t1: {palette["t1"]};
   --t2: {palette["t2"]};
   --t3: {palette["t3"]};
@@ -1911,7 +1939,7 @@ body {{
   margin: 0;
   background: var(--body-bg);
   color: var(--ink);
-  font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-body);
   word-break: keep-all;  /* 한국어 단어가 음절로 쪼개지지 않게 전역 기본(상속)·후추님 7/1 */
 }}
 .slide {{
@@ -1981,6 +2009,7 @@ h1 {{
   line-height: 1.18;
   letter-spacing: 0;
   word-break: keep-all;
+  font-family: var(--font-head);
 }}
 .body {{
   flex: 1;
@@ -2806,9 +2835,20 @@ h1 {{
 }}
 .stack-row .metric-card {{ min-height: 0; }}
 .visual-card text {{
-  font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-chart, "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif);
   letter-spacing: 0;
 }}
+/* editorial_serif — 차트도 팔레트 스와핑에 그치지 않게: 막대/필 모서리를 각지게(rx 0), 수치 조판을
+   세리프로 바꿔 "기술 대시보드 각바" 관례에서 이탈시킨다(후추님 7/3 "결국 컬러 변경된거고 구성은 그대로" 지적). */
+.theme-editorial-serif rect {{ rx: 0; ry: 0; }}
+.theme-editorial-serif {{ --font-chart: var(--font-head); }}
+/* 그리드/컴포지션 레벨 변주(후추님 7/3 "레이아웃 전체를 변경해서 다양해 보이는거") — 토큰(폰트·카드·
+   차트모서리)만으로는 "테두리만 없앤 버전"으로 읽힘. 제본선 여백·분할비율까지 바꿔 지면 골격 자체를 바꾼다. */
+.theme-editorial-serif.slide {{
+  padding: 56px 80px 36px 104px;
+  border-left: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+}}
+.theme-editorial-serif .split-body {{ grid-template-columns: 1.35fr 1fr; gap: 64px; }}
 .visual-title {{ fill: var(--ink); font-size: 23px; font-weight: 900; }}
 .visual-note {{ fill: var(--muted); font-size: 17px; font-weight: 500; }}
 /* 막대 설명 라벨은 받침 — 일반 굵기로 낮춰 헤더·값만 도드라지게(후추님 #6). */
