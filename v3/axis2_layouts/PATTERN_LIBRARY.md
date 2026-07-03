@@ -25,11 +25,12 @@
 | PG-hero_bleed | 화면 절반 블리드 수치 | 숫자가 페이지 | dark·pop | ✅ |
 | PG-magazine_spread | 다단 조판+전폭 풀쿼트 | 잡지 스프레드 | serif | ✅ |
 | PG-dashboard | 풀페이지 위젯 타일 | 계기판 | mono | ✅ |
-| PG-mosaic_tiles | 크기가변 사진/블록 모자이크(관찰 14+ — magazine 6 + 2R Arabella·Maison·Minimo·Ombar 번호닷·Artista 등 8) | 화보 타일 + 선택적 번호닷 | serif·minimal | ⬜(구현중 7/4 코덱스 배치2) |
+| PG-mosaic_tiles | 크기가변 사진/블록 모자이크(관찰 14+ — magazine 6 + 2R Arabella·Maison·Minimo·Ombar 번호닷·Artista 등 8). 사진 없이 색면 타일로 구현 | 화보 타일 + 선택적 번호닷 | serif·minimal | ✅(7/4 배치2) |
 | PG-running_head | 상단 3점 러닝헤드 프레임(관찰 17+ — magazine 7 + 2R Arata 페이지분수·Pezane·Broxline 등 10). 좌 kicker·중 브랜드·우 페이지분수(NN/총) + 선택적 하단 NEXT/PREV | 일하는 덱 프레임 | serif·minimal | ⬜(승격 2순위) |
 | PG-pricing_cards | 가격/플랜 3열 카드(관찰 13+ — 전 6패밀리 관통: Minimo·Vatino·Pezane·Victor 등). 중앙 카드 강조(색반전/오프셋/스케일업 — 강조 레버는 파라미터, 단일 고정 금지)·플랜명 칩·체크리스트·CTA | 옵션·시나리오 비교 | 전체 | ⬜(승격 1순위) |
 | PG-nav_chrome | 상단 탭바/햄버거 웹크롬 반복(관찰 8 — report_ops 2 + 2R corporate·minimal·dark 6) | SaaS/상태보고 톤 | mono·pop | ⬜ |
-| PG-split_status | 좌 정성서술 + 우 정량지표칩 상태페이지(관찰 2 — report_ops) | 상태·리스크 보고 | 전체 | ⬜(구현중 7/4 코덱스 배치2) |
+| PG-split_status | 좌 정성서술 + 우 정량지표칩 상태페이지(관찰 2 — report_ops) | 상태·리스크 보고 | 전체 | ✅(7/4 배치2) |
+| PG-scenario_cards | headline이 카드를 열고 후속 블록이 카드에 착지 — 시나리오/케이스 N열 카드(트렌드 장르 Scenarios 착지용) | 시나리오·결론 비교 | dark·pop | ✅(7/4 배치2 — 카드당 블록 3개 이상이어야 휑하지 않음: designer 밀도 규칙) |
 | PG-profile_row | 아바타+이름 인물 카드 열(관찰 12+ — report_ops 3 + 2R Team 라이브러리·testimonial 등 9) | 팀·전문가 소개 | 전체 | ⬜(관찰 최다이나 사진 자산 정책 미정 — 아바타=플레이스홀더 도형 구현 가능성만 별도 판단) |
 | PG-color_block_bento | 전면 색면 직사각형 베노(여백 없이 컬러블록 맞물림+번호/사진 삽입, 관찰 3 — 2R Artista·Ombar·dark-normal) | 강렬 편집·표지 | pop·creative | ⬜ |
 

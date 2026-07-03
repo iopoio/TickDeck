@@ -657,6 +657,12 @@ def _render_layout_body(
         return _render_magazine_spread(rendered_pairs)
     if layout == "dashboard":
         return _render_dashboard(rendered_pairs)
+    if layout == "mosaic_tiles":
+        return _render_mosaic_tiles(rendered_pairs)
+    if layout == "split_status":
+        return _render_split_status(rendered_pairs)
+    if layout == "scenario_cards":
+        return _render_scenario_cards(rendered_pairs)
     if layout == "index":
         return _render_index(body_parts, content)
     if layout == "divider":
@@ -889,6 +895,73 @@ def _render_dashboard(rendered_pairs: list[tuple[Any, str]] | None) -> str:
 <main class="body layout-body dash-body">
   {lead}
   <section class="dash-grid">{"".join(tiles)}</section>
+</main>""".strip()
+
+
+def _render_mosaic_tiles(rendered_pairs: list[tuple[Any, str]] | None) -> str:
+    # 시그니처(editorial_serif 권장): 텍스트/스탯 블록을 사진 없이 색면 타일 모자이크로 배치.
+    lead = ""
+    tiles: list[str] = []
+    size_cycle = (" mosaic-tile-large", " mosaic-tile-medium", " mosaic-tile-small", " mosaic-tile-small")
+    for block, html_part in (rendered_pairs or []):
+        bt = _block_type(block)
+        if bt in {"headline", "title"} and not lead:
+            lead = html_part
+            continue
+        if bt not in {"body", "text", "summary", "bullets", "list", "callout", "note", "metric", "metrics", "metric_grid", "stat_grid"}:
+            continue
+        tile_type = " mosaic-stat" if bt in {"metric", "metrics", "metric_grid", "stat_grid"} else ""
+        size = size_cycle[len(tiles) % len(size_cycle)]
+        tiles.append(f'<article class="mosaic-tile{size}{tile_type}">{html_part}</article>')
+    return f"""
+<main class="body layout-body mosaic-body">
+  {lead}
+  <section class="mosaic-grid">{"".join(tiles)}</section>
+</main>""".strip()
+
+
+def _render_split_status(rendered_pairs: list[tuple[Any, str]] | None) -> str:
+    # 시그니처(공용): 좌측은 상태 서술, 우측은 metric류를 얇은 지표 칩 스택으로 압축.
+    lead = ""
+    copy_parts: list[str] = []
+    chips: list[str] = []
+    for block, html_part in (rendered_pairs or []):
+        bt = _block_type(block)
+        if bt in {"headline", "title"} and not lead:
+            lead = html_part
+            continue
+        if bt in {"metric", "metrics", "metric_grid", "stat_grid"}:
+            chips.append(f'<article class="status-chip">{html_part}</article>')
+        elif bt in {"body", "text", "summary", "bullets", "list", "callout", "note"}:
+            copy_parts.append(html_part)
+    return f"""
+<main class="body layout-body split-status-body">
+  {lead}
+  <section class="status-copy">{"".join(copy_parts)}</section>
+  <section class="status-chip-stack">{"".join(chips)}</section>
+</main>""".strip()
+
+
+def _render_scenario_cards(rendered_pairs: list[tuple[Any, str]] | None) -> str:
+    # 시그니처(dark/pop 권장): headline이 카드를 열고 뒤따르는 body/metric류가 그 카드에 속한다.
+    cards: list[dict[str, Any]] = []
+    for block, html_part in (rendered_pairs or []):
+        bt = _block_type(block)
+        if bt in {"headline", "title"}:
+            cards.append({"title": html_part, "parts": []})
+            continue
+        if bt not in {"body", "text", "summary", "bullets", "list", "callout", "note", "metric", "metrics", "metric_grid", "stat_grid"}:
+            continue
+        if not cards:
+            cards.append({"title": "", "parts": []})
+        cards[-1]["parts"].append(html_part)
+    card_html = "".join(
+        f'<article class="scenario-card">{card["title"]}<div class="scenario-card-body">{"".join(card["parts"])}</div></article>'
+        for card in cards
+    )
+    return f"""
+<main class="body layout-body scenario-body">
+  <section class="scenario-grid">{card_html}</section>
 </main>""".strip()
 
 
@@ -3664,6 +3737,141 @@ h1 {{
 .dash-tile .callout {{ border: 0; background: transparent; padding: 0; margin: 0; font-size: 16px; }}
 .dash-tile .visual-card {{ border-top: 0; padding-top: 0; margin: 0; width: 100%; }}
 .theme-data-mono .dash-tile {{ background: color-mix(in srgb, #FFFFFF 44%, transparent); }}
+/* mosaic_tiles: 사진 없이 색면 타일로 만드는 2:1:1 모자이크. */
+.mosaic-body {{ gap: 14px; }}
+.mosaic-body .block-title {{ margin: 0; }}
+.mosaic-grid {{
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-auto-rows: minmax(88px, 1fr);
+  grid-auto-flow: dense;
+  gap: 14px;
+}}
+.mosaic-tile {{
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--c60));
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}}
+.mosaic-tile:nth-child(odd) {{ background: var(--c30); }}
+.mosaic-tile-large {{ grid-row: span 2; }}
+.mosaic-tile-medium {{ grid-column: span 2; }}
+.mosaic-tile-small {{ grid-column: span 1; }}
+.mosaic-tile .body-text,
+.mosaic-tile .bullet-list li {{ font-size: 15px; line-height: 1.45; }}
+.mosaic-tile .callout {{ margin: 0; padding: 0; border: 0; background: transparent; font-size: 17px; }}
+.mosaic-tile .metric-grid {{ gap: 12px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }}
+.mosaic-tile .metric-card {{
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+}}
+.mosaic-tile .metric-label {{ font-size: 12px; }}
+/* 48px는 minmax(88px) 타일에서 하단 잘림(overflow:hidden이라 ovf 검출 사각) — 실측 34px */
+.mosaic-tile .metric-value {{ font-size: 34px; }}
+.theme-editorial-serif .mosaic-tile {{
+  border-color: color-mix(in srgb, var(--ink) 18%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #FFFFFF 72%, transparent);
+}}
+/* split_status: 55/45 상태보고 문법 — 좌측 정성, 우측 정량 칩. */
+.split-status-body {{
+  display: grid;
+  grid-template-columns: minmax(0, 55fr) minmax(260px, 45fr);
+  gap: 42px;
+  align-items: start;
+}}
+.split-status-body > .block-title {{ grid-column: 1 / -1; margin: 0; }}
+.status-copy {{
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}}
+.status-chip-stack {{
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}}
+.status-chip {{
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 4px);
+  background: color-mix(in srgb, var(--card) 76%, transparent);
+  padding: 14px 16px;
+}}
+.status-chip .metric-grid {{ display: flex; flex-direction: column; gap: 12px; }}
+.status-chip .metric-card {{
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 18px;
+  align-items: baseline;
+}}
+.status-chip .metric-label {{ font-size: 13px; line-height: 1.35; }}
+.status-chip .metric-value {{ font-size: 30px; line-height: 1; }}
+.status-chip .metric-delta {{ grid-column: 1 / -1; margin: 2px 0 0; }}
+.theme-data-mono .status-chip .metric-label {{
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}}
+/* scenario_cards: headline이 카드를 열고 후속 body/metric류가 카드 안에 착지한다. */
+.scenario-body {{ justify-content: center; }}
+.scenario-grid {{
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}}
+.scenario-card {{
+  min-width: 0;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 8px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}}
+.scenario-card .block-title {{ margin: 0; color: var(--ink); font-size: 20px; }}
+.scenario-card-body {{
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}}
+.scenario-card .body-text,
+.scenario-card .bullet-list li {{ font-size: 15px; line-height: 1.45; }}
+.scenario-card .callout {{ margin: 0; padding: 0; border: 0; background: transparent; font-size: 16px; }}
+.scenario-card .metric-grid {{ display: flex; flex-direction: column; gap: 12px; }}
+.scenario-card .metric-card {{
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+}}
+.scenario-card .metric-value {{ font-size: 46px; }}
+.theme-dark-premium .scenario-card,
+.theme-pop-dark .scenario-card {{
+  border-color: rgba(255,255,255,.1);
+  box-shadow: 0 18px 44px rgba(0,0,0,.24);
+}}
 
 /* ══ 파일럿 5: pop_dark — 팝 다크(후추님 7/4 스샷 스타일·다색 팝 + 도형 오브제) ══ */
 /* 본문은 눌린 회색(다크 공통 문법) + 헤비 제목. */
@@ -3727,7 +3935,12 @@ h1 {{
 .hero-stage .metric-card,
 .matrix-cell .metric-card,
 .dash-tile .metric-card,
-.dash-tile .callout {{
+.dash-tile .callout,
+.mosaic-tile .metric-card,
+.mosaic-tile .callout,
+.status-chip .metric-card,
+.scenario-card .metric-card,
+.scenario-card .callout {{
   border: 0;
   background: transparent;
   padding: 0;
@@ -3737,7 +3950,14 @@ h1 {{
 }}
 .stepper-item .metric-card::before,
 .matrix-cell .metric-card::before,
-.dash-tile .metric-card::before {{ display: none; }}
+.dash-tile .metric-card::before,
+.mosaic-tile .metric-card::before,
+.status-chip .metric-card::before,
+.scenario-card .metric-card::before,
+.stepper-item .callout::before,
+.dash-tile .callout::before,
+.mosaic-tile .callout::before,
+.scenario-card .callout::before {{ display: none; }}
 .theme-minimal-typo .visual-note {{ font-size: 14px; }}
 """.strip()
 

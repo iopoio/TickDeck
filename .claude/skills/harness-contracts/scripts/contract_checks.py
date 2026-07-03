@@ -106,6 +106,9 @@ SUPPORTED_LAYOUTS = frozenset(
         "hero_bleed",       # dark_premium — 화면 절반 블리드 숫자 + 좌측 텍스트
         "magazine_spread",  # editorial_serif — 러닝헤드 + 다단 조판 + 풀쿼트
         "dashboard",        # data_mono — 풀페이지 위젯 타일
+        "mosaic_tiles",     # editorial_serif — 텍스트/스탯 색면 모자이크 타일
+        "split_status",     # 공용 — 좌측 정성 상태 서술 + 우측 정량 지표 칩
+        "scenario_cards",   # dark_premium/pop_dark — 시나리오 카드 열
     }
 )
 RAW_NUMBER_PATTERN = re.compile(

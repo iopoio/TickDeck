@@ -281,6 +281,13 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("closing", contract_checks_module.SUPPORTED_LAYOUTS)
         self.assertEqual(validate_c6_content_authority(VALID_CLOSING_DECK_SPEC, VALID_CONTENT_REGISTRY, ""), [])
 
+    def test_c6_accepts_new_signature_layouts_in_supported_layout_enum(self):
+        for layout in ("mosaic_tiles", "split_status", "scenario_cards"):
+            with self.subTest(layout=layout):
+                self.assertIn(layout, contract_checks_module.SUPPORTED_LAYOUTS)
+                spec = {"pages": [dict(VALID_DECK_SPEC["pages"][0], layout=layout)]}
+                self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+
     def test_c6_rejects_unsupported_layouts(self):
         invalid = {
             "pages": [
@@ -449,6 +456,56 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("어느 전이가 끝났느냐", html)
         self.assertIn('class="page-number" data-page-number>01 / 01</span>', html)
         self.assertEqual(validate_c6_content_authority(VALID_CLOSING_DECK_SPEC, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_new_signature_layouts(self):
+        specs = {
+            "mosaic_tiles": [
+                {"type": "headline", "text": "Mosaic Lead"},
+                {"type": "body", "text": "First tile copy"},
+                {"type": "metric", "metric_id": "metric_click_drop"},
+                {"type": "bullets", "items": ["One", "Two"]},
+                {"type": "body", "text": "Last tile copy"},
+            ],
+            "split_status": [
+                {"type": "headline", "text": "Status Lead"},
+                {"type": "body", "text": "Narrative first"},
+                {"type": "bullets", "items": ["Qualitative signal"]},
+                {"type": "metric", "metric_id": "metric_click_drop"},
+                {"type": "metric", "metric_id": "metric_measurement"},
+            ],
+            "scenario_cards": [
+                {"type": "headline", "text": "Base Case"},
+                {"type": "body", "text": "Scenario body"},
+                {"type": "metric", "metric_id": "metric_click_drop"},
+                {"type": "headline", "text": "Upside Case"},
+                {"type": "body", "text": "Scenario body"},
+                {"type": "metric", "metric_id": "metric_measurement"},
+            ],
+        }
+        expected_markers = {
+            "mosaic_tiles": ("mosaic-body", "mosaic-grid", "mosaic-tile-large"),
+            "split_status": ("split-status-body", "status-copy", "status-chip"),
+            "scenario_cards": ("scenario-body", "scenario-grid", "scenario-card"),
+        }
+        for layout, content in specs.items():
+            with self.subTest(layout=layout):
+                spec = {
+                    "pages": [
+                        {
+                            "page_id": f"{layout}_fixture",
+                            "short_title": layout,
+                            "layout": layout,
+                            "allowed_source_ids": ["src_a", "src_b"],
+                            "allowed_metric_ids": ["metric_click_drop", "metric_measurement"],
+                            "content": content,
+                        }
+                    ]
+                }
+                html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Signature Fixture")
+                for marker in expected_markers[layout]:
+                    self.assertIn(marker, html)
+                self.assertIn('data-metric-id="metric_click_drop"', html)
+                self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
 
     def test_render_deck_supports_eyebrow_blocks_as_section_labels(self):
         html = render_deck_module.render_deck(VALID_DECK_SPEC_WITH_EYEBROW, VALID_CONTENT_REGISTRY, title="Eyebrow Fixture")
