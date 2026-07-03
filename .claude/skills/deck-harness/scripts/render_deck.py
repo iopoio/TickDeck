@@ -2983,8 +2983,10 @@ h1 {{
 .theme-data-mono {{ --font-chart: var(--font-head); }}
 /* 그리드층 (1) 제목 앵커 = 스펙시트 헤더 — 전폭 룰선 아래 제목, eyebrow는 사각 마커.
    기존(룰선 없는 좌상단)·세리프(우측 마스트헤드)와 다른 세 번째 문법. */
-.theme-data-mono .slide-head {{ border-bottom: 2px solid var(--ink); padding-bottom: 16px; }}
-.theme-data-mono .slide-head h1 {{ font-size: 40px; font-weight: 700; letter-spacing: -.01em; max-width: none; }}
+.theme-data-mono .slide-head {{ border-bottom: 2px solid var(--ink); padding-bottom: 8px; }}
+/* 40px는 outro 72px 대비 왜소(후추님 7/3) → 46px. 커진 +7px는 헤더 밑 패딩(16→8)에서
+   회수 — 빠듯한 페이지들(p02/p05/p15)이 3~7px씩 넘치던 것 실측·해소. 제목은 전 페이지 한 줄. */
+.theme-data-mono .slide-head h1 {{ font-size: 46px; font-weight: 700; letter-spacing: -.02em; max-width: none; }}
 .theme-data-mono .eyebrow {{ font-family: var(--mono-font); letter-spacing: .3em; }}
 .theme-data-mono .eyebrow::before {{ width: 10px; height: 10px; background: var(--accent); }}
 /* 그리드층 (2) 간지 거대숫자 = 아웃라인(스트로크) 넘버 — 기본(채운 좌측 인라인)·세리프(우하단
