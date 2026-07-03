@@ -325,6 +325,7 @@ def _render_page(
         return _render_source_appendix_page(page, page_number, page_count, content, registry, palette, deck_cited_source_ids)
 
     body_parts: list[str] = []
+    rendered_pairs: list[tuple[Any, str]] = []  # (block, html) — matrix처럼 블록 의미로 배치하는 레이아웃용
     cited_source_ids: list[str] = []
     footnotes: list[dict[str, Any]] = []
     eyebrow_text = _page_eyebrow_text(page, content, layout)
@@ -339,13 +340,14 @@ def _render_page(
         block_html, block_sources = _render_block(block, page_id, registry, palette)
         if block_html:
             body_parts.append(block_html)
+            rendered_pairs.append((block, block_html))
         cited_source_ids.extend(block_sources)
 
     for metric_id in _iter_metric_ids(content):
         metric = _require_metric(metric_id, page_id, registry)
         cited_source_ids.extend(_as_list(metric.get("source_ids")))
 
-    body_html = _render_layout_body(layout, body_parts, page, content, page_number)
+    body_html = _render_layout_body(layout, body_parts, page, content, page_number, rendered_pairs)
     motif_html = _slide_motif_html(layout, page_number, palette)
     # 카드가 우하단에 자기 출처를 표시한 페이지(다출처 stat_grid)는 하단 source-row가 중복 → 생략(후추님 6/30).
     source_row = "" if _page_has_per_card_sources(content, page_id, registry) else f'<div class="source-row">{_render_sources(cited_source_ids, registry)}</div>'
@@ -559,6 +561,7 @@ def _render_layout_body(
     page: dict[str, Any],
     content: list[Any],
     page_number: int,
+    rendered_pairs: list[tuple[Any, str]] | None = None,
 ) -> str:
     if layout == "split":
         return _render_split(body_parts, page)
@@ -571,7 +574,7 @@ def _render_layout_body(
     if layout == "node":
         return _render_node(body_parts)
     if layout == "matrix":
-        return _render_matrix(content)
+        return _render_matrix(content, rendered_pairs)
     if layout == "index":
         return _render_index(body_parts, content)
     if layout == "divider":
@@ -677,15 +680,28 @@ def _render_node(body_parts: list[str]) -> str:
 </main>""".strip()
 
 
-def _render_matrix(content: list[Any]) -> str:
-    # headline/title은 격자 위 소제목으로(후추님 6/30 명시 — "네 전선이…는 소제목"). 셀=body/text 블록만.
+def _render_matrix(content: list[Any], rendered_pairs: list[tuple[Any, str]] | None = None) -> str:
+    # headline/title은 격자 위 소제목으로(후추님 6/30 명시 — "네 전선이…는 소제목"). 셀=body/text 블록.
     # "라벨 — 설명" 패턴이면 굵은 헤더+본문으로 쪼개 '요약 카드 나열'이 아니라 매트릭스로 읽히게.
+    # metric류 블록은 직전 셀의 스탯 행으로 붙는다 — 이전엔 조용히 떨어뜨려 designer가 넣은 수치가
+    # 실물에 없던 무증상 결함(7/3 creator run p10 실측 발견). 셀 없이 오면 자체 셀로.
+    metric_html: dict[int, str] = {}
+    if rendered_pairs:
+        for block, html_part in rendered_pairs:
+            if _block_type(block) in {"metric", "metrics", "metric_grid", "stat_grid"}:
+                metric_html[id(block)] = html_part
     subhead = ""
-    cells = []
+    cells: list[dict[str, str]] = []
     for block in content:
         bt = _block_type(block)
         if bt in {"headline", "title"} and not subhead:
             subhead = f'<div class="matrix-subhead"><h2 class="block-title">{_escape(str(block.get("text", "")))}</h2></div>'
+            continue
+        if bt in {"metric", "metrics", "metric_grid", "stat_grid"} and id(block) in metric_html:
+            if cells:
+                cells[-1]["stats"] += metric_html[id(block)]
+            else:
+                cells.append({"inner": "", "stats": metric_html[id(block)]})
             continue
         if bt not in {"body", "text", "callout", "note"}:
             continue
@@ -697,8 +713,11 @@ def _render_matrix(content: list[Any]) -> str:
             inner = f'<div class="matrix-cell-label">{_escape(label.strip())}</div><div class="matrix-cell-copy">{_escape(desc.strip())}</div>'
         else:
             inner = f'<div class="matrix-cell-copy">{_escape(text)}</div>'
-        cells.append(f'<article class="matrix-cell">{inner}</article>')
-    return f'<main class="body layout-body matrix-body">{subhead}<section class="matrix-grid">{"".join(cells)}</section></main>'
+        cells.append({"inner": inner, "stats": ""})
+    cells_html = "".join(
+        f'<article class="matrix-cell">{c["inner"]}{c["stats"]}</article>' for c in cells
+    )
+    return f'<main class="body layout-body matrix-body">{subhead}<section class="matrix-grid">{cells_html}</section></main>'
 
 
 def _render_index(body_parts: list[str], content: list[Any]) -> str:
@@ -2445,6 +2464,15 @@ h1 {{
   min-height: 0;
   border-radius: 0;
 }}
+/* matrix 셀 안 metric = 카드 속 카드 방지(스텝퍼와 동일 문법) — 셀의 스탯 행으로 평탄화. */
+.matrix-cell .metric-grid {{ margin-top: 14px; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }}
+.matrix-cell .metric-card {{
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+}}
+.matrix-cell .metric-value {{ font-size: 44px; }}
 .stepper-item .callout {{
   border-left: 0;
   background: transparent;
@@ -2949,6 +2977,11 @@ h1 {{
 }}
 .theme-editorial-serif .metric-value {{ font-family: var(--font-head); }}
 .theme-editorial-serif .metric-label {{ font-style: italic; }}
+/* 카드리스 러닝스탯이 카드 시절 min-height(170px)를 물려받아 세로 예산을 먹던 것 해제(7/3 p04 실측). */
+.theme-editorial-serif .metric-card {{ min-height: 0; }}
+/* stack 차트 폭 상한은 기본 테마(760) 기준 — 세리프는 제본 여백만큼 콘텐츠 폭이 좁아 같은 SVG가
+   세로를 더 먹는다(7/3 p04 -20px 실측). 테마 상한 하향. */
+.theme-editorial-serif .stack-outer > .visual-card {{ width: min(100%, 680px); }}
 /* (5) 커버 제목 앵커 — 본문 slide-head와 짝 맞춰 표지도 우측 정렬(마스트헤드 문법 일관). */
 .theme-editorial-serif .cover-lockup {{ text-align: right; margin-left: auto; }}
 .theme-editorial-serif .axis-strip {{ margin-left: auto; }}
