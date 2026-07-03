@@ -74,6 +74,11 @@ SUPPORTED_VIZ_CHART_TYPES = frozenset(
         "arrow_flow",      # 두꺼운 셰브런 프로세스 (단계가 화살표 도형·값 선택)
         "timeline_bars",   # 간트형 계단 타임라인 (값 선택)
         "data_table",      # 액센트 헤더 + 줄무늬 데이터 표 (값=registry)
+        # 2026-07-04 승격 라운드(PATTERN_LIBRARY ⬜→✅·report_ops 정체성):
+        "multi_line",        # 다계열 라인 — role baseline/highlight로 선 분리
+        "progress_bar",      # 트랙+채움 진척 막대 (number=0~100 해석)
+        "target_vs_actual",  # 계획(점선 고스트) vs 실제(채움) 짝 — series 연속 2개=1행
+        "radial_progress",   # 단일 링 진척 게이지·% 중앙 (최대 3링)
     }
 )
 SUPPORTED_LAYOUTS = frozenset(

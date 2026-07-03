@@ -41,11 +41,11 @@
 | CH-arrow_flow | 셰브런 화살표 프로세스 | 인과·단계 | ✅ |
 | CH-timeline_bars | 간트형 계단 타임라인 | 순서·구간 | ✅ |
 | CH-data_table | 액센트 헤더 데이터 표 | 지표 나열 | ✅ |
-| CH-multi_line | 다계열 라인(관찰 8/8 dashboard + 4/5 report_ops — **승격 1순위**) | 시계열 비교 | ⬜ |
-| CH-progress_bar | 목표 대비 진척 막대: 트랙+채움 %(관찰 3 — report_ops) | OKR/상태 진척 | ⬜ |
-| CH-target_vs_actual | 계획 vs 실제 2계열 대비쌍(관찰 3 — report_ops) | 목표-달성 비교 | ⬜ |
+| CH-multi_line | 다계열 라인(관찰 8/8 dashboard + 4/5 report_ops) — role baseline/highlight로 선 분리 | 시계열 비교 | ✅(7/4 승격) |
+| CH-progress_bar | 목표 대비 진척 막대: 트랙+채움 %(관찰 3 — report_ops·number=0~100 해석) | OKR/상태 진척 | ✅(7/4 승격) |
+| CH-target_vs_actual | 계획 vs 실제 대비쌍(관찰 3 — series 연속 2개=1행·계획=점선 고스트) | 목표-달성 비교 | ✅(7/4 승격) |
 | CH-rating_dots | N/10 도트 채움 레이팅(관찰 3 — report_ops) | 정성 점수 | ⬜ |
-| CH-radial_progress | 단일 링 진척 게이지·% 중앙(관찰 3 — report_ops) | 단일 KPI 진척 | ⬜ |
+| CH-radial_progress | 단일 링 진척 게이지·% 중앙(관찰 3 — 최대 3링·다중이면 t램프) | 단일 KPI 진척 | ✅(7/4 승격) |
 | CH-kpi_delta_card | 숫자+델타+미니추세 KPI 블록(관찰 8/8 dashboard + 3/5 report_ops) | 계기판 단위 | ⬜(델타까지는 ✅) |
 | CH-puzzle/gear/polygon | 퍼즐·기어·다각형 인포그래픽(pop 스샷 관찰) | 구성요소·맞물림 은유 | ⬜ |
 | CH-choropleth | 지도 코로플레스(관찰 corporate 1) | 지역 분포 | ⬜(관찰 1 — 보류) |

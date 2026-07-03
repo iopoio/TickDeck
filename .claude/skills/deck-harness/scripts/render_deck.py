@@ -1930,7 +1930,132 @@ def _svg_data_table(
     return _svg_shell("data_table", title, note, y0 + row_h * (len(rows) + 1) + 30, "".join(body), page_id)
 
 
+# ── 승격 라운드(2026-07-04 후추님 승인·PATTERN_LIBRARY ⬜→✅): report_ops 정체성 4종.
+
+def _svg_multi_line(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 다계열 라인(관찰 8/8 dashboard + 4/5 report_ops): role "highlight"=액센트 선, "baseline"=회색 선.
+    # 각 항목 = 한 점(순서 = x축). 점 위 값 라벨. 시계열 배열이 아니라 registry 스칼라 점들의 연결.
+    lanes: dict[str, list[dict[str, Any]]] = {"highlight": [], "baseline": []}
+    for item in series:
+        lanes["baseline" if item.get("role") == "baseline" else "highlight"].append(item)
+    y0, h, x0, w = CHART_TITLE_GAP, 150, 80, 860
+    numbers = [i["number"] for lane in lanes.values() for i in lane if i["number"] is not None]
+    vmax = max(numbers) if numbers else 1
+    body = [f'<line x1="{x0}" y1="{y0 + h}" x2="{x0 + w}" y2="{y0 + h}" stroke="var(--line)" stroke-width="2"/>']
+    for lane_name, pts in lanes.items():
+        if not pts:
+            continue
+        color = accent if lane_name == "highlight" else "var(--muted)"
+        step = w / max(1, len(pts) - 1) if len(pts) > 1 else 0
+        coords = []
+        for i, item in enumerate(pts):
+            frac = (item["number"] / vmax) if (item["number"] is not None and vmax) else 0.5
+            x = x0 + (step * i if len(pts) > 1 else w / 2)
+            y = y0 + h - h * 0.82 * frac
+            coords.append((x, y, item))
+        path = " ".join(f"{'M' if i == 0 else 'L'}{x:.0f},{y:.0f}" for i, (x, y, _) in enumerate(coords))
+        body.append(f'<path d="{path}" fill="none" stroke="{color}" stroke-width="4" stroke-linejoin="round"/>')
+        for x, y, item in coords:
+            body.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="6" fill="{color}"/>')
+            if item["value"]:
+                body.append(f'<text x="{x:.0f}" y="{y - 14:.0f}" text-anchor="middle" class="visual-value" font-size="19" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+            body.append(f'<text x="{x:.0f}" y="{y0 + h + 24:.0f}" text-anchor="middle" class="visual-label" font-size="15">{_escape(item["label"])}</text>')
+    # x축 라벨(y0+h+24)과 shell note(height-10)가 겹치지 않게 높이 여유(+70) — 스모크 실측.
+    return _svg_shell("multi_line", title, note, y0 + h + 70, "".join(body), page_id)
+
+
+def _svg_progress_bar(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 진척 막대(관찰 3 report_ops): 트랙(전장=100%) + 채움(%). number를 0~100으로 해석.
+    rows = series[:5]
+    row_h, bar_h, y0 = 56, 22, CHART_TITLE_GAP - 8
+    lane_x, lane_w = 300, 620
+    body = []
+    for i, item in enumerate(rows):
+        y = y0 + row_h * i
+        frac = min(1.0, max(0.0, (item["number"] or 0) / 100))
+        body.append(f'<text x="{lane_x - 16}" y="{y + bar_h / 2 + 6:.0f}" text-anchor="end" class="visual-label" font-size="17">{_escape(item["label"])}</text>')
+        body.append(f'<rect x="{lane_x}" y="{y}" width="{lane_w}" height="{bar_h}" rx="{bar_h / 2}" fill="var(--ink)" opacity=".1"/>')
+        body.append(f'<g data-metric-id="{_escape(item["metric_id"])}"><rect x="{lane_x}" y="{y}" width="{max(bar_h, lane_w * frac):.0f}" height="{bar_h}" rx="{bar_h / 2}" fill="{accent if _is_highlight(item, i, rows) else _t_fill(i)}"/>')
+        body.append(f'<text x="{lane_x + lane_w + 14}" y="{y + bar_h / 2 + 6:.0f}" class="visual-value" font-size="20" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text></g>')
+    return _svg_shell("progress_bar", title, note, y0 + row_h * len(rows) + 20, "".join(body), page_id)
+
+
+def _svg_target_vs_actual(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 계획 vs 실제(관찰 3 report_ops): 연속 짝 (baseline=계획 고스트 아웃라인, highlight=실제 채움).
+    pairs = [(series[i], series[i + 1]) for i in range(0, len(series) - 1, 2)][:4]
+    row_h, bar_h, y0 = 74, 24, CHART_TITLE_GAP - 6
+    lane_x, lane_w = 300, 600
+    numbers = [i["number"] for pair in pairs for i in pair if i["number"] is not None]
+    vmax = max(numbers) if numbers else 1
+    body = []
+    for i, (target, actual) in enumerate(pairs):
+        y = y0 + row_h * i
+        body.append(f'<text x="{lane_x - 16}" y="{y + bar_h + 2:.0f}" text-anchor="end" class="visual-label" font-size="17">{_escape(actual["label"])}</text>')
+        tw = lane_w * ((target["number"] or 0) / vmax)
+        aw = lane_w * ((actual["number"] or 0) / vmax)
+        body.append(f'<g data-metric-id="{_escape(target["metric_id"])}"><rect x="{lane_x}" y="{y}" width="{max(6, tw):.0f}" height="{bar_h}" rx="4" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 4"/>')
+        body.append(f'<text x="{lane_x + max(6, tw) + 10:.0f}" y="{y + bar_h / 2 + 5:.0f}" class="visual-note" font-size="14" data-metric-id="{_escape(target["metric_id"])}">계획 {_escape(target["value"])}</text></g>')
+        body.append(f'<g data-metric-id="{_escape(actual["metric_id"])}"><rect x="{lane_x}" y="{y + bar_h + 8}" width="{max(6, aw):.0f}" height="{bar_h}" rx="4" fill="{accent}"/>')
+        body.append(f'<text x="{lane_x + max(6, aw) + 10:.0f}" y="{y + bar_h * 1.5 + 13:.0f}" class="visual-value" font-size="18" data-metric-id="{_escape(actual["metric_id"])}">{_escape(actual["value"])}</text></g>')
+    return _svg_shell("target_vs_actual", title, note, y0 + row_h * len(pairs) + 22, "".join(body), page_id)
+
+
+def _svg_radial_progress(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 단일 링 진척(관찰 3 report_ops): 원형 트랙 + %만큼 채운 호, % 중앙. 최대 3링 나란히.
+    import math
+    rings = series[:3]
+    r, y0 = 74, CHART_TITLE_GAP + 66
+    n = len(rings)
+    body = []
+    for i, item in enumerate(rings):
+        cx = 500 + (i - (n - 1) / 2) * 250
+        frac = min(1.0, max(0.0, (item["number"] or 0) / 100))
+        body.append(f'<circle cx="{cx:.0f}" cy="{y0}" r="{r}" fill="none" stroke="var(--ink)" stroke-opacity=".1" stroke-width="14"/>')
+        if frac > 0:
+            end = -math.pi / 2 + 2 * math.pi * min(frac, 0.999)
+            large = 1 if frac > 0.5 else 0
+            x1, y1 = cx, y0 - r
+            x2, y2 = cx + r * math.cos(end), y0 + r * math.sin(end)
+            color = _t_fill(i) if n > 1 else accent
+            body.append(f'<path d="M{x1:.0f},{y1:.0f} A{r},{r} 0 {large} 1 {x2:.1f},{y2:.1f}" fill="none" stroke="{color}" stroke-width="14" stroke-linecap="round" data-metric-id="{_escape(item["metric_id"])}"/>')
+        body.append(f'<text x="{cx:.0f}" y="{y0 + 9}" text-anchor="middle" class="visual-value-accent" font-size="34" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+        body.append(f'<text x="{cx:.0f}" y="{y0 + r + 32}" text-anchor="middle" class="visual-label" font-size="16">{_escape(item["label"])}</text>')
+    return _svg_shell("radial_progress", title, note, y0 + r + 50, "".join(body), page_id)
+
+
 _CHART_RENDERERS = {
+    "multi_line": _svg_multi_line,
+    "progress_bar": _svg_progress_bar,
+    "target_vs_actual": _svg_target_vs_actual,
+    "radial_progress": _svg_radial_progress,
     "hub_cycle": _svg_hub_cycle,
     "arrow_flow": _svg_arrow_flow,
     "timeline_bars": _svg_timeline_bars,
