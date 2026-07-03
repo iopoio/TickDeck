@@ -30,7 +30,7 @@
 | PG-pricing_cards | 가격/플랜 3열 카드(관찰 13+ — 전 6패밀리 관통). headline이 카드를 열고 후속 블록 착지. 스펙: `"layout": "pricing_cards"` + 페이지 옵션 `"emphasis_style": "invert"\|"offset"\|"scale"\|"border"` (기본 invert — **run마다 다르게 골라 "같은 템플릿" 천장 방지**) | 옵션·시나리오 비교 | 전체 | ✅(7/4 배치3) |
 | PG-nav_chrome | 상단 탭바/햄버거 웹크롬 반복(관찰 8 — report_ops 2 + 2R corporate·minimal·dark 6) | SaaS/상태보고 톤 | mono·pop | ⬜ |
 | PG-split_status | 좌 정성서술 + 우 정량지표칩 상태페이지(관찰 2 — report_ops) | 상태·리스크 보고 | 전체 | ✅(7/4 배치2) |
-| PG-scenario_cards | headline이 카드를 열고 후속 블록이 카드에 착지 — 시나리오/케이스 N열 카드(트렌드 장르 Scenarios 착지용) | 시나리오·결론 비교 | dark·pop | ✅(7/4 배치2 — 카드당 블록 3개 이상이어야 휑하지 않음: designer 밀도 규칙) |
+| PG-scenario_cards | headline이 카드를 열고 후속 블록이 카드에 착지 — 시나리오/케이스 N열 카드(트렌드 장르 Scenarios 착지용) | 시나리오·결론 비교 | dark·pop | ✅(7/4 배치2 — 카드당 블록 3개+ 밀도 규칙. **도입용 단독 headline 금지** — 카드 개시 문법이라 빈 카드가 됨, 7/4 run4 실측) |
 | PG-profile_row | 아바타+이름 인물 카드 열(관찰 12+ — report_ops 3 + 2R Team 라이브러리·testimonial 등 9) | 팀·전문가 소개 | 전체 | ⬜(관찰 최다이나 사진 자산 정책 미정 — 아바타=플레이스홀더 도형 구현 가능성만 별도 판단) |
 | PG-color_block_bento | 전면 색면 직사각형 베노(여백 없이 컬러블록 맞물림+번호/사진 삽입, 관찰 3 — 2R Artista·Ombar·dark-normal) | 강렬 편집·표지 | pop·creative | ⬜ |
 

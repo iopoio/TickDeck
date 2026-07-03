@@ -467,7 +467,9 @@ def _render_page(
     rendered_pairs: list[tuple[Any, str]] = []  # (block, html) — matrix처럼 블록 의미로 배치하는 레이아웃용
     cited_source_ids: list[str] = []
     footnotes: list[dict[str, Any]] = []
-    eyebrow_text = _page_eyebrow_text(page, content, layout)
+    # eyebrow는 designer가 준 명시 블록만 — role/layout 내부명 폴백은 C2(검증 메타데이터
+    # 노출 금지) 계열이라 크롬(7/4)에 이어 본체 헤더에서도 제거.
+    eyebrow_text = _first_block_text(content, {"eyebrow"})
     title_text = _page_title_text(page, content, layout)
     for block in content:
         bt = _block_type(block)
@@ -493,15 +495,8 @@ def _render_page(
         and body_page_number is not None
         and body_page_count > 0
     )
-    # 크롬 kicker는 명시적 eyebrow만 — _page_eyebrow_text의 role/layout 대문자 폴백은
-    # 내부명이라 상시 노출 크롬에 실리면 안 됨(검증 메타데이터 노출 금지 계열).
-    explicit_eyebrow = next(
-        (str(b.get("text", "")).strip() for b in content
-         if _block_type(b) == "eyebrow" and str(b.get("text", "")).strip()),
-        "",
-    )
     running_head_html = (
-        _running_head_html(explicit_eyebrow, deck_short_title, body_page_number or 0, body_page_count)
+        _running_head_html(eyebrow_text, deck_short_title, body_page_number or 0, body_page_count)
         if running_head_enabled
         else ""
     )
@@ -549,7 +544,7 @@ def _render_page(
   {side_wordmark_html}
   {running_head_html}
   <header class="slide-head">
-    <div class="eyebrow{" eyebrow-chip" if page.get("eyebrow_chip") else ""}">{_escape(eyebrow_text)}</div>
+    {f'<div class="eyebrow{" eyebrow-chip" if page.get("eyebrow_chip") else ""}">{_escape(eyebrow_text)}</div>' if eyebrow_text else ""}
     <h1>{_rich(title_text)}</h1>
   </header>
   {body_html}{foot_html}
@@ -639,7 +634,7 @@ def _render_source_appendix_page(
     # 전체 출처 모음 appendix(writing-standard: 정의=페이지하단 / 출처=끝 정리). outro 바로 앞.
     # 각 행을 data-src-id로 감싸 기관·리포트명의 연도 숫자가 C6 authorized context에 들게 한다.
     page_id = str(page.get("page_id", f"p{page_number:02d}"))
-    eyebrow_text = _page_eyebrow_text(page, content, "source_appendix") or "출처"
+    eyebrow_text = _first_block_text(content, {"eyebrow"}) or "출처"
     title_text = _page_title_text(page, content, "source_appendix") or "출처"
     src_ids = _as_list(page.get("allowed_source_ids")) or deck_cited_source_ids
     # 출처가 많으면(>10행) 행 간격·폰트를 압축 — 14출처 덱에서 appendix가 넘치던 근본 결함(7/2).
@@ -941,7 +936,7 @@ def _render_poster(content: list[Any]) -> str:
 def _render_hero_bleed(rendered_pairs: list[tuple[Any, str]] | None, content: list[Any]) -> str:
     # 시그니처(dark_premium 권장): 히어로 수치가 화면 절반을 블리드로 차지, 좌측에 서술.
     # 수치는 metric registry 주입값 그대로(C6) — 렌더된 metric-card에서 값을 뽑아 초대형 조판.
-    hero_value, hero_label = "", ""
+    hero_value, hero_label, hero_mid = "", "", ""
     left_parts: list[str] = []
     for block, html_part in (rendered_pairs or []):
         bt = _block_type(block)
@@ -950,13 +945,24 @@ def _render_hero_bleed(rendered_pairs: list[tuple[Any, str]] | None, content: li
             lb = re.search(r'metric-label[^>]*>([^<]+)<', html_part)
             hero_value = m.group(1) if m else ""
             hero_label = lb.group(1) if lb else ""
+            hero_mid = str(block.get("metric_id", "")).strip()
             continue
         left_parts.append(html_part)
-    label_html = f'<p class="hero-bleed-label">{_escape(hero_label)}</p>' if hero_label else ""
+    # 주입값이지만 재조판하며 태그가 떨어지면 C6 파서가 무단 숫자로 본다 — metric_id 태그 유지 의무.
+    mid_attr = f' data-metric-id="{_escape(hero_mid)}"' if hero_mid else ""
+    label_html = f'<p class="hero-bleed-label"{mid_attr}>{_escape(hero_label)}</p>' if hero_label else ""
+    # 긴 단위(억 달러 등)는 190px nowrap에서 지면 밖으로 밀려 사라진다 — 숫자/단위 분리 조판.
+    num_match = re.match(r"^\s*([\d.,]+\s*%?)\s*(.*)$", hero_value)
+    num_class = "hero-bleed-num"
+    if num_match and num_match.group(2):
+        num_html = f'{_escape(num_match.group(1))}<span class="hero-bleed-unit">{_escape(num_match.group(2))}</span>'
+        num_class += " with-unit"  # 단위 동반 시 숫자 폭 축소 — 190px 숫자만으로 지면이 차 단위가 밖으로 밀림
+    else:
+        num_html = _escape(hero_value)
     return f"""
 <main class="body layout-body hero-bleed-body">
   <div class="hero-bleed-copy">{"".join(left_parts)}</div>
-  <div class="hero-bleed-stage">{label_html}<div class="hero-bleed-num">{_escape(hero_value)}</div></div>
+  <div class="hero-bleed-stage">{label_html}<div class="{num_class}"{mid_attr}>{num_html}</div></div>
 </main>""".strip()
 
 
@@ -2576,15 +2582,6 @@ def _block_type(block: Any) -> str:
     return str(block.get("type", "text"))
 
 
-def _page_eyebrow_text(page: dict[str, Any], content: list[Any], layout: str) -> str:
-    for block in content:
-        if _block_type(block) == "eyebrow":
-            text = str(block.get("text", "")).strip()
-            if text:
-                return text
-    return str(page.get("role", layout)).upper()
-
-
 def _page_title_text(page: dict[str, Any], content: list[Any], layout: str) -> str:
     if layout == "closing":
         return _clean_title_text(_first_block_text(content, {"headline", "title"}) or str(page.get("short_title", "")).strip())
@@ -3902,6 +3899,8 @@ h1 {{
   transform: translateX(36px);  /* 블리드 — transform은 레이아웃 오버플로를 안 만든다. 단위(%·억원)는 잘리면 안 됨 */
   font-variant-numeric: tabular-nums;
 }}
+.hero-bleed-num.with-unit {{ font-size: 132px; transform: none; }}
+.hero-bleed-unit {{ font-size: 48px; font-weight: 700; letter-spacing: -.01em; margin-left: 10px; }}
 .theme-dark-premium .hero-bleed-num {{ text-shadow: 0 0 90px color-mix(in srgb, var(--accent) 30%, transparent); }}
 /* magazine_spread: 본문이 칼럼으로 흐르고 풀쿼트가 전폭으로 끊는다. */
 .magazine-body {{ gap: 20px; }}
