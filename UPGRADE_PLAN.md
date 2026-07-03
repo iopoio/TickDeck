@@ -35,6 +35,7 @@
 
 - [ ] 텍스트 겹침 검출 — 절대배치 요소(ghost·divider-num·spine)와 본문 텍스트의 bounding box 교차 검사
 - [ ] 그레이아웃/렌더 깨짐 검출 — 페이지별 잉크 커버리지 측정(pdftoppm 픽셀 기반)
+- [ ] 저대비 검출 그라디언트 확장 — 현행 lowc는 background-image 조상이면 skip이라 다크 표지·간지 위 무독을 못 잡음(7/3 outro PEPPINCH 무독이 실측으로만 발견된 사각). 그라디언트 색스톱 평균 명도로 근사 판정
 - [ ] 검출 결과 qa_report.json 자동 병합 (사람 QA는 톤·의미 판정만 남기기)
 
 ## 3단계 — PPTX 출력 타깃 (G4 결정 실행)

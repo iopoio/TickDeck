@@ -399,7 +399,10 @@ def _render_outro_page(
     # 발표 마무리 장(재사용 layout). 3존: eyebrow=최상단 / 감사 인사=가운데 / 연락처=하단.
     # 결론(명제) 반복은 넣지 않는다 — 직전 결론 슬라이드와 중복(후추님 6/30).
     page_id = str(page.get("page_id", f"p{page_number:02d}"))
-    title = _first_block_text(content, {"headline", "title"}) or "감사합니다"
+    title = _first_block_text(content, {"headline", "title"}) or "감사합니다."
+    # 맺음 인사는 마침표로 점을 찍는다(후추님 7/3) — 스펙이 점 없이 줘도 정규화.
+    if title.rstrip() == "감사합니다":
+        title = "감사합니다."
     eyebrow = _non_cover_text(_first_block_text(content, {"eyebrow"}))
     eyebrow_html = f'<p class="cover-eyebrow">{_escape(eyebrow)}</p>' if eyebrow else ""
     contact_html = _presenter_contact_html()
@@ -2001,6 +2004,10 @@ body {{
 .cover-slide.cover-dark .cover-subtitle {{ color: rgba(248,250,252,.82); }}
 .cover-slide.cover-dark .cover-credit,
 .cover-slide.cover-dark .presenter-email {{ color: rgba(248,250,252,.6); }}
+/* 회사명·이름은 이메일만 밝게 바꾸고 누락돼 잉크색 그대로 다크 위에서 무독이던 구멍(후추님 7/3
+   outro 실측 — PEPPINCH·이름 안 보임). 그라디언트 배경이라 lowc 자동검출도 skip이던 사각. */
+.cover-slide.cover-dark .presenter-company,
+.cover-slide.cover-dark .presenter-name {{ color: #F8FAFC; }}
 .block-eyebrow {{ align-self: flex-start; }}
 h1 {{
   margin: 14px 0 0;
@@ -2858,8 +2865,9 @@ h1 {{
 .theme-editorial-serif .eyebrow {{ justify-content: flex-end; }}
 .theme-editorial-serif .eyebrow::before {{ order: 2; }}
 /* h1 max-width(980/1040px) 상자가 콘텐츠 폭보다 좁아 우측정렬이 상자 끝에 걸림 — 진짜 우측
-   여백까지 못 가서 "어중간하게 쏠려" 보이던 문제(후추님 7/3 클로징 지적). 상자 제약 해제. */
-.theme-editorial-serif .slide-head h1 {{ max-width: none; }}
+   여백까지 못 가서 "어중간하게 쏠려" 보이던 문제(후추님 7/3 클로징 지적). 상자 제약 해제.
+   크기도 한 단계 상향(44→50px·후추님 7/3 "조금만 더") — 세리프 헤드라인이 주인공인 시스템. */
+.theme-editorial-serif .slide-head h1 {{ max-width: none; font-size: 50px; }}
 /* (2) 간지 거대숫자 — 인라인 흐름(제목 위 한 줄)에서 빼내 우하단에 블리드하는 배경 넘버로.
    tech·기본 뼈대는 좌측 인라인 숫자라 "같은 자리"였던 것을 위치 자체로 이탈. */
 .theme-editorial-serif .divider-quiet {{ justify-content: flex-start; padding-top: 72px; }}
