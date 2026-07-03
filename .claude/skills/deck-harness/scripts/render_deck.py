@@ -623,6 +623,16 @@ def _render_layout_body(
         return _render_node(body_parts)
     if layout == "matrix":
         return _render_matrix(content, rendered_pairs)
+    # ── 시그니처 페이지(2026-07-04 페이지 아키텍처 파일럿): 시스템별 전용 골격.
+    # 테마(옷)가 아니라 페이지 해부학(몸)을 분기 — "결국 그 계열" 천장의 다음 층 해법.
+    if layout == "poster":
+        return _render_poster(content)
+    if layout == "hero_bleed":
+        return _render_hero_bleed(rendered_pairs, content)
+    if layout == "magazine_spread":
+        return _render_magazine_spread(rendered_pairs)
+    if layout == "dashboard":
+        return _render_dashboard(rendered_pairs)
     if layout == "index":
         return _render_index(body_parts, content)
     if layout == "divider":
@@ -766,6 +776,96 @@ def _render_matrix(content: list[Any], rendered_pairs: list[tuple[Any, str]] | N
         f'<article class="matrix-cell">{c["inner"]}{c["stats"]}</article>' for c in cells
     )
     return f'<main class="body layout-body matrix-body">{subhead}<section class="matrix-grid">{cells_html}</section></main>'
+
+
+def _render_poster(content: list[Any]) -> str:
+    # 시그니처(minimal_typo 권장): 제목·부제 골격 자체가 없는 한 문장 포스터.
+    # 표준 head는 CSS로 숨긴다(간지와 같은 방식) — short_title은 스파인(C7)용으로만 존재.
+    kicker = ""
+    statement = ""
+    for block in content:
+        bt = _block_type(block)
+        if bt == "eyebrow" and not kicker:
+            kicker = str(block.get("text", "")).strip()
+        elif bt in {"headline", "title", "body", "text", "callout", "note"} and not statement:
+            statement = str(block.get("text", "")).strip()
+    kicker_html = f'<p class="poster-kicker">{_escape(kicker)}</p>' if kicker else ""
+    return f"""
+<main class="body layout-body poster-body">
+  {kicker_html}
+  <h2 class="poster-text">{_rich(statement)}</h2>
+</main>""".strip()
+
+
+def _render_hero_bleed(rendered_pairs: list[tuple[Any, str]] | None, content: list[Any]) -> str:
+    # 시그니처(dark_premium 권장): 히어로 수치가 화면 절반을 블리드로 차지, 좌측에 서술.
+    # 수치는 metric registry 주입값 그대로(C6) — 렌더된 metric-card에서 값을 뽑아 초대형 조판.
+    hero_value, hero_label = "", ""
+    left_parts: list[str] = []
+    for block, html_part in (rendered_pairs or []):
+        bt = _block_type(block)
+        if bt == "metric" and not hero_value:
+            m = re.search(r'metric-value[^>]*>([^<]+)<', html_part)
+            lb = re.search(r'metric-label[^>]*>([^<]+)<', html_part)
+            hero_value = m.group(1) if m else ""
+            hero_label = lb.group(1) if lb else ""
+            continue
+        left_parts.append(html_part)
+    label_html = f'<p class="hero-bleed-label">{_escape(hero_label)}</p>' if hero_label else ""
+    return f"""
+<main class="body layout-body hero-bleed-body">
+  <div class="hero-bleed-copy">{"".join(left_parts)}</div>
+  <div class="hero-bleed-stage">{label_html}<div class="hero-bleed-num">{_escape(hero_value)}</div></div>
+</main>""".strip()
+
+
+def _render_magazine_spread(rendered_pairs: list[tuple[Any, str]] | None) -> str:
+    # 시그니처(editorial_serif 권장): 다단 조판 — 본문은 칼럼으로 흐르고 풀쿼트가 전폭으로 끊는다.
+    columns: list[str] = []
+    quote = ""
+    tail: list[str] = []
+    for block, html_part in (rendered_pairs or []):
+        bt = _block_type(block)
+        if bt in {"callout", "note"} and not quote:
+            quote = html_part
+        elif bt in {"body", "text", "summary", "bullets", "list"}:
+            columns.append(html_part)
+        else:
+            tail.append(html_part)
+    quote_html = f'<div class="mag-quote-row">{quote}</div>' if quote else ""
+    lead = ""
+    rest_tail: list[str] = []
+    for part in tail:
+        if part.lstrip().startswith('<h2 class="block-title"') and not lead:
+            lead = part
+        else:
+            rest_tail.append(part)
+    tail_html = f'<div class="mag-tail">{"".join(rest_tail)}</div>' if rest_tail else ""
+    return f"""
+<main class="body layout-body magazine-body">
+  {lead}
+  <div class="mag-columns">{"".join(columns)}</div>
+  {quote_html}
+  {tail_html}
+</main>""".strip()
+
+
+def _render_dashboard(rendered_pairs: list[tuple[Any, str]] | None) -> str:
+    # 시그니처(data_mono 권장): 페이지 전체가 위젯 타일 — 각 블록이 계기판의 한 칸.
+    lead = ""
+    tiles: list[str] = []
+    for block, html_part in (rendered_pairs or []):
+        bt = _block_type(block)
+        if bt in {"headline", "title"} and not lead:
+            lead = html_part
+            continue
+        span = " dash-tile-wide" if bt == "viz" else ""
+        tiles.append(f'<article class="dash-tile{span}">{html_part}</article>')
+    return f"""
+<main class="body layout-body dash-body">
+  {lead}
+  <section class="dash-grid">{"".join(tiles)}</section>
+</main>""".strip()
 
 
 def _render_index(body_parts: list[str], content: list[Any]) -> str:
@@ -3115,6 +3215,7 @@ h1 {{
 .theme-data-mono .metric-label {{ font-family: var(--mono-font); font-size: 12px; letter-spacing: .12em; }}
 /* 불릿 마커 = 사각 틱(기본 가로선·세리프 상속과 구분) */
 .theme-data-mono .bullet-list li::before {{ width: 8px; height: 8px; top: .5em; }}
+.theme-data-mono .stack-outer > .visual-card {{ width: min(100%, 656px); }}
 .theme-data-mono .divider-items li::before {{ width: 8px; height: 8px; top: .5em; }}
 /* 위 콜아웃/메트릭 박스 규칙이 전역 "카드 속 카드 방지" 리셋(.stepper-item·.hero-stage)을
    소스 순서로 덮어써 이중박스 재발(후추님 7/3 p15 실측 — 스텝 02·04 박스 속 박스). 재리셋. */
@@ -3214,6 +3315,78 @@ h1 {{
 /* 표지도 얇은 위계 일관 + 클로징 바는 1액센트 원칙(accent2 금지). */
 .theme-minimal-typo .cover-lockup h1 {{ font-weight: 350; letter-spacing: -.01em; }}
 .theme-minimal-typo .closing-callout {{ border-left-color: var(--accent); }}
+
+/* ══ 시그니처 페이지 골격(2026-07-04 페이지 아키텍처 파일럿) — 테마가 아니라 몸이 다르다 ══ */
+/* poster: 표준 head 없음(간지와 같은 방식) — 한 문장이 지면 전체. */
+.layout-poster .slide-head {{ display: none; }}
+.poster-body {{ justify-content: center; gap: 26px; }}
+.poster-kicker {{
+  margin: 0;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .38em;
+}}
+.poster-text {{
+  margin: 0;
+  max-width: 980px;
+  font-size: 64px;
+  line-height: 1.22;
+  font-weight: 700;
+  word-break: keep-all;
+  font-family: var(--font-head);
+}}
+.theme-minimal-typo .poster-text {{ font-weight: 320; font-size: 68px; }}
+/* hero_bleed: 우측 절반이 블리드 숫자 — 숫자가 곧 페이지. */
+.layout-hero-bleed .slide-head {{ display: none; }}
+.hero-bleed-body {{ flex-direction: row; align-items: center; gap: 40px; }}
+.hero-bleed-copy {{ flex: 1 1 46%; display: flex; flex-direction: column; gap: 18px; min-width: 0; }}
+.hero-bleed-stage {{ flex: 1 1 54%; position: relative; align-self: stretch; display: flex; flex-direction: column; justify-content: center; min-width: 0; }}
+.hero-bleed-label {{ margin: 0 0 6px; color: var(--muted); font-size: 15px; letter-spacing: .08em; }}
+.hero-bleed-num {{
+  font-size: 190px;
+  line-height: .92;
+  font-weight: 850;
+  letter-spacing: -.03em;
+  color: var(--accent);
+  white-space: nowrap;
+  transform: translateX(36px);  /* 블리드 — transform은 레이아웃 오버플로를 안 만든다. 단위(%·억원)는 잘리면 안 됨 */
+  font-variant-numeric: tabular-nums;
+}}
+.theme-dark-premium .hero-bleed-num {{ text-shadow: 0 0 90px color-mix(in srgb, var(--accent) 30%, transparent); }}
+/* magazine_spread: 본문이 칼럼으로 흐르고 풀쿼트가 전폭으로 끊는다. */
+.magazine-body {{ gap: 20px; }}
+.mag-columns {{ columns: 2; column-gap: 56px; max-width: none; }}
+.mag-columns .body-text {{ max-width: none; margin: 0 0 14px; break-inside: avoid; }}
+.theme-editorial-serif .mag-columns {{ column-rule: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); }}
+.mag-quote-row {{ border-top: 1px solid var(--line); padding-top: 12px; }}
+.mag-quote-row .callout {{ max-width: none; font-size: 23px; margin-top: 0; }}
+.mag-tail {{ display: flex; gap: 40px; align-items: flex-start; }}
+.mag-tail > * {{ flex: 1; min-width: 0; }}
+/* dashboard: 페이지 전체가 위젯 타일 격자 — 각 블록이 계기판 한 칸. */
+.dash-body {{ gap: 14px; }}
+.dash-grid {{
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(120px, auto);
+  gap: 16px;
+}}
+.dash-tile {{
+  border: 1px solid var(--line);
+  padding: 16px 18px;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}}
+.dash-tile-wide {{ grid-column: span 2; grid-row: span 2; }}
+.dash-tile .metric-card {{ border: 0; background: transparent; padding: 0; min-height: 0; }}
+.dash-tile .callout {{ border: 0; background: transparent; padding: 0; margin: 0; font-size: 16px; }}
+.dash-tile .visual-card {{ border-top: 0; padding-top: 0; margin: 0; width: 100%; }}
+.theme-data-mono .dash-tile {{ background: color-mix(in srgb, #FFFFFF 44%, transparent); }}
 .theme-minimal-typo .visual-note {{ font-size: 14px; }}
 """.strip()
 

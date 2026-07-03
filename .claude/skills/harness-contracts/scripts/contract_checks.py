@@ -90,6 +90,12 @@ SUPPORTED_LAYOUTS = frozenset(
         "closing",
         "outro",
         "source_appendix",
+        # 시그니처 페이지(시스템별 전용 골격·2026-07-04 페이지 아키텍처 파일럿) —
+        # "옷(테마)"이 아니라 "몸(페이지 해부학)"을 분기하는 층. 권장 시스템은 designer.md 참조.
+        "poster",           # minimal_typo — 제목 없는 한 문장 포스터
+        "hero_bleed",       # dark_premium — 화면 절반 블리드 숫자 + 좌측 텍스트
+        "magazine_spread",  # editorial_serif — 러닝헤드 + 다단 조판 + 풀쿼트
+        "dashboard",        # data_mono — 풀페이지 위젯 타일
     }
 )
 RAW_NUMBER_PATTERN = re.compile(

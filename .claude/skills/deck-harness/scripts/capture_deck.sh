@@ -37,7 +37,8 @@ cat >> "$FIT" <<'EOF'
     var gap=b.clientHeight-b.scrollHeight, id=s.dataset.pageId||'?';
     if(gap < -2) ovf.push(id);
     else if(gap > 240 && !/layout-(divider|closing|cover|index|matrix)/.test(s.className)) sparse.push(id);
-    if(b.scrollWidth - b.clientWidth > 4) hovf.push(id);
+    // hero_bleed는 블리드가 문법(수치가 우측 여백 너머로) — 의도된 가로 초과라 hovf 제외
+    if(b.scrollWidth - b.clientWidth > 4 && !/layout-hero-bleed/.test(s.className)) hovf.push(id);
   });
   // 저대비 무독 텍스트 — closing 칩 navy-on-navy처럼 글자색≈배경색이라 실측으로만 잡히던 클래스(7/3).
   // 텍스트 leaf의 색 vs 가장 가까운 불투명 배경색의 명도차. 그라디언트(background-image) 조상은 판정 불가라 skip.
