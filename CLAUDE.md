@@ -58,7 +58,7 @@ cd backend && .venv/Scripts/celery -A worker.celery_app worker --pool=solo --con
   - [x] 토큰 시스템 연동 (생성 시 1 차감·실패 시 자동 환불)
 - 미구현: 결제 API (PRODUCT_ROADMAP Phase 5), v4 하네스와의 연결 (Phase 1 엔진 1콜화)
 
-⚠️ **두 엔진 괴리 주의**: 이 SaaS 파이프라인(Gemini 3단계→python-pptx·PPTX 출력)과 v4 덱 하네스(Claude 에이전트 9단계→HTML/PDF·계약 게이트)는 **별개 엔진**이다. 검증·품질 체계는 v4에만 있다. 제품 품질 작업 = v4 하네스가 SoT. SaaS 층은 PRODUCT_ROADMAP Phase 1(엔진 1콜화)에서 v4를 감싸는 방향. backend/frontend는 2026-05-13 이후 동결 상태 — Phase 3(서비스 래핑) 착수 전 재점검 필요.
+⚠️ **두 엔진 괴리 주의**: 이 SaaS 파이프라인(Gemini 3단계→python-pptx·PPTX 출력)과 v4 덱 하네스(Claude 에이전트 9단계→HTML/PDF·계약 게이트)는 **별개 엔진**이다. 검증·품질 체계는 v4에만 있다. 제품 품질 작업 = v4 하네스가 SoT. SaaS 층은 PRODUCT_ROADMAP Phase 1(엔진 1콜화)에서 v4를 감싸는 방향. backend/frontend는 2026-04-17, shared는 2026-05-13 이후 동결 상태 — Phase 3(서비스 래핑) 착수 전 재점검 필요.
 
 ## 알려진 제약
 - Windows Celery prefork → PermissionError WinError 5 → solo pool만 사용
