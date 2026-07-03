@@ -1,0 +1,7 @@
+url: https://elements.envato.com/dashboard-data-gradient-keynote-D6P2BVY
+name: Dashboard Data Gradient Keynote
+source: envato
+style_family: data_dashboard
+sub_tags: KPI, 대시보드, 차트밀도
+mosaic: yes
+collected: 2026-07-03

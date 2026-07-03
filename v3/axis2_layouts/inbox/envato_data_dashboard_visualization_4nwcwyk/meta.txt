@@ -1,0 +1,7 @@
+url: https://elements.envato.com/data-dashboard-visualization-4NWCWYK
+name: Data Dashboard Visualization
+source: envato
+style_family: data_dashboard
+sub_tags: KPI, 대시보드, 차트밀도
+mosaic: yes
+collected: 2026-07-03

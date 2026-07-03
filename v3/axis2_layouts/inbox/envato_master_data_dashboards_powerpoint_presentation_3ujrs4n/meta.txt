@@ -1,0 +1,7 @@
+url: https://elements.envato.com/master-data-dashboards-powerpoint-presentation-3UJRS4N
+name: Master Data Dashboards PowerPoint Presentation
+source: envato
+style_family: data_dashboard
+sub_tags: KPI, 대시보드, 차트밀도
+mosaic: yes
+collected: 2026-07-03

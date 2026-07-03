@@ -1,0 +1,7 @@
+url: https://elements.envato.com/corporate-clean-solutions-animated-8YJA6MG
+name: Corporate Clean Solutions Animated
+source: envato
+style_family: corporate_clean
+sub_tags: 화이트그리드, 블루액센트, 비즈니스
+mosaic: yes
+collected: 2026-07-03

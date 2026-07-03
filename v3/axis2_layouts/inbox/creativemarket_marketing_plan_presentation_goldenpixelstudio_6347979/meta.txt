@@ -1,0 +1,7 @@
+url: https://creativemarket.com/GoldenPixelStudio/6347979-Marketing-Plan-Presentation
+name: Marketing Plan Presentation
+source: creativemarket
+style_family: corporate_clean
+sub_tags: 화이트그리드, 블루액센트, 마케팅플랜, 본문슬라이드
+mosaic: no
+collected: 2026-07-03

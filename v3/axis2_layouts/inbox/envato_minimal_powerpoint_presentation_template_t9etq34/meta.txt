@@ -1,0 +1,7 @@
+url: https://elements.envato.com/minimal-powerpoint-presentation-template-T9ETQ34
+name: Minimal PowerPoint Presentation Template
+source: envato
+style_family: minimal_typo
+sub_tags: 미니멀, 타이포중심, 저채도
+mosaic: yes
+collected: 2026-07-03

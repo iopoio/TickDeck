@@ -1,0 +1,7 @@
+url: https://elements.envato.com/luxava-dark-luxury-google-slides-template-TMTNQTZ
+name: Luxava - Dark luxury Google Slides Template
+source: envato
+style_family: dark_premium
+sub_tags: 다크톤, 골드/네온액센트, 프리미엄
+mosaic: yes
+collected: 2026-07-03

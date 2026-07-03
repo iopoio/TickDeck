@@ -1,0 +1,7 @@
+url: https://elements.envato.com/clean-business-and-corporate-powerpoint-ZE4RT58
+name: Clean Business and Corporate PowerPoint
+source: envato
+style_family: corporate_clean
+sub_tags: 화이트그리드, 블루액센트, 비즈니스
+mosaic: yes
+collected: 2026-07-03

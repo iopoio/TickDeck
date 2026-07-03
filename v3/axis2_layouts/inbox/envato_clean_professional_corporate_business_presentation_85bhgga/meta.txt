@@ -1,0 +1,7 @@
+url: https://elements.envato.com/clean-professional-corporate-business-presentation-85BHGGA
+name: Clean Professional Corporate Business Presentation
+source: envato
+style_family: corporate_clean
+sub_tags: 화이트그리드, 블루액센트, 비즈니스
+mosaic: yes
+collected: 2026-07-03

@@ -1,0 +1,7 @@
+url: https://elements.envato.com/fashion-editorial-keynote-565UVN9
+name: Fashion Editorial Keynote
+source: envato
+style_family: editorial_magazine
+sub_tags: 매거진조판, 풀블리드사진, 세리프혼용
+mosaic: yes
+collected: 2026-07-03

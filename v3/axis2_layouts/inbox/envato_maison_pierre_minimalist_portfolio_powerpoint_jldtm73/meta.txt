@@ -1,0 +1,7 @@
+url: https://elements.envato.com/maison-pierre-minimalist-portfolio-powerpoint-JLDTM73
+name: Maison Pierre Minimalist Portfolio Powerpoint
+source: envato
+style_family: minimal_typo
+sub_tags: 미니멀, 타이포중심, 저채도
+mosaic: yes
+collected: 2026-07-03

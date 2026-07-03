@@ -1,0 +1,7 @@
+url: https://elements.envato.com/bold-problem-solving-QBA4VLD
+name: Bold Problem Solving
+source: envato
+style_family: creative_bold
+sub_tags: 볼드컬러, 비대칭, 도형오브제
+mosaic: yes
+collected: 2026-07-03

@@ -1,0 +1,7 @@
+url: https://elements.envato.com/dashboard-data-keynote-7227CTW
+name: Dashboard Data Keynote
+source: envato
+style_family: data_dashboard
+sub_tags: KPI, 대시보드, 차트밀도
+mosaic: yes
+collected: 2026-07-03
