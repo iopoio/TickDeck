@@ -31,7 +31,7 @@ cp "$ABS" "$FIT"
 cat >> "$FIT" <<'EOF'
 <script>
 (function(){
-  var ovf=[], sparse=[], hovf=[], lowc=[];
+  var ovf=[], sparse=[], hovf=[], lowc=[], ovl=[];
   document.querySelectorAll('.slide').forEach(function(s){
     var b=s.querySelector('.body'); if(!b) return;
     var gap=b.clientHeight-b.scrollHeight, id=s.dataset.pageId||'?';
@@ -72,7 +72,44 @@ cat >> "$FIT" <<'EOF'
       if(lowc.indexOf(pid)<0) lowc.push(pid);
     }
   });
-  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',')+'|hovf:'+hovf.join(',')+'|lowc:'+lowc.join(',');
+  var textCache=new Map();
+  function textElements(slide){
+    if(textCache.has(slide)) return textCache.get(slide);
+    var els=[];
+    slide.querySelectorAll('*').forEach(function(el){
+      if(el.closest('[aria-hidden="true"]')) return;
+      if(!el.childNodes.length||el.offsetParent===null) return;
+      var hasText=[].some.call(el.childNodes,function(n){return n.nodeType===3&&n.textContent.trim();});
+      if(!hasText) return;
+      var cs=getComputedStyle(el); if(parseFloat(cs.opacity)<0.05) return;
+      // 인라인 요소가 줄바꿈되면 boundingRect가 이웃까지 덮어 오탐 → 줄 단위 client rects 사용
+      var rects=[].filter.call(el.getClientRects(),function(r){return r.width>0&&r.height>0;});
+      if(!rects.length) return;
+      els.push({el:el, rects:rects});
+    });
+    textCache.set(slide,els);
+    return els;
+  }
+  document.querySelectorAll('.slide').forEach(function(s){
+    var id=s.dataset.pageId||'?';
+    var els=textElements(s);
+    for(var i=0;i<els.length;i++){
+      for(var j=i+1;j<els.length;j++){
+        var a=els[i], b=els[j], hit=false;
+        if(a.el.contains(b.el)||b.el.contains(a.el)) continue;
+        a.rects.forEach(function(ra){ b.rects.forEach(function(rb){
+          var x=Math.max(0,Math.min(ra.right,rb.right)-Math.max(ra.left,rb.left));
+          var y=Math.max(0,Math.min(ra.bottom,rb.bottom)-Math.max(ra.top,rb.top));
+          if(x*y>Math.min(ra.width*ra.height,rb.width*rb.height)*0.25) hit=true;
+        });});
+        if(hit){
+          if(ovl.indexOf(id)<0) ovl.push(id);
+          i=els.length; break;
+        }
+      }
+    }
+  });
+  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',')+'|hovf:'+hovf.join(',')+'|ovl:'+ovl.join(',')+'|lowc:'+lowc.join(',');
 })();
 </script>
 EOF
@@ -82,6 +119,7 @@ if [ -n "$RAW" ]; then
   _t="${RAW#*ovf:}"; OVF="${_t%%|*}"
   _t="${RAW#*sparse:}"; SPARSE="${_t%%|*}"
   _t="${RAW#*hovf:}"; HOVF="${_t%%|*}"
+  _t="${RAW#*ovl:}"; OVL="${_t%%|*}"
   LOWC="${RAW##*lowc:}"
   if [ -n "$OVF" ]; then
     echo "FIT_OVERFLOW: $OVF — 본문이 세로 공간을 초과해 잘림. Loop B(designer→page-planner)로 분리/압축 필요."
@@ -94,11 +132,29 @@ if [ -n "$RAW" ]; then
   if [ -n "$HOVF" ]; then
     echo "FIT_HOVERFLOW: $HOVF — 본문 가로 초과(칩·nowrap·SVG 폭). 잘린 글자 확인 필요."
   fi
+  if [ -n "$OVL" ]; then
+    echo "FIT_TEXT_OVERLAP: $OVL — 텍스트 상호 겹침 의심. 실측 확인 필요."
+  fi
   if [ -n "$LOWC" ]; then
     echo "FIT_LOWCONTRAST: $LOWC — 글자색≈배경색 무독 의심(closing 칩 navy-on-navy 클래스). 실측 확인 필요."
   fi
 else
   echo "FIT_CHECK_SKIP: DOM 측정 실패(Chrome dump-dom 미동작) — 시각 QA 수동 확인 필요."
+fi
+
+if [ -f "$OUT" ]; then
+  INK_SCRIPT="$(cd "$(dirname "$0")" && pwd)/qa_ink.py"
+  if [ -f "$INK_SCRIPT" ]; then
+    if INK_RAW="$(python3 "$INK_SCRIPT" "$OUT" 2>&1)"; then
+      [ -n "$INK_RAW" ] && printf '%s\n' "$INK_RAW"
+    else
+      reason="$(printf '%s\n' "$INK_RAW" | tail -1)"
+      [ -n "$reason" ] || reason="qa_ink.py 실행 실패"
+      echo "INK_CHECK_SKIP: $reason"
+    fi
+  else
+    echo "INK_CHECK_SKIP: qa_ink.py 없음"
+  fi
 fi
 
 echo "→ 다음: 클차장이 이 PDF를 Read로 직접 읽고 시각 QA (차트 렌더·그레이아웃·깨짐·여백). 보고 안 하고 '됐다' 금지."
