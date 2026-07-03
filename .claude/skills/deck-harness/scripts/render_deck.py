@@ -2911,18 +2911,14 @@ h1 {{
   padding: 56px 80px 36px 104px;
   border-left: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
 }}
-.theme-editorial-serif .split-body {{ grid-template-columns: 1.35fr 1fr; gap: 64px; }}
+.theme-editorial-serif .split-body {{ grid-template-columns: 1.35fr 1fr; gap: 64px; align-items: center; }}
+/* 세리프 split은 상단 정렬 대신 세로 중앙 — 키 차이 나는 두 칸에서 짧은 쪽 아래 구멍이
+   "중간 여백 어색"으로 읽히던 문제(후추님 7/4 p14). 차트 제목 라인 정합(7/2)은 카드형 테마 유지. */
 /* 그리드 리팩터 2차(7/3 "레이아웃 전체를 변경해서 다양해 보이는거" — 후추님 확인) — 토큰·분할비율까지
    손댄 1차로도 "테두리만 없앤 버전"이라 재지적. 이번엔 제목 앵커·거대숫자 위치·콜아웃 문법 자체를 바꾼다. */
-/* (1) 제목 앵커 — 전 테마 공통 top-left 헤더를 우측 정렬로 뒤집는다(제본선 border-left와 짝 —
-   본문이 왼쪽 스파인에서 시작하고 제목은 오른쪽 끝에서 시작하는 매거진 마스트헤드 문법). 커버는 제외
-   (표지는 이미 spine_label·cover_variant 등 자체 변주 축이 있어 충돌 방지). */
-.theme-editorial-serif .slide-head {{ text-align: right; }}
-.theme-editorial-serif .eyebrow {{ justify-content: flex-end; }}
-.theme-editorial-serif .eyebrow::before {{ order: 2; }}
-/* h1 max-width(980/1040px) 상자가 콘텐츠 폭보다 좁아 우측정렬이 상자 끝에 걸림 — 진짜 우측
-   여백까지 못 가서 "어중간하게 쏠려" 보이던 문제(후추님 7/3 클로징 지적). 상자 제약 해제.
-   크기도 한 단계 상향(44→50px·후추님 7/3 "조금만 더") — 세리프 헤드라인이 주인공인 시스템. */
+/* (1) 제목 앵커 — 우측 마스트헤드로 뒤집었었으나(2차) 후추님 실물 판정(7/4 크리에이터 덱)
+   "우측 쏠림이 예쁘지 않음·좌측이 맞다" → 좌측 정렬 원복(정렬 축 폐기). 세리프 차별화는
+   서체·제본선·풀쿼트·블리드 간지 넘버가 담당. 크기 50px(7/3 "조금만 더")·상자 해제는 유지. */
 .theme-editorial-serif .slide-head h1 {{ max-width: none; font-size: 50px; }}
 /* (2) 간지 거대숫자 — 인라인 흐름(제목 위 한 줄)에서 빼내 우하단에 블리드하는 배경 넘버로.
    tech·기본 뼈대는 좌측 인라인 숫자라 "같은 자리"였던 것을 위치 자체로 이탈. */
@@ -2977,14 +2973,23 @@ h1 {{
 }}
 .theme-editorial-serif .metric-value {{ font-family: var(--font-head); }}
 .theme-editorial-serif .metric-label {{ font-style: italic; }}
-/* 카드리스 러닝스탯이 카드 시절 min-height(170px)를 물려받아 세로 예산을 먹던 것 해제(7/3 p04 실측). */
-.theme-editorial-serif .metric-card {{ min-height: 0; }}
+/* 카드리스 러닝스탯 — 카드 시절 잔재(min-height 170px·padding 24px·accent 윗줄 3px)를 전부 벗긴다.
+   grid/split-pane 밖 맨몸 metric이 24px 인덴트+마룬 윗줄을 달고 나와 좌측 정렬이 어긋나던 문제
+   (후추님 7/4 크리에이터 p12 실측). hairline 구분선은 grid/split-pane 규칙이 다시 입힌다. */
+.theme-editorial-serif .metric-card {{
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}}
+/* 저밀도 페이지에서 마지막 행이 중간에 떠서 페이지마다 정렬이 달라 보이던 문제(후추님 7/4 p05 —
+   "다른 페이지는 하단에 붙는데 여긴 상단부터") — stack 마지막 행을 하단 앵커로 통일. */
+.theme-editorial-serif .stack-outer > .stack-row:last-child {{ margin-top: auto; }}
 /* stack 차트 폭 상한은 기본 테마(760) 기준 — 세리프는 제본 여백만큼 콘텐츠 폭이 좁아 같은 SVG가
    세로를 더 먹는다(7/3 p04 -20px 실측). 테마 상한 하향. */
 .theme-editorial-serif .stack-outer > .visual-card {{ width: min(100%, 680px); }}
-/* (5) 커버 제목 앵커 — 본문 slide-head와 짝 맞춰 표지도 우측 정렬(마스트헤드 문법 일관). */
-.theme-editorial-serif .cover-lockup {{ text-align: right; margin-left: auto; }}
-.theme-editorial-serif .axis-strip {{ margin-left: auto; }}
+/* (5) 커버 제목 앵커 — 본문 좌측 원복(7/4)에 맞춰 표지도 좌측 기본으로(마스트헤드 축 폐기). */
 .visual-title {{ fill: var(--ink); font-size: 23px; font-weight: 900; }}
 .visual-note {{ fill: var(--muted); font-size: 17px; font-weight: 500; }}
 /* 막대 설명 라벨은 받침 — 일반 굵기로 낮춰 헤더·값만 도드라지게(후추님 #6). */
