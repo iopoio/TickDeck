@@ -2891,6 +2891,28 @@ h1 {{
   width: 2px;
   background: var(--accent);
 }}
+/* 그리드 리팩터 3차(7/3 "스코프 밖으로 남긴것들 진행") — 이전 라운드에 미룬 두 항목 처리. */
+/* (4) metric-card — .metric-grid/.split-pane 컨텍스트(다수 카드 나열)만 한정. hero-stage·
+   stepper-item은 이미 테마 무관 자체 오버라이드로 박스를 벗겨뒀으니 손대지 않는다(중복·충돌 방지).
+   "테두리만 벗긴 카드"가 되지 않게 카드 자체를 없애고 hairline 세로 구분선으로 잇는 러닝 스탯 문법. */
+.theme-editorial-serif .metric-grid .metric-card,
+.theme-editorial-serif .split-pane .metric-card {{
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  border-left: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  padding-left: 22px;
+}}
+.theme-editorial-serif .metric-grid .metric-card:first-child,
+.theme-editorial-serif .split-pane .metric-card:first-child {{
+  border-left: none;
+  padding-left: 0;
+}}
+.theme-editorial-serif .metric-value {{ font-family: var(--font-head); }}
+.theme-editorial-serif .metric-label {{ font-style: italic; }}
+/* (5) 커버 제목 앵커 — 본문 slide-head와 짝 맞춰 표지도 우측 정렬(마스트헤드 문법 일관). */
+.theme-editorial-serif .cover-lockup {{ text-align: right; margin-left: auto; }}
+.theme-editorial-serif .axis-strip {{ margin-left: auto; }}
 .visual-title {{ fill: var(--ink); font-size: 23px; font-weight: 900; }}
 .visual-note {{ fill: var(--muted); font-size: 17px; font-weight: 500; }}
 /* 막대 설명 라벨은 받침 — 일반 굵기로 낮춰 헤더·값만 도드라지게(후추님 #6). */
