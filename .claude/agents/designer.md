@@ -124,6 +124,16 @@ model: sonnet
 - 덱 간 차별화 3축(팔레트·표지·차트 계열·eyebrow)에 **컴포지션 믹스(본문 layout 시퀀스)를 4축째로 포함** — 직전 덱과 같은 시퀀스면 변주.
 - **저장 후 렌더로 FIT 자가 확인 의무**: `python3 .claude/skills/deck-harness/scripts/render_deck.py <spec> <registry> -o /tmp/fit.html` 실행해 FIT_OK를 확인하고 보고에 결과를 적는다. "넘치지 않을 것 같다"는 판단은 인정되지 않는다 — 실측만.
 
+## 패턴 라이브러리 선택 규칙 (2026-07-04 후추님 — "패턴들 중 하나 골라서 적용")
+
+SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md`. 덱 설계 전 반드시 읽고, 아래 순서로 고른다.
+
+1. **시스템(§A)**: intake가 지정하면 그것, 아니면 직전 덱과 **다른 시스템** (변주 의무의 최상위 축).
+2. **페이지 골격(§B)**: 선택한 시스템의 시그니처 골격(poster·hero_bleed·magazine_spread·dashboard 등)을 덱에 **최소 1페이지** 배치 — 단 내용이 맞을 때만(포스터=한 문장 결론, 블리드=압도적 수치 1개, 스프레드=긴 서술, 대시보드=지표 다발). 억지 배치 금지.
+3. **다이어그램(§C)**: 내용의 관계 유형이 고른다 — 인과·단계=arrow_flow, 생태계·관계=hub_cycle, 순서·구간=timeline_bars, 지표 나열 4행+=data_table, 수치 비교=기존 12종. "차트가 필요해서"가 아니라 "이 관계를 그리려고" 선택했는지 자문.
+4. **커버리지 로테이션**: 덱마다 "이 덱에서 처음 써보는 패턴" 최소 1개 포함하고 보고에 명기 — 라이브러리가 늘어도 안 쓰면 없는 것과 같다.
+5. ⬜(백로그) 패턴은 쓰지 않는다 — 필요하면 클차장에게 구현을 요청한다.
+
 ## 에러 핸들링
 - page-plan이 없으면 즉시 중단한다.
 - page-plan의 `allowed_source_ids`, `allowed_metric_ids` 밖 ID가 필요하면 즉시 중단하고 page-planner/verifier로 되돌린다.

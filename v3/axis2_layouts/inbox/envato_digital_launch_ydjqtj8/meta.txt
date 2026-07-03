@@ -1,0 +1,7 @@
+url: https://elements.envato.com/digital-launch-YDJQTJ8
+name: digital-launch-YDJQTJ8
+source: envato
+style_family: report_ops
+sub_tags: 후추님_7/4_직접지정, 보고서·OKR·상태보고 계열
+mosaic: yes
+collected: 2026-07-04

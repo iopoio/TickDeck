@@ -1,0 +1,7 @@
+url: https://elements.envato.com/status-reporting-keynote-PDR89L7
+name: status-reporting-keynote-PDR89L7
+source: envato
+style_family: report_ops
+sub_tags: 후추님_7/4_직접지정, 보고서·OKR·상태보고 계열
+mosaic: yes
+collected: 2026-07-04
