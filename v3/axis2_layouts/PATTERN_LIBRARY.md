@@ -39,6 +39,7 @@
 | ID | 차트 | 용도 | 상태 |
 |---|---|---|---|
 | CH-비교 12종 | before_after·dumbbell·flow·big_number·gap_map·shift·funnel·donut·mirror_bars·rising_columns·pictogram·gauge | 수치 비교·비율·추이 | ✅ |
+| ⚠ shift 주의 | 두 점-쌍(회색→강조 도트)이 연결선 약해 다크에서 화살표가 안 보이고 "같은 것 두 번"으로 읽힘(후추님 7/4 반복 지적). 증감 2값이면 **rising_columns/before_after 우선** | designer 회피 | — |
 | CH-hub_cycle | 중심+궤도 순환 허브 | 관계·생태계 | ✅ |
 | CH-arrow_flow | 셰브런 화살표 프로세스 | 인과·단계 | ✅ |
 | CH-timeline_bars | 간트형 계단 타임라인 | 순서·구간 | ✅ |

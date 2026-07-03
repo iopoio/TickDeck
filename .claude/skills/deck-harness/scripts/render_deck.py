@@ -783,6 +783,19 @@ def _render_layout_body(
     return f'<main class="{body_class}">{"".join(body_parts)}</main>'
 
 
+def _extract_note_row(body_parts: list[str]) -> tuple[str, list[str]]:
+    # note(단서/캐비앗)는 좌우 칸·가로 배열에 끼우지 않고 하단 전폭 한 줄로 뺀다 — split/stack 공통.
+    note_row = ""
+    rest: list[str] = []
+    for part in body_parts:
+        stripped = part.lstrip()
+        if not note_row and stripped.startswith('<aside class="callout') and "note-row" in stripped[:60]:
+            note_row = part
+        else:
+            rest.append(part)
+    return note_row, rest
+
+
 def _render_split(body_parts: list[str], page: dict[str, Any] | None = None) -> str:
     # 거버닝 부제(block-title)는 왼쪽 칸에 가두지 않고 전폭으로 끌어올린다 —
     # 제목 아래 부제가 오는 일반 양식과 통일·좌우 밸런스 회복(후추님 7/2 p05·p07).
@@ -791,24 +804,27 @@ def _render_split(body_parts: list[str], page: dict[str, Any] | None = None) -> 
         lead, body_parts = body_parts[0], body_parts[1:]
     # note(단, ~ 캐비앗)는 좌우 칸에 섞지 않고 하단 전폭 한 줄로 뺀다(7/3 후추님 p07·p10 지적
     # — 오른쪽 칸에 박스로 갇혀 있던 게 어색했다). split/stack 공통 규칙.
-    note_row = ""
-    rest_parts = []
-    for part in body_parts:
-        stripped = part.lstrip()
-        if not note_row and stripped.startswith('<aside class="callout') and "note-row" in stripped[:60]:
-            note_row = part
-        else:
-            rest_parts.append(part)
-    body_parts = rest_parts
+    note_row, body_parts = _extract_note_row(body_parts)
     # 홀수 블록이면 나머지는 우측(보조 칸)으로 — 좌측은 주 비주얼 하나가 원칙(7/2 p06 좌측 과적 fix).
     midpoint = max(1, len(body_parts) // 2)
     left = "".join(body_parts[:midpoint])
     right = "".join(body_parts[midpoint:])
+    note_html = f'<div class="split-note-row">{note_row}</div>' if note_row else ""
+    # 우측 칸이 비면 세로 구분선 있는 2단이 어색하다(후추님 7/4 p05 "우측 내용 없는데 세로선").
+    # 단일 비주얼이면 구분선 없는 1단으로 — 가짜 2단 방지.
+    if not right.strip():
+        return f"""
+<main class="body layout-body split-outer">
+  {lead}
+  <div class="split-body split-single">
+    <section class="split-pane split-solo">{left}</section>
+  </div>
+  {note_html}
+</main>""".strip()
     # 비대칭 레버(7/3 드리블 흡수 2라운드): split_ratio "wide-left"|"wide-right" — 주 비주얼 쪽을 넓게.
     ratio_class = {"wide-left": " split-wide-left", "wide-right": " split-wide-right"}.get(
         str((page or {}).get("split_ratio", "")), ""
     )
-    note_html = f'<div class="split-note-row">{note_row}</div>' if note_row else ""
     return f"""
 <main class="body layout-body split-outer">
   {lead}
@@ -844,6 +860,8 @@ def _render_stack(body_parts: list[str]) -> str:
     if not body_parts:
         return f'<main class="body layout-body stack-outer">{lead}</main>'
     top, rest = body_parts[0], body_parts[1:]
+    # 하단 가로 배열: 지표 카드와 note 박스가 나란할 때 키를 맞춘다(후추님 7/4 p07 "우측 박스 높이=좌측").
+    # stretch는 이미 걸려 있으나 metric-grid 안의 카드가 안 늘어나 빈 공간이 생겼다 → 카드 자체를 100%로.
     row = f'<div class="stack-row">{"".join(rest)}</div>' if rest else ""
     return f'<main class="body layout-body stack-outer">{lead}{top}{row}</main>'
 
@@ -1072,13 +1090,21 @@ def _render_scenario_cards(rendered_pairs: list[tuple[Any, str]] | None) -> str:
         if not cards:
             cards.append({"title": "", "parts": []})
         cards[-1]["parts"].append(html_part)
-    card_html = "".join(
-        f'<article class="scenario-card">{card["title"]}<div class="scenario-card-body">{"".join(card["parts"])}</div></article>'
-        for card in cards
-    )
+    # 마지막 카드가 홀로 남는 줄에 걸리면(예: 4+1 종합) 좁은 카드 하나가 어색하다 — 전폭으로 눕혀
+    # 종합/결론에 무게를 준다(후추님 7/4 p13 "종합은 하단 전폭 길게가 낫다"). 5장 이상일 때만.
+    wide_last = len(cards) >= 5
+    parts_html = []
+    for idx, card in enumerate(cards):
+        cls = "scenario-card"
+        if wide_last and idx == len(cards) - 1:
+            cls += " scenario-card-wide"
+        parts_html.append(
+            f'<article class="{cls}">{card["title"]}<div class="scenario-card-body">{"".join(card["parts"])}</div></article>'
+        )
+    grid_cls = "scenario-grid scenario-grid-fixed" if wide_last else "scenario-grid"
     return f"""
 <main class="body layout-body scenario-body">
-  <section class="scenario-grid">{card_html}</section>
+  <section class="{grid_cls}">{"".join(parts_html)}</section>
 </main>""".strip()
 
 
@@ -1988,7 +2014,7 @@ def _svg_rising_columns(
     rows = series[:5]
     max_value = _max_metric_number(rows)
     # 높이는 테마 서체가 커도(기본 24px 부제) 720px 슬라이드에 안 넘치는 값 — peppinch(20px)만 통과하던 걸 보정(7/2).
-    base_y = CHART_TITLE_GAP + 206
+    base_y = CHART_TITLE_GAP + 176
     max_h = 148
     area_x, area_w = 80, 840
     col_w = min(140, area_w / max(1, len(rows)) * 0.56)
@@ -3142,6 +3168,10 @@ h1 {{
   border-right: 1px solid var(--line);
 }}
 .split-secondary {{ padding-left: 2px; }}
+/* 단일 비주얼 split — 구분선 없는 1단(우측 빈 칸에 세로선만 긋던 어색함 제거).
+   비주얼이 전폭으로 벌어져 하단 note와 겹치지 않게 폭을 제한하고 좌측 정렬. */
+.split-body.split-single {{ grid-template-columns: minmax(0, 680px); justify-content: start; }}
+.split-solo {{ padding-right: 0; border-right: none; }}
 .stepper-body {{ justify-content: center; }}
 .stepper-track {{
   counter-reset: step;
@@ -3591,6 +3621,10 @@ h1 {{
   margin-top: 14px;
 }}
 .stack-row .metric-card {{ min-height: 0; }}
+/* 하단 행 박스 키 맞춤(후추님 7/4 p07): metric-grid가 stretch로 늘어도 안쪽 카드가 안 늘어 빈 공간이
+   생기던 것 — 카드/그리드를 100%로 채워 note 박스와 밑선을 맞춘다. */
+.stack-row .metric-grid {{ height: 100%; }}
+.stack-row .metric-grid .metric-card {{ height: 100%; }}
 .visual-card text {{
   font-family: var(--font-chart, "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif);
   letter-spacing: 0;
@@ -4035,6 +4069,9 @@ h1 {{
   gap: 16px;
   align-items: stretch;
 }}
+/* 4+1 종합: 앞 카드는 4열 고정, 마지막(종합)은 하단 전폭 — 눕혀서 결론에 무게를 준다. */
+.scenario-grid-fixed {{ grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(0, auto); }}
+.scenario-card-wide {{ grid-column: 1 / -1; }}
 .scenario-card {{
   min-width: 0;
   overflow: hidden;
