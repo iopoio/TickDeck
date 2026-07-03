@@ -79,6 +79,7 @@ SUPPORTED_VIZ_CHART_TYPES = frozenset(
         "progress_bar",      # 트랙+채움 진척 막대 (number=0~100 해석)
         "target_vs_actual",  # 계획(점선 고스트) vs 실제(채움) 짝 — series 연속 2개=1행
         "radial_progress",   # 단일 링 진척 게이지·% 중앙 (최대 3링)
+        "swot_quad",         # 2×2 정성 사분면 — metric_id 없이 series[].items 텍스트만 허용
     }
 )
 SUPPORTED_LAYOUTS = frozenset(
@@ -109,6 +110,7 @@ SUPPORTED_LAYOUTS = frozenset(
         "mosaic_tiles",     # editorial_serif — 텍스트/스탯 색면 모자이크 타일
         "split_status",     # 공용 — 좌측 정성 상태 서술 + 우측 정량 지표 칩
         "scenario_cards",   # dark_premium/pop_dark — 시나리오 카드 열
+        "pricing_cards",    # 2~4열 플랜/옵션 카드 — 수치는 metric_id 주입
     }
 )
 RAW_NUMBER_PATTERN = re.compile(
@@ -503,11 +505,22 @@ def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolat
         if not isinstance(item, dict):
             violations.append(ContractViolation("C6", "viz series item must be an object", item_path))
             continue
-        if not str(item.get("metric_id", "")).strip():
+        if chart != "swot_quad" and not str(item.get("metric_id", "")).strip():
             violations.append(ContractViolation("C6", "viz series item must include metric_id", f"{item_path}.metric_id"))
         label = item.get("label")
         if isinstance(label, str) and RAW_NUMBER_PATTERN.search(label):
             violations.append(ContractViolation("C6", "viz label contains raw number", f"{item_path}.label"))
+        if chart == "swot_quad":
+            items = item.get("items")
+            if not isinstance(items, list):
+                violations.append(ContractViolation("C6", "swot_quad series item must include items list", f"{item_path}.items"))
+            else:
+                for item_index, text in enumerate(items):
+                    text_path = f"{item_path}.items[{item_index}]"
+                    if not isinstance(text, str):
+                        violations.append(ContractViolation("C6", "swot_quad item must be text", text_path))
+                    elif RAW_NUMBER_PATTERN.search(text):
+                        violations.append(ContractViolation("C6", "swot_quad item contains raw number", text_path))
         for field in ("value", "unit", "values", "data"):
             if field in item:
                 violations.append(ContractViolation("C6", f"viz series must not include direct {field}", f"{item_path}.{field}"))

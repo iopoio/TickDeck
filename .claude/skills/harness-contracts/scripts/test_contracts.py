@@ -288,6 +288,60 @@ class HarnessContractTests(unittest.TestCase):
                 spec = {"pages": [dict(VALID_DECK_SPEC["pages"][0], layout=layout)]}
                 self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
 
+    def test_c6_accepts_pricing_cards_layout_in_supported_layout_enum(self):
+        self.assertIn("pricing_cards", contract_checks_module.SUPPORTED_LAYOUTS)
+        spec = {"pages": [dict(VALID_DECK_SPEC["pages"][0], layout="pricing_cards")]}
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+
+    def test_c6_accepts_swot_quad_viz_without_metric_ids(self):
+        self.assertIn("swot_quad", contract_checks_module.SUPPORTED_VIZ_CHART_TYPES)
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=[],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "swot_quad",
+                            "title": "Qualitative SWOT",
+                            "series": [
+                                {"label": "Strengths", "items": ["Owned proof assets"], "role": "highlight"},
+                                {"label": "Weaknesses", "items": ["Low aided awareness"]},
+                                {"label": "Opportunities", "items": ["Partner distribution"]},
+                                {"label": "Threats", "items": ["Platform policy shifts"]},
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+
+    def test_c6_rejects_swot_quad_items_with_raw_numbers(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=[],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "swot_quad",
+                            "series": [
+                                {"label": "Strengths", "items": ["Awareness rose 47%"]},
+                                {"label": "Weaknesses", "items": ["Manual process"]},
+                                {"label": "Opportunities", "items": ["Retail partner"]},
+                                {"label": "Threats", "items": ["Policy change"]},
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertTrue(any("swot_quad item contains raw number" in str(v) for v in violations))
+
     def test_c6_rejects_unsupported_layouts(self):
         invalid = {
             "pages": [
@@ -506,6 +560,110 @@ class HarnessContractTests(unittest.TestCase):
                     self.assertIn(marker, html)
                 self.assertIn('data-metric-id="metric_click_drop"', html)
                 self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_pricing_cards_with_configurable_emphasis(self):
+        spec = {
+            "pages": [
+                {
+                    "page_id": "pricing_fixture",
+                    "short_title": "Choose The Operating Model",
+                    "layout": "pricing_cards",
+                    "emphasis_style": "border",
+                    "allowed_source_ids": ["src_a", "src_b"],
+                    "allowed_metric_ids": ["metric_click_drop", "metric_measurement"],
+                    "content": [
+                        {"type": "headline", "text": "Starter"},
+                        {"type": "bullets", "items": ["Manual reporting", "Email support"]},
+                        {"type": "metric", "metric_id": "metric_click_drop"},
+                        {"type": "headline", "text": "Operator", "emphasis": True},
+                        {"type": "bullets", "items": ["Live dashboard", "Priority review"]},
+                        {"type": "metric", "metric_id": "metric_measurement"},
+                    ],
+                }
+            ]
+        }
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Pricing Fixture")
+        self.assertIn("pricing-body", html)
+        self.assertIn("pricing-grid", html)
+        self.assertIn("pricing-card-emphasis", html)
+        self.assertIn("pricing-emphasis-border", html)
+        self.assertIn('data-metric-id="metric_click_drop"', html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_swot_quad_without_metric_ids(self):
+        spec = {
+            "pages": [
+                {
+                    "page_id": "swot_fixture",
+                    "short_title": "Strategic Read",
+                    "layout": "statement",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": [],
+                    "content": [
+                        {
+                            "type": "viz",
+                            "chart": "swot_quad",
+                            "title": "Market Position",
+                            "series": [
+                                {"label": "Strengths", "items": ["Proof library"], "role": "highlight"},
+                                {"label": "Weaknesses", "items": ["Small sales surface"]},
+                                {"label": "Opportunities", "items": ["Agency bundles"]},
+                                {"label": "Threats", "items": ["Platform lock-in"]},
+                            ],
+                        }
+                    ],
+                }
+            ]
+        }
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="SWOT Fixture")
+        self.assertIn("visual-swot-quad", html)
+        self.assertIn("swot-cell-highlight", html)
+        self.assertIn("Proof library", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_running_head_chrome_for_body_pages(self):
+        spec = {
+            "meta": {"page_chrome": "running_head", "short_title": "Proof OS"},
+            "pages": [
+                dict(VALID_COVER_DECK_SPEC["pages"][0]),
+                dict(VALID_DECK_SPEC["pages"][0], page_id="body_a"),
+                dict(VALID_DECK_SPEC["pages"][1], page_id="body_b", content=[{"type": "eyebrow", "text": "Signal"}, *VALID_DECK_SPEC["pages"][1]["content"]]),
+                dict(VALID_CLOSING_DECK_SPEC["pages"][0]),
+            ],
+        }
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Running Head Fixture")
+        body_a = html.split('data-page-id="body_a"', 1)[1].split("</section>", 1)[0]
+        body_b = html.split('data-page-id="body_b"', 1)[1].split("</section>", 1)[0]
+        cover = html.split('data-page-id="cover"', 1)[1].split("</section>", 1)[0]
+        self.assertIn("running-head", body_a)
+        # kicker는 명시적 eyebrow만 — 내부 role/layout 명 폴백은 크롬 노출 금지 (7/4 클차장 수정)
+        self.assertNotIn('running-head-kicker">HERO_METRIC', body_a)
+        self.assertIn('running-head-kicker"></span>', body_a)
+        self.assertIn('running-head-kicker">Signal<', body_b)
+        self.assertIn("Proof OS", body_a)
+        self.assertIn("01 / 02", body_a)
+        self.assertIn("PREV", body_b)
+        self.assertNotIn("NEXT", body_b)
+        self.assertNotIn("page-number", body_a)
+        self.assertNotIn("running-head", cover)
+
+    def test_render_deck_outputs_side_wordmark_from_context(self):
+        spec = {
+            "meta": {"short_title": "Proof OS"},
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    page_id="wordmark_fixture",
+                    decor="side_wordmark",
+                    section_label="Evidence",
+                )
+            ],
+        }
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Side Wordmark Fixture")
+        self.assertIn("decor-side-wordmark", html)
+        self.assertIn("side-wordmark", html)
+        self.assertIn("Evidence", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
 
     def test_render_deck_supports_eyebrow_blocks_as_section_labels(self):
         html = render_deck_module.render_deck(VALID_DECK_SPEC_WITH_EYEBROW, VALID_CONTENT_REGISTRY, title="Eyebrow Fixture")

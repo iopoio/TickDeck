@@ -26,8 +26,8 @@
 | PG-magazine_spread | 다단 조판+전폭 풀쿼트 | 잡지 스프레드 | serif | ✅ |
 | PG-dashboard | 풀페이지 위젯 타일 | 계기판 | mono | ✅ |
 | PG-mosaic_tiles | 크기가변 사진/블록 모자이크(관찰 14+ — magazine 6 + 2R Arabella·Maison·Minimo·Ombar 번호닷·Artista 등 8). 사진 없이 색면 타일로 구현 | 화보 타일 + 선택적 번호닷 | serif·minimal | ✅(7/4 배치2) |
-| PG-running_head | 상단 3점 러닝헤드 프레임(관찰 17+ — magazine 7 + 2R Arata 페이지분수·Pezane·Broxline 등 10). 좌 kicker·중 브랜드·우 페이지분수(NN/총) + 선택적 하단 NEXT/PREV | 일하는 덱 프레임 | serif·minimal | ⬜(승격 2순위) |
-| PG-pricing_cards | 가격/플랜 3열 카드(관찰 13+ — 전 6패밀리 관통: Minimo·Vatino·Pezane·Victor 등). 중앙 카드 강조(색반전/오프셋/스케일업 — 강조 레버는 파라미터, 단일 고정 금지)·플랜명 칩·체크리스트·CTA | 옵션·시나리오 비교 | 전체 | ⬜(승격 1순위) |
+| PG-running_head | 상단 3점 러닝헤드 프레임(관찰 17+). 좌 kicker(명시적 eyebrow만·내부명 노출 금지)·중 브랜드·우 페이지분수(렌더러 계산) + 하단 PREV/NEXT. 스펙: deck_spec meta `"page_chrome": "running_head"` (본문 페이지만·표지/간지/클로징 제외·기존 페이지번호 억제) | 일하는 덱 프레임 | serif·minimal | ✅(7/4 배치3) |
+| PG-pricing_cards | 가격/플랜 3열 카드(관찰 13+ — 전 6패밀리 관통). headline이 카드를 열고 후속 블록 착지. 스펙: `"layout": "pricing_cards"` + 페이지 옵션 `"emphasis_style": "invert"\|"offset"\|"scale"\|"border"` (기본 invert — **run마다 다르게 골라 "같은 템플릿" 천장 방지**) | 옵션·시나리오 비교 | 전체 | ✅(7/4 배치3) |
 | PG-nav_chrome | 상단 탭바/햄버거 웹크롬 반복(관찰 8 — report_ops 2 + 2R corporate·minimal·dark 6) | SaaS/상태보고 톤 | mono·pop | ⬜ |
 | PG-split_status | 좌 정성서술 + 우 정량지표칩 상태페이지(관찰 2 — report_ops) | 상태·리스크 보고 | 전체 | ✅(7/4 배치2) |
 | PG-scenario_cards | headline이 카드를 열고 후속 블록이 카드에 착지 — 시나리오/케이스 N열 카드(트렌드 장르 Scenarios 착지용) | 시나리오·결론 비교 | dark·pop | ✅(7/4 배치2 — 카드당 블록 3개 이상이어야 휑하지 않음: designer 밀도 규칙) |
@@ -50,7 +50,7 @@
 | CH-radial_progress | 단일 링 진척 게이지·% 중앙(관찰 7+ — 2R 게이지 라이브러리·도넛% 다수 재확증) | 단일 KPI 진척 | ✅(7/4 승격) |
 | CH-kpi_delta_card | 숫자+델타+미니추세 KPI 블록(관찰 11+ — dashboard 8 + report_ops 3 + 2R 델타스택·타깃블록) | 계기판 단위 | ⬜(델타·숫자블록은 ✅ — 미니추세 스파크라인만 백로그) |
 | CH-puzzle/gear/polygon | 퍼즐·기어·다각형 인포그래픽(pop 스샷 관찰) | 구성요소·맞물림 은유 | ⬜ |
-| CH-swot_quad | 2×2 SWOT/정성 사분면 — S·W·O·T 코너 배치·중앙 십자축(관찰 4 — 2R corporate·Pezane·Ombar·edugraphic) | 전략·경쟁분석 | ⬜(승격 4순위·저비용) |
+| CH-swot_quad | 2×2 SWOT/정성 사분면 — 중앙 십자축·highlight 사분면 틴트(관찰 4). 스펙: viz `"chart": "swot_quad"`, series 4개 = 사분면(`label`+`items` 문자열 배열·숫자 금지), metric_id 예외 유일 차트 | 전략·경쟁분석 | ✅(7/4 배치3) |
 | CH-choropleth | 지도 코로플레스(관찰 7+ — 2R 지도 라이브러리 2건 통째·Vatino·Pezane 등. 보류 사유였던 관찰1은 해소) | 지역 분포 | ⬜(국가 SVG 자산 정책 필요 — 자산 부담으로 승격 보류 유지) |
 
 ## D. 장식·오브제 레버 (시스템 토큰에 색 위임 — 스타일 복제 금지)
@@ -62,7 +62,7 @@
 | DC-depth_card | 바탕+1단 밝은 카드 부양(관찰 6/8 dark) | ✅(dark) |
 | DC-pill_metric | 다색 필 메트릭 블록(pop 스샷) | ✅(pop) |
 | DC-outline_number | 대형 아웃라인 숫자 오브제(관찰 6+ — 2R 코너 거대 페이지숫자 용례 추가 확증) | ✅(mono 간지) |
-| DC-side_wordmark | 지면 좌/우 세로 회전 대형 워드마크 — 제목/섹션명 90°(관찰 6 — 2R simple-minimal·Vatino·Arabella·Pezane 등. CSS writing-mode 저비용) | ⬜(승격 5순위·즉시성) |
+| DC-side_wordmark | 지면 좌/우 세로 회전 대형 워드마크(관찰 6). 스펙: 페이지 `"decor": "side_wordmark"` (+`section_label` 있으면 그 텍스트, 없으면 덱 short title — designer 자유 텍스트 금지·고스트 톤 자동) | ✅(7/4 배치3) |
 | DC-photo_frame | 기하 마스크/라운드 사진 프레임(관찰 다수) | ⬜(사진 자산 정책 미정) |
 
 ## E. 컬러·타이포 규칙 (패밀리 공통 문법에서 승격된 원칙)
@@ -80,12 +80,9 @@
 
 관찰수 × 시스템 관통성 × 구현 저비용 종합. 구현 = 코덱스 위임(배치 단위).
 
-1. **PG-pricing_cards** — 관찰 13+·전 패밀리·판매덱 필수. 강조 레버 파라미터화 필수(단일 고정 시 "같은 템플릿" 천장 재발)
-2. **PG-running_head** — 관찰 17+·페이지분수/네비가 "일하는 덱" 인상 결정·저비용
-3. **PG-mosaic_tiles / PG-split_status / scenario_cards** — 코덱스 배치2 구현중 (7/4)
-4. **CH-swot_quad** — 전략덱 수요·2×2 부품 저비용
-5. **DC-side_wordmark** — writing-mode 한 줄 수준 즉시성
-- 보류 유지: CH-choropleth(SVG 자산 정책 선결)·PG-profile_row/DC-photo_frame/CH-rating_dots(사진·아바타 자산 정책 선결)
+~~1~5순위 전부 승격 완료 (7/4 배치2·배치3)~~ — pricing_cards·running_head·mosaic_tiles·split_status·scenario_cards·swot_quad·side_wordmark ✅
+- 다음 후보(관찰 재확인 후): PG-nav_chrome(관찰 8)·PG-color_block_bento(관찰 3)·CL-gradient_accent(관찰 4)·CH-rating_dots(관찰 5·자산 무관 도트라 사진 정책과 분리 가능)
+- 보류 유지: CH-choropleth(SVG 자산 정책 선결)·PG-profile_row/DC-photo_frame(사진·아바타 자산 정책 선결)·CH-kpi_delta_card 스파크라인
 
 주의(추출 에이전트 반대신호 — 숨기지 않음): corporate/data 다수가 "부품 카탈로그"라 choropleth/funnel/gauge 관찰수는 부품 존재이지 페이지 문법 아님(과대 계상 주의). pricing/running_head 외 신규 후보 관찰수는 00 컨택트시트 의존도 높음 → 승격 확정 전 본문 슬라이드 추가 실측 권장.
 

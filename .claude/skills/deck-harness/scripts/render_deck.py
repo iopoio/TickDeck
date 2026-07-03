@@ -319,17 +319,36 @@ def render_deck(
         raise ValueError("deck_spec.pages must be a non-empty list")
 
     palette = _resolve_palette(deck_spec, theme)
+    meta = deck_spec.get("meta") if isinstance(deck_spec.get("meta"), dict) else {}
+    page_chrome = str(meta.get("page_chrome", "")).strip()
+    deck_short_title = _deck_short_title(deck_spec, title)
+    body_ordinals = _body_page_ordinals(pages)
     deck_cited_source_ids = _deck_cited_source_ids(pages, registry)
     # 표지 밴드 수 = 실제 파트 수. 간지 수로 세되, 페이지에 명시된 part_count가 있으면 그게 정답
     # (간지 없는 1부가 있는 덱에서 표지 2밴드 vs 간지 티커 3의 불일치 방지·7/2).
     divider_n = sum(1 for page in pages if isinstance(page, dict) and str(page.get("layout")) == "divider")
     explicit_counts = [int(page.get("part_count")) for page in pages if isinstance(page, dict) and str(page.get("part_count", "")).isdigit()]
     part_count = max([divider_n] + explicit_counts) if (divider_n or explicit_counts) else 0
-    rendered_pages = [
-        _render_page(page, index + 1, len(pages), registry, palette, deck_cited_source_ids, part_count)
-        for index, page in enumerate(pages)
-        if isinstance(page, dict)
-    ]
+    rendered_pages = []
+    for index, page in enumerate(pages):
+        if not isinstance(page, dict):
+            continue
+        body_ordinal = body_ordinals.get(index)
+        rendered_pages.append(
+            _render_page(
+                page,
+                index + 1,
+                len(pages),
+                registry,
+                palette,
+                deck_cited_source_ids,
+                part_count,
+                page_chrome,
+                deck_short_title,
+                body_ordinal,
+                len(body_ordinals),
+            )
+        )
     if len(rendered_pages) != len(pages):
         raise ValueError("every deck_spec page must be an object")
 
@@ -369,6 +388,50 @@ def _resolve_palette(deck_spec: dict[str, Any], explicit_theme: str | None) -> d
     return PALETTES.get(theme, PALETTES["editorial"])
 
 
+# 표지·간지·클로징·source_appendix·outro는 "본문"이 아니다 — running_head 페이지분수는
+# 본문 페이지만 센다(스펙: 상단 크롬 옵션 running_head, PG-running_head).
+_NON_BODY_LAYOUTS = {"cover", "divider", "closing", "outro", "source_appendix"}
+
+
+def _deck_short_title(deck_spec: dict[str, Any], fallback_title: str) -> str:
+    # deck_spec.meta.short_title이 러닝헤드 중앙 브랜드/덱 short title. 없으면 문서 title로 폴백.
+    meta = deck_spec.get("meta") if isinstance(deck_spec.get("meta"), dict) else {}
+    short_title = str(meta.get("short_title", "")).strip()
+    return short_title or str(fallback_title).strip()
+
+
+def _body_page_ordinals(pages: list[Any]) -> dict[int, int]:
+    # pages 인덱스 → 본문 내 순번(1-base). 표지/간지/클로징 등은 매핑에서 빠진다.
+    ordinals: dict[int, int] = {}
+    ordinal = 0
+    for index, page in enumerate(pages):
+        if not isinstance(page, dict):
+            continue
+        if str(page.get("layout", "statement")) in _NON_BODY_LAYOUTS:
+            continue
+        ordinal += 1
+        ordinals[index] = ordinal
+    return ordinals
+
+
+def _running_head_html(eyebrow_text: str, deck_short_title: str, body_page_number: int, body_page_count: int) -> str:
+    # 상단 3점 프레임: 좌=페이지 kicker(eyebrow 재사용) / 중=덱 short title / 우=페이지분수(렌더러 계산).
+    return f"""
+<div class="running-head" aria-hidden="true">
+  <span class="running-head-kicker">{_escape(eyebrow_text)}</span>
+  <span class="running-head-brand">{_escape(deck_short_title)}</span>
+  <span class="running-head-frac">{body_page_number:02d} / {body_page_count:02d}</span>
+</div>""".strip()
+
+
+def _side_wordmark_html(page: dict[str, Any], deck_short_title: str) -> str:
+    # 텍스트는 designer 자유 입력이 아니라 페이지 컨텍스트(section_label)나 덱 short title에서만 취득.
+    text = str(page.get("section_label", "")).strip() or deck_short_title
+    if not text:
+        return ""
+    return f'<div class="side-wordmark" aria-hidden="true">{_escape(text)}</div>'
+
+
 def _render_page(
     page: dict[str, Any],
     page_number: int,
@@ -377,6 +440,10 @@ def _render_page(
     palette: dict[str, str],
     deck_cited_source_ids: list[str],
     part_count: int = 0,
+    page_chrome: str = "",
+    deck_short_title: str = "",
+    body_page_number: int | None = None,
+    body_page_count: int = 0,
 ) -> str:
     page_id = str(page.get("page_id", f"p{page_number:02d}"))
     layout = str(page.get("layout", "statement"))
@@ -421,6 +488,24 @@ def _render_page(
 
     body_html = _render_layout_body(layout, body_parts, page, content, page_number, rendered_pairs)
     motif_html = _slide_motif_html(layout, page_number, palette)
+    running_head_enabled = (
+        page_chrome == "running_head"
+        and body_page_number is not None
+        and body_page_count > 0
+    )
+    # 크롬 kicker는 명시적 eyebrow만 — _page_eyebrow_text의 role/layout 대문자 폴백은
+    # 내부명이라 상시 노출 크롬에 실리면 안 됨(검증 메타데이터 노출 금지 계열).
+    explicit_eyebrow = next(
+        (str(b.get("text", "")).strip() for b in content
+         if _block_type(b) == "eyebrow" and str(b.get("text", "")).strip()),
+        "",
+    )
+    running_head_html = (
+        _running_head_html(explicit_eyebrow, deck_short_title, body_page_number or 0, body_page_count)
+        if running_head_enabled
+        else ""
+    )
+    side_wordmark_html = _side_wordmark_html(page, deck_short_title) if page.get("decor") == "side_wordmark" else ""
     # 카드가 우하단에 자기 출처를 표시한 페이지(다출처 stat_grid)는 하단 source-row가 중복 → 생략(후추님 6/30).
     source_row = "" if _page_has_per_card_sources(content, page_id, registry) else f'<div class="source-row">{_render_sources(cited_source_ids, registry)}</div>'
     footnote_row = _render_footnotes(footnotes)
@@ -428,17 +513,41 @@ def _render_page(
     if layout == "divider":
         foot_html = ""
     else:
+        page_number_html = (
+            "" if running_head_enabled else f'<span class="page-number" data-page-number>{page_number:02d} / {page_count:02d}</span>'
+        )
+        running_foot_html = ""
+        if running_head_enabled:
+            next_html = '<span class="running-next">NEXT</span>' if body_page_number != body_page_count else ""
+            running_foot_html = f'<div class="running-foot" aria-hidden="true"><span>PREV</span>{next_html}</div>'
         foot_html = f"""
   {footnote_row}
   {source_row}
   <footer class="slide-foot">
     <span class="foot-side"></span>
     {_copyright_html()}
-    <span class="page-number" data-page-number>{page_number:02d} / {page_count:02d}</span>
-  </footer>"""
+    {page_number_html}
+  </footer>{running_foot_html}"""
+    section_classes = [
+        "slide",
+        f'theme-{_class_name(palette["theme"])}',
+        f"layout-{_class_name(layout)}",
+    ]
+    if page.get("divider_variant") == "accent":
+        section_classes.append("divider-accent")
+    if page.get("hero_title"):
+        section_classes.append("divider-hero")
+    if running_head_enabled:
+        section_classes.append("chrome-running-head")
+    if page.get("decor") == "side_wordmark":
+        section_classes.append("decor-side-wordmark")
+        if str(page.get("wordmark_side", page.get("side_wordmark_side", ""))).strip().lower() == "right":
+            section_classes.append("decor-side-wordmark-right")
     return f"""
-<section class="slide theme-{_class_name(palette["theme"])} layout-{_class_name(layout)}{" divider-accent" if page.get("divider_variant") == "accent" else ""}{" divider-hero" if page.get("hero_title") else ""}" data-page-id="{_escape(page_id)}">
+<section class="{' '.join(section_classes)}" data-page-id="{_escape(page_id)}">
   {motif_html}
+  {side_wordmark_html}
+  {running_head_html}
   <header class="slide-head">
     <div class="eyebrow{" eyebrow-chip" if page.get("eyebrow_chip") else ""}">{_escape(eyebrow_text)}</div>
     <h1>{_rich(title_text)}</h1>
@@ -663,6 +772,8 @@ def _render_layout_body(
         return _render_split_status(rendered_pairs)
     if layout == "scenario_cards":
         return _render_scenario_cards(rendered_pairs)
+    if layout == "pricing_cards":
+        return _render_pricing_cards(rendered_pairs, page)
     if layout == "index":
         return _render_index(body_parts, content)
     if layout == "divider":
@@ -962,6 +1073,38 @@ def _render_scenario_cards(rendered_pairs: list[tuple[Any, str]] | None) -> str:
     return f"""
 <main class="body layout-body scenario-body">
   <section class="scenario-grid">{card_html}</section>
+</main>""".strip()
+
+
+# emphasis_style 파라미터화(PG-pricing_cards): 단일 고정 강조 방식 금지 — "같은 템플릿" 천장 재발 방지.
+_PRICING_EMPHASIS_STYLES = {"invert", "offset", "scale", "border"}
+
+
+def _render_pricing_cards(rendered_pairs: list[tuple[Any, str]] | None, page: dict[str, Any]) -> str:
+    # 3열(2~4열 허용) 플랜/옵션 카드: headline이 카드를 연다(scenario_cards와 같은 그룹화 문법).
+    # headline emphasis:true(또는 page.emphasis 인덱스 지정)인 카드가 강조 카드.
+    emphasis_style = str(page.get("emphasis_style", "")).strip().lower() or "invert"
+    if emphasis_style not in _PRICING_EMPHASIS_STYLES:
+        emphasis_style = "invert"
+    cards: list[dict[str, Any]] = []
+    for block, html_part in (rendered_pairs or []):
+        bt = _block_type(block)
+        if bt in {"headline", "title"}:
+            cards.append({"title": html_part, "parts": [], "emphasis": bool(block.get("emphasis"))})
+            continue
+        if bt not in {"body", "text", "summary", "bullets", "list", "callout", "note", "metric", "metrics", "metric_grid", "stat_grid"}:
+            continue
+        if not cards:
+            cards.append({"title": "", "parts": [], "emphasis": False})
+        cards[-1]["parts"].append(html_part)
+    card_html = "".join(
+        f'<article class="pricing-card{" pricing-card-emphasis pricing-emphasis-" + emphasis_style if card["emphasis"] else ""}">'
+        f'{card["title"]}<div class="pricing-card-body">{"".join(card["parts"])}</div></article>'
+        for card in cards
+    )
+    return f"""
+<main class="body layout-body pricing-body">
+  <section class="pricing-grid">{card_html}</section>
 </main>""".strip()
 
 
@@ -2124,6 +2267,52 @@ def _svg_radial_progress(
     return _svg_shell("radial_progress", title, note, y0 + r + 50, "".join(body), page_id)
 
 
+def _svg_swot_quad(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 2×2 정성 사분면(PG-swot_quad, 후추님 2026-07-04 승격 큐): metric_id 없음 — series[].items가
+    # 정성 항목 텍스트. _viz_series는 items를 안 실어 나르므로 원본 block.series에서 직접 읽는다.
+    raw_series = (block or {}).get("series")
+    quads = raw_series[:4] if isinstance(raw_series, list) else []
+    cell_w, cell_h, gap = 460, 190, 20
+    x0, y0 = 0, CHART_TITLE_GAP - 4
+    body = []
+    for i, quad in enumerate(quads):
+        col, row = i % 2, i // 2
+        cx = x0 + col * (cell_w + gap)
+        cy = y0 + row * (cell_h + gap)
+        highlight = str(quad.get("role", "")).strip() == "highlight"
+        fill = f"color-mix(in srgb, {accent} 16%, transparent)" if highlight else "color-mix(in srgb, var(--ink) 5%, transparent)"
+        cell_class = "swot-cell-highlight" if highlight else "swot-cell"
+        label = str(quad.get("label", "")).strip()
+        items = quad.get("items") if isinstance(quad.get("items"), list) else []
+        item_lines = []
+        for line_index, raw_item in enumerate(items[:4]):
+            iy = cy + 62 + line_index * 26
+            item_lines.append(
+                f'<text x="{cx + 22}" y="{iy}" class="visual-note swot-item">• {_escape(str(raw_item))}</text>'
+            )
+        body.append(
+            f"""
+            <g class="{cell_class}">
+              <rect x="{cx}" y="{cy}" width="{cell_w}" height="{cell_h}" rx="10" fill="{fill}"/>
+              <text x="{cx + 22}" y="{cy + 32}" class="visual-value-accent swot-label" font-size="20">{_escape(label)}</text>
+              {"".join(item_lines)}
+            </g>"""
+        )
+    grid_w = cell_w * 2 + gap
+    grid_h = cell_h * 2 + gap
+    cross_x, cross_y = x0 + cell_w + gap / 2, y0 + cell_h + gap / 2
+    body.append(f'<line x1="{cross_x}" y1="{y0}" x2="{cross_x}" y2="{y0 + grid_h}" stroke="var(--line)" stroke-width="2"/>')
+    body.append(f'<line x1="{x0}" y1="{cross_y}" x2="{x0 + grid_w}" y2="{cross_y}" stroke="var(--line)" stroke-width="2"/>')
+    return _svg_shell("swot_quad", title, note, y0 + grid_h + 20, "".join(body), page_id)
+
+
 _CHART_RENDERERS = {
     "multi_line": _svg_multi_line,
     "progress_bar": _svg_progress_bar,
@@ -2145,6 +2334,7 @@ _CHART_RENDERERS = {
     "rising_columns": _svg_rising_columns,
     "pictogram": _svg_pictogram,
     "gauge": _svg_gauge,
+    "swot_quad": _svg_swot_quad,
 }
 
 
@@ -2445,6 +2635,14 @@ def _hex_luminance(color: str) -> float:
     return 0.2126 * r + 0.7152 * g + 0.0722 * b
 
 
+def _hex_to_rgba(color: str, alpha: float) -> str:
+    color = color.lstrip("#")
+    if len(color) != 6:
+        return f"rgba(0,0,0,{alpha})"
+    r, g, b = (int(color[i : i + 2], 16) for i in (0, 2, 4))
+    return f"rgba({r},{g},{b},{alpha})"
+
+
 def _divider_accent_color(palette: dict[str, str]) -> str:
     # accent 풀블리드 간지용 색 — accent가 잉크와 명도가 붙으면(forest처럼 둘 다 딥톤)
     # 풀블리드가 기본 간지와 구분이 안 되므로 accent2로 폴백.
@@ -2464,6 +2662,7 @@ def _css(palette: dict[str, str]) -> str:
   --divider-accent: {_divider_accent_color(palette)};
   --divider-accent-fg: {"#F8FAFC" if _hex_luminance(_divider_accent_color(palette)) < 0.45 else "color-mix(in srgb, " + palette["ink"] + " 92%, black)"};
   --ink: {palette["ink"]};
+  --ghost: {_hex_to_rgba(palette["ink"], 0.12)};
   --muted: {palette["muted"]};
   --line: {palette["line"]};
   --grid-line: {palette["grid_line"]};
@@ -3925,6 +4124,127 @@ h1 {{
 .theme-pop-dark.cover-slide .kw,
 .theme-pop-dark.layout-divider .kw {{ color: #17120E; text-decoration: underline; text-underline-offset: 6px; }}
 .theme-pop-dark .stack-outer > .visual-card {{ width: min(100%, 680px); }}
+
+/* ══ PG-pricing_cards(2026-07-04 승격): 2~4열 플랜/옵션 카드. emphasis_style 파라미터로
+   강조 방식 분기 — 단일 고정 금지("같은 템플릿" 천장 재발 방지가 요구사항). ══ */
+.pricing-body {{ justify-content: center; }}
+.pricing-grid {{
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}}
+.pricing-card {{
+  min-width: 0;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 8px);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}}
+.pricing-card .block-title {{ margin: 0; color: var(--ink); font-size: 20px; }}
+.pricing-card-body {{ min-height: 0; display: flex; flex-direction: column; gap: 14px; }}
+.pricing-card .body-text,
+.pricing-card .bullet-list li {{ font-size: 15px; line-height: 1.45; }}
+.pricing-card .metric-grid {{ display: flex; flex-direction: column; gap: 12px; }}
+.pricing-card .metric-value {{ font-size: 40px; }}
+/* emphasis_style: invert(기본) — 강조 카드만 액센트 배경 + 흰 글자. */
+.pricing-card-emphasis.pricing-emphasis-invert {{
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}}
+.pricing-card-emphasis.pricing-emphasis-invert .block-title,
+.pricing-card-emphasis.pricing-emphasis-invert .metric-value,
+.pricing-card-emphasis.pricing-emphasis-invert .metric-label,
+.pricing-card-emphasis.pricing-emphasis-invert .body-text,
+.pricing-card-emphasis.pricing-emphasis-invert .bullet-list li {{ color: #FFFFFF; }}
+/* emphasis_style: offset — 강조 카드만 위로 살짝 띄워 그림자로 튀어나오게. */
+.pricing-card-emphasis.pricing-emphasis-offset {{
+  transform: translateY(-10px);
+  box-shadow: 0 20px 44px color-mix(in srgb, var(--ink) 22%, transparent);
+  border-color: var(--accent);
+}}
+/* emphasis_style: scale — 강조 카드만 살짝 확대. */
+.pricing-card-emphasis.pricing-emphasis-scale {{
+  transform: scale(1.05);
+  border-color: var(--accent);
+  z-index: 1;
+}}
+/* emphasis_style: border — 배경은 유지하고 두꺼운 액센트 테두리만. */
+.pricing-card-emphasis.pricing-emphasis-border {{
+  border: 3px solid var(--accent);
+}}
+
+/* ══ PG-running_head(2026-07-04 승격): 본문 페이지 상단 3점 크롬(kicker/브랜드/페이지분수) +
+   하단 PREV/NEXT. 기존 헤더 예산(56px 상단 패딩) 안에서 해결 — 새 높이 추가 금지. ══ */
+.running-head {{
+  position: absolute;
+  top: 24px;
+  left: 72px;
+  right: 72px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}}
+.running-head-kicker {{ flex: 1 1 0; text-align: left; color: var(--accent); font-weight: 700; }}
+.running-head-brand {{ flex: 1 1 0; text-align: center; color: var(--ink); font-weight: 700; }}
+.running-head-frac {{ flex: 1 1 0; text-align: right; white-space: nowrap; }}
+.chrome-running-head .slide-head {{ margin-top: 20px; }}
+.running-foot {{
+  position: absolute;
+  bottom: 14px;
+  left: 72px;
+  right: 72px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--muted);
+  pointer-events: none;
+}}
+
+/* ══ DC-side_wordmark(2026-07-04 승격): 좌/우 여백에 세로 회전 대형 워드마크(ghost 톤).
+   전용 여백 컬럼 확보 — 본문과 겹치지 않는다. ══ */
+.decor-side-wordmark {{ padding-right: 128px; }}
+.decor-side-wordmark.decor-side-wordmark-right {{ padding-right: 72px; padding-left: 128px; }}
+.side-wordmark {{
+  position: absolute;
+  top: 50%;
+  right: 28px;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  /* var(--ghost)는 rgba() 고정값(Python에서 계산) — color-mix()는 Chrome이 color(srgb ... / a)로
+     직렬화해 capture_deck.sh의 rgb() 전제 저대비 체커가 알파를 못 읽고 오탐한다(7/4 pop_dark 실측). */
+  color: var(--ghost);
+  pointer-events: none;
+  z-index: 0;
+  white-space: nowrap;
+}}
+.decor-side-wordmark-right .side-wordmark {{ right: auto; left: 28px; transform: translateY(-50%) rotate(0deg); }}
+
+/* ══ CH-swot_quad(2026-07-04 승격): 2×2 정성 사분면. 강조 사분면(role:highlight)만
+   액센트 명도 램프, 나머지는 잉크 저명도 트랙. ══ */
+.visual-swot-quad .swot-label {{ fill: var(--ink); }}
+.visual-swot-quad .swot-cell-highlight .swot-label {{ fill: var(--accent); }}
+.visual-swot-quad .swot-item {{ fill: var(--muted); }}
 
 /* ══ 최종 컨텍스트 평탄화 — 반드시 스타일시트 맨 끝 ══
    스텝퍼·히어로·매트릭스 셀·대시 타일 안의 카드류는 테마 불문 박스를 벗긴다(카드 속 카드 방지).

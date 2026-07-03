@@ -36,8 +36,8 @@
 - [x] 다이어그램 어휘 8종 (hub·arrow·timeline·table + multi_line·progress·target_vs_actual·radial) — 차트 20종
 - [x] 시그니처 페이지 1차 4종 (poster·hero_bleed·magazine_spread·dashboard) + 패턴화 flow·라이브러리 (063cef1)
 - **[7/4 후추님 우선순위 확정: 다양화 구축이 1번 — "이대로는 혼자서도 몇 번 못 쓸 것 같다"]**
-- [ ] 시그니처 페이지 확장 — 시스템당 2~3종 (백로그 승격: mosaic_tiles·nav_chrome·split_status·scenario_cards·kpi_delta_card) ← 코덱스 구현
-- [ ] 파이프라인 배선 — designer/intake가 시스템·시그니처를 실제로 로테이션(variation ledger: 직전 덱들이 쓴 시스템·골격·차트 기록 → 강제 변주)
+- [x] 시그니처 페이지 확장 — 배치2: mosaic_tiles·split_status·scenario_cards (e338c09) + 배치3: pricing_cards·running_head 크롬·swot_quad·side_wordmark (코덱스 구현·쿼터 컷 잔여분 Sonnet 마무리·클차장 검수 수술)
+- [x] 파이프라인 배선 — variation ledger (50f723c). 7/4 시뮬 run3·4에서 배제 규칙 실작동 확인(serif 2연속 → dark_premium → data_mono 자동 선택)
 - [ ] **다양화 시뮬레이션** = 통과 기준: 연속 3~4 run을 뽑아 나란히 놓고 "다른 물건"으로 읽히면 통과 (후추님 실물 판정)
 - [ ] 통과 후 G5 재논의·쇼케이스 (7/6 내 여유 시에만 — 다양화에 밀림)
 
