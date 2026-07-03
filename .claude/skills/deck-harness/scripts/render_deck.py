@@ -3387,6 +3387,27 @@ h1 {{
 .dash-tile .callout {{ border: 0; background: transparent; padding: 0; margin: 0; font-size: 16px; }}
 .dash-tile .visual-card {{ border-top: 0; padding-top: 0; margin: 0; width: 100%; }}
 .theme-data-mono .dash-tile {{ background: color-mix(in srgb, #FFFFFF 44%, transparent); }}
+
+/* ══ 최종 컨텍스트 평탄화 — 반드시 스타일시트 맨 끝 ══
+   스텝퍼·히어로·매트릭스 셀·대시 타일 안의 카드류는 테마 불문 박스를 벗긴다(카드 속 카드 방지).
+   테마 블록이 소스 순서로 이 리셋을 덮어써 이중박스가 재발하던 클래스(7/3 mono 스텝퍼·7/4 dark
+   매트릭스) 근절 — 새 테마를 추가해도 이 블록이 항상 마지막에 이긴다. 새 규칙은 이 블록 위에 둘 것. */
+.stepper-item .callout,
+.stepper-item .metric-card,
+.hero-stage .metric-card,
+.matrix-cell .metric-card,
+.dash-tile .metric-card,
+.dash-tile .callout {{
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+  border-radius: 0;
+  margin: 0;
+}}
+.stepper-item .metric-card::before,
+.matrix-cell .metric-card::before,
+.dash-tile .metric-card::before {{ display: none; }}
 .theme-minimal-typo .visual-note {{ font-size: 14px; }}
 """.strip()
 

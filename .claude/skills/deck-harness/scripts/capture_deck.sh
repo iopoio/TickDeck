@@ -35,7 +35,10 @@ cat >> "$FIT" <<'EOF'
   document.querySelectorAll('.slide').forEach(function(s){
     var b=s.querySelector('.body'); if(!b) return;
     var gap=b.clientHeight-b.scrollHeight, id=s.dataset.pageId||'?';
-    if(gap < -2) ovf.push(id);
+    // 슬라이드 전체 기준도 본다 — body는 멀쩡한데 각주·출처·푸터가 720px 밖으로 밀리거나
+    // 그리드 셀 내용이 잘리는 클래스(7/4 dark p10 실측 — body 게이지만으론 무증상).
+    if(s.scrollHeight - s.clientHeight > 2 && ovf.indexOf(id)<0) ovf.push(id);
+    if(gap < -2 && ovf.indexOf(id)<0) ovf.push(id);
     else if(gap > 240 && !/layout-(divider|closing|cover|index|matrix)/.test(s.className)) sparse.push(id);
     // hero_bleed는 블리드가 문법(수치가 우측 여백 너머로) — 의도된 가로 초과라 hovf 제외
     if(b.scrollWidth - b.clientWidth > 4 && !/layout-hero-bleed/.test(s.className)) hovf.push(id);
