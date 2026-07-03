@@ -205,6 +205,34 @@ PALETTES["editorial_serif"] = {
     "font_head": '"Nanum Myeongjo", "Noto Serif KR", Georgia, "Times New Roman", serif',
     "font_body": '"Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif',
 }
+PALETTES["data_mono"] = {
+    # 파일럿 2(후추님 7/3 방향 승인) — 3번째 디자인 시스템: 모노스페이스 데이터형.
+    # 기술문서/계기판 문법 — 방안지 그리드 지면·모노 수치 조판·스펙시트 헤더·각진 프레임.
+    # 산세리프 카드형(기존 8테마)·세리프 매거진형(editorial_serif)과 타이포/지면 철학 자체가 다름.
+    "theme": "data_mono",
+    "c60": "#F2F4F1",
+    "c30": "#E9ECE8",
+    "accent": "#0E6B4F",
+    "accent2": "#B4831E",
+    "ink": "#161B18",
+    "muted": "#5E6862",
+    "line": "rgba(22,27,24,.22)",
+    "grid_line": "rgba(22,27,24,.05)",
+    # 방안지 그리드 = 시스템 시그니처(지면 자체가 데이터 용지). 마지막 색이 바탕.
+    "slide_bg": "linear-gradient(rgba(22,27,24,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(22,27,24,.045) 1px, transparent 1px), #F2F4F1",
+    "slide_bg_size": "32px 32px",
+    "body_bg": "#E9ECE8",
+    "card": "transparent",
+    "radius": "0px",
+    "t1": "#0E6B4F",
+    "t2": "#B4831E",
+    "t3": "#41544B",
+    "t4": "#7A8B82",
+    "t5": "#161B18",
+    # 헤드라인: 라틴/숫자는 모노, 한글은 Pretendard 폴백 — 숫자·영문 라벨에서 모노 성격이 드러남.
+    "font_head": 'ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Pretendard", "Apple SD Gothic Neo", monospace',
+    "font_body": '"Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif',
+}
 
 
 def render_deck(
@@ -2946,6 +2974,60 @@ h1 {{
 .split-pane .visual-label {{ font-size: 29px; }}
 .split-pane .visual-value {{ font-size: 40px; }}
 .split-pane .visual-value-accent {{ font-size: 48px; }}
+
+/* ══ 파일럿 2: data_mono — 모노스페이스 데이터형(후추님 7/3 방향 승인) ══
+   editorial_serif에서 검증된 층 순서 재사용: 토큰(폰트·카드·차트) → 그리드(제목 앵커·간지
+   문법·콜아웃/메트릭 문법). 방안지 지면은 팔레트 slide_bg가 담당. */
+/* 토큰층: 각진 차트 + 모노 수치 조판 */
+.theme-data-mono rect {{ rx: 0; ry: 0; }}
+.theme-data-mono {{ --font-chart: var(--font-head); }}
+/* 그리드층 (1) 제목 앵커 = 스펙시트 헤더 — 전폭 룰선 아래 제목, eyebrow는 사각 마커.
+   기존(룰선 없는 좌상단)·세리프(우측 마스트헤드)와 다른 세 번째 문법. */
+.theme-data-mono .slide-head {{ border-bottom: 2px solid var(--ink); padding-bottom: 16px; }}
+.theme-data-mono .slide-head h1 {{ font-size: 40px; font-weight: 700; letter-spacing: -.01em; max-width: none; }}
+.theme-data-mono .eyebrow {{ font-family: var(--mono-font); letter-spacing: .3em; }}
+.theme-data-mono .eyebrow::before {{ width: 10px; height: 10px; background: var(--accent); }}
+/* 그리드층 (2) 간지 거대숫자 = 아웃라인(스트로크) 넘버 — 기본(채운 좌측 인라인)·세리프(우하단
+   블리드)와 다른 세 번째 자리/질감. 다크 간지 위 흰 윤곽선. */
+.theme-data-mono .divider-quiet-num {{
+  font-weight: 700;
+  font-size: 220px;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(248,250,252,.55);
+}}
+/* 다크 간지에도 방안지 정체성 유지 — 테크 회로그리드(마스크·72px)와 달리 24px 균일 눈금.
+   시스템 시그니처의 연속이지 테크 은유 복붙이 아님(7/2 격리 원칙과 구분). */
+.theme-data-mono.layout-divider::after {{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(248,250,252,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(248,250,252,.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}}
+/* 그리드층 (3) 콜아웃 = 전연 실선 박스(도면 주기·radius 0) — 기본(액센트 좌변 카드)·세리프
+   (박스 없는 이탤릭 풀쿼트)와 다른 세 번째 문법. */
+.theme-data-mono .callout {{
+  border: 1px solid var(--ink);
+  border-left: 1px solid var(--ink);
+  background: transparent;
+  border-radius: 0;
+  padding: 16px 22px;
+}}
+/* 메트릭 = 계기 판독값 — 모노 숫자·라벨 소형 모노 트래킹, 박스는 얇은 전연 1px. */
+.theme-data-mono .metric-card {{
+  border: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  background: transparent;
+  border-radius: 0;
+}}
+.theme-data-mono .metric-value {{ font-family: var(--font-head); font-weight: 700; }}
+.theme-data-mono .metric-label {{ font-family: var(--mono-font); font-size: 12px; letter-spacing: .12em; }}
+/* 불릿 마커 = 사각 틱(기본 가로선·세리프 상속과 구분) */
+.theme-data-mono .bullet-list li::before {{ width: 8px; height: 8px; top: .5em; }}
+.theme-data-mono .divider-items li::before {{ width: 8px; height: 8px; top: .5em; }}
 """.strip()
 
 
