@@ -1,0 +1,7 @@
+url: https://elements.envato.com/corporates-corporate-keynote-presentation-NZ3CF8D
+name: Corporates - Corporate Keynote Presentation Incl. presentation & professional compatible with Keynote
+source: envato
+style_family: corporate_clean
+sub_tags: corporate, clean, business, structured, professional, blue
+mosaic: no
+collected: 2026-07-03

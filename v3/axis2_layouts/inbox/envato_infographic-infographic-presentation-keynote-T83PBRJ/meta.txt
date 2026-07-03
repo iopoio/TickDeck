@@ -1,0 +1,7 @@
+url: https://elements.envato.com/infographic-infographic-presentation-keynote-T83PBRJ
+name: Infographic - Infographic Presentation Keynote Incl. business & creative compatible with Keynote
+source: envato
+style_family: data_dashboard
+sub_tags: data, charts, dashboard, analytics, kpi, comparison, graphs
+mosaic: no
+collected: 2026-07-03

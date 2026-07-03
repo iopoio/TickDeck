@@ -1,0 +1,7 @@
+url: https://elements.envato.com/evoza-luxury-lifestyle-google-slides-KHQAJM6
+name: Evoza : Luxury Lifestyle Google Slides Incl. luxury & golden compatible with Google Slides
+source: envato
+style_family: dark_premium
+sub_tags: dark, premium, luxury, black, neon, gold, elegant
+mosaic: no
+collected: 2026-07-03

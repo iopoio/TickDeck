@@ -1,0 +1,7 @@
+url: https://elements.envato.com/clean-photo-photography-google-slide-templates-YKP3NPB
+name: Clean Photo - Photography Google Slide Templates Incl. clean & blue compatible with Google Slides
+source: envato
+style_family: editorial_magazine
+sub_tags: editorial, magazine, elegant, fashion, serif, lookbook
+mosaic: no
+collected: 2026-07-03

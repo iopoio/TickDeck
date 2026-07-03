@@ -1,0 +1,7 @@
+url: https://elements.envato.com/data-chart-keynote-templates-5P8SGFB
+name: Data Chart Keynote Templates Incl. data & graph compatible with Keynote
+source: envato
+style_family: data_dashboard
+sub_tags: data, charts, dashboard, analytics, kpi, comparison, graphs
+mosaic: no
+collected: 2026-07-03

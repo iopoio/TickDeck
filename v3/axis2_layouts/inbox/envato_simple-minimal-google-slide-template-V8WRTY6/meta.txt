@@ -1,0 +1,7 @@
+url: https://elements.envato.com/simple-minimal-google-slide-template-V8WRTY6
+name: Simple Minimal Google Slide Template Incl. minimal & minimalist compatible with Google Slides
+source: envato
+style_family: minimal_typo
+sub_tags: typography, minimal, bold, simple, sans-serif, black-white
+mosaic: no
+collected: 2026-07-03

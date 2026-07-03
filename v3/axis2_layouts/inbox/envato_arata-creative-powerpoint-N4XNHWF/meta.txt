@@ -1,0 +1,7 @@
+url: https://elements.envato.com/arata-creative-powerpoint-N4XNHWF
+name: Arata Creative Powerpoint Incl. portfolio & business compatible with PowerPoint
+source: envato
+style_family: creative_bold
+sub_tags: creative, colorful, bold, graphic, modern, vibrant
+mosaic: no
+collected: 2026-07-03

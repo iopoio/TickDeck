@@ -1,0 +1,7 @@
+url: https://elements.envato.com/artista-creative-powerpoint-2Y7GHLB
+name: ARTISTA - Creative Powerpoint Incl. business & studio compatible with PowerPoint
+source: envato
+style_family: creative_bold
+sub_tags: creative, colorful, bold, graphic, modern, vibrant
+mosaic: no
+collected: 2026-07-03

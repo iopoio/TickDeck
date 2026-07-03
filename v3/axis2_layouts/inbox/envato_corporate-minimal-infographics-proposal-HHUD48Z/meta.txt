@@ -1,0 +1,7 @@
+url: https://elements.envato.com/corporate-minimal-infographics-proposal-HHUD48Z
+name: Corporate Minimal Infographics Proposal Incl. corporate & corporatepresentation compatible with PowerPoint
+source: envato
+style_family: corporate_clean
+sub_tags: corporate, clean, business, structured, professional, blue
+mosaic: no
+collected: 2026-07-03

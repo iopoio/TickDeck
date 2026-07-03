@@ -1,0 +1,7 @@
+url: https://elements.envato.com/tuzera-fashion-magazine-keynote-template-VHQ3F6R
+name: Tuzera - Fashion Magazine Keynote Template Incl. fashion & trendy compatible with Keynote
+source: envato
+style_family: editorial_magazine
+sub_tags: editorial, magazine, elegant, fashion, serif, lookbook
+mosaic: no
+collected: 2026-07-03

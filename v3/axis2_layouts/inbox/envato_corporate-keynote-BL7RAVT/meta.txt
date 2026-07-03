@@ -1,0 +1,7 @@
+url: https://elements.envato.com/corporate-keynote-BL7RAVT
+name: Corporate Keynote Incl. analysis & business compatible with Keynote
+source: envato
+style_family: corporate_clean
+sub_tags: corporate, clean, business, structured, professional, blue
+mosaic: no
+collected: 2026-07-03

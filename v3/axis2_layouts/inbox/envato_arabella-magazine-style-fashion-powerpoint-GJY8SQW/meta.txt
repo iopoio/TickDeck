@@ -1,0 +1,7 @@
+url: https://elements.envato.com/arabella-magazine-style-fashion-powerpoint-GJY8SQW
+name: Arabella Magazine Style - Fashion Powerpoint Incl. arabella & professional compatible with PowerPoint
+source: envato
+style_family: editorial_magazine
+sub_tags: editorial, magazine, elegant, fashion, serif, lookbook
+mosaic: no
+collected: 2026-07-03

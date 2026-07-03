@@ -1,0 +1,7 @@
+url: https://elements.envato.com/xender-creative-keynote-W69NVP6
+name: Xender Creative Keynote Incl. agency & business compatible with Keynote
+source: envato
+style_family: creative_bold
+sub_tags: creative, colorful, bold, graphic, modern, vibrant
+mosaic: no
+collected: 2026-07-03

@@ -32,9 +32,14 @@
 - [x] 레퍼런스 수집 — 49건·6패밀리·이미지 209장 (코덱스 수집·클차장 검수·중복 1건 제거, cd2707b)
 - [x] 패밀리별 공통 문법 시트 6장 — `inbox/_grammar/` (과반 관찰=공통 기준·13a743a)
 - [x] 시스템 후보 도출 — `inbox/_grammar/_SYNTHESIS.md`: 신규 ①전면 다크 ②미니멀 타이포 + 보강 세리프(매거진 문법)·모노(KPI 카드·다계열 차트). **후추님 결재 대기**
-- [x] 신규 2벌 엔진 반영 (후추님 7/4 "흡수하고 실물 판정" 승인) — dark_premium·minimal_typo 파일럿 (edc0bae). **실물 판정 대기**: `_workspace/20260703_creator_serif/deck_pilot_dark_premium_v1.pdf`·`deck_pilot_minimal_typo_v1.pdf`
-- [ ] 기존 보강 2건 — editorial_serif←매거진 문법(콘덴스드 헤드 변형·러닝헤드·어스톤 슬롯), data_mono←KPI 델타 카드·다계열 라인/바 렌더러
-- [ ] 판정 통과 시 G5 재논의 재료 완성 (시각 시스템 5벌)
+- [x] 신규 2벌 엔진 반영 — dark_premium·minimal_typo (edc0bae) + pop_dark (afa358e) = 시스템 6계열
+- [x] 다이어그램 어휘 8종 (hub·arrow·timeline·table + multi_line·progress·target_vs_actual·radial) — 차트 20종
+- [x] 시그니처 페이지 1차 4종 (poster·hero_bleed·magazine_spread·dashboard) + 패턴화 flow·라이브러리 (063cef1)
+- **[7/4 후추님 우선순위 확정: 다양화 구축이 1번 — "이대로는 혼자서도 몇 번 못 쓸 것 같다"]**
+- [ ] 시그니처 페이지 확장 — 시스템당 2~3종 (백로그 승격: mosaic_tiles·nav_chrome·split_status·scenario_cards·kpi_delta_card) ← 코덱스 구현
+- [ ] 파이프라인 배선 — designer/intake가 시스템·시그니처를 실제로 로테이션(variation ledger: 직전 덱들이 쓴 시스템·골격·차트 기록 → 강제 변주)
+- [ ] **다양화 시뮬레이션** = 통과 기준: 연속 3~4 run을 뽑아 나란히 놓고 "다른 물건"으로 읽히면 통과 (후추님 실물 판정)
+- [ ] 통과 후 G5 재논의·쇼케이스 (7/6 내 여유 시에만 — 다양화에 밀림)
 
 - [ ] editorial_serif 마감 — 실전 덱 1건을 처음부터 editorial_serif로 풀 run(파일럿은 기존 덱 재렌더였음), 간지·표지·차트 전 조합 검증. 후추님 7/3 실측 피드백 3건 반영됨(560af5e)
 - [x] 3번째 시스템 방향 선정 = **모노스페이스 데이터형(data_mono)** (후추님 7/3 "방향 ㄱ" — 콘덴스드 산세리프는 기존 8테마와 혈통 가까워 배제)

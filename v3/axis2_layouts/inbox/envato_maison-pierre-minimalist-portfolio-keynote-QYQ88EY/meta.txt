@@ -1,0 +1,7 @@
+url: https://elements.envato.com/maison-pierre-minimalist-portfolio-keynote-QYQ88EY
+name: Maison Pierre Minimalist Portfolio Keynote Incl. minimalist & bright compatible with Keynote
+source: envato
+style_family: minimal_typo
+sub_tags: typography, minimal, bold, simple, sans-serif, black-white
+mosaic: no
+collected: 2026-07-03

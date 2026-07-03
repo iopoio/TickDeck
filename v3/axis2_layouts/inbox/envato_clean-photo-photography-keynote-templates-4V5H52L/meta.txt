@@ -1,0 +1,7 @@
+url: https://elements.envato.com/clean-photo-photography-keynote-templates-4V5H52L
+name: Clean Photo - Photography Keynote Templates Incl. clean & blue compatible with Keynote
+source: envato
+style_family: editorial_magazine
+sub_tags: editorial, magazine, elegant, fashion, serif, lookbook
+mosaic: no
+collected: 2026-07-03

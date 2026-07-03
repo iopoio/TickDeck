@@ -1,0 +1,7 @@
+url: https://elements.envato.com/edugraphic-education-infographic-keynote-692AYRA
+name: Edugraphic - Education Infographic Keynote Incl. education & school compatible with Keynote
+source: envato
+style_family: data_dashboard
+sub_tags: data, charts, dashboard, analytics, kpi, comparison, graphs
+mosaic: no
+collected: 2026-07-03

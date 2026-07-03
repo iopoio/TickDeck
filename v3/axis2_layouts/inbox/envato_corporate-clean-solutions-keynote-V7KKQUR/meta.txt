@@ -1,0 +1,7 @@
+url: https://elements.envato.com/corporate-clean-solutions-keynote-V7KKQUR
+name: Corporate Clean Solutions Keynote Incl. corporate & corporatebusinesspresentation compatible with Keynote
+source: envato
+style_family: corporate_clean
+sub_tags: corporate, clean, business, structured, professional, blue
+mosaic: no
+collected: 2026-07-03

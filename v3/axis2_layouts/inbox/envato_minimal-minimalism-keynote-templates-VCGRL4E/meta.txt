@@ -1,0 +1,7 @@
+url: https://elements.envato.com/minimal-minimalism-keynote-templates-VCGRL4E
+name: Minimal - Minimalism Keynote Templates Incl. minimal & business compatible with Keynote
+source: envato
+style_family: minimal_typo
+sub_tags: typography, minimal, bold, simple, sans-serif, black-white
+mosaic: no
+collected: 2026-07-03

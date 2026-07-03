@@ -1,0 +1,7 @@
+url: https://elements.envato.com/pezane-fashion-magazine-powerpoint-template-BS2Q7LW
+name: Pezane - Fashion Magazine Powerpoint Template Incl. fashion & trendy compatible with PowerPoint
+source: envato
+style_family: editorial_magazine
+sub_tags: editorial, magazine, elegant, fashion, serif, lookbook
+mosaic: no
+collected: 2026-07-03

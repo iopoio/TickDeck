@@ -1,0 +1,7 @@
+url: https://elements.envato.com/infographics-powerpoint-NJFMKRS
+name: Infographics Powerpoint Incl. business & circle compatible with PowerPoint
+source: envato
+style_family: data_dashboard
+sub_tags: data, charts, dashboard, analytics, kpi, comparison, graphs
+mosaic: no
+collected: 2026-07-03

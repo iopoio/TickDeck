@@ -1,0 +1,7 @@
+url: https://elements.envato.com/ombar-creative-brief-FGUHWQW
+name: Ombar | Creative Brief Incl. canva & book compatible with Keynote
+source: envato
+style_family: creative_bold
+sub_tags: creative, colorful, bold, graphic, modern, vibrant
+mosaic: no
+collected: 2026-07-03

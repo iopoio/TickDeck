@@ -1,0 +1,7 @@
+url: https://elements.envato.com/infographic-multipurpose-keynote-template-v173-49RTNCL
+name: INFOGRAPHIC - Multipurpose Keynote Template V173 Incl. infographic & background compatible with Keynote
+source: envato
+style_family: data_dashboard
+sub_tags: data, charts, dashboard, analytics, kpi, comparison, graphs
+mosaic: no
+collected: 2026-07-03

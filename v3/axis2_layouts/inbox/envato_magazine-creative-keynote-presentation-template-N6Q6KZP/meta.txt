@@ -1,0 +1,7 @@
+url: https://elements.envato.com/magazine-creative-keynote-presentation-template-N6Q6KZP
+name: Magazine - Creative Keynote Presentation Template Incl. business & clean compatible with Keynote
+source: envato
+style_family: editorial_magazine
+sub_tags: editorial, magazine, elegant, fashion, serif, lookbook
+mosaic: no
+collected: 2026-07-03

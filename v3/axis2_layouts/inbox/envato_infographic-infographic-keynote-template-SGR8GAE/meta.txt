@@ -1,0 +1,7 @@
+url: https://elements.envato.com/infographic-infographic-keynote-template-SGR8GAE
+name: Infographic – Infographic Keynote Template Incl. modern & agency compatible with Keynote
+source: envato
+style_family: data_dashboard
+sub_tags: data, charts, dashboard, analytics, kpi, comparison, graphs
+mosaic: no
+collected: 2026-07-03

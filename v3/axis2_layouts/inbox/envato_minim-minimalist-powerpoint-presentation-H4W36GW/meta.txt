@@ -1,0 +1,7 @@
+url: https://elements.envato.com/minim-minimalist-powerpoint-presentation-H4W36GW
+name: Minim - Minimalist PowerPoint Presentation Incl. minimalist & white compatible with PowerPoint
+source: envato
+style_family: minimal_typo
+sub_tags: typography, minimal, bold, simple, sans-serif, black-white
+mosaic: no
+collected: 2026-07-03
