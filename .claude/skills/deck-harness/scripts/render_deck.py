@@ -970,7 +970,8 @@ def _render_hero_bleed(rendered_pairs: list[tuple[Any, str]] | None, content: li
     mid_attr = f' data-metric-id="{_escape(hero_mid)}"' if hero_mid else ""
     label_html = f'<p class="hero-bleed-label"{mid_attr}>{_escape(hero_label)}</p>' if hero_label else ""
     # 긴 단위(억 달러 등)는 190px nowrap에서 지면 밖으로 밀려 사라진다 — 숫자/단위 분리 조판.
-    num_match = re.match(r"^\s*([\d.,]+\s*%?)\s*(.*)$", hero_value)
+    # %·단위는 group2로 빼 with-unit 경로(블리드 없이 안에 들어옴) — 190px nowrap에서 %가 밖으로 잘리던 것(후추님 7/4)
+    num_match = re.match(r"^\s*([\d.,]+)\s*(%?.*?)\s*$", hero_value)
     num_class = "hero-bleed-num"
     if num_match and num_match.group(2):
         num_html = f'{_escape(num_match.group(1))}<span class="hero-bleed-unit">{_escape(num_match.group(2))}</span>'
