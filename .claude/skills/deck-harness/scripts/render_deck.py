@@ -1979,21 +1979,22 @@ def _svg_mirror_bars(
     both = lefts + rights
     scale_base = 100.0 if _is_bounded_percent_series(both) else _max_metric_number(both)
     spine, half = 500, 340
-    row_h = 82
+    row_h = 96
     height = CHART_TITLE_GAP + row_count * row_h + (30 if note else 0)
     body = [
         f'<line x1="{spine}" y1="{CHART_TITLE_GAP - 8}" x2="{spine}" y2="{CHART_TITLE_GAP + row_count * row_h - 26}" stroke="#1F2733" stroke-width="1.5" opacity=".3"/>'
     ]
+    # 라벨은 각 진영 막대 위 바깥쪽(스파인 반대편) 정렬 — 두 라벨이 중앙에서 맞붙어 겹치던 것 방지(후추님 7/4 p05).
     for index in range(row_count):
         top = CHART_TITLE_GAP + index * row_h
-        bar_y = top + 28
+        bar_y = top + 34
         if index < len(lefts):
             item = lefts[index]
             width = _scale_metric_width(item, scale_base, half)
             body.append(
                 f"""
                 <g data-metric-id="{_escape(item["metric_id"])}">
-                  <text x="{spine - 14}" y="{top + 10}" text-anchor="end" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+                  <text x="{spine - 22 - width:.1f}" y="{top + 12}" text-anchor="end" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
                   <rect x="{spine - 10 - width:.1f}" y="{bar_y}" width="{width:.1f}" height="22" rx="11" fill="#B0A491"/>
                   <text x="{spine - 22 - width:.1f}" y="{bar_y + 17}" text-anchor="end" class="visual-value" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
                 </g>"""
@@ -2004,7 +2005,7 @@ def _svg_mirror_bars(
             body.append(
                 f"""
                 <g data-metric-id="{_escape(item["metric_id"])}">
-                  <text x="{spine + 14}" y="{top + 10}" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+                  <text x="{spine + 22 + width:.1f}" y="{top + 12}" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
                   <rect x="{spine + 10}" y="{bar_y}" width="{width:.1f}" height="22" rx="11" fill="{accent}"/>
                   <text x="{spine + 22 + width:.1f}" y="{bar_y + 17}" class="visual-value-accent" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
                 </g>"""
@@ -4292,212 +4293,259 @@ h1 {{
 .visual-swot-quad .swot-cell-highlight .swot-label {{ fill: var(--accent); }}
 .visual-swot-quad .swot-item {{ fill: var(--muted); }}
 
-/* ══ index system overrides(2026-07-04): 기본 골격은 보존, 신규 시스템만 목차 문법 분기 ══ */
+/* ══ index compositions(2026-07-04): 스킨이 아니라 목차 골격 자체를 시스템별로 분기 ══ */
 .theme-editorial-serif .index-list {{
-  width: min(100%, 900px);
+  width: min(100%, 940px);
+  gap: 0;
 }}
 .theme-editorial-serif .index-row {{
-  grid-template-columns: 76px minmax(140px, .36fr) minmax(0, 1fr);
-  gap: 22px;
-  min-height: 68px;
-  padding: 14px 0;
+  grid-template-columns: 132px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 30px;
+  row-gap: 4px;
+  align-items: start;
+  min-height: 62px;
+  padding: 4px 0 7px;
+  border-top: 0;
 }}
+.theme-editorial-serif .index-row + .index-row {{
+  border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+}}
+.theme-editorial-serif .index-row:last-child {{ border-bottom: 0; }}
 .theme-editorial-serif .index-row::before {{
-  color: var(--muted);
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: start;
+  justify-self: end;
+  color: color-mix(in srgb, var(--ink) 30%, transparent);
   font-family: var(--font-head);
-  font-size: 44px;
+  font-size: 90px;
   font-weight: 400;
+  line-height: .72;
   text-align: right;
-  opacity: .78;
+  opacity: 1;
 }}
-.theme-editorial-serif .index-part,
-.theme-editorial-serif .index-content {{
+.theme-editorial-serif .index-part {{
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
   font-family: var(--font-head);
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 600;
   letter-spacing: 0;
+  line-height: 1.02;
 }}
 .theme-editorial-serif .index-copy {{
+  grid-column: 2;
+  grid-row: 2;
+  max-width: 620px;
+  color: color-mix(in srgb, var(--ink) 58%, transparent);
   font-family: var(--font-body);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 500;
+  line-height: 1.34;
+}}
+.theme-editorial-serif .index-content {{
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--font-head);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.05;
 }}
 
 .theme-data-mono .index-list {{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
   width: min(100%, 1000px);
 }}
 .theme-data-mono .index-row {{
-  position: relative;
-  grid-template-columns: 86px minmax(152px, .34fr) minmax(0, 1fr);
-  gap: 18px;
-  min-height: 66px;
-  padding: 13px 0;
-  border-top: 1px solid color-mix(in srgb, var(--ink) 36%, transparent);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  gap: 8px;
+  align-content: start;
+  min-height: 126px;
+  padding: 15px 17px 16px;
+  border: 1px solid color-mix(in srgb, var(--ink) 68%, transparent);
+  background: color-mix(in srgb, var(--c60) 90%, var(--ink));
+  border-radius: 0;
   font-family: var(--mono-font);
 }}
 .theme-data-mono .index-row:last-child {{
-  border-bottom: 1px solid color-mix(in srgb, var(--ink) 36%, transparent);
-}}
-.theme-data-mono .index-row::after {{
-  content: "";
-  position: absolute;
-  left: 104px;
-  right: 0;
-  top: 50%;
-  border-bottom: 1px dotted color-mix(in srgb, var(--ink) 42%, transparent);
-  z-index: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 68%, transparent);
 }}
 .theme-data-mono .index-row::before {{
+  content: "IDX " counter(index, decimal-leading-zero);
+  grid-row: 1;
+  justify-self: start;
   color: var(--ink);
   font-family: var(--mono-font);
-  font-size: 18px;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: .16em;
-  opacity: .82;
-  z-index: 1;
+  letter-spacing: .14em;
+  line-height: 1;
+  opacity: .78;
 }}
 .theme-data-mono .index-part,
-.theme-data-mono .index-copy,
 .theme-data-mono .index-content {{
-  position: relative;
-  z-index: 1;
-  width: fit-content;
-  max-width: 100%;
-  background: var(--c60);
+  grid-row: 2;
+  color: var(--ink);
   font-family: var(--mono-font);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  line-height: 1.18;
   text-transform: uppercase;
 }}
-.theme-data-mono .index-part,
 .theme-data-mono .index-content {{
-  padding-right: 10px;
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: .12em;
+  grid-row: 2 / span 2;
 }}
 .theme-data-mono .index-copy {{
-  padding-left: 10px;
-  color: var(--ink);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: .08em;
+  grid-row: 3;
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  line-height: 1.34;
+  text-transform: uppercase;
 }}
 
-.theme-dark-premium .index-list {{
-  width: min(100%, 1000px);
-  gap: 6px;
+.theme-dark-premium .index-body {{
+  align-items: center;
+  justify-content: center;
 }}
-/* 프리미엄 여백은 주되 항목 많은 목차가 넘치지 않게 절제(후추님 7/4 run3 p02 오버플로 실측). */
+.theme-dark-premium .index-list {{
+  justify-items: center;
+  width: min(100%, 790px);
+  gap: 7px;
+  text-align: center;
+}}
 .theme-dark-premium .index-row {{
-  grid-template-columns: 130px minmax(130px, .36fr) minmax(0, 1fr);
-  min-height: 68px;
-  padding: 13px 0;
-  border-top: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 3px;
+  min-height: 0;
+  padding: 3px 30px 5px;
+  border-top: 0;
+  text-align: center;
 }}
 .theme-dark-premium .index-row:last-child {{
-  border-bottom: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  border-bottom: 0;
 }}
 .theme-dark-premium .index-row::before {{
+  grid-row: 1;
   color: var(--accent);
-  font-size: 54px;
-  font-weight: 850;
-  text-shadow: 0 0 20px color-mix(in srgb, var(--accent) 32%, transparent);
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  line-height: 1;
+  opacity: .82;
+  text-shadow: 0 0 20px color-mix(in srgb, var(--accent) 28%, transparent);
 }}
 .theme-dark-premium .index-part,
 .theme-dark-premium .index-content {{
-  font-size: 28px;
+  grid-row: 2;
+  max-width: 720px;
   color: var(--ink);
+  font-size: 25px;
+  font-weight: 850;
+  line-height: 1.12;
 }}
+/* 폴백 경로(list 블록)가 index-content로 들어오면 항목이 여럿이라 큰 폰트로 넘침 → 리스트 항목만 절제. */
+.theme-dark-premium .index-content .bullet-list li {{ font-size: 19px; line-height: 1.4; }}
 .theme-dark-premium .index-copy {{
-  color: color-mix(in srgb, var(--ink) 60%, transparent);
-  font-size: 18px;
+  grid-row: 3;
+  max-width: 620px;
+  color: color-mix(in srgb, var(--ink) 58%, transparent);
+  font-size: 15px;
   font-weight: 600;
+  line-height: 1.34;
 }}
 
 .theme-minimal-typo .index-body {{
+  align-items: flex-start;
   justify-content: center;
 }}
 .theme-minimal-typo .index-list {{
-  width: min(100%, 840px);
-  gap: 18px;
+  width: min(100%, 880px);
+  gap: 14px;
 }}
 .theme-minimal-typo .index-row {{
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 28px;
-  min-height: 92px;
-  padding: 22px 0;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+  padding: 10px 0 12px;
   border-top: 0;
 }}
 .theme-minimal-typo .index-row:last-child {{
   border-bottom: 0;
 }}
 .theme-minimal-typo .index-row::before {{
-  content: "-";
-  align-self: start;
-  color: color-mix(in srgb, var(--ink) 36%, transparent);
-  font-family: var(--font-body);
-  font-size: 22px;
-  font-weight: 300;
-  line-height: 1.25;
-  opacity: 1;
+  content: none;
 }}
 .theme-minimal-typo .index-part,
 .theme-minimal-typo .index-content {{
-  grid-column: 2;
   color: var(--ink);
-  font-size: 34px;
+  font-size: 43px;
   font-weight: 420;
-  line-height: 1.14;
+  letter-spacing: 0;
+  line-height: 1.08;
 }}
 .theme-minimal-typo .index-copy {{
-  grid-column: 2;
-  margin-top: -10px;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.5;
+  display: none;
 }}
 
 .theme-pop-dark .index-list {{
-  width: min(100%, 1020px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+  width: min(100%, 1040px);
 }}
 .theme-pop-dark .index-row {{
-  grid-template-columns: 104px minmax(130px, .38fr) minmax(0, 1fr);
-  gap: 22px;
-  min-height: 96px;
-  padding: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  align-content: space-between;
+  min-height: 138px;
+  padding: 17px 20px 18px;
   border-top: 0;
+  border-radius: 0;
+  background: var(--t1);
 }}
+.theme-pop-dark .index-row:nth-child(4n+1) {{ background: var(--t1); }}
+.theme-pop-dark .index-row:nth-child(4n+2) {{ background: var(--t2); }}
+.theme-pop-dark .index-row:nth-child(4n+3) {{ background: var(--t3); }}
+.theme-pop-dark .index-row:nth-child(4n) {{ background: var(--t4); }}
 .theme-pop-dark .index-row:last-child {{
   border-bottom: 0;
 }}
 .theme-pop-dark .index-row::before {{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 96px;
-  height: 76px;
-  color: color-mix(in srgb, white 96%, var(--c60));
-  background: var(--t1);
-  border-radius: 18px;
-  font-size: 44px;
-  font-weight: 900;
+  grid-row: 1;
+  color: var(--t5);
+  font-family: var(--mono-font);
+  font-size: 38px;
+  font-weight: 950;
+  line-height: .92;
   opacity: 1;
 }}
-.theme-pop-dark .index-row:nth-child(5n+2)::before {{ background: var(--t2); }}
-.theme-pop-dark .index-row:nth-child(5n+3)::before {{ background: var(--t3); }}
-.theme-pop-dark .index-row:nth-child(5n+4)::before {{ background: var(--t4); }}
-.theme-pop-dark .index-row:nth-child(5n)::before {{ background: var(--t5); }}
 .theme-pop-dark .index-part,
 .theme-pop-dark .index-content {{
-  color: var(--ink);
-  font-size: 28px;
-  font-weight: 900;
+  grid-row: 2;
+  align-self: end;
+  color: var(--t5);
+  font-size: 27px;
+  font-weight: 950;
+  line-height: 1.04;
 }}
 .theme-pop-dark .index-copy {{
-  color: var(--muted);
-  font-size: 18px;
-  font-weight: 700;
+  grid-row: 3;
+  color: color-mix(in srgb, var(--t5) 84%, transparent);
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.28;
 }}
 
 /* ══ arch-versus: A/B 두 진영 시각 신호 ══ */
@@ -4537,12 +4585,22 @@ h1 {{
 .arch-versus .scenario-card:nth-child(2) .block-title {{
   color: var(--versus-b);
 }}
+/* 두 진영 틴트는 pane 내용 높이가 아니라 전체 높이 균등으로 깔아야 깔끔한 사각형이 된다
+   (후추님 7/4 p03/p05 "영역이 이상" — 내용높이 pane에 틴트라 뜬 직사각형이던 것). */
+.arch-versus .split-body:not(.split-single) {{
+  align-items: stretch;
+  border-radius: calc(var(--radius) + 2px);
+  overflow: hidden;
+}}
+.arch-versus .split-body:not(.split-single) .split-pane {{ justify-content: center; }}
 .arch-versus .split-body:not(.split-single) .split-primary {{
   border-right: 2px solid var(--versus-spine);
-  background: color-mix(in srgb, var(--versus-a) 6%, transparent);
+  background: color-mix(in srgb, var(--versus-a) 7%, transparent);
+  padding: 22px 30px 22px 24px;
 }}
 .arch-versus .split-body:not(.split-single) .split-secondary {{
-  background: color-mix(in srgb, var(--versus-b) 6%, transparent);
+  background: color-mix(in srgb, var(--versus-b) 7%, transparent);
+  padding: 22px 24px 22px 30px;
 }}
 
 /* ══ 최종 컨텍스트 평탄화 — 반드시 스타일시트 맨 끝 ══
