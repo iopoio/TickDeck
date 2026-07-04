@@ -38,14 +38,14 @@ model: opus
 - **프리셋 사이/밖**: 콘텐츠가 요구하면 아키타입 정의를 벗어난 조합도 허용한다(예: overview 골격에 keynote식 빅스테이트먼트 결론). 단 변주 장부의 `archetype` 라벨은 **가장 가까운 것**으로 기록한다(변주 핸들 유지).
 - **왜 고정 안 하나**: 아키타입은 실제 덱 콘택트시트에서 *어휘*로 관찰됐을 뿐 *순서/리듬*은 검증 안 됐다(DECK_ARCHETYPES 채굴 한계). 순서·리듬은 콘텐츠 논리가 SoT다.
 
-| 페이징 결정 | brief | dossier(기존 기본) | feature | keynote | overview |
-|---|---|---|---|---|---|
-| 목표 페이지 수 | 8~12 | 18~24 | 14~16(불규칙) | 12~15 | 14~18 |
-| 파트마다 간지 | 없음(또는 얇은 구분선 1개) | 있음(현행) | 화보 간지(풀블리드 section opener) | 간지 대신 빌드업(주장→반전→해소) | 목차=간지 통합(섹션 열 때 그 파트 항목을 목차형 그리드로) |
-| index(목차) 장 | 생략 가능 | 있음 | 선택 | 생략(빌드업이 대신) | 별도 간지 대신 index형 섹션 그리드 |
-| S와 A 분리(항목당 2~3장) | 압축 — 핵심 insight만 골라 1메시지/장(전부 안 넣음) | 현행(분리) | 혼합(스프레드로 묶기도) | 빅스테이트먼트 1장에 응축 | 훑는 리듬 — 섹션별 핵심을 1~2블록으로 정리 |
-| 페이지당 밀도 기본 | low(여백 큼) | medium~high | 혼합(의도적 불균형) | low(장당 한 요소) | medium(dossier보다 성김) |
-| source_appendix | 선택(짧으면 생략) | 있음 | 있음 | 선택 | 콘텐츠 근거량에 따라 선택 |
+| 페이징 결정 | brief | dossier(기존 기본) | feature | keynote | overview | chronicle | versus | bluf |
+|---|---|---|---|---|---|---|---|---|
+| 목표 페이지 수 | 8~12 | 18~24 | 14~16(불규칙) | 12~15 | 14~18 | 12~16 | 10~14 | 10~13 |
+| 파트마다 간지 | 없음(또는 얇은 구분선 1개) | 있음(현행) | 화보 간지(풀블리드 section opener) | 간지 대신 빌드업(주장→반전→해소) | 목차=간지 통합(섹션 열 때 그 파트 항목을 목차형 그리드로) | 시대 마커(시기 라벨)로 대체 | 대립축 제시 표지 후 쟁점별 | 결론 선두 후 근거 배열(간지 약함) |
+| index(목차) 장 | 생략 가능 | 있음 | 선택 | 생략(빌드업이 대신) | 별도 간지 대신 index형 섹션 그리드 | 선택(시대 목록형이면 유용) | 선택 | 생략(결론이 오프닝) |
+| S와 A 분리(항목당 2~3장) | 압축 — 핵심 insight만 골라 1메시지/장(전부 안 넣음) | 현행(분리) | 혼합(스프레드로 묶기도) | 빅스테이트먼트 1장에 응축 | 훑는 리듬 — 섹션별 핵심을 1~2블록으로 정리 | 시대별 상태(from→to)를 페이지마다 | 쟁점마다 A/B 양편 2단 | 결론 먼저→근거가 뒷받침, 제언은 끝에 |
+| 페이지당 밀도 기본 | low(여백 큼) | medium~high | 혼합(의도적 불균형) | low(장당 한 요소) | medium(dossier보다 성김) | 중간(진행축+지표) | 중간(2단 대비) | 낮음~중간(결론 임팩트+근거 정돈) |
+| source_appendix | 선택(짧으면 생략) | 있음 | 있음 | 선택 | 콘텐츠 근거량에 따라 선택 | 선택 | 선택 | 선택 |
 
 ## 사고 절차 — 추림과 펼침 (매 작업 적용·질문으로 추론)
 > 규칙이 아니라 질문이다. 이 데이터에서 새로 추론한다.
@@ -59,6 +59,9 @@ model: opus
    - **feature — 혼합.** S와 A를 분리하되, 읽는 경험상 맞으면 스프레드로 묶기도 한다.
    - **keynote — 응축.** 빅스테이트먼트 1장에 압축하고, role 시퀀스는 setup→반전 diagnosis→해소 action으로 긴장을 설계한다.
    - **overview — 훑는 리듬.** 섹션별 핵심을 정돈된 1~2블록으로 보여주고, index형 섹션 그리드·mosaic·split을 우선한다. dashboard 남발·과밀은 피한다.
+   - **chronicle —** 섹션을 시대(과거→현재→전망)로 나누고, 각 시대의 상태를 timeline 골격으로 짚는다. from→to 이동이 페이지 축.
+   - **versus —** 전편을 A vs B 2트랙으로. 표지에서 대립축 세우고, 쟁점마다 양편을 좌우로 맞세운다.
+   - **bluf —** p2에 결론·핵심 권고를 먼저 놓고(역피라미드), 이후 근거가 "왜 믿나" 순으로 떠받친다. 단 C7 맺음의 제언은 그대로 끝에 유지.
 5. **밀도·리듬은 아키타입별로 잡는다.**
    - **dossier —** 텍스트 빽빽한 장만 잇지 않는다. 4~5장마다 *숨 쉬는 장*(목차·패턴 요약·여백)을 둔다. **모든 파트는 간지로 연다 — 1장짜리 파트도 예외 없음**(후추님 7/2: "한 장인 건 알지만 간지 없이 바로 내용이 나오니 어색"). 간지에는 part_index/part_label/part_count를 명시하고 하위 목차 프리뷰 bullets(해당 파트 short_title 그대로·숫자 든 제목 제외)를 내린다.
    - **brief —** 간지는 만들지 않거나 얇은 구분선 1개만 둔다. 기본 밀도는 low이며 여백을 크게 둔다.
@@ -71,7 +74,7 @@ model: opus
 page-planner는 페이지 기획 전에 아키타입을 정한다.
 
 1. `_workspace/_variation_ledger.json`을 읽어 최근 2 run의 `archetype`을 확인한다.
-2. `v3/axis2_layouts/DECK_ARCHETYPES.md`의 5종(brief·dossier·feature·keynote·overview) 중 최근 2개와 다른 것을 고른다. 장르·청중 궁합 우선(예: 임원 요약=brief, 정밀 근거=dossier, 브랜드/쇼케이스=feature, 발표=keynote, 개관 브리핑=overview). 동률이면 인덱스 로테이션.
+2. `v3/axis2_layouts/DECK_ARCHETYPES.md`의 8종(brief·dossier·feature·keynote·overview·chronicle·versus·bluf) 중 최근 2개와 다른 것을 고른다. 장르·청중 궁합 우선(예: 임원 요약=brief, 정밀 근거=dossier, 브랜드/쇼케이스=feature, 발표=keynote, 개관 브리핑=overview, 시계열 데이터 위주=chronicle, 대립축이 핵심=versus, 결론이 명확·임원용=bluf). 동률이면 인덱스 로테이션.
 3. 선택한 아키타입을 `05_page_plan.json` 최상위 `"archetype"` 필드에 기록한다.
 
 ## 입력 프로토콜
@@ -88,7 +91,7 @@ page-planner는 페이지 기획 전에 아키타입을 정한다.
 
 ```json
 {
-  "archetype": "brief|dossier|feature|keynote|overview",
+  "archetype": "brief|dossier|feature|keynote|overview|chronicle|versus|bluf",
   "pages": [
     {
       "page_id": "p01",

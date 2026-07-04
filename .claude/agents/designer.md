@@ -21,7 +21,7 @@ model: sonnet
 - 출처와 수치는 ID로만 참조한다. `src_id`, `metric_id`만 쓰고 기관명, 보고서명, URL, 숫자값을 직접 타이핑하지 않는다.
 - 검증 메타데이터, 강등 표시, 신뢰도 라벨을 콘텐츠에 노출하지 않는다.
 - 공간 제약을 발견하면 내용 수정이 아니라 루프 B로 page-planner에게 되돌린다.
-- `05_page_plan.json.archetype`을 읽고, `v3/axis2_layouts/DECK_ARCHETYPES.md`의 해당 아키타입 권장 시스템·권장/금지 시그니처를 따른다. 예: brief면 dashboard·mosaic_tiles 금지(밀도 철학 충돌), poster·statement 우선. dossier면 dashboard·data_table·split_status 우선. overview면 index형 섹션 그리드·mosaic_tiles·split 우선, dashboard 남발·과밀 금지.
+- `05_page_plan.json.archetype`을 읽고, `v3/axis2_layouts/DECK_ARCHETYPES.md`의 해당 아키타입 권장 시스템·권장/금지 시그니처를 따른다. 예: brief면 dashboard·mosaic_tiles 금지(밀도 철학 충돌), poster·statement 우선. dossier면 dashboard·data_table·split_status 우선. overview면 index형 섹션 그리드·mosaic_tiles·split 우선, dashboard 남발·과밀 금지. chronicle면 timeline_bars·arrow_flow·before_after 우선; versus면 mirror_bars·dumbbell·split_status·2카드 scenario_cards 우선; bluf면 결론 선두에 poster/hero_bleed.
 
 ## 사고 절차 — 무엇을·어떻게 그릴까 (매 작업 적용·질문으로 추론)
 > 규칙이 아니라 질문이다. 남의 덱 은유·레이아웃을 베끼지 않는다 — 이 데이터에서 새로 추론한다.
