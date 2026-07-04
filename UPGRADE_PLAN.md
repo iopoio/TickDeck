@@ -39,7 +39,9 @@
 - [x] 시그니처 페이지 확장 — 배치2: mosaic_tiles·split_status·scenario_cards (e338c09) + 배치3: pricing_cards·running_head 크롬·swot_quad·side_wordmark (코덱스 구현·쿼터 컷 잔여분 Sonnet 마무리·클차장 검수 수술)
 - [x] 파이프라인 배선 — variation ledger (50f723c). 7/4 시뮬 run3·4에서 배제 규칙 실작동 확인(serif 2연속 → dark_premium → data_mono 자동 선택)
 - [ ] **다양화 시뮬레이션** = 통과 기준: 연속 3~4 run을 뽑아 나란히 놓고 "다른 물건"으로 읽히면 통과 (후추님 실물 판정)
-  - [x] 표본 3종 준비 완료(7/4): 같은 콘텐츠 → ①creator_serif(editorial_serif) ②divsim_run3(dark_premium·hero_bleed/split_status/scenario_cards) ③divsim_run4(data_mono·dashboard/scenario_cards·차트 어휘 겹침 0). 계약 0건·FIT_OK·시각 QA 통과. **후추님 실물 판정 대기** — 필요 시 pop_dark run5 추가 가능
+  - [x] 얕은 층 표본 3종(7/4): creator_serif·divsim_run3(dark)·divsim_run4(mono). **후추님 판정 = "3종도 되게 다르진 않다"** — 얕은 층(같은 골격 위 색/레이아웃 변주) 천장 확인.
+  - [x] **깊은 층 = 덱 아키타입 축 신설·돌파(7/4).** 원인 = 셋 다 같은 page_plan 골격(16장·간지 고정·페이지 문법 하나) 공유. 해법 = DECK_ARCHETYPES.md 4종(brief/dossier/feature/keynote) + page-planner 아키타입 분기(7bc77e3). **실증**: 같은 콘텐츠로 brief(10장 라이트 미니멀·arch_brief)·keynote(13장 팝다크 빌드업·arch_keynote) 생성 → dossier와 나란히 **후추님 "좀 다양해졌네" 통과**. 다양화 3층화(아키타입×시스템×시그니처). % 블리드 잘림도 수술(70c3aed).
+  - [ ] 남은 확장: feature 아키타입 실증·아키타입×시스템 궁합 실측(판정 통과 후·여유 시)
 - [ ] 통과 후 G5 재논의·쇼케이스 (7/6 내 여유 시에만 — 다양화에 밀림)
 
 - [ ] editorial_serif 마감 — 실전 덱 1건을 처음부터 editorial_serif로 풀 run(파일럿은 기존 덱 재렌더였음), 간지·표지·차트 전 조합 검증. 후추님 7/3 실측 피드백 3건 반영됨(560af5e)
