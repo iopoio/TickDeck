@@ -322,6 +322,10 @@ def render_deck(
     meta = deck_spec.get("meta") if isinstance(deck_spec.get("meta"), dict) else {}
     page_chrome = str(meta.get("page_chrome", "")).strip()
     deck_short_title = _deck_short_title(deck_spec, title)
+    archetype_class = _deck_archetype_class(deck_spec)
+    body_classes = [f'deck-theme-{_class_name(palette["theme"])}']
+    if archetype_class:
+        body_classes.append(archetype_class)
     body_ordinals = _body_page_ordinals(pages)
     deck_cited_source_ids = _deck_cited_source_ids(pages, registry)
     # 표지 밴드 수 = 실제 파트 수. 간지 수로 세되, 페이지에 명시된 part_count가 있으면 그게 정답
@@ -362,7 +366,7 @@ def render_deck(
             f"<title>{_escape(title)}</title>",
             f"<style>{_css(palette)}</style>",
             "</head>",
-            f'<body class="deck-theme-{_class_name(palette["theme"])}">',
+            f'<body class="{" ".join(body_classes)}">',
             *rendered_pages,
             "</body>",
             "</html>",
@@ -398,6 +402,11 @@ def _deck_short_title(deck_spec: dict[str, Any], fallback_title: str) -> str:
     meta = deck_spec.get("meta") if isinstance(deck_spec.get("meta"), dict) else {}
     short_title = str(meta.get("short_title", "")).strip()
     return short_title or str(fallback_title).strip()
+
+
+def _deck_archetype_class(deck_spec: dict[str, Any]) -> str:
+    archetype = str(deck_spec.get("archetype") or "").strip()
+    return f"arch-{_class_name(archetype)}" if archetype else ""
 
 
 def _body_page_ordinals(pages: list[Any]) -> dict[int, int]:
@@ -4282,6 +4291,259 @@ h1 {{
 .visual-swot-quad .swot-label {{ fill: var(--ink); }}
 .visual-swot-quad .swot-cell-highlight .swot-label {{ fill: var(--accent); }}
 .visual-swot-quad .swot-item {{ fill: var(--muted); }}
+
+/* ══ index system overrides(2026-07-04): 기본 골격은 보존, 신규 시스템만 목차 문법 분기 ══ */
+.theme-editorial-serif .index-list {{
+  width: min(100%, 900px);
+}}
+.theme-editorial-serif .index-row {{
+  grid-template-columns: 76px minmax(140px, .36fr) minmax(0, 1fr);
+  gap: 22px;
+  min-height: 68px;
+  padding: 14px 0;
+}}
+.theme-editorial-serif .index-row::before {{
+  color: var(--muted);
+  font-family: var(--font-head);
+  font-size: 44px;
+  font-weight: 400;
+  text-align: right;
+  opacity: .78;
+}}
+.theme-editorial-serif .index-part,
+.theme-editorial-serif .index-content {{
+  font-family: var(--font-head);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0;
+}}
+.theme-editorial-serif .index-copy {{
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 500;
+}}
+
+.theme-data-mono .index-list {{
+  width: min(100%, 1000px);
+}}
+.theme-data-mono .index-row {{
+  position: relative;
+  grid-template-columns: 86px minmax(152px, .34fr) minmax(0, 1fr);
+  gap: 18px;
+  min-height: 66px;
+  padding: 13px 0;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 36%, transparent);
+  font-family: var(--mono-font);
+}}
+.theme-data-mono .index-row:last-child {{
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 36%, transparent);
+}}
+.theme-data-mono .index-row::after {{
+  content: "";
+  position: absolute;
+  left: 104px;
+  right: 0;
+  top: 50%;
+  border-bottom: 1px dotted color-mix(in srgb, var(--ink) 42%, transparent);
+  z-index: 0;
+}}
+.theme-data-mono .index-row::before {{
+  color: var(--ink);
+  font-family: var(--mono-font);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  opacity: .82;
+  z-index: 1;
+}}
+.theme-data-mono .index-part,
+.theme-data-mono .index-copy,
+.theme-data-mono .index-content {{
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  max-width: 100%;
+  background: var(--c60);
+  font-family: var(--mono-font);
+  text-transform: uppercase;
+}}
+.theme-data-mono .index-part,
+.theme-data-mono .index-content {{
+  padding-right: 10px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}}
+.theme-data-mono .index-copy {{
+  padding-left: 10px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .08em;
+}}
+
+.theme-dark-premium .index-list {{
+  width: min(100%, 1000px);
+  gap: 6px;
+}}
+/* 프리미엄 여백은 주되 항목 많은 목차가 넘치지 않게 절제(후추님 7/4 run3 p02 오버플로 실측). */
+.theme-dark-premium .index-row {{
+  grid-template-columns: 130px minmax(130px, .36fr) minmax(0, 1fr);
+  min-height: 68px;
+  padding: 13px 0;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+}}
+.theme-dark-premium .index-row:last-child {{
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+}}
+.theme-dark-premium .index-row::before {{
+  color: var(--accent);
+  font-size: 54px;
+  font-weight: 850;
+  text-shadow: 0 0 20px color-mix(in srgb, var(--accent) 32%, transparent);
+}}
+.theme-dark-premium .index-part,
+.theme-dark-premium .index-content {{
+  font-size: 28px;
+  color: var(--ink);
+}}
+.theme-dark-premium .index-copy {{
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+  font-size: 18px;
+  font-weight: 600;
+}}
+
+.theme-minimal-typo .index-body {{
+  justify-content: center;
+}}
+.theme-minimal-typo .index-list {{
+  width: min(100%, 840px);
+  gap: 18px;
+}}
+.theme-minimal-typo .index-row {{
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 28px;
+  min-height: 92px;
+  padding: 22px 0;
+  border-top: 0;
+}}
+.theme-minimal-typo .index-row:last-child {{
+  border-bottom: 0;
+}}
+.theme-minimal-typo .index-row::before {{
+  content: "-";
+  align-self: start;
+  color: color-mix(in srgb, var(--ink) 36%, transparent);
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.25;
+  opacity: 1;
+}}
+.theme-minimal-typo .index-part,
+.theme-minimal-typo .index-content {{
+  grid-column: 2;
+  color: var(--ink);
+  font-size: 34px;
+  font-weight: 420;
+  line-height: 1.14;
+}}
+.theme-minimal-typo .index-copy {{
+  grid-column: 2;
+  margin-top: -10px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}}
+
+.theme-pop-dark .index-list {{
+  width: min(100%, 1020px);
+  gap: 14px;
+}}
+.theme-pop-dark .index-row {{
+  grid-template-columns: 104px minmax(130px, .38fr) minmax(0, 1fr);
+  gap: 22px;
+  min-height: 96px;
+  padding: 0;
+  border-top: 0;
+}}
+.theme-pop-dark .index-row:last-child {{
+  border-bottom: 0;
+}}
+.theme-pop-dark .index-row::before {{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 76px;
+  color: color-mix(in srgb, white 96%, var(--c60));
+  background: var(--t1);
+  border-radius: 18px;
+  font-size: 44px;
+  font-weight: 900;
+  opacity: 1;
+}}
+.theme-pop-dark .index-row:nth-child(5n+2)::before {{ background: var(--t2); }}
+.theme-pop-dark .index-row:nth-child(5n+3)::before {{ background: var(--t3); }}
+.theme-pop-dark .index-row:nth-child(5n+4)::before {{ background: var(--t4); }}
+.theme-pop-dark .index-row:nth-child(5n)::before {{ background: var(--t5); }}
+.theme-pop-dark .index-part,
+.theme-pop-dark .index-content {{
+  color: var(--ink);
+  font-size: 28px;
+  font-weight: 900;
+}}
+.theme-pop-dark .index-copy {{
+  color: var(--muted);
+  font-size: 18px;
+  font-weight: 700;
+}}
+
+/* ══ arch-versus: A/B 두 진영 시각 신호 ══ */
+.arch-versus {{
+  --versus-a: var(--accent);
+  --versus-b: color-mix(in srgb, var(--accent) 20%, slategray);
+  --versus-spine: color-mix(in srgb, var(--accent) 62%, var(--ink));
+}}
+.arch-versus .visual-mirror-bars svg > line {{
+  stroke: var(--versus-spine);
+  stroke-width: 2.2;
+  opacity: .62;
+}}
+.arch-versus .visual-mirror-bars svg > g:nth-of-type(odd) rect {{
+  fill: var(--versus-a);
+}}
+.arch-versus .visual-mirror-bars svg > g:nth-of-type(even) rect {{
+  fill: var(--versus-b);
+}}
+.arch-versus .visual-mirror-bars svg > g:nth-of-type(odd) .visual-value {{
+  fill: var(--versus-a);
+}}
+.arch-versus .visual-mirror-bars svg > g:nth-of-type(even) .visual-value-accent {{
+  fill: var(--versus-b);
+}}
+.arch-versus .scenario-card:nth-child(1) {{
+  border-top: 4px solid var(--versus-a);
+  background: color-mix(in srgb, var(--versus-a) 7%, var(--card));
+}}
+.arch-versus .scenario-card:nth-child(2) {{
+  border-top: 4px solid var(--versus-b);
+  background: color-mix(in srgb, var(--versus-b) 7%, var(--card));
+}}
+.arch-versus .scenario-card:nth-child(1) .block-title {{
+  color: var(--versus-a);
+}}
+.arch-versus .scenario-card:nth-child(2) .block-title {{
+  color: var(--versus-b);
+}}
+.arch-versus .split-body:not(.split-single) .split-primary {{
+  border-right: 2px solid var(--versus-spine);
+  background: color-mix(in srgb, var(--versus-a) 6%, transparent);
+}}
+.arch-versus .split-body:not(.split-single) .split-secondary {{
+  background: color-mix(in srgb, var(--versus-b) 6%, transparent);
+}}
 
 /* ══ 최종 컨텍스트 평탄화 — 반드시 스타일시트 맨 끝 ══
    스텝퍼·히어로·매트릭스 셀·대시 타일 안의 카드류는 테마 불문 박스를 벗긴다(카드 속 카드 방지).
