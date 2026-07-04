@@ -591,7 +591,8 @@ class _RenderedAuthorityParser(HTMLParser):
             classes = set(item.get("class", "").split())
             if "data-metric-id" in item or "data-src-id" in item or "data-page-number" in item:
                 return True
-            if classes & {"page-number", "citation-index", "source-index", "eyebrow", "cover-eyebrow", "copyright"}:
+            # running-head-frac = 러닝헤드 크롬의 페이지분수(NN/총) — 렌더러 생성 페이지번호라 page-number와 동일 면제(배치3 running_head 도입 시 화이트리스트 누락분·7/4).
+            if classes & {"page-number", "citation-index", "source-index", "eyebrow", "cover-eyebrow", "copyright", "running-head-frac"}:
                 return True
             # 간지 프리뷰(divider-items) = short_title 복제 — 원본(h1)이 면제이므로 복제도 면제(7/3).
             # 각주(footnote-row) = 조사 정의 병기·조건부 캐비앳이 본질이라 숫자 필요(writing-standard 9b·D-12).
