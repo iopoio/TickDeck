@@ -907,7 +907,7 @@ def _render_matrix(content: list[Any], rendered_pairs: list[tuple[Any, str]] | N
     for block in content:
         bt = _block_type(block)
         if bt in {"headline", "title"} and not subhead:
-            subhead = f'<div class="matrix-subhead"><h2 class="block-title">{_escape(str(block.get("text", "")))}</h2></div>'
+            subhead = f'<div class="matrix-subhead"><h2 class="block-title">{_rich(str(block.get("text", "")))}</h2></div>'
             continue
         if bt in {"metric", "metrics", "metric_grid", "stat_grid"} and id(block) in metric_html:
             if cells:
