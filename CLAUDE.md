@@ -33,6 +33,19 @@
 - 위임 스펙 필수 요소: 대상 파일 경로 / 수용 기준(테스트 명령과 기대 출력) / 건드리지 말 것 목록.
 - Codex 결과는 클차장이 diff 검수 후 커밋 (Codex 자체 커밋 금지).
 
+### 단계별 모델 고정 (2026-07-04 후추님 "단계마다 모델 지정" — 세션 모델이 풀려도 이 표가 SoT)
+클차장은 **각 작업 시작 시 어느 모델로 하는지 한 줄 선언**하고 진행한다(모델 리셋 방지).
+
+| 제작 단계 | 모델 | 사유 |
+|------|------|------|
+| 설계·아키타입·문법 정의·page_plan 편집 판단·트리아지·최종 diff/PDF 검수 | **Fable 5** | 사고·판단. "제작 시 Fable로 최대한 생각"(후추님) |
+| 엔진 코드 구현(render_deck·contract·page-planner 개조 등) | **Codex** | `codex exec … < /dev/null`. 스펙은 Fable 5가 |
+| 반복 렌더·FIT/계약 재검·데모 대량 생성·긴 로그/PDF 대량 읽기·deck_spec 조립 | **Sonnet** | 경제적 grunt. Fable 토큰 보존 |
+| 5줄 이하 진짜 사소(오타·1값) | Fable 5 직접 | 위임 왕복이 더 비쌈 |
+
+- **토큰 조언 의무**: Sonnet이 경제적인 grunt가 보이면 클차장이 먼저 "이건 Sonnet이 쌉니다" 제안(후추님 요청). Fable 5 절약 = 오래 감.
+- 다양화 깊은 층 SoT = `v3/axis2_layouts/DECK_ARCHETYPES.md` (아키타입 4종·page-planner 개조 범위).
+
 ## 기술 스택
 - Backend: FastAPI + SQLAlchemy(asyncpg) + PostgreSQL
 - Frontend: React + Vite + TypeScript + Tailwind CSS
