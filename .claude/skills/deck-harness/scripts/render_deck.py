@@ -405,7 +405,7 @@ def _deck_short_title(deck_spec: dict[str, Any], fallback_title: str) -> str:
 
 
 def _deck_archetype_class(deck_spec: dict[str, Any]) -> str:
-    archetype = str(deck_spec.get("archetype") or "").strip()
+    archetype = str(deck_spec.get("archetype") or (deck_spec.get("meta") or {}).get("archetype") or "").strip()
     return f"arch-{_class_name(archetype)}" if archetype else ""
 
 
@@ -4649,6 +4649,16 @@ def main() -> None:
     args = parser.parse_args()
 
     deck_spec = json.loads(args.deck_spec.read_text(encoding="utf-8"))
+    # archetype이 deck_spec에 아예 없으면(designer 누락) 형제 page_plan에서 주입 — arch-* 시각효과 누수 마감(7/5).
+    if not _deck_archetype_class(deck_spec):
+        pp = args.deck_spec.parent / "05_page_plan.json"
+        if pp.exists():
+            try:
+                arch = json.loads(pp.read_text(encoding="utf-8")).get("archetype")
+                if arch:
+                    deck_spec["archetype"] = arch
+            except Exception:
+                pass
     registry = json.loads(args.registry.read_text(encoding="utf-8"))
     rendered = render_deck(deck_spec, registry, title=args.title, theme=args.theme)
     args.output.parent.mkdir(parents=True, exist_ok=True)

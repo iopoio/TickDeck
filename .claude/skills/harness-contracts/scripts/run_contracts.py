@@ -43,6 +43,27 @@ def _assemble_stage_log(page_plan: dict, run_dir: Path, deck_spec: dict) -> list
     return stage_log
 
 
+def _archetype_value(payload: dict) -> str:
+    meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+    return str(payload.get("archetype") or meta.get("archetype") or "").strip()
+
+
+def _warn_archetype_leak(page_plan: dict, deck_spec: dict) -> None:
+    page_plan_archetype = _archetype_value(page_plan)
+    if not page_plan_archetype:
+        return
+    meta = deck_spec.get("meta") if isinstance(deck_spec.get("meta"), dict) else {}
+    deck_spec_archetypes = {
+        str(value).strip()
+        for value in (deck_spec.get("archetype"), meta.get("archetype"))
+        if str(value or "").strip()
+    }
+    if page_plan_archetype not in deck_spec_archetypes:
+        print(
+            f"WARN archetype 누수: page_plan={page_plan_archetype} 인데 deck_spec에 미기재/불일치 — designer가 deck_spec 최상위 archetype로 실어야 함"
+        )
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         print("usage: run_contracts.py <run_dir> [deck.html]")
@@ -93,6 +114,7 @@ def main() -> int:
         print(f"WARN 누락 산출물(해당 계약은 빈 입력으로 평가됨): {', '.join(missing)}")
     if not rendered_html:
         print("WARN 렌더 HTML 없음 — C6 rendered_html 검사 생략")
+    _warn_archetype_leak(page_plan, deck_spec)
 
     # 레지스트리 위생 lint(7/2 사고: unit 오염 36/60·영어 라벨) — 경고(비차단), verifier 반송 근거.
     import re as _re
