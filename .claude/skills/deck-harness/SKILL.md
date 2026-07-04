@@ -24,7 +24,7 @@ All runs use `_workspace/<run_id>/` as the file handoff area.
 4. `analyst` creates `_workspace/<run_id>/03_insights.json`.
 5. `editorial-director` creates `_workspace/<run_id>/04_dag.json` (실 run 관행 · 구명 `04_proposition_dag.json`도 run_contracts가 읽음).
 6. `page-planner` creates `_workspace/<run_id>/05_page_plan.json` with `short_title`, `allowed_source_ids`, and `allowed_metric_ids` per page.
-7. `designer` creates `_workspace/<run_id>/06_deck_spec.json` only. It may choose layout and shorten text, but must reference sources/metrics only by `src_id`/`metric_id`. 시스템·시그니처·차트는 `PATTERN_LIBRARY.md`에서 고르고, `_workspace/_variation_ledger.json`을 읽어 **최근 2 run과 다른 시스템으로 변주**한 뒤 자기 run을 장부에 append 한다(designer.md 규칙·후추님 7/4 "혼자 몇 번 써도 매번 다른 물건").
+7. `designer` creates `_workspace/<run_id>/06_deck_spec.json` only. It may choose layout and shorten text, but must reference sources/metrics only by `src_id`/`metric_id`. 시스템·시그니처·차트는 `PATTERN_LIBRARY.md`에서 고르고, `_workspace/_variation_ledger.json`을 읽어 **최근 2 run과 다른 시스템으로 변주**한 뒤 자기 run을 장부에 append 한다(designer.md 규칙·후추님 7/4 "혼자 몇 번 써도 매번 다른 물건"). designer는 `05_page_plan.json.archetype`을 읽어 그 아키타입의 권장/금지 시그니처 안에서 고른다(`DECK_ARCHETYPES.md`).
 8. Code renderer creates HTML from deck_spec and registry:
 
 ```bash

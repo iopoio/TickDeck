@@ -21,6 +21,7 @@ model: sonnet
 - 출처와 수치는 ID로만 참조한다. `src_id`, `metric_id`만 쓰고 기관명, 보고서명, URL, 숫자값을 직접 타이핑하지 않는다.
 - 검증 메타데이터, 강등 표시, 신뢰도 라벨을 콘텐츠에 노출하지 않는다.
 - 공간 제약을 발견하면 내용 수정이 아니라 루프 B로 page-planner에게 되돌린다.
+- `05_page_plan.json.archetype`을 읽고, `v3/axis2_layouts/DECK_ARCHETYPES.md`의 해당 아키타입 권장 시스템·권장/금지 시그니처를 따른다. 예: brief면 dashboard·mosaic_tiles 금지(밀도 철학 충돌), poster·statement 우선. dossier면 dashboard·data_table·split_status 우선.
 
 ## 사고 절차 — 무엇을·어떻게 그릴까 (매 작업 적용·질문으로 추론)
 > 규칙이 아니라 질문이다. 남의 덱 은유·레이아웃을 베끼지 않는다 — 이 데이터에서 새로 추론한다.
@@ -126,17 +127,17 @@ model: sonnet
 
 ## 패턴 라이브러리 선택 규칙 (2026-07-04 후추님 — "패턴들 중 하나 골라서 적용")
 
-SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md`. 덱 설계 전 반드시 읽고, 아래 순서로 고른다.
+SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md` + `v3/axis2_layouts/DECK_ARCHETYPES.md`. 덱 설계 전 반드시 읽고, 아래 순서로 고른다.
 
 **변주 장부(variation ledger) 의무** — "혼자 몇 번 써도 매번 다른 물건" 기준(후추님 7/4):
 - 설계 전 `_workspace/_variation_ledger.json`을 읽는다. **최근 2개 항목과 같은 theme(시스템) 금지**,
   최근 항목과 signature_pages·charts_used가 절반 이상 겹치면 다른 선택으로 변주.
 - deck_spec 저장 후 자기 run 항목을 장부에 append 한다(Bash·python 한 줄):
-  `{"run_id","date","theme","layouts_used","charts_used","signature_pages"}`.
+  `{"run_id","date","archetype","theme","layouts_used","charts_used","signature_pages"}`.
 - 장부가 없거나 비어 있으면 첫 항목으로 시작(차단 아님).
 
-1. **시스템(§A)**: intake가 지정하면 그것, 아니면 직전 덱과 **다른 시스템** (변주 의무의 최상위 축).
-2. **페이지 골격(§B)**: 선택한 시스템의 시그니처 골격(poster·hero_bleed·magazine_spread·dashboard 등)을 덱에 **최소 1페이지** 배치 — 단 내용이 맞을 때만(포스터=한 문장 결론, 블리드=압도적 수치 1개, 스프레드=긴 서술, 대시보드=지표 다발). 억지 배치 금지.
+1. **시스템(§A)**: `05_page_plan.json.archetype`의 권장 시스템을 따른다. intake가 지정하면 그것, 아니면 직전 덱과 **다른 시스템** (변주 의무의 최상위 축).
+2. **페이지 골격(§B)**: 선택한 아키타입의 권장/금지 시그니처 안에서, 선택한 시스템의 시그니처 골격(poster·hero_bleed·magazine_spread·dashboard 등)을 덱에 **최소 1페이지** 배치 — 단 내용이 맞을 때만(포스터=한 문장 결론, 블리드=압도적 수치 1개, 스프레드=긴 서술, 대시보드=지표 다발). 억지 배치 금지.
 3. **다이어그램(§C)**: 내용의 관계 유형이 고른다 — 인과·단계=arrow_flow, 생태계·관계=hub_cycle, 순서·구간=timeline_bars, 지표 나열 4행+=data_table, 수치 비교=기존 12종. "차트가 필요해서"가 아니라 "이 관계를 그리려고" 선택했는지 자문.
 4. **커버리지 로테이션**: 덱마다 "이 덱에서 처음 써보는 패턴" 최소 1개 포함하고 보고에 명기 — 라이브러리가 늘어도 안 쓰면 없는 것과 같다.
 5. ⬜(백로그) 패턴은 쓰지 않는다 — 필요하면 클차장에게 구현을 요청한다.
