@@ -97,6 +97,7 @@ cd backend && .venv/Scripts/celery -A worker.celery_app worker --pool=solo --con
 - 발표자료, 덱, 트렌드 리포트, 주제 발표자료, 다시, 업데이트, 보완 요청은 `.claude/skills/deck-harness/SKILL.md`를 먼저 사용한다.
 - 트렌드 리포트 장르는 `.claude/skills/genre-trend-report/SKILL.md`를 함께 사용한다.
 - 일반 주제 발표 장르는 `.claude/skills/genre-topic-deck/SKILL.md`를 함께 사용한다.
+- 시장조사·경쟁분석·"X 시장에서 브랜드 Y" 장르는 `.claude/skills/genre-market-research/SKILL.md`를 함께 사용한다 (분류 트리·플레이어 비교표 필수).
 - 완료 전 5대 계약은 `.claude/skills/harness-contracts/scripts/test_contracts.py`로 실행 확인한다.
 
 주의:

@@ -75,6 +75,7 @@ python .claude/skills/deck-harness/scripts/render_deck.py \
 ## Genre Routing
 - Trend report: load `genre-trend-report`; trend means state transition, not static statistics.
 - Topic deck: load `genre-topic-deck`; organize the topic around claims, counterpoints, audience needs, and decision flow.
+- **Market research (시장조사·경쟁 분석·"X 시장에서 브랜드 Y의 위치")**: load `genre-market-research`; taxonomy-first, DART 사업보고서 mining, 플레이어 비교표 필수 (7/5 CLO run 교훈 — 이 장르를 트렌드 문법으로 흘리면 "뭉뚱그린 보고서"가 된다).
 - Unknown genre: do not invent a new recipe silently. Put it in `00_intake.json.unknowns` and proceed only with the generic harness if the user accepts broad handling.
 
 ## Loop A: Recollection
