@@ -406,7 +406,11 @@ def check_c8_genre_artifacts(
     page_plan: dict[str, Any],
 ) -> list[ContractViolation]:
     genre = str(intake.get("genre", "")).lower()
-    if not any(term in genre for term in ("market-research", "market_research", "시장조사", "경쟁분석")):
+    genre_compact = re.sub(r"[\s_-]+", "", genre)
+    if not (
+        any(term in genre for term in ("market-research", "market_research", "brand-research", "brand_research"))
+        or any(term in genre_compact for term in ("marketresearch", "brandresearch", "시장조사", "경쟁분석"))
+    ):
         return []
 
     violations: list[ContractViolation] = []
@@ -463,6 +467,22 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _reviewer_output_is_valid(run_path: Path, reviewer: Any) -> bool:
+    if not isinstance(reviewer, dict) or reviewer.get("ok") is not True:
+        return False
+    file_name = str(reviewer.get("file", "")).strip()
+    if not file_name:
+        return False
+    review_file = run_path / Path(file_name).name
+    try:
+        text = review_file.read_text(encoding="utf-8").strip()
+    except OSError:
+        return False
+    if text.startswith(("REVIEWER_TIMEOUT", "REVIEWER_FAILED")):
+        return False
+    return len(text) >= 200
+
+
 def check_c9_final_review(run_dir: Path | str) -> list[ContractViolation]:
     run_path = Path(run_dir)
     deck_path = run_path / "deck.html"
@@ -502,13 +522,13 @@ def check_c9_final_review(run_dir: Path | str) -> list[ContractViolation]:
             )
         ]
 
-    codex_ok = isinstance(review.get("codex"), dict) and review["codex"].get("ok") is True
-    gemini_ok = isinstance(review.get("gemini"), dict) and review["gemini"].get("ok") is True
+    codex_ok = _reviewer_output_is_valid(run_path, review.get("codex"))
+    gemini_ok = _reviewer_output_is_valid(run_path, review.get("gemini"))
     if not codex_ok and not gemini_ok:
         return [
             ContractViolation(
                 "C9",
-                "C9 both external reviewers failed (codex and gemini ok=false)",
+                "C9 both external reviewers failed or produced invalid output",
                 "08_external_review.json",
             )
         ]

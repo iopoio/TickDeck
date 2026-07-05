@@ -17,6 +17,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 CONTRACTS_SCRIPT_DIR = Path(__file__).resolve().parents[2] / "harness-contracts" / "scripts"
 if str(CONTRACTS_SCRIPT_DIR) not in sys.path:
@@ -654,9 +655,10 @@ def _render_source_appendix_page(
         publisher = str(source.get("publisher") or src_id)
         sttl = str(source.get("title") or "")
         url = str(source.get("url") or "").strip()
+        parsed_url = urlparse(url)
         title_html = (
             f'<a class="appendix-link" href="{_escape(url)}">{_escape(sttl)} ↗</a>'
-            if url
+            if parsed_url.scheme in {"http", "https"} and parsed_url.netloc
             else _escape(sttl)
         )
         # 넘버링·구분선 없이 "기관 — 리포트명" 한 줄 플랫 리스트(후추님 7/2).
@@ -1502,7 +1504,7 @@ def _render_text_table(block: dict[str, Any], page_id: str) -> str:
         if len(row) != column_count:
             raise ValueError(f"{page_id}: text_table row {row_index} must match column count")
         row_class = ' class="text-table-highlight"' if row_index == highlight_index else ""
-        cell_html = "".join(f"<td>{_escape(str(cell))}</td>" for cell in row)
+        cell_html = "".join(f"<td>{_rich(str(cell))}</td>" for cell in row)
         body_rows.append(f"<tr{row_class}>{cell_html}</tr>")
 
     # 6행 이상은 자동 압축(appendix-compact 선례·7/6) — 셀 패딩·폰트 축소로 한 장 수용.

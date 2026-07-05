@@ -1,8 +1,11 @@
 import importlib.util
 import json
+import os
 import pathlib
+import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 import contract_checks as contract_checks_module
 from contract_checks import (
@@ -22,6 +25,28 @@ RENDER_DECK_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" 
 RENDER_DECK_SPEC = importlib.util.spec_from_file_location("render_deck", RENDER_DECK_PATH)
 render_deck_module = importlib.util.module_from_spec(RENDER_DECK_SPEC)
 RENDER_DECK_SPEC.loader.exec_module(render_deck_module)
+
+EXTERNAL_REVIEW_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "external_review.py"
+EXTERNAL_REVIEW_SPEC = importlib.util.spec_from_file_location("external_review", EXTERNAL_REVIEW_PATH)
+external_review_module = importlib.util.module_from_spec(EXTERNAL_REVIEW_SPEC)
+EXTERNAL_REVIEW_SPEC.loader.exec_module(external_review_module)
+
+PPTX_EXPORT_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "pptx_export.py"
+PPTX_EXPORT_SPEC = importlib.util.spec_from_file_location("pptx_export", PPTX_EXPORT_PATH)
+pptx_export_module = importlib.util.module_from_spec(PPTX_EXPORT_SPEC)
+PPTX_EXPORT_SPEC.loader.exec_module(pptx_export_module)
+
+QA_LINT_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "qa_lint.py"
+QA_LINT_SPEC = importlib.util.spec_from_file_location("qa_lint", QA_LINT_PATH)
+qa_lint_module = importlib.util.module_from_spec(QA_LINT_SPEC)
+QA_LINT_SPEC.loader.exec_module(qa_lint_module)
+
+RUN_CONTRACTS_PATH = pathlib.Path(__file__).resolve().parent / "run_contracts.py"
+RUN_CONTRACTS_SPEC = importlib.util.spec_from_file_location("run_contracts", RUN_CONTRACTS_PATH)
+run_contracts_module = importlib.util.module_from_spec(RUN_CONTRACTS_SPEC)
+RUN_CONTRACTS_SPEC.loader.exec_module(run_contracts_module)
+
+RUN_DECK_SH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "run_deck.sh"
 
 
 VALID_DAG = {
@@ -572,6 +597,16 @@ class HarnessContractTests(unittest.TestCase):
         page_plan = {"pages": [{"genre_artifact": "taxonomy"}, {"genre_artifact": "player_table"}]}
         self.assertEqual(check_c8_genre_artifacts(intake, evidence_pool, page_plan), [])
 
+    def test_c8_market_research_aliases_include_spaced_korean_and_brand_research(self):
+        evidence_pool = {"items": [{"source_type": "observation"} for _ in range(5)]}
+        page_plan = {"pages": [{"genre_artifact": "taxonomy"}]}
+        for genre in ("시장 조사", "brand-research", "경쟁 분석"):
+            with self.subTest(genre=genre):
+                violations = check_c8_genre_artifacts({"genre": genre}, evidence_pool, page_plan)
+                self.assertEqual(len(violations), 1)
+                self.assertEqual(violations[0].contract_id, "C8")
+                self.assertIn("player_table", violations[0].message)
+
     def test_c8_rejects_market_research_without_player_table(self):
         intake = {"genre": "market_research"}
         evidence_pool = {"items": [{"source_type": "observation"} for _ in range(5)]}
@@ -618,6 +653,7 @@ class HarnessContractTests(unittest.TestCase):
             html_path = run_dir / "deck.html"
             html_path.write_text("<section>Deck</section>", encoding="utf-8")
             deck_hash = contract_checks_module.sha256_file(html_path)
+            (run_dir / "review_codex.txt").write_text("지적 1. " + ("충분한 리뷰 본문입니다. " * 20), encoding="utf-8")
             (run_dir / "08_external_review.json").write_text(
                 json.dumps(
                     {
@@ -679,6 +715,54 @@ class HarnessContractTests(unittest.TestCase):
         self.assertEqual(violations[0].contract_id, "C9")
         self.assertIn("both external reviewers failed", violations[0].message)
 
+    def test_c9_rejects_ok_reviewers_when_output_files_are_sentinel_or_too_short(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            html_path = run_dir / "deck.html"
+            html_path.write_text("<section>Deck</section>", encoding="utf-8")
+            deck_hash = contract_checks_module.sha256_file(html_path)
+            (run_dir / "review_codex.txt").write_text("REVIEWER_TIMEOUT (600s)\n", encoding="utf-8")
+            (run_dir / "review_gemini.txt").write_text("too short\n", encoding="utf-8")
+            (run_dir / "08_external_review.json").write_text(
+                json.dumps(
+                    {
+                        "deck_html_sha256": deck_hash,
+                        "codex": {"ok": True, "file": "review_codex.txt"},
+                        "gemini": {"ok": True, "file": "review_gemini.txt"},
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            violations = check_c9_final_review(run_dir)
+
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C9")
+        self.assertIn("both external reviewers failed", violations[0].message)
+
+    def test_c9_accepts_when_one_ok_reviewer_has_substantive_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            html_path = run_dir / "deck.html"
+            html_path.write_text("<section>Deck</section>", encoding="utf-8")
+            deck_hash = contract_checks_module.sha256_file(html_path)
+            (run_dir / "review_codex.txt").write_text("REVIEWER_FAILED_TO_START\nboom\n", encoding="utf-8")
+            (run_dir / "review_gemini.txt").write_text("지적 1. " + ("충분한 리뷰 본문입니다. " * 20), encoding="utf-8")
+            (run_dir / "08_external_review.json").write_text(
+                json.dumps(
+                    {
+                        "deck_html_sha256": deck_hash,
+                        "codex": {"ok": True, "file": "review_codex.txt"},
+                        "gemini": {"ok": True, "file": "review_gemini.txt"},
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            violations = check_c9_final_review(run_dir)
+
+        self.assertEqual(violations, [])
+
     def test_render_deck_injects_metric_values_and_generated_citations(self):
         html = render_deck_module.render_deck(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, title="C6 Fixture")
         self.assertIn('data-metric-id="metric_click_drop"', html)
@@ -720,6 +804,58 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn('<span class="appendix-title" data-src-id="src_b">IAB Report</span>', appendix_html)
         self.assertIn("모든 수치 출처 연결 검증 · 출처 2곳", appendix_html)
         self.assertEqual(validate_c6_content_authority(appendix_spec, appendix_registry, appendix_html), [])
+
+    def test_render_deck_source_appendix_links_only_http_schemes(self):
+        appendix_spec = {
+            "pages": [
+                {
+                    "page_id": "appendix",
+                    "short_title": "출처",
+                    "layout": "source_appendix",
+                    "allowed_source_ids": ["src_a", "src_b"],
+                    "allowed_metric_ids": [],
+                    "content": [{"type": "headline", "text": "출처"}],
+                }
+            ]
+        }
+        appendix_registry = {
+            "sources": {
+                "src_a": {"publisher": "Pew", "title": "Safe", "url": "http://example.com/report"},
+                "src_b": {"publisher": "Bad", "title": "Unsafe", "url": "javascript:alert(1)"},
+            },
+            "metrics": VALID_CONTENT_REGISTRY["metrics"],
+        }
+
+        appendix_html = render_deck_module.render_deck(appendix_spec, appendix_registry, title="Appendix Fixture")
+
+        self.assertIn('<a class="appendix-link" href="http://example.com/report">Safe ↗</a>', appendix_html)
+        self.assertIn('<span class="appendix-title" data-src-id="src_b">Unsafe</span>', appendix_html)
+        self.assertNotIn('href="javascript:alert(1)"', appendix_html)
+
+    def test_render_deck_text_table_cells_use_rich_text_markup(self):
+        spec = {
+            "pages": [
+                {
+                    "page_id": "table_fixture",
+                    "short_title": "Table",
+                    "layout": "statement",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": [],
+                    "content": [
+                        {
+                            "type": "text_table",
+                            "columns": ["구분", "해석"],
+                            "rows": [["A", "==중요== 신호"]],
+                        }
+                    ],
+                }
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Text Table Rich Fixture")
+
+        self.assertIn('<td><b class="kw">중요</b> 신호</td>', html)
+        self.assertNotIn("==중요==", html)
 
     def test_render_deck_outputs_svg_for_each_supported_viz_chart(self):
         for chart in ("before_after", "dumbbell", "flow", "big_number", "gap_map", "shift"):
@@ -956,6 +1092,126 @@ class HarnessContractTests(unittest.TestCase):
             set(render_deck_module._CHART_RENDERERS),
             set(contract_checks_module.SUPPORTED_VIZ_CHART_TYPES),
         )
+
+    def test_external_review_lenses_metadata_matches_prompt_lenses(self):
+        prompt = external_review_module.build_review_prompt([{"page_id": "p01", "text": "본문"}])
+        self.assertEqual(len(external_review_module.LENSES), 5)
+        for lens in external_review_module.LENSES:
+            self.assertIn(lens, prompt)
+        self.assertTrue(any("독자 패널" in lens for lens in external_review_module.LENSES))
+
+    def test_external_review_resolves_gemini_env_overrides_and_checks_existence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            wrapper = pathlib.Path(tmp) / "gemini_call_wrapper.py"
+            python = pathlib.Path(tmp) / "python"
+            wrapper.write_text("# wrapper\n", encoding="utf-8")
+            python.write_text("# python\n", encoding="utf-8")
+            with mock.patch.dict(os.environ, {"GEMINI_WRAPPER": str(wrapper), "GEMINI_PY": str(python)}):
+                resolved_python, resolved_wrapper = external_review_module.resolve_gemini_paths()
+            self.assertEqual(resolved_python, python)
+            self.assertEqual(resolved_wrapper, wrapper)
+
+        with mock.patch.dict(os.environ, {"GEMINI_WRAPPER": "/missing/wrapper.py", "GEMINI_PY": "/missing/python"}):
+            with self.assertRaises(FileNotFoundError) as ctx:
+                external_review_module.resolve_gemini_paths()
+        self.assertIn("GEMINI", str(ctx.exception))
+
+    def test_external_review_gemini_command_reads_prompt_file_without_prompt_in_argv(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            prompt_path = pathlib.Path(tmp) / "prompt.txt"
+            prompt_text = "매우 긴 프롬프트 본문"
+            prompt_path.write_text(prompt_text, encoding="utf-8")
+
+            command = external_review_module.build_gemini_command(
+                pathlib.Path("/bin/python3"),
+                pathlib.Path("/tmp/gemini_call_wrapper.py"),
+                prompt_path,
+            )
+
+        self.assertIn(str(prompt_path), command)
+        self.assertIn("-c", command)
+        self.assertNotIn(prompt_text, "\0".join(command))
+        self.assertNotIn("--prompt", command)
+
+    def test_external_review_codex_command_keeps_argv_but_enforces_size_limit(self):
+        command = external_review_module.build_codex_command("짧은 프롬프트")
+        self.assertEqual(command[:3], ["codex", "exec", "--skip-git-repo-check"])
+        self.assertIn("짧은 프롬프트", command)
+        with self.assertRaises(ValueError):
+            external_review_module.build_codex_command("x" * (external_review_module.CODEX_PROMPT_ARGV_LIMIT + 1))
+
+    def test_pptx_export_run_checked_reports_timeout_with_configured_seconds(self):
+        with mock.patch.object(
+            pptx_export_module.subprocess,
+            "run",
+            side_effect=subprocess.TimeoutExpired(["pip"], 300),
+        ) as run:
+            with self.assertRaises(RuntimeError) as ctx:
+                pptx_export_module.run_checked(["pip"], "pip install", timeout=300)
+
+        self.assertEqual(run.call_args.kwargs["timeout"], 300)
+        self.assertIn("pip install timed out after 300s", str(ctx.exception))
+
+    def test_pptx_export_run_chrome_reports_timeout_with_configured_seconds(self):
+        with mock.patch.object(
+            pptx_export_module.subprocess,
+            "run",
+            side_effect=subprocess.TimeoutExpired(["chrome"], 180),
+        ) as run:
+            with self.assertRaises(SystemExit) as ctx:
+                pptx_export_module.run_chrome("chrome", ["--dump-dom"], "LAYOUT_DUMP")
+
+        self.assertEqual(run.call_args.kwargs["timeout"], 180)
+        self.assertIn("LAYOUT_DUMP_TIMEOUT: Chrome timed out after 180s", str(ctx.exception))
+
+    def test_qa_lint_treats_text_table_rows_as_body_text(self):
+        spec = {
+            "archetype": "selfcheck",
+            "pages": [
+                {
+                    "page_id": "table_rows",
+                    "short_title": "표",
+                    "layout": "statement",
+                    "allowed_metric_ids": [],
+                    "content": [
+                        {
+                            "type": "text_table",
+                            "columns": ["구분", "해석"],
+                            "rows": [["단, 관찰되지 않는다", "성장 47%"]],
+                        }
+                    ],
+                }
+            ],
+        }
+
+        codes = {defect["code"] for defect in qa_lint_module.lint_deck(spec, {})}
+
+        self.assertIn("READER_FIRST_CAVEAT", codes)
+        self.assertIn("READER_FIRST_EPISTEMIC", codes)
+        self.assertIn("RAW_NUMBER_IN_LABEL", codes)
+
+    def test_run_contracts_defaults_to_deck_html_not_latest_html(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            deck_html = run_dir / "deck.html"
+            later_html = run_dir / "z_later.html"
+            deck_html.write_text("<section>deck</section>", encoding="utf-8")
+            later_html.write_text("<section>later</section>", encoding="utf-8")
+            os.utime(deck_html, (1, 1))
+            os.utime(later_html, (2, 2))
+
+            selected = run_contracts_module.select_html_path(run_dir, None)
+
+        self.assertEqual(selected, deck_html)
+
+    def test_run_deck_parses_run_id_from_claude_result_before_workspace_fallback(self):
+        command = (
+            f'TICKDECK_RUN_DECK_TEST=1 source "{RUN_DECK_SH}"; '
+            "printf '%s\\n' '중간 로그' '20260705_clo_market' | parse_result_run_id"
+        )
+        completed = subprocess.run(["bash", "-c", command], capture_output=True, text=True, check=False)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertEqual(completed.stdout.strip(), "20260705_clo_market")
 
     def test_validate_all_contracts_can_raise(self):
         broken = dict(VALID_DECK, rendered_pages=[{"title": "신뢰도 강등", "body": "본문"}])

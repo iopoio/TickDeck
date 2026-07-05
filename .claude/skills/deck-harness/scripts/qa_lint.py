@@ -285,6 +285,9 @@ def _raw_number_defects(value: Any, page_id: str, path: str) -> list[dict[str, s
         if block_type == "viz":
             defects.extend(_raw_number_viz_defects(block, page_id, block_path))
             continue
+        if block_type == "text_table":
+            defects.extend(_raw_number_text_table_defects(block, page_id, block_path))
+            continue
         if block_type in TEXT_BLOCK_TYPES:
             text = block.get("text")
             if _has_data_number(text):
@@ -298,6 +301,21 @@ def _raw_number_defects(value: Any, page_id: str, path: str) -> list[dict[str, s
                 )
         if block_type == "bullets":
             defects.extend(_raw_number_bullet_defects(block, page_id, block_path))
+    return defects
+
+
+def _raw_number_text_table_defects(block: dict[str, Any], page_id: str, block_path: str) -> list[dict[str, str]]:
+    defects: list[dict[str, str]] = []
+    for text, text_path in _iter_text_table_cells(block.get("rows"), f"{block_path}.rows"):
+        if _has_data_number(text):
+            defects.append(
+                _defect(
+                    "RAW_NUMBER_IN_LABEL",
+                    page_id,
+                    text_path,
+                    f"text_table cell contains raw number: {_clip(text)}",
+                )
+            )
     return defects
 
 
@@ -542,6 +560,8 @@ def _iter_visible_texts(value: Any, path: str, parent_block_type: str = ""):
                             yield from _iter_visible_texts(item_nested, f"{item_path}.{item_key}", block_type)
                     elif isinstance(item, list):
                         yield from _iter_visible_texts(item, item_path, block_type)
+            elif key == "rows" and isinstance(nested, list):
+                yield from _iter_text_table_cells(nested, next_path)
             else:
                 yield from _iter_visible_texts(nested, next_path, block_type)
     elif isinstance(value, list):
@@ -594,13 +614,31 @@ def _iter_reader_first_rows(rows: list[Any], path: str, parent_block_type: str):
             for cell_index, cell in enumerate(row):
                 cell_path = f"{row_path}[{cell_index}]"
                 if isinstance(cell, str):
-                    yield cell, cell_path, "rows"
+                    yield cell, cell_path, "text"
                 else:
                     yield from _iter_reader_first_texts(cell, cell_path, parent_block_type)
         elif isinstance(row, str):
-            yield row, row_path, "rows"
+            yield row, row_path, "text"
         else:
             yield from _iter_reader_first_texts(row, row_path, parent_block_type)
+
+
+def _iter_text_table_cells(rows: Any, path: str):
+    if not isinstance(rows, list):
+        return
+    for row_index, row in enumerate(rows):
+        row_path = f"{path}[{row_index}]"
+        if isinstance(row, list):
+            for cell_index, cell in enumerate(row):
+                cell_path = f"{row_path}[{cell_index}]"
+                if isinstance(cell, str):
+                    yield cell, cell_path
+                else:
+                    yield from _iter_visible_texts(cell, cell_path, "text_table")
+        elif isinstance(row, str):
+            yield row, row_path
+        else:
+            yield from _iter_visible_texts(row, row_path, "text_table")
 
 
 def _first_contained_term(text: str, terms: tuple[str, ...]) -> str:
@@ -751,6 +789,28 @@ def _run_selfcheck() -> int:
                 ],
             },
             {"READER_FIRST_SELF_REF"},
+            set(),
+        ),
+        (
+            "text_table_rows_scanned_as_body_text",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "table_rows",
+                        "short_title": "표",
+                        "layout": "statement",
+                        "content": [
+                            {
+                                "type": "text_table",
+                                "columns": ["구분", "해석"],
+                                "rows": [["단, 관찰되지 않는다", "성장 47%"]],
+                            }
+                        ],
+                    }
+                ],
+            },
+            {"READER_FIRST_CAVEAT", "READER_FIRST_EPISTEMIC", "RAW_NUMBER_IN_LABEL"},
             set(),
         ),
     ]

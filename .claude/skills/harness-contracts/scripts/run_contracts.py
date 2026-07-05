@@ -5,7 +5,7 @@
 사람이 deck_json을 손으로 만들지 않고, run 디렉토리 산출물에서 그대로 조립한다.
 
 usage: run_contracts.py <run_dir> [deck.html]
-- html 인자를 생략하면 run_dir에서 가장 최근 수정된 .html을 쓴다.
+- html 인자를 생략하면 run_dir/deck.html만 쓴다.
 - rendered_pages(C2)는 deck_spec.pages를 프록시로 스캔한다(렌더 문자열의 원천).
 - deck.html이 있으면 08_external_review.json(C9)을 검증한다.
 - exit code: 위반 있으면 1.
@@ -65,6 +65,13 @@ def _warn_archetype_leak(page_plan: dict, deck_spec: dict) -> None:
         )
 
 
+def select_html_path(run_dir: Path, explicit_html: str | None) -> Path | None:
+    if explicit_html:
+        return Path(explicit_html)
+    deck_html = run_dir / "deck.html"
+    return deck_html if deck_html.exists() else None
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         print("usage: run_contracts.py <run_dir> [deck.html]")
@@ -86,11 +93,7 @@ def main() -> int:
     verified = _load(run_dir, "02_verified.json") or {}
     deck_spec = _load(run_dir, "06_deck_spec.json") or {}
 
-    if len(sys.argv) > 2:
-        html_path = Path(sys.argv[2])
-    else:
-        candidates = [p for p in run_dir.glob("*.html") if "__fit__" not in p.name]
-        html_path = max(candidates, key=lambda p: p.stat().st_mtime) if candidates else None
+    html_path = select_html_path(run_dir, sys.argv[2] if len(sys.argv) > 2 else None)
     rendered_html = html_path.read_text(encoding="utf-8") if html_path and html_path.exists() else ""
 
     deck = {

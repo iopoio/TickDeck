@@ -6,8 +6,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
+import tempfile
 from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
@@ -20,12 +22,25 @@ LENSES = [
     "어색한 한국어·제목/부제 관계·흐름 단절",
     "차트-주장 일치",
     "독자 가치",
+    "독자 패널(무자비한 멘토·7/6)",
 ]
 CODEX_REVIEW_FILE = "review_codex.txt"
 GEMINI_REVIEW_FILE = "review_gemini.txt"
 REVIEW_JSON_FILE = "08_external_review.json"
-GEMINI_WRAPPER = Path("/Users/hwa/Projects/Automation/Think/.claude/scripts/gemini_call_wrapper.py")
-GEMINI_PYTHON = Path("/Users/hwa/Projects/Automation/Think/.venv/bin/python")
+DEFAULT_GEMINI_WRAPPER = Path("/Users/hwa/Projects/Automation/Think/.claude/scripts/gemini_call_wrapper.py")
+DEFAULT_GEMINI_PYTHON = Path("/Users/hwa/Projects/Automation/Think/.venv/bin/python")
+CODEX_PROMPT_ARGV_LIMIT = 120_000
+_GEMINI_PROMPT_FILE_RUNNER = """
+import runpy
+import sys
+from pathlib import Path
+
+prompt_path = Path(sys.argv[1])
+wrapper_path = Path(sys.argv[2])
+prompt = prompt_path.read_text(encoding="utf-8")
+sys.argv = [str(wrapper_path), "--prompt", prompt, "--no-cache"]
+runpy.run_path(str(wrapper_path), run_name="__main__")
+""".strip()
 
 
 class _DeckPageTextParser(HTMLParser):
@@ -153,6 +168,35 @@ def build_review_prompt(pages: list[dict[str, str]]) -> str:
     )
 
 
+def build_codex_command(prompt: str) -> list[str]:
+    if len(prompt.encode("utf-8")) > CODEX_PROMPT_ARGV_LIMIT:
+        raise ValueError(f"codex prompt too large for argv ({len(prompt.encode('utf-8'))} bytes)")
+    return ["codex", "exec", "--skip-git-repo-check", prompt]
+
+
+def resolve_gemini_paths() -> tuple[Path, Path]:
+    python_path = Path(os.environ.get("GEMINI_PY", str(DEFAULT_GEMINI_PYTHON))).expanduser()
+    wrapper_path = Path(os.environ.get("GEMINI_WRAPPER", str(DEFAULT_GEMINI_WRAPPER))).expanduser()
+    missing = []
+    if not python_path.exists():
+        missing.append(f"GEMINI_PY={python_path}")
+    if not wrapper_path.exists():
+        missing.append(f"GEMINI_WRAPPER={wrapper_path}")
+    if missing:
+        raise FileNotFoundError("Gemini reviewer path missing: " + ", ".join(missing))
+    return python_path, wrapper_path
+
+
+def build_gemini_command(python_path: Path, wrapper_path: Path, prompt_file: Path) -> list[str]:
+    return [
+        str(python_path),
+        "-c",
+        _GEMINI_PROMPT_FILE_RUNNER,
+        str(prompt_file),
+        str(wrapper_path),
+    ]
+
+
 def run_reviewer(command: list[str], output_path: Path) -> dict[str, Any]:
     try:
         completed = subprocess.run(
@@ -184,6 +228,46 @@ def run_reviewer(command: list[str], output_path: Path) -> dict[str, Any]:
     if completed.returncode != 0:
         result["error"] = f"exit {completed.returncode}"
     return result
+
+
+def _write_prompt_tempfile(run_dir: Path, prompt: str) -> Path:
+    handle = tempfile.NamedTemporaryFile(
+        "w",
+        encoding="utf-8",
+        delete=False,
+        dir=str(run_dir),
+        prefix="external_review_prompt_",
+        suffix=".txt",
+    )
+    with handle:
+        handle.write(prompt)
+    return Path(handle.name)
+
+
+def run_codex_reviewer(prompt: str, output_path: Path) -> dict[str, Any]:
+    try:
+        command = build_codex_command(prompt)
+    except ValueError as exc:
+        output_path.write_text(f"REVIEWER_FAILED_PROMPT_TOO_LARGE\n{exc}\n", encoding="utf-8")
+        return {"ok": False, "file": output_path.name, "error": str(exc)}
+    return run_reviewer(command, output_path)
+
+
+def run_gemini_reviewer(prompt: str, run_dir: Path, output_path: Path) -> dict[str, Any]:
+    try:
+        python_path, wrapper_path = resolve_gemini_paths()
+    except FileNotFoundError as exc:
+        output_path.write_text(f"REVIEWER_FAILED_TO_START\n{exc}\n", encoding="utf-8")
+        return {"ok": False, "file": output_path.name, "error": str(exc)}
+
+    prompt_file = _write_prompt_tempfile(run_dir, prompt)
+    try:
+        return run_reviewer(build_gemini_command(python_path, wrapper_path, prompt_file), output_path)
+    finally:
+        try:
+            prompt_file.unlink()
+        except FileNotFoundError:
+            pass
 
 
 def write_review_json(run_dir: Path, deck_hash: str, codex: dict[str, Any], gemini: dict[str, Any]) -> Path:
@@ -223,8 +307,8 @@ def main(argv: list[str] | None = None) -> int:
         codex = {"ok": False, "file": codex_file.name, "error": "dry-run skipped"}
         gemini = {"ok": False, "file": gemini_file.name, "error": "dry-run skipped"}
     else:
-        codex = run_reviewer(["codex", "exec", "--skip-git-repo-check", prompt], codex_file)
-        gemini = run_reviewer([str(GEMINI_PYTHON), str(GEMINI_WRAPPER), "--prompt", prompt, "--no-cache"], gemini_file)
+        codex = run_codex_reviewer(prompt, codex_file)
+        gemini = run_gemini_reviewer(prompt, run_dir, gemini_file)
 
     json_path = write_review_json(run_dir, deck_hash, codex, gemini)
 

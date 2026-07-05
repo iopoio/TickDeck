@@ -28,6 +28,8 @@ FONT_NAME = "맑은 고딕"
 VERIFY_PHRASE = "흔들렸으나 무너지지 않았다"
 PX_TO_PT = 0.75
 FIT_MIN_RATIO = 0.70
+CHROME_TIMEOUT_SECONDS = 180
+PIP_INSTALL_TIMEOUT_SECONDS = 300
 _FONT_METRIC_FALLBACK_WARNED = False
 
 
@@ -162,8 +164,12 @@ def venv_pip() -> Path:
     return venv_dir() / "bin" / "pip"
 
 
-def run_checked(cmd: list[str], error_label: str) -> subprocess.CompletedProcess[str]:
-    proc = subprocess.run(cmd, capture_output=True, text=True)
+def run_checked(cmd: list[str], error_label: str, timeout: int | None = None) -> subprocess.CompletedProcess[str]:
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired as exc:
+        limit = timeout if timeout is not None else exc.timeout
+        raise RuntimeError(f"{error_label} timed out after {limit}s") from exc
     if proc.returncode != 0:
         detail = (proc.stderr or proc.stdout or "").strip()
         raise RuntimeError(f"{error_label} failed: {detail}")
@@ -244,7 +250,11 @@ def bootstrap_venv() -> None:
             raise SystemExit(f"BOOTSTRAP_ERROR: could not create {root}: {exc}") from exc
     if not packages_available(py):
         try:
-            run_checked([str(venv_pip()), "install", "python-pptx", "pymupdf"], "pip install")
+            run_checked(
+                [str(venv_pip()), "install", "python-pptx", "pymupdf"],
+                "pip install",
+                timeout=PIP_INSTALL_TIMEOUT_SECONDS,
+            )
         except Exception as exc:
             linked = link_existing_site_packages(py)
             if linked:
@@ -305,7 +315,16 @@ def sibling_temp_html(deck_html: Path, suffix: str, content: str) -> Path:
 
 
 def run_chrome(chrome: str, args: list[str], label: str) -> subprocess.CompletedProcess[str]:
-    proc = subprocess.run([chrome, *args], capture_output=True, text=True)
+    try:
+        proc = subprocess.run(
+            [chrome, *args],
+            capture_output=True,
+            text=True,
+            timeout=CHROME_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired as exc:
+        limit = int(exc.timeout or CHROME_TIMEOUT_SECONDS)
+        raise SystemExit(f"{label}_TIMEOUT: Chrome timed out after {limit}s") from exc
     if proc.returncode != 0:
         detail = (proc.stderr or proc.stdout or "").strip()
         raise SystemExit(f"{label}_ERROR: Chrome exited {proc.returncode}: {detail}")
