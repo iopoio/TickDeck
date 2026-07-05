@@ -89,6 +89,9 @@ page-planner는 페이지 기획 전에 아키타입을 정한다.
 ## 출력 프로토콜
 `_workspace/<run_id>/05_page_plan.json`에 저장한다.
 
+- **장르 필수 산출물 마킹 (C8 게이트 입력·7/5)**: intake의 장르에 필수 산출물이 정의돼 있으면(예: 시장조사 = 분류 트리·플레이어 비교표, `genre-market-research/SKILL.md`) 해당 페이지에 `"genre_artifact": "taxonomy" | "player_table"` 필드를 넣는다 — 마킹 없으면 run_contracts C8이 기계적으로 FAIL한다.
+- `stage_log_patch`에 이 run에서 실제 수행된 단계를 기록한다 (C5 게이트 입력 — 누락 시 FAIL).
+
 ```json
 {
   "archetype": "brief|dossier|feature|keynote|overview|chronicle|versus|bluf",

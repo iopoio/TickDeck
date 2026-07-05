@@ -41,11 +41,14 @@ description: TickDeck v4 genre profile for market/brand research decks. Mandates
 
 "데이터 부재" 서술은 최대 1장(editorial-director.md 규칙 승계).
 
-## 필수 산출물 체크 (qa-reviewer 요청 커버리지 판정과 연동)
+## 필수 산출물 체크 (C8 코드 게이트 — 스킵 불가)
 
-이 장르의 덱은 아래 2장이 없으면 **미완성** — qa-reviewer는 request_coverage에서 별도 확인한다:
-- [ ] **분류 트리 페이지**: 전체→세그먼트→유형 + 대상 위치
-- [ ] **플레이어 비교표 페이지**: 상위 5~8 플레이어 × (주력 제품·가격대·포지셔닝·채널)
+이 장르의 덱은 아래 2장이 없으면 **게이트에서 기계적으로 FAIL**한다 (run_contracts C8·프롬프트를 안 읽었어도 잡힘):
+- [ ] **분류 트리 페이지**: 전체→세그먼트→유형 + 대상 위치 — page-planner는 이 페이지에 `"genre_artifact": "taxonomy"` 필드를 마킹한다
+- [ ] **플레이어 비교표 페이지**: 상위 5~8 플레이어 × (주력 제품·가격대·포지셔닝·채널) — `"genre_artifact": "player_table"` 마킹
+- [ ] 증거 풀에 1차 관찰(`source_type: "observation"`) 출처 ≥5
+
+qa-reviewer의 request_coverage 판정은 이 위에 내용 충실성(칸이 실제로 채워졌나)을 더 본다.
 
 ## 문체 (writing-standard 승계 + 이 장르 강조)
 
