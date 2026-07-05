@@ -930,10 +930,11 @@ def _render_matrix(content: list[Any], rendered_pairs: list[tuple[Any, str]] | N
         if not text:
             continue
         label, sep, desc = text.partition(" — ")
+        # _rich = escape 후 ==키워드== 강조 — 다른 블록 경로와 동일. _escape만 쓰면 ==가 실물 노출(7/5 실측).
         if sep:
-            inner = f'<div class="matrix-cell-label">{_escape(label.strip())}</div><div class="matrix-cell-copy">{_escape(desc.strip())}</div>'
+            inner = f'<div class="matrix-cell-label">{_rich(label.strip())}</div><div class="matrix-cell-copy">{_rich(desc.strip())}</div>'
         else:
-            inner = f'<div class="matrix-cell-copy">{_escape(text)}</div>'
+            inner = f'<div class="matrix-cell-copy">{_rich(text)}</div>'
         cells.append({"inner": inner, "stats": ""})
     cells_html = "".join(
         f'<article class="matrix-cell">{c["inner"]}{c["stats"]}</article>' for c in cells
