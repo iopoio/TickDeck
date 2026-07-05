@@ -45,6 +45,9 @@ model: opus
   "audience_literacy": "general",
   "genre": "",
   "depth": "",
+  "target_market": "한국",
+  "language": "ko",
+  "provided_sources": [],
   "constraints": [],
   "evidence_profile": {
     "tier_a_targets": [],
@@ -58,6 +61,9 @@ model: opus
   "unknowns": []
 }
 ```
+
+- **`provided_sources`(레버1·입력=사용자 데이터):** 사용자가 준 URL·파일 경로를 여기 그대로 담는다(`{"kind":"url|file","ref":"...","note":""}`). 이게 있으면 collector의 **⓪ 최우선 증거**가 된다(공개 주제 수집보다 앞). "내 자료로 분석 덱"이 이 필드로 시작된다 — 사용자가 자료를 주면 반드시 여기 기록.
+- **`target_market`·`language`(레버4·글로벌 대응):** 기본 `한국`/`ko`. 요청이 다른 시장/언어면 그 값. **현지 좌표·Tier-A 출처 우선순위·writing-standard·서체는 이 값에 따라 갈린다**(한국 하드코딩 X — 한국이 기본값이되 파라미터). collector/analyst/designer는 이 값을 읽어 현지화한다.
 
 ## 에러 핸들링
 - 장르가 두 개 이상 가능하면 추정하지 말고 `genre_candidates`와 `unknowns`에 남긴다.
