@@ -3315,7 +3315,9 @@ h1 {{
 .index-row {{
   counter-increment: index;
   display: grid;
-  grid-template-columns: 128px minmax(112px, .35fr) minmax(0, 1fr);
+  /* 제목 컬럼 .35fr 고정배분은 설명이 비어도 제목을 ~260px에서 꺾었다(7/5 후추님 목차 지적) —
+     fit-content로 내용만큼 쓰되 560px 상한(설명 있는 덱과 공존). */
+  grid-template-columns: 128px fit-content(560px) minmax(0, 1fr);
   gap: 24px;
   align-items: center;
   min-height: 74px;
