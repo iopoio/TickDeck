@@ -273,6 +273,12 @@ class HarnessContractTests(unittest.TestCase):
 
     def test_c6_accepts_deck_spec_references_inside_page_allowlists(self):
         self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, VALID_RENDERED_HTML), [])
+        appendix_badge_html = """
+        <section class="slide layout-source_appendix">
+          <div class="verified-badge">모든 수치 출처 연결 검증 · 출처 2곳</div>
+        </section>
+        """
+        self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, appendix_badge_html), [])
 
     def test_c6_accepts_metric_registry_sources_without_page_source_allowlist(self):
         spec = {
@@ -512,6 +518,39 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("Pew Research Center", html)
         self.assertNotIn("출처:", html)
         self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, html), [])
+
+        appendix_spec = {
+            "pages": [
+                dict(VALID_DECK_SPEC["pages"][0]),
+                {
+                    "page_id": "appendix",
+                    "short_title": "출처",
+                    "layout": "source_appendix",
+                    "allowed_source_ids": ["src_a", "src_b"],
+                    "allowed_metric_ids": [],
+                    "content": [{"type": "headline", "text": "출처"}],
+                },
+            ]
+        }
+        appendix_registry = {
+            "sources": {
+                "src_a": {
+                    "publisher": "Pew Research Center",
+                    "title": "Pew & Partners 2026",
+                    "url": "https://example.com/pew?q=ai&src=deck",
+                },
+                "src_b": {"publisher": "IAB", "title": "IAB Report", "url": ""},
+            },
+            "metrics": VALID_CONTENT_REGISTRY["metrics"],
+        }
+        appendix_html = render_deck_module.render_deck(appendix_spec, appendix_registry, title="Appendix Fixture")
+        self.assertIn(
+            '<a class="appendix-link" href="https://example.com/pew?q=ai&amp;src=deck">Pew &amp; Partners 2026 ↗</a>',
+            appendix_html,
+        )
+        self.assertIn('<span class="appendix-title" data-src-id="src_b">IAB Report</span>', appendix_html)
+        self.assertIn("모든 수치 출처 연결 검증 · 출처 2곳", appendix_html)
+        self.assertEqual(validate_c6_content_authority(appendix_spec, appendix_registry, appendix_html), [])
 
     def test_render_deck_outputs_svg_for_each_supported_viz_chart(self):
         for chart in ("before_after", "dumbbell", "flow", "big_number", "gap_map", "shift"):

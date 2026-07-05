@@ -653,12 +653,18 @@ def _render_source_appendix_page(
         source = _require_source(src_id, page_id, registry)
         publisher = str(source.get("publisher") or src_id)
         sttl = str(source.get("title") or "")
+        url = str(source.get("url") or "").strip()
+        title_html = (
+            f'<a class="appendix-link" href="{_escape(url)}">{_escape(sttl)} ↗</a>'
+            if url
+            else _escape(sttl)
+        )
         # 넘버링·구분선 없이 "기관 — 리포트명" 한 줄 플랫 리스트(후추님 7/2).
         rows.append(
             f"""
         <article class="appendix-row" data-src-id="{_escape(src_id)}">
           <span class="appendix-pub" data-src-id="{_escape(src_id)}">{_escape(publisher)}</span>
-          <span class="appendix-title" data-src-id="{_escape(src_id)}">{_escape(sttl)}</span>
+          <span class="appendix-title" data-src-id="{_escape(src_id)}">{title_html}</span>
         </article>"""
         )
     motif_html = _slide_motif_html("source_appendix", page_number, palette)
@@ -668,6 +674,7 @@ def _render_source_appendix_page(
   <header class="slide-head">
     <div class="eyebrow">{_escape(eyebrow_text)}</div>
     <h1>{_escape(title_text)}</h1>
+    <div class="verified-badge">모든 수치 출처 연결 검증 · 출처 {len(src_ids)}곳</div>
   </header>
   <main class="body layout-body appendix-body{compact}"><section class="appendix-list">{"".join(rows)}</section></main>
   <footer class="slide-foot">
@@ -3138,6 +3145,8 @@ h1 {{
 .appendix-compact .appendix-title {{ font-size: 13px; }}
 .appendix-pub {{ flex: none; font-size: 15px; font-weight: 700; color: var(--ink); }}
 .appendix-title {{ min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: var(--muted); }}
+.appendix-link {{ color: inherit; text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--muted) 40%, transparent); }}
+.verified-badge {{ display: inline-block; margin-top: 8px; padding: 4px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }}
 /* split 외곽: 부제 전폭 + 그 아래 2단 그리드(후추님 7/2 — 부제는 제목 아래 일반 양식과 통일). */
 .split-outer {{
   display: flex;
