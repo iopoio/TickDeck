@@ -25,6 +25,8 @@ All runs use `_workspace/<run_id>/` as the file handoff area.
 5. `editorial-director` creates `_workspace/<run_id>/04_dag.json` (실 run 관행 · 구명 `04_proposition_dag.json`도 run_contracts가 읽음).
 6. `page-planner` creates `_workspace/<run_id>/05_page_plan.json` with `short_title`, `allowed_source_ids`, and `allowed_metric_ids` per page.
 7. `designer` creates `_workspace/<run_id>/06_deck_spec.json` only. It may choose layout and shorten text, but must reference sources/metrics only by `src_id`/`metric_id`. 시스템·시그니처·차트는 `PATTERN_LIBRARY.md`에서 고르고, `_workspace/_variation_ledger.json`을 읽어 **최근 2 run과 다른 시스템으로 변주**한 뒤 자기 run을 장부에 append 한다(designer.md 규칙·후추님 7/4 "혼자 몇 번 써도 매번 다른 물건"). designer는 `05_page_plan.json.archetype`을 읽어 그 아키타입의 권장/금지 시그니처 안에서 고른다(`DECK_ARCHETYPES.md`).
+7.4. **렌더 전 코덱스 프리리뷰 (7/6 신설 — 코덱스 정액 자원 활용·Claude 루프 절약):** designer가 06_deck_spec을 완성하면 렌더 전에 코덱스 1콜로 텍스트만 냉정 리뷰시킨다 — 어색한 문구·논리 비약·금지 패턴(원문자·모델명 디지트·조어)을 렌더 비용 없이 선제 검거. 명령: `codex exec --skip-git-repo-check "<deck_spec 텍스트 필드 나열 + 지적 지시>"`. 치명 지적만 designer가 반영(트리아지 클차장). 최종 외부리뷰(3층·C9)의 대체가 아니라 앞단 절약 장치다.
+
 7.5. **렌더 전 결정론적 린트 (qa_lint · 렌더 비용 아끼는 조기 게이트):** designer 산출물을 *렌더 전에* 검사해 결함을 잡는다 — render→위반→고침→render 반복을 1패스로 줄인다(토큰↓).
 
 ```bash
