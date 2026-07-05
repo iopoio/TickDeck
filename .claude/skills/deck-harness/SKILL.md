@@ -52,6 +52,7 @@ python .claude/skills/deck-harness/scripts/render_deck.py \
 1. 1층 자동 체크(만드는 내내): `contract_checks` + `naturalness_check` + 커버리지. 거의 공짜라 초안·수정본마다 돌린다.
 2. 2층 총괄 게이트(내용/스토리 완성 후·디자인 전): 클차장이 "제대로된·잘 읽히는 보고서인가"를 통째 판정한다.
 3. 3층 외부 리뷰(최종 직전 1회·**skip 금지 — 미수행이면 done 불가, 07_qa_report에 `external_review_layer3` 기록 의무**): 코덱스 + 제미나이 교차 후 클차장이 트리아지한다. 둘 다 그대로 받지 않는다(기각 사유도 기록).
+   - **"최종"의 정의 = 사용자에게 전달하는 그 판** (run당 1회가 아니다 — 7/6 후추님 지적). 대폭 개정(논지 변경·페이지 절반 이상 재작성·장르 재지정)이 있으면 **개정 최종본으로 재실행**한다. 이전 판 리뷰 기록은 개정본에 대한 리뷰가 아니다. 소폭 수정(문구·1~2페이지)만 기존 기록+개정 명기로 갈음 가능.
    - 입력: deck.html에서 페이지별 텍스트 추출 + 냉정 리뷰 프롬프트(논리 비약·어색한 한국어·제목/부제 관계·흐름 단절, 페이지 명시, 최대 10건).
    - 코덱스: `codex exec --skip-git-repo-check "$(cat review_input.txt)"`
    - 제미나이: `Think/.venv/bin/python Think/.claude/scripts/gemini_call_wrapper.py --prompt "..." --no-cache` (시스템 python엔 google-genai 없음 — Think/.venv가 wrapper 전용 venv, 7/3 복구)
