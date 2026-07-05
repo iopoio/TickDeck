@@ -161,7 +161,12 @@ def run_reviewer(command: list[str], output_path: Path) -> dict[str, Any]:
             capture_output=True,
             text=True,
             check=False,
+            # 코덱스 1시간 행 실측(7/6) — 리뷰어 하나가 죽어도 다른 쪽으로 진행(C9는 한쪽 성공 허용).
+            timeout=600,
         )
+    except subprocess.TimeoutExpired:
+        output_path.write_text("REVIEWER_TIMEOUT (600s)\n", encoding="utf-8")
+        return {"ok": False, "file": output_path.name, "error": "timeout 600s"}
     except OSError as exc:
         output_path.write_text(f"REVIEWER_FAILED_TO_START\n{exc}\n", encoding="utf-8")
         return {"ok": False, "file": output_path.name, "error": str(exc)}
