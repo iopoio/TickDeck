@@ -1505,8 +1505,10 @@ def _render_text_table(block: dict[str, Any], page_id: str) -> str:
         cell_html = "".join(f"<td>{_escape(str(cell))}</td>" for cell in row)
         body_rows.append(f"<tr{row_class}>{cell_html}</tr>")
 
+    # 6행 이상은 자동 압축(appendix-compact 선례·7/6) — 셀 패딩·폰트 축소로 한 장 수용.
+    compact = " text-table-compact" if len(rows) >= 6 else ""
     return f"""
-<div class="text-table">
+<div class="text-table{compact}">
   {title_html}
   <table>
     <thead><tr>{head_html}</tr></thead>
@@ -2954,6 +2956,9 @@ h1 {{
   width: 100%;
   max-width: 1080px;
   overflow: hidden;
+  /* flex 부모(stack 등)가 표를 조용히 압축해 행이 소리 없이 잘리던 결함(7/6 실측 p03·p07·p09).
+     압축 금지 — 안 들어가면 FIT_OVERFLOW가 정직하게 잡는다. */
+  flex-shrink: 0;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: color-mix(in srgb, var(--card) 88%, transparent);
@@ -3002,6 +3007,9 @@ h1 {{
   background: color-mix(in srgb, var(--ink) 3%, transparent);
 }}
 .text-table tbody tr:last-child td {{ border-bottom: 0; }}
+/* 6행 이상 자동 압축(7/6) — 행 패딩·폰트 축소. */
+.text-table-compact td, .text-table-compact th {{ padding: 7px 12px !important; font-size: 13.5px !important; }}
+.text-table-compact .text-table-title {{ padding: 8px 12px 6px; font-size: 13px; }}
 .text-table tbody tr.text-table-highlight td {{
   background: color-mix(in srgb, var(--accent) 10%, transparent);
 }}
