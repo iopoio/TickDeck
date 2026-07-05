@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""run 디렉토리에서 계약 payload를 자동 조립해 C1~C6를 일괄 검증한다.
+"""run 디렉토리에서 계약 payload를 자동 조립해 C1~C9를 일괄 검증한다.
 
 수동 조립 누락 사고(20260630 run "C5 stage_log dict 누락")의 배선 풀이:
 사람이 deck_json을 손으로 만들지 않고, run 디렉토리 산출물에서 그대로 조립한다.
@@ -7,6 +7,7 @@
 usage: run_contracts.py <run_dir> [deck.html]
 - html 인자를 생략하면 run_dir에서 가장 최근 수정된 .html을 쓴다.
 - rendered_pages(C2)는 deck_spec.pages를 프록시로 스캔한다(렌더 문자열의 원천).
+- deck.html이 있으면 08_external_review.json(C9)을 검증한다.
 - exit code: 위반 있으면 1.
 """
 from __future__ import annotations
@@ -16,7 +17,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from contract_checks import validate_all_contracts
+from contract_checks import check_c9_final_review, validate_all_contracts
 
 
 def _load(run_dir: Path, *names: str):
@@ -192,13 +193,16 @@ def main() -> int:
             print(f"  - {line}")
 
     violations = validate_all_contracts(deck)
+    c9_applied = (run_dir / "deck.html").exists()
+    if c9_applied:
+        violations.extend(check_c9_final_review(run_dir))
     print(f"run: {run_dir.name} · html: {html_path.name if html_path else '-'}")
     if violations:
         for violation in violations:
             print(f"FAIL {violation}")
         print(f"→ {len(violations)}건 위반")
         return 1
-    print("→ C1~C8 위반 0건")
+    print(f"→ {'C1~C9' if c9_applied else 'C1~C8'} 위반 0건")
     return 0
 
 

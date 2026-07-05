@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 import unicodedata
 from dataclasses import dataclass
 from html.parser import HTMLParser
+from pathlib import Path
 from typing import Any
 
 
@@ -450,6 +453,67 @@ def check_c8_genre_artifacts(
         )
 
     return violations
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def check_c9_final_review(run_dir: Path | str) -> list[ContractViolation]:
+    run_path = Path(run_dir)
+    deck_path = run_path / "deck.html"
+    if not deck_path.exists():
+        return []
+
+    review_path = run_path / "08_external_review.json"
+    if not review_path.exists():
+        return [
+            ContractViolation(
+                "C9",
+                "C9 final external review missing (run external_review.py)",
+                "08_external_review.json",
+            )
+        ]
+
+    try:
+        review = json.loads(review_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [
+            ContractViolation(
+                "C9",
+                f"C9 final external review unreadable: {exc}",
+                "08_external_review.json",
+            )
+        ]
+
+    reviewed_hash = str(review.get("deck_html_sha256", ""))
+    current_hash = sha256_file(deck_path)
+    if reviewed_hash != current_hash:
+        return [
+            ContractViolation(
+                "C9",
+                "C9 deck.html changed after external review — re-run external_review.py "
+                f"(reviewed {reviewed_hash[:12] or '-'}, current {current_hash[:12]})",
+                "deck.html",
+            )
+        ]
+
+    codex_ok = isinstance(review.get("codex"), dict) and review["codex"].get("ok") is True
+    gemini_ok = isinstance(review.get("gemini"), dict) and review["gemini"].get("ok") is True
+    if not codex_ok and not gemini_ok:
+        return [
+            ContractViolation(
+                "C9",
+                "C9 both external reviewers failed (codex and gemini ok=false)",
+                "08_external_review.json",
+            )
+        ]
+
+    return []
 
 
 def validate_all_contracts(deck: dict[str, Any], raise_on_error: bool = False) -> list[ContractViolation]:

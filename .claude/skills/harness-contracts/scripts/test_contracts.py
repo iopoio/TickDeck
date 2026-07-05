@@ -1,5 +1,7 @@
 import importlib.util
+import json
 import pathlib
+import tempfile
 import unittest
 
 import contract_checks as contract_checks_module
@@ -12,6 +14,7 @@ from contract_checks import (
     validate_c5_stage_order,
     validate_c6_content_authority,
     check_c8_genre_artifacts,
+    check_c9_final_review,
     validate_all_contracts,
 )
 
@@ -597,6 +600,84 @@ class HarnessContractTests(unittest.TestCase):
         evidence_pool = {"items": []}
         page_plan = {"pages": []}
         self.assertEqual(check_c8_genre_artifacts({}, evidence_pool, page_plan), [])
+
+    def test_c9_rejects_missing_external_review_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            (run_dir / "deck.html").write_text("<section>Deck</section>", encoding="utf-8")
+
+            violations = check_c9_final_review(run_dir)
+
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C9")
+        self.assertIn("final external review missing", violations[0].message)
+
+    def test_c9_accepts_matching_hash_with_codex_success(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            html_path = run_dir / "deck.html"
+            html_path.write_text("<section>Deck</section>", encoding="utf-8")
+            deck_hash = contract_checks_module.sha256_file(html_path)
+            (run_dir / "08_external_review.json").write_text(
+                json.dumps(
+                    {
+                        "deck_html_sha256": deck_hash,
+                        "codex": {"ok": True, "file": "review_codex.txt"},
+                        "gemini": {"ok": False, "file": "review_gemini.txt"},
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            violations = check_c9_final_review(run_dir)
+
+        self.assertEqual(violations, [])
+
+    def test_c9_rejects_deck_html_changed_after_external_review(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            html_path = run_dir / "deck.html"
+            html_path.write_text("<section>Current</section>", encoding="utf-8")
+            reviewed_hash = "0" * 64
+            (run_dir / "08_external_review.json").write_text(
+                json.dumps(
+                    {
+                        "deck_html_sha256": reviewed_hash,
+                        "codex": {"ok": True, "file": "review_codex.txt"},
+                        "gemini": {"ok": False, "file": "review_gemini.txt"},
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            violations = check_c9_final_review(run_dir)
+
+        self.assertEqual(len(violations), 1)
+        self.assertIn("deck.html changed after external review", violations[0].message)
+        self.assertIn(reviewed_hash[:12], violations[0].message)
+
+    def test_c9_rejects_when_both_external_reviewers_failed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            html_path = run_dir / "deck.html"
+            html_path.write_text("<section>Deck</section>", encoding="utf-8")
+            deck_hash = contract_checks_module.sha256_file(html_path)
+            (run_dir / "08_external_review.json").write_text(
+                json.dumps(
+                    {
+                        "deck_html_sha256": deck_hash,
+                        "codex": {"ok": False, "file": "review_codex.txt"},
+                        "gemini": {"ok": False, "file": "review_gemini.txt"},
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            violations = check_c9_final_review(run_dir)
+
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C9")
+        self.assertIn("both external reviewers failed", violations[0].message)
 
     def test_render_deck_injects_metric_values_and_generated_citations(self):
         html = render_deck_module.render_deck(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, title="C6 Fixture")
