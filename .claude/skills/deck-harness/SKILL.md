@@ -25,6 +25,16 @@ All runs use `_workspace/<run_id>/` as the file handoff area.
 5. `editorial-director` creates `_workspace/<run_id>/04_dag.json` (실 run 관행 · 구명 `04_proposition_dag.json`도 run_contracts가 읽음).
 6. `page-planner` creates `_workspace/<run_id>/05_page_plan.json` with `short_title`, `allowed_source_ids`, and `allowed_metric_ids` per page.
 7. `designer` creates `_workspace/<run_id>/06_deck_spec.json` only. It may choose layout and shorten text, but must reference sources/metrics only by `src_id`/`metric_id`. 시스템·시그니처·차트는 `PATTERN_LIBRARY.md`에서 고르고, `_workspace/_variation_ledger.json`을 읽어 **최근 2 run과 다른 시스템으로 변주**한 뒤 자기 run을 장부에 append 한다(designer.md 규칙·후추님 7/4 "혼자 몇 번 써도 매번 다른 물건"). designer는 `05_page_plan.json.archetype`을 읽어 그 아키타입의 권장/금지 시그니처 안에서 고른다(`DECK_ARCHETYPES.md`).
+7.5. **렌더 전 결정론적 린트 (qa_lint · 렌더 비용 아끼는 조기 게이트):** designer 산출물을 *렌더 전에* 검사해 결함을 잡는다 — render→위반→고침→render 반복을 1패스로 줄인다(토큰↓).
+
+```bash
+python3 .claude/skills/deck-harness/scripts/qa_lint.py \
+  _workspace/<run_id>/06_deck_spec.json _workspace/<run_id>/02_verified.json
+```
+
+- `RAW_NUMBER_IN_LABEL`(데이터 값을 텍스트/라벨에)·`EMPTY_SCENARIO_CARD`·`ARCHETYPE_MISSING`은 렌더 전 고친다(고신뢰).
+- `MIXED_SOURCE_CHART`·`LAYOUT_MONOTONY`는 **경고(WARN)** — 미·영 비교처럼 정당한 다출처도 있으니 designer가 체리피킹인지 판단(차단 아님·클차장 7/5 스팟체크: 오탐 ~절반).
+
 8. Code renderer creates HTML from deck_spec and registry:
 
 ```bash
