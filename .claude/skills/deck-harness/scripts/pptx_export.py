@@ -10,12 +10,15 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import math
 import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import unicodedata
+from functools import lru_cache
 from pathlib import Path
 
 
@@ -23,6 +26,9 @@ SLIDE_W_EMU = 12192000
 SLIDE_H_EMU = 6858000
 FONT_NAME = "맑은 고딕"
 VERIFY_PHRASE = "흔들렸으나 무너지지 않았다"
+PX_TO_PT = 0.75
+FIT_MIN_RATIO = 0.70
+_FONT_METRIC_FALLBACK_WARNED = False
 
 
 LAYOUT_DUMP_SCRIPT = r"""
@@ -60,6 +66,23 @@ LAYOUT_DUMP_SCRIPT = r"""
       } catch (e) { rect = el.getBoundingClientRect(); }
       if (!rect || rect.width <= 0 || rect.height <= 0) rect = el.getBoundingClientRect();
       if (rect.width <= 0 || rect.height <= 0) return;
+      // 줄 수 = Range 줄별 rect의 top 클러스터 수(정확) — el rect는 패딩 포함이라 오판(콜아웃 2줄 오판·7/5),
+      // rect.height/lineHeight 반올림도 근사였다. 이후 글리프 top에서 반행간을 빼 줄박스 격자에 y를 정렬:
+      // PPT 고정 줄간격(spcPts)의 줄격자가 브라우저 줄박스와 일치해야 아랫박스 침범이 없다(p04 실측).
+      var lineTops = [];
+      try {
+        Array.prototype.forEach.call(range.getClientRects(), function(r){
+          if (r.width <= 0 || r.height <= 0) return;
+          for (var k = 0; k < lineTops.length; k++) { if (Math.abs(lineTops[k] - r.top) < 3) return; }
+          lineTops.push(r.top);
+        });
+      } catch (e) {}
+      var cs0 = getComputedStyle(el);
+      var lh0 = px(cs0.lineHeight, px(cs0.fontSize, 16) * 1.2);
+      var lcExact = Math.max(1, lineTops.length || Math.round(rect.height / lh0));
+      var glyphH = rect.height - (lcExact - 1) * lh0;
+      var halfLeading = Math.max(0, (lh0 - glyphH) / 2);
+      rect = {left: rect.left, width: rect.width, top: rect.top - halfLeading, height: lcExact * lh0};
       el.setAttribute('data-pptx-picked', '1');
       var cs = getComputedStyle(el);
       var fontSize = px(cs.fontSize, 16);
@@ -69,7 +92,7 @@ LAYOUT_DUMP_SCRIPT = r"""
       var srcEl = el.closest('[data-src-id]');
       // 브라우저 기준 줄 수 — PPT에서 폰트 대체(맑은고딕 등)로 재줄바꿈되며 겹치던 결함(7/5 LibreOffice 실측).
       // 1줄 요소는 word_wrap을 꺼 줄바꿈을 봉인한다(파이썬 쪽 분기).
-      var lineCount = Math.max(1, Math.round(rect.height / lineHeight));
+      var lineCount = lcExact;
       boxes.push({
         line_count: lineCount,
         page_id: pageId,
@@ -450,6 +473,251 @@ def paragraph_alignment(value: str):
     }.get(normalized, PP_ALIGN.LEFT)
 
 
+def _first_existing_path(paths: list[Path]) -> Path | None:
+    for path in paths:
+        expanded = path.expanduser()
+        if expanded.exists():
+            return expanded
+    return None
+
+
+@lru_cache(maxsize=1)
+def resolve_malgun_fontfiles() -> tuple[Path | None, Path | None]:
+    roots = [
+        Path("/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts"),
+        Path("~/Library/Fonts"),
+        Path("/Library/Fonts"),
+    ]
+    regular = _first_existing_path([root / "malgun.ttf" for root in roots])
+    bold = _first_existing_path([root / "malgunbd.ttf" for root in roots])
+    return regular, bold
+
+
+def warn_font_metric_fallback() -> None:
+    global _FONT_METRIC_FALLBACK_WARNED
+    if not _FONT_METRIC_FALLBACK_WARNED:
+        print("FONT_METRIC_FALLBACK", file=sys.stderr)
+        _FONT_METRIC_FALLBACK_WARNED = True
+
+
+@lru_cache(maxsize=2)
+def _metric_font(bold: bool):
+    regular_path, bold_path = resolve_malgun_fontfiles()
+    fontfile = bold_path if bold and bold_path else regular_path
+    if not fontfile:
+        return None
+    try:
+        import fitz
+
+        return fitz.Font(fontfile=str(fontfile))
+    except Exception:
+        return None
+
+
+def is_cjk_or_fullwidth(ch: str) -> bool:
+    return unicodedata.east_asian_width(ch) in {"F", "W"}
+
+
+def fallback_text_width_pt(text: str, font_pt: float, bold: bool) -> float:
+    width_em = 0.0
+    for ch in text:
+        if ch.isspace():
+            width_em += 0.33
+        elif is_cjk_or_fullwidth(ch):
+            width_em += 1.0
+        else:
+            width_em += 0.62
+    if bold:
+        width_em *= 1.04
+    return width_em * font_pt
+
+
+def measure_text_width_pt(text: str, font_pt: float, bold: bool, letter_spacing_pt: float = 0.0) -> float:
+    font = _metric_font(bold)
+    if font:
+        try:
+            width = font.text_length(text, fontsize=font_pt)
+        except Exception:
+            font = None
+    if not font:
+        warn_font_metric_fallback()
+        width = fallback_text_width_pt(text, font_pt, bold)
+    if text:
+        width += letter_spacing_pt * max(0, len(text) - 1)
+    return width
+
+
+def letter_spacing_pt_from_box(box: dict) -> float:
+    return float(box.get("letter_spacing") or 0) * PX_TO_PT
+
+
+def floor_one_decimal(value: float) -> float:
+    return math.floor(value * 10) / 10
+
+
+def warn_fit_shrink_cap(box: dict) -> None:
+    page = str(box.get("page_id") or "?")
+    snippet = str(box.get("text") or "").replace("\n", " ")[:30]
+    print(f"FIT_SHRINK_CAP: {page}/{snippet}", file=sys.stderr)
+
+
+def fit_single_line_font_pt(
+    lines: list[str],
+    font_pt: float,
+    box_w_pt: float,
+    bold: bool,
+    letter_spacing_pt: float,
+    box: dict,
+) -> float:
+    text_w_pt = max((measure_text_width_pt(line, font_pt, bold, letter_spacing_pt) for line in lines), default=0)
+    if not text_w_pt or text_w_pt <= box_w_pt * 1.01:
+        return font_pt
+
+    target_pt = floor_one_decimal(font_pt * box_w_pt / text_w_pt)
+    min_pt = font_pt * FIT_MIN_RATIO
+    if target_pt < min_pt:
+        warn_fit_shrink_cap(box)
+        return min_pt
+    return target_pt
+
+
+def _wrap_tokens(text: str) -> list[str]:
+    tokens: list[str] = []
+    word: list[str] = []
+
+    def flush_word() -> None:
+        if word:
+            tokens.append("".join(word))
+            word.clear()
+
+    for ch in text:
+        if ch.isspace():
+            flush_word()
+            tokens.append(ch)
+        elif is_cjk_or_fullwidth(ch):
+            flush_word()
+            tokens.append(ch)
+        else:
+            word.append(ch)
+    flush_word()
+    return tokens
+
+
+def wrapped_lines_needed(text: str, box_w_pt: float, font_pt: float, bold: bool, letter_spacing_pt: float) -> int:
+    if box_w_pt <= 0:
+        return 1
+
+    def fits(value: str) -> bool:
+        return measure_text_width_pt(value, font_pt, bold, letter_spacing_pt) <= box_w_pt
+
+    def place_on_empty_line(token: str) -> tuple[str, int]:
+        current = ""
+        extra_lines = 0
+        for ch in token:
+            candidate = current + ch
+            if not current or fits(candidate):
+                current = candidate
+            else:
+                extra_lines += 1
+                current = ch
+        return current, extra_lines
+
+    lines = 1
+    current = ""
+    for token in _wrap_tokens(text):
+        if token.isspace():
+            if current and fits(current + token):
+                current += token
+            continue
+        if not current:
+            current, extra = place_on_empty_line(token)
+            lines += extra
+        elif fits(current + token):
+            current += token
+        else:
+            lines += 1
+            current, extra = place_on_empty_line(token)
+            lines += extra
+    return max(1, lines)
+
+
+def wrapped_text_fits(
+    text: str,
+    line_count: int,
+    box_w_pt: float,
+    box_h_pt: float,
+    font_pt: float,
+    line_spacing: float,
+    bold: bool,
+    letter_spacing_pt: float,
+) -> bool:
+    needed = wrapped_lines_needed(text, box_w_pt, font_pt, bold, letter_spacing_pt)
+    if needed > line_count:
+        return False
+    if box_h_pt > 0 and needed * line_spacing * font_pt > box_h_pt * 1.05:
+        return False
+    return True
+
+
+def fit_wrapped_font_pt(
+    text: str,
+    font_pt: float,
+    line_count: int,
+    box_w_pt: float,
+    box_h_pt: float,
+    line_spacing: float,
+    bold: bool,
+    letter_spacing_pt: float,
+    box: dict,
+) -> float:
+    if wrapped_text_fits(text, line_count, box_w_pt, box_h_pt, font_pt, line_spacing, bold, letter_spacing_pt):
+        return font_pt
+
+    min_pt = font_pt * FIT_MIN_RATIO
+    current = font_pt
+    while current - 0.5 >= min_pt:
+        current = round(current - 0.5, 3)
+        if wrapped_text_fits(text, line_count, box_w_pt, box_h_pt, current, line_spacing, bold, letter_spacing_pt):
+            return current
+    if wrapped_text_fits(text, line_count, box_w_pt, box_h_pt, min_pt, line_spacing, bold, letter_spacing_pt):
+        return min_pt
+
+    warn_fit_shrink_cap(box)
+    return min_pt
+
+
+def fitted_font_pt(box: dict, font_pt: float, line_spacing: float, bold: bool) -> float:
+    text = str(box.get("text") or "")
+    lines = text.splitlines() or [""]
+    box_w_pt = float(box.get("w") or 0) * PX_TO_PT
+    box_h_pt = float(box.get("h") or 0) * PX_TO_PT
+    line_count = max(1, int(box.get("line_count") or 1))
+    word_wrap = line_count > 1
+    letter_spacing_pt = letter_spacing_pt_from_box(box)
+
+    if box_w_pt <= 0:
+        return font_pt
+    if len(lines) > 1 or not word_wrap:
+        return fit_single_line_font_pt(lines, font_pt, box_w_pt, bold, letter_spacing_pt, box)
+    return fit_wrapped_font_pt(
+        text,
+        font_pt,
+        line_count,
+        box_w_pt,
+        box_h_pt,
+        line_spacing,
+        bold,
+        letter_spacing_pt,
+        box,
+    )
+
+
+def set_run_character_spacing(run, letter_spacing_px: float) -> None:
+    spc = int(letter_spacing_px * PX_TO_PT * 100)
+    if spc:
+        run._r.get_or_add_rPr().set("spc", str(spc))
+
+
 def apply_text_to_shape(shape, box: dict) -> None:
     from pptx.dml.color import RGBColor
     from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE
@@ -475,18 +743,23 @@ def apply_text_to_shape(shape, box: dict) -> None:
     alignment = paragraph_alignment(str(box.get("text_align") or "left"))
     bold = font_weight_number(box.get("font_weight")) >= 600
     font_pt = max(1, int(round(font_size_px * 0.75)))
+    fit_pt = fitted_font_pt(box, font_pt, line_spacing, bold)
+    letter_spacing_px = float(box.get("letter_spacing") or 0)
 
     for idx, line in enumerate(lines):
         paragraph = frame.paragraphs[0] if idx == 0 else frame.add_paragraph()
         paragraph.alignment = alignment
-        paragraph.line_spacing = line_spacing
+        # 배수(multiple) 줄간격은 PPT가 폰트 고유 행높이(맑은고딕>CSS 1em)에 곱해 브라우저보다
+        # 줄이 굵어짐(7/5 실측 p04 라벨 3째줄 침범) — 포인트 고정값으로 브라우저 기하와 일치시킨다.
+        paragraph.line_spacing = Pt(line_height_px * PX_TO_PT)
         run = paragraph.add_run()
         run.text = line
         font = run.font
         font.name = FONT_NAME
-        font.size = Pt(font_pt)
+        font.size = Pt(fit_pt)
         font.bold = bold
         font.color.rgb = RGBColor(*rgb)
+        set_run_character_spacing(run, letter_spacing_px)
 
 
 def build_pptx(layout: dict, background_pngs: list[Path], out: Path) -> int:
