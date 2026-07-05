@@ -323,6 +323,12 @@ def validate_c6_content_authority(
         page_path = f"deck_spec.pages[{page_index}]"
         allowed_source_ids = _string_set(page.get("allowed_source_ids"))
         allowed_metric_ids = _string_set(page.get("allowed_metric_ids"))
+        # 자동 도출: 페이지에서 허용한 metric의 출처는 자동 허용(designer 수기 중복 제거·#1 결함 뿌리 소멸).
+        # metric을 쓰도록 허가했으면 그 출처 인용은 당연히 허가된 것 — C6 보호 목적 불변.
+        for metric_id in allowed_metric_ids:
+            metric = metric_registry.get(metric_id)
+            if isinstance(metric, dict):
+                allowed_source_ids |= _string_set(metric.get("source_ids"))
         content = page.get("content", page.get("blocks", []))
 
         for text_path, text in _iter_strings(page, page_path):

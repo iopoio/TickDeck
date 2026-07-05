@@ -274,6 +274,60 @@ class HarnessContractTests(unittest.TestCase):
     def test_c6_accepts_deck_spec_references_inside_page_allowlists(self):
         self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, VALID_RENDERED_HTML), [])
 
+    def test_c6_accepts_metric_registry_sources_without_page_source_allowlist(self):
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    allowed_source_ids=[],
+                    allowed_metric_ids=["metric_click_drop"],
+                    content=[
+                        {"type": "metric", "metric_id": "metric_click_drop"},
+                        {"type": "citation", "src_id": "src_a"},
+                    ],
+                )
+            ]
+        }
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+
+    def test_c6_still_rejects_disallowed_metric_unknown_source_and_untagged_number(self):
+        cases = {
+            "disallowed_metric": (
+                {
+                    "pages": [
+                        dict(
+                            VALID_DECK_SPEC["pages"][0],
+                            allowed_metric_ids=[],
+                            content=[{"type": "metric", "metric_id": "metric_click_drop"}],
+                        )
+                    ]
+                },
+                "",
+                "metric_id not in page allowed_metric_ids: metric_click_drop",
+            ),
+            "unknown_source": (
+                {
+                    "pages": [
+                        dict(
+                            VALID_DECK_SPEC["pages"][0],
+                            content=[{"type": "citation", "src_id": "src_missing"}],
+                        )
+                    ]
+                },
+                "",
+                "unknown source id referenced: src_missing",
+            ),
+            "untagged_number": (
+                VALID_DECK_SPEC,
+                "<section><p>CTR fell 47% after AI summaries.</p></section>",
+                "untagged number in rendered output",
+            ),
+        }
+        for name, (spec, rendered_html, expected) in cases.items():
+            with self.subTest(name=name):
+                violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, rendered_html)
+                self.assertTrue(any(expected in str(v) for v in violations))
+
     def test_c6_accepts_viz_blocks_with_metric_id_series(self):
         self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC_WITH_VIZ, VALID_CONTENT_REGISTRY, ""), [])
 
@@ -664,6 +718,13 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("side-wordmark", html)
         self.assertIn("Evidence", html)
         self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_omits_eyebrow_when_no_explicit_block(self):
+        # 명시 eyebrow 없으면 role/layout 내부명 폴백 노출 금지(C2 계열) — div 자체를 렌더하지 않는다(7/4).
+        html = render_deck_module.render_deck(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, title="No Eyebrow Fixture")
+        self.assertNotIn('<div class="eyebrow', html)
+        self.assertNotIn("HERO_METRIC", html)
+        self.assertNotIn("STAT_GRID", html)
 
     def test_render_deck_supports_eyebrow_blocks_as_section_labels(self):
         html = render_deck_module.render_deck(VALID_DECK_SPEC_WITH_EYEBROW, VALID_CONTENT_REGISTRY, title="Eyebrow Fixture")
