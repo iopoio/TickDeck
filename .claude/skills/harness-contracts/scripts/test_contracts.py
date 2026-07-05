@@ -338,6 +338,58 @@ class HarnessContractTests(unittest.TestCase):
     def test_c6_accepts_viz_blocks_with_metric_id_series(self):
         self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC_WITH_VIZ, VALID_CONTENT_REGISTRY, ""), [])
 
+    def test_c6_accepts_text_table_without_numeric_cells(self):
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    layout="statement",
+                    allowed_source_ids=[],
+                    allowed_metric_ids=[],
+                    content=[
+                        {"type": "headline", "text": "Player Comparison"},
+                        {
+                            "type": "text_table",
+                            "title": "브랜드 포지션",
+                            "columns": ["브랜드", "주력 제품", "가격대", "포지션", "채널"],
+                            "rows": [
+                                ["CLO", "넥앤프로 에어코즈 메디소닉", "중가", "헬스 뷰티 멀티부위", "자사몰 SNS 없음"],
+                                ["TheraFace", "얼굴 케어 기기", "프리미엄", "뷰티 테크", "자사몰 리테일"],
+                            ],
+                            "highlight_row": 0,
+                        },
+                    ],
+                )
+            ]
+        }
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Text Table Fixture")
+        self.assertIn("<table", html)
+        self.assertIn("text-table", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_c6_rejects_text_table_numeric_cells_as_untagged_numbers(self):
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    layout="statement",
+                    allowed_source_ids=[],
+                    allowed_metric_ids=[],
+                    content=[
+                        {"type": "headline", "text": "Player Comparison"},
+                        {
+                            "type": "text_table",
+                            "columns": ["브랜드", "주력 제품", "가격대", "포지션"],
+                            "rows": [["CLO", "넥앤프로", "중가", "인지도 47%"]],
+                        },
+                    ],
+                )
+            ]
+        }
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Text Table Numeric Fixture")
+        violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html)
+        self.assertTrue(any("untagged number in rendered output" in str(v) for v in violations))
+
     def test_c6_accepts_closing_layout_in_supported_layout_enum(self):
         self.assertIn("closing", contract_checks_module.SUPPORTED_LAYOUTS)
         self.assertEqual(validate_c6_content_authority(VALID_CLOSING_DECK_SPEC, VALID_CONTENT_REGISTRY, ""), [])
@@ -815,6 +867,7 @@ class HarnessContractTests(unittest.TestCase):
         )
         self.assertIn("eyebrow", contract_checks_module.SUPPORTED_CONTENT_BLOCK_TYPES)
         self.assertIn("viz", contract_checks_module.SUPPORTED_CONTENT_BLOCK_TYPES)
+        self.assertIn("text_table", contract_checks_module.SUPPORTED_CONTENT_BLOCK_TYPES)
 
     def test_every_supported_viz_chart_has_a_renderer(self):
         # 계약 enum에 있는데 렌더러 분기가 없으면 "조용한 no-op"이 된다 — 1:1을 코드로 강제.

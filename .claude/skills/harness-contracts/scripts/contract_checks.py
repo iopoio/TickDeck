@@ -51,6 +51,7 @@ SUPPORTED_CONTENT_BLOCK_TYPES = frozenset(
         "viz",
         "bullets",
         "list",
+        "text_table",
     }
 )
 SUPPORTED_VIZ_CHART_TYPES = frozenset(

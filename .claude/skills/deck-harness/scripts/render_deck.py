@@ -1460,6 +1460,8 @@ def _render_block(
         return f'<div class="metric-grid">{"".join(cards)}</div>', []
     if block_type == "viz":
         return _render_viz(block, page_id, registry, palette), []
+    if block_type == "text_table":
+        return _render_text_table(block, page_id), []
     if block_type in {"bullets", "list"}:
         items = block.get("items", [])
         if not isinstance(items, list):
@@ -1477,6 +1479,40 @@ def _render_block(
         return f'<ul class="bullet-list">{"".join(rendered_items)}</ul>', source_ids
 
     raise ValueError(f"{page_id}: unsupported content block type: {block_type}")
+
+
+def _render_text_table(block: dict[str, Any], page_id: str) -> str:
+    columns = block.get("columns")
+    rows = block.get("rows")
+    if not isinstance(columns, list) or not 2 <= len(columns) <= 6:
+        raise ValueError(f"{page_id}: text_table columns must be a list with 2 to 6 items")
+    if not isinstance(rows, list):
+        raise ValueError(f"{page_id}: text_table rows must be a list")
+
+    column_count = len(columns)
+    title = str(block.get("title", "")).strip()
+    title_html = f'<div class="text-table-title">{_escape(title)}</div>' if title else ""
+    head_html = "".join(f"<th>{_escape(str(column))}</th>" for column in columns)
+    highlight_row = block.get("highlight_row")
+    highlight_index = highlight_row if isinstance(highlight_row, int) and highlight_row >= 0 else None
+    body_rows: list[str] = []
+    for row_index, row in enumerate(rows):
+        if not isinstance(row, list):
+            raise ValueError(f"{page_id}: text_table row {row_index} must be a list")
+        if len(row) != column_count:
+            raise ValueError(f"{page_id}: text_table row {row_index} must match column count")
+        row_class = ' class="text-table-highlight"' if row_index == highlight_index else ""
+        cell_html = "".join(f"<td>{_escape(str(cell))}</td>" for cell in row)
+        body_rows.append(f"<tr{row_class}>{cell_html}</tr>")
+
+    return f"""
+<div class="text-table">
+  {title_html}
+  <table>
+    <thead><tr>{head_html}</tr></thead>
+    <tbody>{"".join(body_rows)}</tbody>
+  </table>
+</div>""".strip()
 
 
 def _page_has_per_card_sources(content: list[Any], page_id: str, registry: dict[str, dict[str, Any]]) -> bool:
@@ -2913,6 +2949,65 @@ h1 {{
   width: 16px;
   height: 2px;
   background: var(--accent);
+}}
+.text-table {{
+  width: 100%;
+  max-width: 1080px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+}}
+.text-table-title {{
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 800;
+  word-break: keep-all;
+}}
+.text-table table {{
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}}
+.text-table th {{
+  padding: 10px 12px;
+  border-right: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 800;
+  text-align: left;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}}
+.text-table td {{
+  padding: 9px 12px;
+  border-right: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  color: var(--ink);
+  font-size: 14.5px;
+  line-height: 1.34;
+  vertical-align: top;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}}
+.text-table th:last-child,
+.text-table td:last-child {{ border-right: 0; }}
+.text-table tbody tr:nth-child(even) td {{
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+}}
+.text-table tbody tr:last-child td {{ border-bottom: 0; }}
+.text-table tbody tr.text-table-highlight td {{
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}}
+.text-table tbody tr.text-table-highlight td:first-child {{
+  box-shadow: inset 4px 0 0 var(--accent);
+  font-weight: 800;
 }}
 .slide-foot {{
   position: relative;
