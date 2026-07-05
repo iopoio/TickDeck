@@ -481,7 +481,9 @@ def _reviewer_output_is_valid(run_path: Path, reviewer: Any) -> bool:
     if text.startswith(("REVIEWER_TIMEOUT", "REVIEWER_FAILED")):
         return False
     # "없음" = 결함 0의 정상 클린 리뷰 — 길이 하한에 걸리면 안 된다(3자 리뷰 2R 코덱스 지적·7/6).
-    if "없음" in text:
+    # 단 부분일치는 "근거 없음" 같은 부실 출력도 통과시킴(3R 코덱스) — 첫 의미 줄이 정확히 "없음"일 때만.
+    first_line = next((ln.strip() for ln in text.splitlines() if ln.strip()), "")
+    if first_line == "없음":
         return True
     return len(text) >= 200
 
