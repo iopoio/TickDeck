@@ -18,6 +18,16 @@ from contract_checks import _registry_map, _string_set  # noqa: E402
 
 RAW_DIGIT_PATTERN = re.compile(r"\d")
 NUMBER_PATTERN = re.compile(r"(?<![A-Za-z0-9_])[+-]?\d+(?:[.,]\d+)*(?:\.\d+)?")
+# 데이터 값으로 읽히는 숫자만 결함(연도·섹션 카운터·id 면제) — 검출기 정밀도 보정(7/5 스팟체크: \d는 절반이 오탐).
+# 데이터 단위(%·만·억·배 등) 동반 or ==강조== 안의 숫자만. 연/월/주/위 등 모호 단위는 제외.
+_DATA_UNIT_NUM = re.compile(r"\d[\d.,]*\s*(%|％|만|억|조|천|배|명|원|점|개|건|달러|위안|엔|퍼센트|‰|[xX×])")
+_EMPH_NUM = re.compile(r"==[^=]*\d[^=]*==")
+
+
+def _has_data_number(text: Any) -> bool:
+    if not isinstance(text, str):
+        return False
+    return bool(_EMPH_NUM.search(text) or _DATA_UNIT_NUM.search(text))
 
 TEXT_BLOCK_TYPES = {"headline", "body", "note", "eyebrow", "text"}
 RAW_EXCLUDED_BLOCK_TYPES = {"citation", "metric", "metrics", "metric_grid", "stat_grid"}
@@ -251,7 +261,7 @@ def _raw_number_defects(value: Any, page_id: str, path: str) -> list[dict[str, s
             continue
         if block_type in TEXT_BLOCK_TYPES:
             text = block.get("text")
-            if isinstance(text, str) and RAW_DIGIT_PATTERN.search(text):
+            if _has_data_number(text):
                 defects.append(
                     _defect(
                         "RAW_NUMBER_IN_LABEL",
@@ -269,7 +279,7 @@ def _raw_number_viz_defects(block: dict[str, Any], page_id: str, block_path: str
     defects: list[dict[str, str]] = []
     for field in ("title", "note"):
         text = block.get(field)
-        if isinstance(text, str) and RAW_DIGIT_PATTERN.search(text):
+        if _has_data_number(text):
             defects.append(
                 _defect(
                     "RAW_NUMBER_IN_LABEL",
@@ -285,7 +295,7 @@ def _raw_number_viz_defects(block: dict[str, Any], page_id: str, block_path: str
             if not isinstance(item, dict):
                 continue
             label = item.get("label")
-            if isinstance(label, str) and RAW_DIGIT_PATTERN.search(label):
+            if _has_data_number(label):
                 defects.append(
                     _defect(
                         "RAW_NUMBER_IN_LABEL",
@@ -305,7 +315,7 @@ def _raw_number_bullet_defects(block: dict[str, Any], page_id: str, block_path: 
     for index, item in enumerate(items):
         item_path = f"{block_path}.items[{index}]"
         text = _item_text(item)
-        if text and RAW_DIGIT_PATTERN.search(text):
+        if _has_data_number(text):
             suffix = ".text" if isinstance(item, dict) else ""
             defects.append(
                 _defect(
@@ -390,6 +400,9 @@ def _unbacked_number_defects(
     backed_numbers = _allowed_metric_numbers(allowed_metric_ids, metric_registry)
     for text, text_path in _iter_visible_texts(value, path):
         if (page_id, text_path) in raw_paths:
+            continue
+        # 데이터 값(단위/강조 숫자)이 없는 텍스트는 근거 필요 없음 — 연도·섹션 카운터 오탐 제거(7/5 보정).
+        if not _has_data_number(text):
             continue
         numbers = [_normalize_number(item) for item in NUMBER_PATTERN.findall(text)]
         numbers = [item for item in numbers if item]
