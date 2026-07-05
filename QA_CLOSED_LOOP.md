@@ -53,3 +53,21 @@
 - **2**: 다주제 3~5 × 블라인드 측정(계기 위에서 1패스).
 - **3**: 데이터로 상위 결함만 검출기화 + **내용 정합 자동체크** 신설(내용 축).
 - 미룸: 이미지·제품화(1콜)·PPTX 네이티브.
+
+## Round 2~3 (2026-07-05) — 실행·측정 기록
+
+**0단계** archetype 누수 마감(1fd44f5): 렌더 top→meta→형제 page_plan 주입. **1단계** qa_log.py 측정 계기(raw/fixed) 신설.
+
+**측정(2단계) — R1 vs R2 원본 불량률(수정 전):** R1 tech×chronicle 11(출처불일치 7)·mktg 2 / R2 tech×dossier 1·creator×versus 9·mktg×overview 10. **최다결함 = C6 출처 id 불일치.**
+
+**뿌리수정 #1(88ec028) — allowed_source_ids 자동 도출:** metric 허가=출처 인용 허가. R2 3벌 전부 "source_id 불일치 0건" — **클래스 구조적 소멸**. (총 불량률은 flat: #1 죽으니 #2 raw-숫자가 최다로 부상 — 정직히 기록.)
+
+**렌더 전 린트(qa_lint·34bbf71·e8fb4f0):** 결정론적 결함 검출(0 LLM). 스팟체크로 정밀 보정(RAW_NUMBER 84→14·연도/카운터 오탐 제거). **공짜 결함 지도**(현행 16스펙): MIXED_SOURCE 14·RAW_NUMBER 10·ARCHETYPE_MISSING 6.
+
+**판단(2a3b1e5):** MIXED_SOURCE 스팟체크 → ~절반 오탐(미vs영 정당 비교) → **차단 미승격·WARN 유지**(노이즈 게이트 방지). RAW_NUMBER → designer.md 예방 + SKILL.md 7.5 qa_lint 렌더 전 게이트 배선.
+
+**확인 블라인드(mktg×keynote):** raw 2건(C6 raw-숫자 1) — R2 8~10 대비 **하락**(예방 배선 효과·단 1run). 잔여 qa_lint 0.
+
+**내용 감사(Gemini 파트너급):** 크리에이터 덱 = **"아름다운 엉터리 아니라 정석급"**. 3지적 = 주장이 counter_signal의 hedge 무시하고 과일반화 → **analyst.md 주장-근거 보정 규칙(3643062).** 내용 축의 뿌리 수정.
+
+**현 상태 요약:** 구조적 결함(출처id) 소멸 · 행동적 결함(raw-숫자) 예방 배선 · 내용 품질 검증 "정석급"+보정규칙 · MIXED_SOURCE는 WARN. **다음 프런티어 = 결함 아니라 제품화(v4 1콜)+원가**(외부리뷰 병목 #2·아직 하네스 실험장).
