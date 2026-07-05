@@ -58,6 +58,21 @@ STRUCTURAL_TEXT_KEYS = {
 }
 NON_BODY_LAYOUTS = {"cover", "index", "divider", "outro", "source_appendix"}
 BODY_OR_METRIC_BLOCK_TYPES = {"body", "metric", "metrics", "metric_grid", "stat_grid"}
+READER_FIRST_TEXT_KEYS = {"text", "note", "callout", "headline"}
+READER_FIRST_CAVEAT_FIELDS = {"text", "note", "callout"}
+READER_FIRST_EPISTEMIC_TERMS = (
+    "관찰되지",
+    "관찰되",
+    "관찰된",
+    "실측",
+    "병치",
+    "검증됨",
+    "검증된",
+    "스냅샷",
+    "레지스트리",
+    "표본",
+)
+READER_FIRST_SELF_REF_TERMS = ("이 덱", "이 보고서", "이 비교군", "이 장만")
 
 SEVERITY = {
     "RAW_NUMBER_IN_LABEL": "high",
@@ -66,6 +81,9 @@ SEVERITY = {
     "LAYOUT_MONOTONY": "low",
     "EMPTY_SCENARIO_CARD": "high",
     "UNBACKED_NUMBER_CLAIM": "medium",
+    "READER_FIRST_EPISTEMIC": "high",
+    "READER_FIRST_CAVEAT": "high",
+    "READER_FIRST_SELF_REF": "high",
 }
 
 
@@ -75,7 +93,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("registry", nargs="?", help="Path to 02_verified.json")
     parser.add_argument("--json", action="store_true", help="Print one JSON object")
     parser.add_argument("--corpus", help="Scan _workspace-style corpus directory")
+    parser.add_argument("--selfcheck", action="store_true", help="Run built-in qa_lint smoke checks")
     args = parser.parse_args(argv)
+
+    if args.selfcheck:
+        return _run_selfcheck()
 
     if args.corpus:
         try:
@@ -152,6 +174,9 @@ def lint_deck(deck_spec: dict[str, Any], registry: dict[str, Any], deck_path: Pa
         page_path = f"pages[{page_index}]"
         allowed_metric_ids = _string_set(page.get("allowed_metric_ids"))
         content = page.get("content", page.get("blocks", []))
+
+        if not _reader_first_exempt_page(page):
+            defects.extend(_reader_first_defects(content, page_id, f"{page_path}.content"))
 
         for defect in _raw_number_defects(content, page_id, f"{page_path}.content"):
             raw_paths.add((defect["page_id"], defect["where"]))
@@ -389,6 +414,50 @@ def _empty_scenario_card_defects(value: Any, page_id: str, path: str) -> list[di
     return defects
 
 
+def _reader_first_exempt_page(page: dict[str, Any]) -> bool:
+    if str(page.get("layout", "")).strip() == "source_appendix":
+        return True
+    short_title = str(page.get("short_title", "")).strip()
+    return "방법" in short_title and "한계" in short_title
+
+
+def _reader_first_defects(value: Any, page_id: str, path: str) -> list[dict[str, str]]:
+    defects: list[dict[str, str]] = []
+    for text, text_path, field_kind in _iter_reader_first_texts(value, path):
+        epistemic_term = _first_contained_term(text, READER_FIRST_EPISTEMIC_TERMS)
+        if epistemic_term:
+            defects.append(
+                _defect(
+                    "READER_FIRST_EPISTEMIC",
+                    page_id,
+                    text_path,
+                    f"reader-first epistemic term '{epistemic_term}': {_clip(text)}",
+                )
+            )
+
+        if field_kind in READER_FIRST_CAVEAT_FIELDS and text.lstrip().startswith("단, "):
+            defects.append(
+                _defect(
+                    "READER_FIRST_CAVEAT",
+                    page_id,
+                    text_path,
+                    f"reader-first caveat starts with '단, ': {_clip(text)}",
+                )
+            )
+
+        self_ref_term = _first_contained_term(text, READER_FIRST_SELF_REF_TERMS)
+        if self_ref_term:
+            defects.append(
+                _defect(
+                    "READER_FIRST_SELF_REF",
+                    page_id,
+                    text_path,
+                    f"reader-first self-reference '{self_ref_term}': {_clip(text)}",
+                )
+            )
+    return defects
+
+
 def _unbacked_number_defects(
     value: Any,
     page_id: str,
@@ -480,6 +549,67 @@ def _iter_visible_texts(value: Any, path: str, parent_block_type: str = ""):
             yield from _iter_visible_texts(nested, f"{path}[{index}]", parent_block_type)
 
 
+def _iter_reader_first_texts(value: Any, path: str, parent_block_type: str = ""):
+    if isinstance(value, dict):
+        block_type = str(value.get("type", parent_block_type)).strip() or parent_block_type
+        for key, nested in value.items():
+            next_path = f"{path}.{key}"
+            if key in STRUCTURAL_TEXT_KEYS:
+                continue
+            if isinstance(nested, str) and key in READER_FIRST_TEXT_KEYS:
+                field_kind = block_type if key == "text" and block_type in {"note", "callout", "headline"} else key
+                yield nested, next_path, field_kind
+            elif key == "items" and isinstance(nested, list):
+                yield from _iter_reader_first_items(nested, next_path, block_type)
+            elif key == "rows" and isinstance(nested, list):
+                yield from _iter_reader_first_rows(nested, next_path, block_type)
+            else:
+                yield from _iter_reader_first_texts(nested, next_path, block_type)
+    elif isinstance(value, list):
+        for index, nested in enumerate(value):
+            yield from _iter_reader_first_texts(nested, f"{path}[{index}]", parent_block_type)
+
+
+def _iter_reader_first_items(items: list[Any], path: str, parent_block_type: str):
+    for index, item in enumerate(items):
+        item_path = f"{path}[{index}]"
+        if isinstance(item, str):
+            yield item, item_path, "text"
+        elif isinstance(item, dict):
+            text = _item_text(item)
+            if text:
+                yield text, f"{item_path}.text", "text"
+            for item_key, item_nested in item.items():
+                if item_key == "text":
+                    continue
+                yield from _iter_reader_first_texts(item_nested, f"{item_path}.{item_key}", parent_block_type)
+        else:
+            yield from _iter_reader_first_texts(item, item_path, parent_block_type)
+
+
+def _iter_reader_first_rows(rows: list[Any], path: str, parent_block_type: str):
+    for row_index, row in enumerate(rows):
+        row_path = f"{path}[{row_index}]"
+        if isinstance(row, list):
+            for cell_index, cell in enumerate(row):
+                cell_path = f"{row_path}[{cell_index}]"
+                if isinstance(cell, str):
+                    yield cell, cell_path, "rows"
+                else:
+                    yield from _iter_reader_first_texts(cell, cell_path, parent_block_type)
+        elif isinstance(row, str):
+            yield row, row_path, "rows"
+        else:
+            yield from _iter_reader_first_texts(row, row_path, parent_block_type)
+
+
+def _first_contained_term(text: str, terms: tuple[str, ...]) -> str:
+    for term in terms:
+        if term in text:
+            return term
+    return ""
+
+
 def _item_text(item: Any) -> str:
     if isinstance(item, str):
         return item
@@ -548,6 +678,98 @@ def print_corpus_report(corpus_dir: Path) -> None:
     for code in sorted(SEVERITY):
         top = ", ".join(examples[code]) if examples.get(code) else "none"
         print(f"  {code}: {totals[code]} (top_examples: {top})")
+
+
+def _run_selfcheck() -> int:
+    registry: dict[str, Any] = {}
+    cases = [
+        (
+            "reader_first_epistemic_body_detected",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "body_epistemic",
+                        "short_title": "본문",
+                        "layout": "body",
+                        "content": [{"type": "body", "text": "관찰되지 않는다"}],
+                    }
+                ],
+            },
+            {"READER_FIRST_EPISTEMIC"},
+            set(),
+        ),
+        (
+            "reader_first_epistemic_appendix_skipped",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "appendix_epistemic",
+                        "short_title": "출처",
+                        "layout": "source_appendix",
+                        "content": [{"type": "body", "text": "관찰되지 않는다"}],
+                    },
+                    {
+                        "page_id": "methods_epistemic",
+                        "short_title": "방법과 한계",
+                        "layout": "body",
+                        "content": [{"type": "body", "text": "관찰되지 않는다"}],
+                    },
+                ],
+            },
+            set(),
+            {"READER_FIRST_EPISTEMIC"},
+        ),
+        (
+            "reader_first_caveat_note_detected",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "body_caveat",
+                        "short_title": "본문",
+                        "layout": "body",
+                        "content": [{"type": "note", "text": "단, 한계는 별도 확인한다"}],
+                    }
+                ],
+            },
+            {"READER_FIRST_CAVEAT"},
+            set(),
+        ),
+        (
+            "reader_first_self_ref_detected",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "body_self_ref",
+                        "short_title": "본문",
+                        "layout": "body",
+                        "content": [{"type": "callout", "text": "이 덱은 판단만 남긴다"}],
+                    }
+                ],
+            },
+            {"READER_FIRST_SELF_REF"},
+            set(),
+        ),
+    ]
+
+    failures: list[str] = []
+    for name, deck_spec, required, forbidden in cases:
+        codes = {defect["code"] for defect in lint_deck(deck_spec, registry)}
+        missing = sorted(required - codes)
+        unexpected = sorted(forbidden & codes)
+        if missing or unexpected:
+            failures.append(f"{name}: missing={missing or 'none'} unexpected={unexpected or 'none'}")
+
+    if failures:
+        print("qa_lint selfcheck FAILED", file=sys.stderr)
+        for failure in failures:
+            print(f"- {failure}", file=sys.stderr)
+        return 1
+    print("qa_lint selfcheck OK")
+    return 0
 
 
 if __name__ == "__main__":
