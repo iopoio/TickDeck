@@ -73,7 +73,12 @@ def main() -> int:
         print(f"NO_RUN_DIR: {run_dir}")
         return 2
 
+    has_c8_inputs = all(
+        (run_dir / name).exists()
+        for name in ("00_intake.json", "01_evidence_pool.json", "05_page_plan.json")
+    )
     intake = _load(run_dir, "00_intake.json") or {}
+    evidence_pool = _load(run_dir, "01_evidence_pool.json") or {}
     insights = (_load(run_dir, "03_insights.json") or {}).get("insights", [])
     dag = _load(run_dir, "04_proposition_dag.json", "04_dag.json") or {}
     page_plan = _load(run_dir, "05_page_plan.json") or {}
@@ -97,11 +102,20 @@ def main() -> int:
         "content_registry": verified,
         "rendered_html": rendered_html,
     }
+    if has_c8_inputs:
+        deck.update(
+            {
+                "intake": intake,
+                "evidence_pool": evidence_pool,
+                "page_plan": page_plan,
+            }
+        )
 
     missing = [
         name
         for name, value in (
             ("00_intake", intake),
+            ("01_evidence_pool", evidence_pool),
             ("02_verified", verified),
             ("03_insights", insights),
             ("04_dag", dag),
@@ -184,7 +198,7 @@ def main() -> int:
             print(f"FAIL {violation}")
         print(f"→ {len(violations)}건 위반")
         return 1
-    print("→ C1~C6 위반 0건")
+    print("→ C1~C8 위반 0건")
     return 0
 
 

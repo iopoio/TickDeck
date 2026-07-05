@@ -396,6 +396,61 @@ def validate_c6_content_authority(
     return violations
 
 
+def check_c8_genre_artifacts(
+    intake: dict[str, Any],
+    evidence_pool: dict[str, Any],
+    page_plan: dict[str, Any],
+) -> list[ContractViolation]:
+    genre = str(intake.get("genre", "")).lower()
+    if not any(term in genre for term in ("market-research", "market_research", "시장조사", "경쟁분석")):
+        return []
+
+    violations: list[ContractViolation] = []
+    pages = page_plan.get("pages")
+    if not isinstance(pages, list):
+        pages = []
+    artifacts = {
+        str(page.get("genre_artifact", "")).strip()
+        for page in pages
+        if isinstance(page, dict)
+    }
+    if "taxonomy" not in artifacts:
+        violations.append(
+            ContractViolation(
+                "C8",
+                "market-research requires a taxonomy page (genre_artifact='taxonomy' in page_plan)",
+                "page_plan.pages",
+            )
+        )
+    if "player_table" not in artifacts:
+        violations.append(
+            ContractViolation(
+                "C8",
+                "market-research requires a player_table page (genre_artifact='player_table' in page_plan)",
+                "page_plan.pages",
+            )
+        )
+
+    items = evidence_pool.get("items")
+    if not isinstance(items, list):
+        items = []
+    observation_count = sum(
+        1
+        for item in items
+        if isinstance(item, dict) and str(item.get("source_type", "")).strip().lower() == "observation"
+    )
+    if observation_count < 5:
+        violations.append(
+            ContractViolation(
+                "C8",
+                f"market-research requires at least 5 observation evidence items (found {observation_count})",
+                "evidence_pool.items",
+            )
+        )
+
+    return violations
+
+
 def validate_all_contracts(deck: dict[str, Any], raise_on_error: bool = False) -> list[ContractViolation]:
     violations: list[ContractViolation] = []
     violations.extend(validate_c1_proposition_dag(deck.get("proposition_dag", {})))
@@ -409,6 +464,14 @@ def validate_all_contracts(deck: dict[str, Any], raise_on_error: bool = False) -
                 deck.get("deck_spec", {}),
                 deck.get("content_registry", {}),
                 deck.get("rendered_html", ""),
+            )
+        )
+    if "intake" in deck and "evidence_pool" in deck and "page_plan" in deck:
+        violations.extend(
+            check_c8_genre_artifacts(
+                deck.get("intake", {}),
+                deck.get("evidence_pool", {}),
+                deck.get("page_plan", {}),
             )
         )
 

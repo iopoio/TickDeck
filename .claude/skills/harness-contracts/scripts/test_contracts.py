@@ -11,6 +11,7 @@ from contract_checks import (
     validate_c4_citation_tracker,
     validate_c5_stage_order,
     validate_c6_content_authority,
+    check_c8_genre_artifacts,
     validate_all_contracts,
 )
 
@@ -509,6 +510,41 @@ class HarnessContractTests(unittest.TestCase):
             rendered_html=VALID_RENDERED_HTML,
         )
         self.assertEqual(validate_all_contracts(deck), [])
+
+    def test_c8_accepts_market_research_required_artifacts(self):
+        intake = {"genre": "market-research"}
+        evidence_pool = {"items": [{"source_type": "observation"} for _ in range(5)]}
+        page_plan = {"pages": [{"genre_artifact": "taxonomy"}, {"genre_artifact": "player_table"}]}
+        self.assertEqual(check_c8_genre_artifacts(intake, evidence_pool, page_plan), [])
+
+    def test_c8_rejects_market_research_without_player_table(self):
+        intake = {"genre": "market_research"}
+        evidence_pool = {"items": [{"source_type": "observation"} for _ in range(5)]}
+        page_plan = {"pages": [{"genre_artifact": "taxonomy"}]}
+        violations = check_c8_genre_artifacts(intake, evidence_pool, page_plan)
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C8")
+        self.assertIn("player_table", violations[0].message)
+
+    def test_c8_rejects_market_research_with_too_few_observations(self):
+        intake = {"genre": "시장조사"}
+        evidence_pool = {"items": [{"source_type": "observation"} for _ in range(3)]}
+        page_plan = {"pages": [{"genre_artifact": "taxonomy"}, {"genre_artifact": "player_table"}]}
+        violations = check_c8_genre_artifacts(intake, evidence_pool, page_plan)
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C8")
+        self.assertIn("requires at least 5 observation evidence items (found 3)", violations[0].message)
+
+    def test_c8_skips_non_market_research_genres(self):
+        intake = {"genre": "trend-report"}
+        evidence_pool = {"items": []}
+        page_plan = {"pages": []}
+        self.assertEqual(check_c8_genre_artifacts(intake, evidence_pool, page_plan), [])
+
+    def test_c8_skips_missing_genre(self):
+        evidence_pool = {"items": []}
+        page_plan = {"pages": []}
+        self.assertEqual(check_c8_genre_artifacts({}, evidence_pool, page_plan), [])
 
     def test_render_deck_injects_metric_values_and_generated_citations(self):
         html = render_deck_module.render_deck(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, title="C6 Fixture")
