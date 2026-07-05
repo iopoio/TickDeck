@@ -45,9 +45,10 @@ cat >> "$FIT" <<'EOF'
   });
   // 저대비 무독 텍스트 — closing 칩 navy-on-navy처럼 글자색≈배경색이라 실측으로만 잡히던 클래스(7/3).
   // 텍스트 leaf의 색 vs 가장 가까운 불투명 배경색의 명도차. 그라디언트(background-image) 조상은 판정 불가라 skip.
-  function lum(c){var m=c.match(/\d+(\.\d+)?/g);if(!m)return null;return (0.2126*m[0]+0.7152*m[1]+0.0722*m[2])/255;}
+  // color-mix() 결과는 Chrome이 color(srgb r g b) 0-1 float로 돌려줌(7/5 실측) — rgb() 0-255와 스케일 분기.
+  function lum(c){var m=c.match(/\d+(\.\d+)?/g);if(!m)return null;var d=/^color\(/.test(c)?1:255;return (0.2126*m[0]+0.7152*m[1]+0.0722*m[2])/d;}
   // 반투명 배경(알파<0.9)은 실효색을 모름 — 다크 테마의 rgba 카드가 "흰 배경"으로 오판되던 사각(7/4). 판정 불가 취급.
-  function alphaOf(c){var m=c.match(/rgba\([^)]*,\s*([\d.]+)\s*\)/);return m?parseFloat(m[1]):1;}
+  function alphaOf(c){var m=c.match(/rgba\([^)]*,\s*([\d.]+)\s*\)/)||c.match(/^color\([^)]*\/\s*([\d.]+)\s*\)/);return m?parseFloat(m[1]):1;}
   document.querySelectorAll('.slide *').forEach(function(el){
     if(!el.childNodes.length||el.offsetParent===null) return;
     var hasText=[].some.call(el.childNodes,function(n){return n.nodeType===3&&n.textContent.trim();});
