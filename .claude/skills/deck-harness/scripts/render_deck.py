@@ -868,11 +868,14 @@ def _render_stack(body_parts: list[str]) -> str:
         lead, body_parts = body_parts[0], body_parts[1:]
     if not body_parts:
         return f'<main class="body layout-body stack-outer">{lead}</main>'
+    # note(캐비앗)는 하단 전폭 한 줄 — _extract_note_row 주석의 "split/stack 공통"이 stack에선
+    # 배선이 빠져 note가 행 안에 끼어 세로를 밀던 결함(7/5 레버1 e2e p05 실측).
+    note_row, body_parts = _extract_note_row(body_parts)
     top, rest = body_parts[0], body_parts[1:]
     # 하단 가로 배열: 지표 카드와 note 박스가 나란할 때 키를 맞춘다(후추님 7/4 p07 "우측 박스 높이=좌측").
     # stretch는 이미 걸려 있으나 metric-grid 안의 카드가 안 늘어나 빈 공간이 생겼다 → 카드 자체를 100%로.
     row = f'<div class="stack-row">{"".join(rest)}</div>' if rest else ""
-    return f'<main class="body layout-body stack-outer">{lead}{top}{row}</main>'
+    return f'<main class="body layout-body stack-outer">{lead}{top}{row}{note_row}</main>'
 
 
 def _render_stepper(body_parts: list[str]) -> str:
@@ -3637,6 +3640,9 @@ h1 {{
    생기던 것 — 카드/그리드를 100%로 채워 note 박스와 밑선을 맞춘다. */
 .stack-row .metric-grid {{ height: 100%; }}
 .stack-row .metric-grid .metric-card {{ height: 100%; }}
+/* 3장 이상 grid가 stack-row 한 열에 끼면 3번째 카드가 줄바꿈→슬라이드 밖 잘림(7/5 레버1 e2e p05 실측).
+   3+장은 전폭 행으로 — 2장 grid는 note 박스 나란히(7/4) 규칙 유지. */
+.stack-row .metric-grid:has(> .metric-card:nth-child(3)) {{ grid-column: 1 / -1; height: auto; }}
 .visual-card text {{
   font-family: var(--font-chart, "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif);
   letter-spacing: 0;
