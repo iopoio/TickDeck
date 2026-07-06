@@ -51,6 +51,20 @@ collected: YYYY-MM-DD
 - 상품 페이지에 공개된 **프리뷰/스크린샷 이미지만** 저장한다. 유료 원본 파일(pptx/key) 다운로드·크랙 시도 금지
 - 용도 = 시각 문법 학습 참고 (복제가 아니라 "공통 관례" 추출). meta.txt의 url이 출처 기록
 
+## 실전 PDF 리포트 (2026-07-06 신설 — 후추님 "PDF 최우선" 지시)
+
+템플릿 마켓은 "팔려고 만든 덱", 진짜 문법은 컨설팅사·투자사 **실전 PDF**에 있다. **수집 우선순위 1순위.**
+
+- 도구: `python3 pdf_intake.py <PDF_URL> <슬러그> <family>` → inbox 아이템 자동 생성 (다운로드→페이지별 JPG 1200px→meta 스텁). 생성 후 meta.txt의 name·sub_tags 실측 태깅 의무
+- 폴더 접두사 `pdf_`. 원본 `source.pdf` 동봉 (JPG는 분석용, PDF가 정본)
+- 자격 완화: 실전 리포트는 **4:3·변형 가로판도 OK** (BOND=4:3). 세로 A4 리포트는 editorial 문법용으로만 선별 수집
+- 게이트(이메일월·Drive 보기전용·로그인) = **우회 금지.** 공개 직링크가 있는 것만. 막히면 미러·다른 발행물로
+- 검증된 소스 (직링크 다운로드 확인됨):
+  - BOND Capital (bondcap.com/report/pdf/) — 2026-07-06 수집 완료
+  - 삼정KPMG (assets.kpmg.com .../kr/pdf/) — 이슈모니터·Business Focus·CES 프리뷰. 2026-07-06 수집 완료
+- 후보 소스 (직링크 미확인 — 수집 시 확인): McKinsey·BCG·Bain·Deloitte Insights 발행물, a16z·Activate Consulting 연례 덱, 네이버 증권 리서치(증권사 산업분석 PDF 직링크), 상장사 IR 덱
+- 막힌 것: Coatue EMW 덱 = Drive 보기 전용 (다운로드 차단) — 공식 공개 미러 찾기 전까지 보류
+
 ## 수집 팁 (creativemarket 기준)
 
 - 상품 페이지 직접 curl은 Cloudflare에 막힘 — 프리뷰 이미지 CDN(`tint.creativemarket.com/...width:1200...`)은 직링크 다운로드 가능. 페이지에서 이미지 URL을 추출한 뒤 curl로 받는다
