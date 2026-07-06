@@ -18,6 +18,8 @@ from contract_checks import _registry_map, _string_set  # noqa: E402
 
 RAW_DIGIT_PATTERN = re.compile(r"\d")
 NUMBER_PATTERN = re.compile(r"(?<![A-Za-z0-9_])[+-]?\d+(?:[.,]\d+)*(?:\.\d+)?")
+FOUR_DIGIT_YEAR_PATTERN = re.compile(r"(?<!\d)(?:19|20)\d{2}(?!\d)")
+YEAR_RANGE_PREFIX_PATTERN = re.compile(r"(?:19|20)\d{2}\s*[~\-–—]\s*$")
 # 데이터 값으로 읽히는 숫자만 결함(연도·섹션 카운터·id 면제) — 검출기 정밀도 보정(7/5 스팟체크: \d는 절반이 오탐).
 # 데이터 단위(%·만·억·배 등) 동반 or ==강조== 안의 숫자만. 연/월/주/위 등 모호 단위는 제외.
 _DATA_UNIT_NUM = re.compile(r"\d[\d.,]*\s*(%|％|만|억|조|천|배|명|원|점|개|건|달러|위안|엔|퍼센트|‰|[xX×])")
@@ -176,13 +178,14 @@ def lint_deck(deck_spec: dict[str, Any], registry: dict[str, Any], deck_path: Pa
         page_id = _page_id(page, page_index)
         page_path = f"pages[{page_index}]"
         allowed_metric_ids = _string_set(page.get("allowed_metric_ids"))
+        backed_numbers = _allowed_metric_numbers(allowed_metric_ids, metric_registry)
         content = page.get("content", page.get("blocks", []))
 
         if not _reader_first_exempt_page(page):
             defects.extend(_reader_first_defects(content, page_id, f"{page_path}.content"))
             defects.extend(_reader_first_jargon_defects(page, content, page_id, page_path))
 
-        for defect in _raw_number_defects(content, page_id, f"{page_path}.content"):
+        for defect in _raw_number_defects(content, page_id, f"{page_path}.content", backed_numbers):
             raw_paths.add((defect["page_id"], defect["where"]))
             defects.append(defect)
 
@@ -280,7 +283,7 @@ def _layout_monotony_defects(pages: list[Any]) -> list[dict[str, str]]:
     return defects
 
 
-def _raw_number_defects(value: Any, page_id: str, path: str) -> list[dict[str, str]]:
+def _raw_number_defects(value: Any, page_id: str, path: str, backed_numbers: set[str]) -> list[dict[str, str]]:
     defects: list[dict[str, str]] = []
     for block, block_path in _iter_blocks(value, path):
         block_type = str(block.get("type", "")).strip()
@@ -290,11 +293,11 @@ def _raw_number_defects(value: Any, page_id: str, path: str) -> list[dict[str, s
             defects.extend(_raw_number_viz_defects(block, page_id, block_path))
             continue
         if block_type == "text_table":
-            defects.extend(_raw_number_text_table_defects(block, page_id, block_path))
+            defects.extend(_raw_number_text_table_defects(block, page_id, block_path, backed_numbers))
             continue
         if block_type in TEXT_BLOCK_TYPES:
             text = block.get("text")
-            if _has_data_number(text):
+            if _has_unbacked_raw_label_number(text, backed_numbers):
                 defects.append(
                     _defect(
                         "RAW_NUMBER_IN_LABEL",
@@ -304,14 +307,19 @@ def _raw_number_defects(value: Any, page_id: str, path: str) -> list[dict[str, s
                     )
                 )
         if block_type == "bullets":
-            defects.extend(_raw_number_bullet_defects(block, page_id, block_path))
+            defects.extend(_raw_number_bullet_defects(block, page_id, block_path, backed_numbers))
     return defects
 
 
-def _raw_number_text_table_defects(block: dict[str, Any], page_id: str, block_path: str) -> list[dict[str, str]]:
+def _raw_number_text_table_defects(
+    block: dict[str, Any],
+    page_id: str,
+    block_path: str,
+    backed_numbers: set[str],
+) -> list[dict[str, str]]:
     defects: list[dict[str, str]] = []
     for text, text_path in _iter_text_table_cells(block.get("rows"), f"{block_path}.rows"):
-        if _has_data_number(text):
+        if _has_unbacked_raw_label_number(text, backed_numbers):
             defects.append(
                 _defect(
                     "RAW_NUMBER_IN_LABEL",
@@ -355,7 +363,12 @@ def _raw_number_viz_defects(block: dict[str, Any], page_id: str, block_path: str
     return defects
 
 
-def _raw_number_bullet_defects(block: dict[str, Any], page_id: str, block_path: str) -> list[dict[str, str]]:
+def _raw_number_bullet_defects(
+    block: dict[str, Any],
+    page_id: str,
+    block_path: str,
+    backed_numbers: set[str],
+) -> list[dict[str, str]]:
     defects: list[dict[str, str]] = []
     items = block.get("items")
     if not isinstance(items, list):
@@ -363,7 +376,7 @@ def _raw_number_bullet_defects(block: dict[str, Any], page_id: str, block_path: 
     for index, item in enumerate(items):
         item_path = f"{block_path}.items[{index}]"
         text = _item_text(item)
-        if _has_data_number(text):
+        if _has_unbacked_raw_label_number(text, backed_numbers):
             suffix = ".text" if isinstance(item, dict) else ""
             defects.append(
                 _defect(
@@ -374,6 +387,37 @@ def _raw_number_bullet_defects(block: dict[str, Any], page_id: str, block_path: 
                 )
             )
     return defects
+
+
+def _has_unbacked_raw_label_number(text: Any, backed_numbers: set[str]) -> bool:
+    if not _has_data_number(text) or not isinstance(text, str):
+        return False
+    numbers = [
+        number
+        for number, match in _iter_normalized_number_matches(text)
+        if not _is_context_year_or_date_number(text, number, match)
+    ]
+    return any(number not in backed_numbers for number in numbers)
+
+
+def _iter_normalized_number_matches(text: str):
+    for match in NUMBER_PATTERN.finditer(text):
+        number = _normalize_number(match.group(0))
+        if number:
+            yield number, match
+
+
+def _is_context_year_or_date_number(text: str, number: str, match: re.Match[str]) -> bool:
+    if FOUR_DIGIT_YEAR_PATTERN.fullmatch(number):
+        return True
+    suffix = text[match.end() :]
+    if (
+        re.fullmatch(r"\d{2}", number)
+        and YEAR_RANGE_PREFIX_PATTERN.search(text[: match.start()])
+        and re.match(r"\s*년", suffix)
+    ):
+        return True
+    return bool(re.match(r"\s*[년월일]", suffix))
 
 
 def _mixed_source_chart_defects(
@@ -771,7 +815,14 @@ def print_corpus_report(corpus_dir: Path) -> None:
 
 
 def _run_selfcheck() -> int:
-    registry: dict[str, Any] = {}
+    registry: dict[str, Any] = {
+        "metric_registry": {
+            "sales_300": {"value": "300", "unit": "만개"},
+            "ratio_156": {"value": "1.56"},
+            "week_12": {"value": "12"},
+            "week_26": {"value": "26"},
+        }
+    }
     cases = [
         (
             "reader_first_epistemic_body_detected",
@@ -863,6 +914,97 @@ def _run_selfcheck() -> int:
                 ],
             },
             {"READER_FIRST_CAVEAT", "READER_FIRST_EPISTEMIC", "RAW_NUMBER_IN_LABEL"},
+            set(),
+        ),
+        (
+            "backed_number_in_table_cell_passes",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "backed_table_cell",
+                        "short_title": "표",
+                        "layout": "statement",
+                        "allowed_metric_ids": ["sales_300"],
+                        "content": [
+                            {
+                                "type": "text_table",
+                                "columns": ["구분", "해석"],
+                                "rows": [["판매", "출시 1년 만에 300만 개 (2018~19년 얘기)"]],
+                            }
+                        ],
+                    }
+                ],
+            },
+            set(),
+            {"RAW_NUMBER_IN_LABEL"},
+        ),
+        (
+            "unbacked_number_in_table_cell_fails",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "unbacked_table_cell",
+                        "short_title": "표",
+                        "layout": "statement",
+                        "allowed_metric_ids": ["sales_300"],
+                        "content": [
+                            {
+                                "type": "text_table",
+                                "columns": ["구분", "해석"],
+                                "rows": [["판매", "999억을 팔았다"]],
+                            }
+                        ],
+                    }
+                ],
+            },
+            {"RAW_NUMBER_IN_LABEL"},
+            set(),
+        ),
+        (
+            "backed_number_in_body_passes",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "backed_body",
+                        "short_title": "본문",
+                        "layout": "body",
+                        "allowed_metric_ids": ["week_12", "ratio_156", "week_26"],
+                        "content": [
+                            {
+                                "type": "body",
+                                "text": "12주엔 1.56배로 뚜렷했지만 26주엔 사라졌다",
+                            }
+                        ],
+                    }
+                ],
+            },
+            set(),
+            {"RAW_NUMBER_IN_LABEL"},
+        ),
+        (
+            "viz_label_number_still_fails",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "viz_label_raw",
+                        "short_title": "차트",
+                        "layout": "statement",
+                        "allowed_metric_ids": ["sales_300"],
+                        "content": [
+                            {
+                                "type": "viz",
+                                "chart": "big_number",
+                                "series": [{"metric_id": "sales_300", "label": "300만 개 판매"}],
+                            }
+                        ],
+                    }
+                ],
+            },
+            {"RAW_NUMBER_IN_LABEL"},
             set(),
         ),
         (
