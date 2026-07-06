@@ -101,6 +101,10 @@ SUPPORTED_VIZ_SERIES_ROLES = frozenset(
         "brand",
     }
 )
+SUPPORTED_PAGE_CHROMES = frozenset({"", "running_head", "title_band"})
+SUPPORTED_VIZ_SOURCE_CAPTIONS = frozenset({"", "on", "off"})
+SUPPORTED_VIZ_TITLE_STYLES = frozenset({"", "band"})
+TITLE_BAND_MAX_CHARS = 72
 SUPPORTED_LAYOUTS = frozenset(
     {
         "cover",
@@ -336,6 +340,20 @@ def validate_c6_content_authority(
 
     source_registry = _registry_map(content_registry, ("sources", "source_registry"))
     metric_registry = _registry_map(content_registry, ("metrics", "metric_registry"))
+    violations.extend(_validate_r2_registry_fields(source_registry, metric_registry))
+
+    meta = deck_spec.get("meta") if isinstance(deck_spec.get("meta"), dict) else {}
+    page_chrome = str(meta.get("page_chrome", "")).strip()
+    if page_chrome not in SUPPORTED_PAGE_CHROMES:
+        violations.append(ContractViolation("C6", f"unsupported page_chrome: {page_chrome}", "deck_spec.meta.page_chrome"))
+    if page_chrome == "title_band" and bool(meta.get("running_head")):
+        violations.append(
+            ContractViolation(
+                "C6",
+                "page_chrome title_band cannot combine with running_head",
+                "deck_spec.meta",
+            )
+        )
 
     for page_index, page in enumerate(pages):
         if not isinstance(page, dict):
@@ -406,6 +424,16 @@ def validate_c6_content_authority(
 
         if page.get("short_title") is None:
             violations.append(ContractViolation("C6", "page must include short_title", f"{page_path}.short_title"))
+        elif page_chrome == "title_band" and str(page.get("layout", "statement")) not in {"cover", "divider", "closing", "outro", "source_appendix"}:
+            title = str(page.get("short_title", "")).strip()
+            if len(title) > TITLE_BAND_MAX_CHARS:
+                violations.append(
+                    ContractViolation(
+                        "C6",
+                        f"title_band title exceeds {TITLE_BAND_MAX_CHARS} characters",
+                        f"{page_path}.short_title",
+                    )
+                )
         layout = page.get("layout")
         if layout is None:
             violations.append(ContractViolation("C6", "page must include layout", f"{page_path}.layout"))
@@ -751,6 +779,16 @@ def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolat
     if chart not in SUPPORTED_VIZ_CHART_TYPES:
         violations.append(ContractViolation("C6", f"unsupported viz chart type: {chart}", f"{path}.chart"))
 
+    source_caption = str(block.get("source_caption", "")).strip()
+    if source_caption not in SUPPORTED_VIZ_SOURCE_CAPTIONS:
+        violations.append(
+            ContractViolation("C6", f"unsupported viz source_caption: {source_caption}", f"{path}.source_caption")
+        )
+
+    title_style = str(block.get("title_style", "")).strip()
+    if title_style not in SUPPORTED_VIZ_TITLE_STYLES:
+        violations.append(ContractViolation("C6", f"unsupported viz title_style: {title_style}", f"{path}.title_style"))
+
     for field in ("title", "note"):
         text = block.get(field)
         if isinstance(text, str) and RAW_NUMBER_PATTERN.search(text):
@@ -812,6 +850,28 @@ def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolat
             if field in item:
                 violations.append(ContractViolation("C6", f"viz series must not include direct {field}", f"{item_path}.{field}"))
 
+    return violations
+
+
+def _validate_r2_registry_fields(
+    source_registry: dict[str, Any],
+    metric_registry: dict[str, Any],
+) -> list[ContractViolation]:
+    violations: list[ContractViolation] = []
+    for src_id, source in source_registry.items():
+        if not isinstance(source, dict):
+            continue
+        if "short_name" in source and not isinstance(source.get("short_name"), str):
+            violations.append(
+                ContractViolation("C6", "source short_name must be text", f"content_registry.sources.{src_id}.short_name")
+            )
+    for metric_id, metric in metric_registry.items():
+        if not isinstance(metric, dict):
+            continue
+        if "period" in metric and not isinstance(metric.get("period"), str):
+            violations.append(
+                ContractViolation("C6", "metric period must be text", f"content_registry.metrics.{metric_id}.period")
+            )
     return violations
 
 
@@ -902,6 +962,7 @@ class _RenderedAuthorityParser(HTMLParser):
                 "running-head-frac",
                 "verified-badge",
                 "fin-period",
+                "visual-source-caption",
             }:
                 return True
             # 간지 프리뷰(divider-items) = short_title 복제 — 원본(h1)이 면제이므로 복제도 면제(7/3).

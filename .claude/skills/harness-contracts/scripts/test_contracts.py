@@ -367,6 +367,121 @@ class HarnessContractTests(unittest.TestCase):
     def test_c6_accepts_viz_blocks_with_metric_id_series(self):
         self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC_WITH_VIZ, VALID_CONTENT_REGISTRY, ""), [])
 
+    def test_c6_accepts_r2_source_and_viz_options(self):
+        registry = {
+            "sources": {
+                **VALID_CONTENT_REGISTRY["sources"],
+                "src_a": {
+                    **VALID_CONTENT_REGISTRY["sources"]["src_a"],
+                    "short_name": "Pew",
+                },
+            },
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_click_drop": {
+                    **VALID_CONTENT_REGISTRY["metrics"]["metric_click_drop"],
+                    "period": "1Q26",
+                },
+            },
+        }
+        spec = {
+            "meta": {"page_chrome": "title_band"},
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "before_after",
+                            "title": "Summary Collapse",
+                            "source_caption": "off",
+                            "title_style": "band",
+                            "series": [
+                                {"label": "Baseline", "metric_id": "metric_measurement", "role": "baseline"},
+                                {"label": "With Summary", "metric_id": "metric_click_drop", "role": "highlight"},
+                            ],
+                        }
+                    ],
+                )
+            ],
+        }
+
+        self.assertEqual(validate_c6_content_authority(spec, registry, ""), [])
+
+    def test_c6_rejects_invalid_r2_optional_fields_and_viz_options(self):
+        registry = {
+            "sources": {
+                "src_a": {
+                    **VALID_CONTENT_REGISTRY["sources"]["src_a"],
+                    "short_name": ["Pew"],
+                },
+                "src_b": VALID_CONTENT_REGISTRY["sources"]["src_b"],
+            },
+            "metrics": {
+                "metric_click_drop": {
+                    **VALID_CONTENT_REGISTRY["metrics"]["metric_click_drop"],
+                    "period": {"label": "1Q26"},
+                },
+                "metric_measurement": VALID_CONTENT_REGISTRY["metrics"]["metric_measurement"],
+            },
+        }
+        spec = {
+            "meta": {"page_chrome": "poster_band"},
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "before_after",
+                            "source_caption": "manual",
+                            "title_style": "badge",
+                            "series": [
+                                {"label": "Baseline", "metric_id": "metric_measurement", "role": "baseline"},
+                                {"label": "With Summary", "metric_id": "metric_click_drop", "role": "highlight"},
+                            ],
+                        }
+                    ],
+                )
+            ],
+        }
+
+        violations = validate_c6_content_authority(spec, registry, "")
+
+        self.assertTrue(any("source short_name must be text" in str(v) for v in violations))
+        self.assertTrue(any("metric period must be text" in str(v) for v in violations))
+        self.assertTrue(any("unsupported page_chrome: poster_band" in str(v) for v in violations))
+        self.assertTrue(any("unsupported viz source_caption: manual" in str(v) for v in violations))
+        self.assertTrue(any("unsupported viz title_style: badge" in str(v) for v in violations))
+
+    def test_c6_rejects_running_head_title_band_collision(self):
+        spec = {
+            "meta": {
+                "page_chrome": "title_band",
+                "running_head": True,
+            },
+            "pages": [dict(VALID_DECK_SPEC["pages"][0])],
+        }
+
+        violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, "")
+
+        self.assertTrue(any("page_chrome title_band cannot combine with running_head" in str(v) for v in violations))
+
+    def test_c6_rejects_title_band_title_over_contract_limit(self):
+        spec = {
+            "meta": {"page_chrome": "title_band"},
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    short_title="아주 긴 밴드 제목 " * 12,
+                )
+            ],
+        }
+
+        violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, "")
+
+        self.assertTrue(any("title_band title exceeds" in str(v) for v in violations))
+
     def test_c6_rejects_unknown_viz_series_role(self):
         invalid = {
             "pages": [
@@ -1496,6 +1611,147 @@ class HarnessContractTests(unittest.TestCase):
         self.assertNotIn("page-number", body_a)
         self.assertNotIn("running-head", cover)
 
+    def test_render_deck_outputs_title_band_chrome_for_body_and_divider_pages(self):
+        spec = {
+            "meta": {"page_chrome": "title_band", "short_title": "Proof OS"},
+            "pages": [
+                dict(VALID_COVER_DECK_SPEC["pages"][0]),
+                dict(VALID_DECK_SPEC["pages"][0], page_id="body_a", short_title="Signal One"),
+                {
+                    "page_id": "divider_a",
+                    "short_title": "Part One",
+                    "layout": "divider",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": [],
+                    "content": [{"type": "headline", "text": "중앙 스테이트먼트"}],
+                },
+                dict(VALID_CLOSING_DECK_SPEC["pages"][0]),
+            ],
+        }
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Title Band Fixture")
+        body_a = html.split('data-page-id="body_a"', 1)[1].split("</section>", 1)[0]
+        divider_a = html.split('data-page-id="divider_a"', 1)[1].split("</section>", 1)[0]
+        cover = html.split('data-page-id="cover"', 1)[1].split("</section>", 1)[0]
+        closing = html.split('data-page-id="p15"', 1)[1].split("</section>", 1)[0]
+
+        self.assertIn("title-band", body_a)
+        self.assertIn("Signal One", body_a)
+        self.assertIn('title-band-text"></span>', divider_a)
+        self.assertIn("중앙 스테이트먼트", divider_a)
+        self.assertNotIn("title-band", cover)
+        self.assertNotIn("title-band", closing)
+
+    def test_render_deck_source_caption_is_opt_in_and_uses_registry_short_name(self):
+        registry = {
+            "sources": {
+                "src_a": {
+                    **VALID_CONTENT_REGISTRY["sources"]["src_a"],
+                    "short_name": "Pew",
+                },
+                "src_b": VALID_CONTENT_REGISTRY["sources"]["src_b"],
+            },
+            "metrics": {
+                "metric_click_drop": {
+                    **VALID_CONTENT_REGISTRY["metrics"]["metric_click_drop"],
+                    "period": "1Q26",
+                },
+                "metric_measurement": VALID_CONTENT_REGISTRY["metrics"]["metric_measurement"],
+            },
+        }
+        spec = {
+            "theme": "tech",
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    page_id="caption_fixture",
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "before_after",
+                            "title": "Summary Collapse",
+                            "source_caption": "on",
+                            "series": [
+                                {"label": "Before", "metric_id": "metric_measurement", "role": "baseline"},
+                                {"label": "After", "metric_id": "metric_click_drop", "role": "highlight"},
+                            ],
+                        }
+                    ],
+                )
+            ],
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="Source Caption Fixture")
+
+        self.assertIn("visual-source-caption", html)
+        self.assertIn("— 1Q26 · per IAB, Pew", html)
+        self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
+
+    def test_render_deck_source_caption_falls_back_to_source_publisher_prefix(self):
+        registry = {
+            "sources": {
+                "src_a": {
+                    "publisher": "식품의약품안전처 (SNUH 미러 게시)",
+                    "url": "https://example.com/mfds",
+                },
+            },
+            "metrics": {
+                "metric_click_drop": {
+                    **VALID_CONTENT_REGISTRY["metrics"]["metric_click_drop"],
+                    "source_ids": ["src_a"],
+                },
+            },
+        }
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    page_id="fallback_caption",
+                    allowed_source_ids=["src_a"],
+                    allowed_metric_ids=["metric_click_drop"],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "big_number",
+                            "title": "Fallback Caption",
+                            "source_caption": "on",
+                            "series": [{"metric_id": "metric_click_drop", "role": "highlight"}],
+                        }
+                    ],
+                )
+            ],
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="Fallback Caption Fixture")
+
+        self.assertIn("per 식품의약품안", html)
+
+    def test_render_deck_viz_title_style_band_is_block_local(self):
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    page_id="viz_title_band",
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "before_after",
+                            "title": "Summary Collapse",
+                            "title_style": "band",
+                            "series": [
+                                {"label": "Before", "metric_id": "metric_measurement", "role": "baseline"},
+                                {"label": "After", "metric_id": "metric_click_drop", "role": "highlight"},
+                            ],
+                        }
+                    ],
+                )
+            ],
+        }
+
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Viz Band Fixture")
+
+        self.assertIn("visual-title-band", html)
+        self.assertNotIn("chrome-title-band", html)
+
     def test_render_deck_outputs_side_wordmark_from_context(self):
         spec = {
             "meta": {"short_title": "Proof OS"},
@@ -1663,6 +1919,12 @@ class HarnessContractTests(unittest.TestCase):
         completed = subprocess.run(["bash", "-c", command], capture_output=True, text=True, check=False)
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertEqual(completed.stdout.strip(), "20260705_clo_market")
+
+    def test_capture_deck_includes_fit_band_overflow_gate(self):
+        script = CAPTURE_DECK_SH.read_text(encoding="utf-8")
+
+        self.assertIn("FIT_BAND_OVERFLOW", script)
+        self.assertIn("bandovf", script)
 
     def test_validate_all_contracts_can_raise(self):
         broken = dict(VALID_DECK, rendered_pages=[{"title": "신뢰도 강등", "body": "본문"}])
