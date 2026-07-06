@@ -57,3 +57,8 @@ model: opus
 ## 팀 통신
 - editorial-director에게 Insight[]와 반대 신호를 함께 전달한다.
 - verifier에게 재수집이 필요한 source gap을 구체적으로 돌려보낸다.
+
+## derived_request 양식 (7/7 R4 — 자유형 필드명으로 클차장 수동 매핑 발생, 재발 방지)
+`03_insights.json` 최상위 `derived_requests` 배열. 각 항목 필드 **정확히 이 이름으로**:
+`{"metric_id": "metric_NNN", "label": "표시명", "value": "26.1", "unit": "%", "derivation": "cagr|delta_pct|delta_abs|multiple|share (enum만)", "derived_from": ["metric_a", "metric_b"], "formula_note": "산식", "period": "2021~2024"}`
+- value = 숫자만(%·부호 기호 제거·소수 1자리)·derivation은 enum 값만(설명은 formula_note에)·derived_from은 registry 실존 ID 2개.
