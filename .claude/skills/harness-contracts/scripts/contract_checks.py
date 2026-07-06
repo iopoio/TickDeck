@@ -104,6 +104,11 @@ SUPPORTED_VIZ_SERIES_ROLES = frozenset(
 SUPPORTED_PAGE_CHROMES = frozenset({"", "running_head", "title_band"})
 SUPPORTED_VIZ_SOURCE_CAPTIONS = frozenset({"", "on", "off"})
 SUPPORTED_VIZ_TITLE_STYLES = frozenset({"", "band"})
+SUPPORTED_METRIC_DERIVATIONS = frozenset({"cagr", "delta_pct", "delta_abs", "multiple", "share"})
+SUPPORTED_SECTION_NAVS = frozenset({"", "chips", "dots", "toc"})
+SUPPORTED_VIZ_ANNOTATION_CHARTS = frozenset({"multi_line", "rising_columns", "quarterly_bars"})
+SUPPORTED_VIZ_ANNOTATION_KINDS = frozenset({"callout", "endpoint_value", "trend_arrow", "event_band"})
+SUPPORTED_VIZ_ANNOTATION_SHAPES = frozenset({"", "ellipse", "box"})
 TITLE_BAND_MAX_CHARS = 72
 SUPPORTED_LAYOUTS = frozenset(
     {
@@ -134,6 +139,7 @@ SUPPORTED_LAYOUTS = frozenset(
         "split_status",     # 공용 — 좌측 정성 상태 서술 + 우측 정량 지표 칩
         "scenario_cards",   # dark_premium/pop_dark — 시나리오 카드 열
         "pricing_cards",    # 2~4열 플랜/옵션 카드 — 수치는 metric_id 주입
+        "metric_commentary", # R3 — 지표 헤딩 + 파생 델타 헤드라인 + 분기 막대
     }
 )
 RAW_NUMBER_PATTERN = re.compile(
@@ -340,7 +346,7 @@ def validate_c6_content_authority(
 
     source_registry = _registry_map(content_registry, ("sources", "source_registry"))
     metric_registry = _registry_map(content_registry, ("metrics", "metric_registry"))
-    violations.extend(_validate_r2_registry_fields(source_registry, metric_registry))
+    violations.extend(_validate_registry_fields(source_registry, metric_registry))
 
     meta = deck_spec.get("meta") if isinstance(deck_spec.get("meta"), dict) else {}
     page_chrome = str(meta.get("page_chrome", "")).strip()
@@ -354,6 +360,9 @@ def validate_c6_content_authority(
                 "deck_spec.meta",
             )
         )
+    section_nav = str(meta.get("section_nav", "")).strip()
+    if section_nav not in SUPPORTED_SECTION_NAVS:
+        violations.append(ContractViolation("C6", f"unsupported section_nav: {section_nav}", "deck_spec.meta.section_nav"))
 
     for page_index, page in enumerate(pages):
         if not isinstance(page, dict):
@@ -366,9 +375,7 @@ def validate_c6_content_authority(
         # 자동 도출: 페이지에서 허용한 metric의 출처는 자동 허용(designer 수기 중복 제거·#1 결함 뿌리 소멸).
         # metric을 쓰도록 허가했으면 그 출처 인용은 당연히 허가된 것 — C6 보호 목적 불변.
         for metric_id in allowed_metric_ids:
-            metric = metric_registry.get(metric_id)
-            if isinstance(metric, dict):
-                allowed_source_ids |= _string_set(metric.get("source_ids"))
+            allowed_source_ids |= _metric_source_ids(metric_id, metric_registry)
         content = page.get("content", page.get("blocks", []))
 
         for text_path, text in _iter_strings(page, page_path):
@@ -389,7 +396,7 @@ def validate_c6_content_authority(
                 )
 
         for viz_block, viz_path in _iter_viz_blocks(content, f"{page_path}.content"):
-            violations.extend(_validate_viz_block(viz_block, viz_path))
+            violations.extend(_validate_viz_block(viz_block, viz_path, metric_registry))
 
         for src_id, ref_path in _iter_content_refs(content, "src", f"{page_path}.content"):
             if src_id not in source_registry:
@@ -407,7 +414,7 @@ def validate_c6_content_authority(
                     ContractViolation("C6", f"metric_id not in page allowed_metric_ids: {metric_id}", ref_path)
                 )
 
-            metric_source_ids = _string_set(metric.get("source_ids") if isinstance(metric, dict) else [])
+            metric_source_ids = _metric_source_ids(metric_id, metric_registry)
             for src_id in metric_source_ids:
                 if src_id not in source_registry:
                     violations.append(
@@ -439,6 +446,10 @@ def validate_c6_content_authority(
             violations.append(ContractViolation("C6", "page must include layout", f"{page_path}.layout"))
         elif str(layout).strip() not in SUPPORTED_LAYOUTS:
             violations.append(ContractViolation("C6", f"unsupported layout: {layout}", f"{page_path}.layout"))
+        elif str(layout).strip() == "metric_commentary":
+            violations.extend(
+                _validate_metric_commentary_page(page, page_path, metric_registry, allowed_metric_ids)
+            )
 
     if rendered_html:
         violations.extend(
@@ -731,6 +742,25 @@ def _string_set(value: Any) -> set[str]:
     return set()
 
 
+def _metric_source_ids(metric_id: str, metric_registry: dict[str, Any], seen: set[str] | None = None) -> set[str]:
+    seen = set(seen or set())
+    if metric_id in seen:
+        return set()
+    seen.add(metric_id)
+    metric = metric_registry.get(metric_id)
+    if not isinstance(metric, dict):
+        return set()
+
+    source_ids = _string_set(metric.get("source_ids"))
+    derived_from = metric.get("derived_from")
+    if isinstance(derived_from, list):
+        for ref_id in derived_from:
+            ref = str(ref_id).strip()
+            if ref:
+                source_ids |= _metric_source_ids(ref, metric_registry, seen)
+    return source_ids
+
+
 def _iter_content_refs(value: Any, ref_type: str, path: str = "deck_spec.pages[].content"):
     scalar_keys = {"src": {"src_id", "source_id"}, "metric": {"metric_id"}}[ref_type]
     list_keys = {"src": {"src_ids", "source_ids"}, "metric": {"metric_ids"}}[ref_type]
@@ -773,8 +803,13 @@ def _iter_viz_blocks(value: Any, path: str):
             yield from _iter_viz_blocks(nested, f"{path}[{index}]")
 
 
-def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolation]:
+def _validate_viz_block(
+    block: dict[str, Any],
+    path: str,
+    metric_registry: dict[str, Any] | None = None,
+) -> list[ContractViolation]:
     violations: list[ContractViolation] = []
+    metric_registry = metric_registry or {}
     chart = str(block.get("chart", "")).strip()
     if chart not in SUPPORTED_VIZ_CHART_TYPES:
         violations.append(ContractViolation("C6", f"unsupported viz chart type: {chart}", f"{path}.chart"))
@@ -797,6 +832,10 @@ def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolat
     for field in ("value", "unit", "values", "data"):
         if field in block:
             violations.append(ContractViolation("C6", f"viz block must not include direct {field}", f"{path}.{field}"))
+
+    annotations = block.get("annotations")
+    if annotations is not None:
+        violations.extend(_validate_viz_annotations(annotations, chart, block, path, metric_registry))
 
     series = block.get("series")
     if not isinstance(series, list) or not series:
@@ -853,7 +892,193 @@ def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolat
     return violations
 
 
-def _validate_r2_registry_fields(
+def _validate_viz_annotations(
+    annotations: Any,
+    chart: str,
+    block: dict[str, Any],
+    path: str,
+    metric_registry: dict[str, Any],
+) -> list[ContractViolation]:
+    violations: list[ContractViolation] = []
+    if chart not in SUPPORTED_VIZ_ANNOTATION_CHARTS:
+        violations.append(
+            ContractViolation(
+                "C6",
+                "annotations are supported only for multi_line, rising_columns, quarterly_bars",
+                f"{path}.annotations",
+            )
+        )
+    if not isinstance(annotations, list):
+        return [*violations, ContractViolation("C6", "viz annotations must be a list", f"{path}.annotations")]
+
+    series = block.get("series") if isinstance(block.get("series"), list) else []
+    series_keys = {
+        str(item.get("label", "")).strip()
+        for item in series
+        if isinstance(item, dict) and str(item.get("label", "")).strip()
+    }
+    for index, annotation in enumerate(annotations):
+        annotation_path = f"{path}.annotations[{index}]"
+        if not isinstance(annotation, dict):
+            violations.append(ContractViolation("C6", "viz annotation must be an object", annotation_path))
+            continue
+
+        fixed_anchor_keys = {"x", "y", "left", "top", "right", "bottom", "px", "py"}
+        if fixed_anchor_keys & set(annotation):
+            violations.append(
+                ContractViolation("C6", "annotation must not use fixed pixel anchors", annotation_path)
+            )
+
+        kind = str(annotation.get("kind", "")).strip()
+        if kind not in SUPPORTED_VIZ_ANNOTATION_KINDS:
+            violations.append(ContractViolation("C6", f"unsupported viz annotation kind: {kind}", f"{annotation_path}.kind"))
+            continue
+
+        if kind == "callout":
+            metric_id = str(annotation.get("metric_id", "")).strip()
+            metric = metric_registry.get(metric_id)
+            if not metric_id:
+                violations.append(ContractViolation("C6", "callout annotation requires metric_id", f"{annotation_path}.metric_id"))
+            elif not _is_derived_metric(metric):
+                violations.append(
+                    ContractViolation(
+                        "C6",
+                        "callout annotation metric must reference a derived metric",
+                        f"{annotation_path}.metric_id",
+                    )
+                )
+            shape = str(annotation.get("shape", "")).strip()
+            if shape not in SUPPORTED_VIZ_ANNOTATION_SHAPES:
+                violations.append(ContractViolation("C6", f"unsupported callout annotation shape: {shape}", f"{annotation_path}.shape"))
+            _validate_annotation_series_index(annotation, "anchor_series", series, annotation_path, violations, required=False)
+            continue
+
+        if kind in {"endpoint_value", "trend_arrow"}:
+            _validate_annotation_series_index(annotation, "series", series, annotation_path, violations, required=True)
+            continue
+
+        if kind == "event_band":
+            label = annotation.get("label")
+            if not isinstance(label, str) or not label.strip():
+                violations.append(ContractViolation("C6", "event_band requires label", f"{annotation_path}.label"))
+            elif RAW_NUMBER_PATTERN.search(label):
+                violations.append(ContractViolation("C6", "event_band label contains raw number", f"{annotation_path}.label"))
+            for field in ("from_key", "to_key"):
+                if not isinstance(annotation.get(field), str) or not str(annotation.get(field)).strip():
+                    violations.append(ContractViolation("C6", f"event_band requires {field}", f"{annotation_path}.{field}"))
+                elif series_keys and str(annotation.get(field)).strip() not in series_keys:
+                    violations.append(ContractViolation("C6", f"event_band {field} must reference a series label", f"{annotation_path}.{field}"))
+
+    return violations
+
+
+def _validate_annotation_series_index(
+    annotation: dict[str, Any],
+    field: str,
+    series: list[Any],
+    path: str,
+    violations: list[ContractViolation],
+    required: bool,
+) -> None:
+    raw_index = annotation.get(field)
+    if raw_index is None:
+        if required:
+            violations.append(ContractViolation("C6", f"annotation requires {field}", f"{path}.{field}"))
+        return
+    if not isinstance(raw_index, int) or raw_index < 0 or raw_index >= len(series):
+        violations.append(ContractViolation("C6", f"annotation {field} out of range", f"{path}.{field}"))
+
+
+def _validate_metric_commentary_page(
+    page: dict[str, Any],
+    page_path: str,
+    metric_registry: dict[str, Any],
+    allowed_metric_ids: set[str],
+) -> list[ContractViolation]:
+    violations: list[ContractViolation] = []
+    rows = page.get("rows")
+    if not isinstance(rows, list) or not 1 <= len(rows) <= 2:
+        return [
+            ContractViolation(
+                "C6",
+                "metric_commentary rows must include 1 to 2 rows",
+                f"{page_path}.rows",
+            )
+        ]
+
+    for row_index, row in enumerate(rows):
+        row_path = f"{page_path}.rows[{row_index}]"
+        if not isinstance(row, dict):
+            violations.append(ContractViolation("C6", "metric_commentary row must be an object", row_path))
+            continue
+        for field in ("heading_metric_id", "headline_metric_id"):
+            _validate_metric_ref(row.get(field), f"{row_path}.{field}", metric_registry, allowed_metric_ids, violations)
+
+        headline_metric = metric_registry.get(str(row.get("headline_metric_id", "")).strip())
+        if not isinstance(headline_metric, dict) or str(headline_metric.get("derivation", "")).strip() != "delta_pct":
+            violations.append(
+                ContractViolation(
+                    "C6",
+                    "metric_commentary headline_metric_id must reference delta_pct",
+                    f"{row_path}.headline_metric_id",
+                )
+            )
+
+        bullets = row.get("bullets")
+        if not isinstance(bullets, list):
+            violations.append(ContractViolation("C6", "metric_commentary bullets must be a list", f"{row_path}.bullets"))
+        else:
+            for bullet_index, bullet in enumerate(bullets):
+                bullet_path = f"{row_path}.bullets[{bullet_index}]"
+                if not isinstance(bullet, dict):
+                    violations.append(ContractViolation("C6", "metric_commentary bullet must be an object", bullet_path))
+                    continue
+                label = str(bullet.get("label", "")).strip()
+                if label not in {"YoY", "QoQ"}:
+                    violations.append(
+                        ContractViolation("C6", "metric_commentary bullet label must be YoY or QoQ", f"{bullet_path}.label")
+                    )
+                _validate_metric_ref(bullet.get("metric_id"), f"{bullet_path}.metric_id", metric_registry, allowed_metric_ids, violations)
+                bullet_metric = metric_registry.get(str(bullet.get("metric_id", "")).strip())
+                if not isinstance(bullet_metric, dict) or str(bullet_metric.get("derivation", "")).strip() != "delta_pct":
+                    violations.append(
+                        ContractViolation("C6", "metric_commentary bullet metric_id must reference delta_pct", f"{bullet_path}.metric_id")
+                    )
+
+        chart = row.get("chart")
+        if not isinstance(chart, dict):
+            violations.append(ContractViolation("C6", "metric_commentary row must include chart", f"{row_path}.chart"))
+            continue
+        if str(chart.get("chart", "")).strip() != "quarterly_bars":
+            violations.append(
+                ContractViolation("C6", "metric_commentary chart must be quarterly_bars", f"{row_path}.chart.chart")
+            )
+        chart_block = {"type": "viz", **chart}
+        violations.extend(_validate_viz_block(chart_block, f"{row_path}.chart", metric_registry))
+        for metric_id, ref_path in _iter_content_refs(chart, "metric", f"{row_path}.chart"):
+            _validate_metric_ref(metric_id, ref_path, metric_registry, allowed_metric_ids, violations)
+
+    return violations
+
+
+def _validate_metric_ref(
+    raw_metric_id: Any,
+    path: str,
+    metric_registry: dict[str, Any],
+    allowed_metric_ids: set[str],
+    violations: list[ContractViolation],
+) -> None:
+    metric_id = str(raw_metric_id or "").strip()
+    if not metric_id:
+        violations.append(ContractViolation("C6", "metric_commentary requires metric_id", path))
+        return
+    if metric_id not in metric_registry:
+        violations.append(ContractViolation("C6", f"unknown metric id referenced: {metric_id}", path))
+    if metric_id not in allowed_metric_ids:
+        violations.append(ContractViolation("C6", f"metric_id not in page allowed_metric_ids: {metric_id}", path))
+
+
+def _validate_registry_fields(
     source_registry: dict[str, Any],
     metric_registry: dict[str, Any],
 ) -> list[ContractViolation]:
@@ -872,7 +1097,88 @@ def _validate_r2_registry_fields(
             violations.append(
                 ContractViolation("C6", "metric period must be text", f"content_registry.metrics.{metric_id}.period")
             )
+        is_derived = (
+            str(metric.get("status", "")).strip() == "derived"
+            or "derivation" in metric
+            or "derived_from" in metric
+        )
+        if not is_derived:
+            continue
+        if str(metric.get("status", "")).strip() != "derived":
+            violations.append(
+                ContractViolation("C6", "derived metric status must be derived", f"content_registry.metrics.{metric_id}.status")
+            )
+        derivation = str(metric.get("derivation", "")).strip()
+        if derivation not in SUPPORTED_METRIC_DERIVATIONS:
+            violations.append(
+                ContractViolation("C6", f"unsupported metric derivation: {derivation}", f"content_registry.metrics.{metric_id}.derivation")
+            )
+        derived_from = metric.get("derived_from")
+        if not isinstance(derived_from, list) or len(derived_from) < 2:
+            violations.append(
+                ContractViolation("C6", "derived metric must include at least 2 derived_from refs", f"content_registry.metrics.{metric_id}.derived_from")
+            )
+        else:
+            for ref_index, ref_id in enumerate(derived_from):
+                ref = str(ref_id).strip()
+                if not ref or ref not in metric_registry:
+                    violations.append(
+                        ContractViolation(
+                            "C6",
+                            f"derived_from references unknown metric: {ref}",
+                            f"content_registry.metrics.{metric_id}.derived_from[{ref_index}]",
+                        )
+                    )
+        if _string_set(metric.get("source_ids")):
+            violations.append(
+                ContractViolation("C6", "derived metric source_ids must be empty", f"content_registry.metrics.{metric_id}.source_ids")
+            )
+
+    for metric_id in metric_registry:
+        if _has_metric_cycle(metric_id, metric_registry, [], set()):
+            violations.append(
+                ContractViolation("C6", "derived metric cycle", f"content_registry.metrics.{metric_id}.derived_from")
+            )
+            break
     return violations
+
+
+def _validate_r2_registry_fields(
+    source_registry: dict[str, Any],
+    metric_registry: dict[str, Any],
+) -> list[ContractViolation]:
+    return _validate_registry_fields(source_registry, metric_registry)
+
+
+def _is_derived_metric(metric: Any) -> bool:
+    return isinstance(metric, dict) and str(metric.get("status", "")).strip() == "derived"
+
+
+def _has_metric_cycle(
+    metric_id: str,
+    metric_registry: dict[str, Any],
+    stack: list[str],
+    clean: set[str],
+) -> bool:
+    if metric_id in clean:
+        return False
+    if metric_id in stack:
+        return True
+    metric = metric_registry.get(metric_id)
+    if not isinstance(metric, dict):
+        clean.add(metric_id)
+        return False
+    derived_from = metric.get("derived_from")
+    if not isinstance(derived_from, list):
+        clean.add(metric_id)
+        return False
+    stack.append(metric_id)
+    for ref in derived_from:
+        if _has_metric_cycle(str(ref).strip(), metric_registry, stack, clean):
+            return True
+    stack.pop()
+    clean.add(metric_id)
+    return False
 
 
 def _validate_rendered_content_authority(
@@ -963,6 +1269,10 @@ class _RenderedAuthorityParser(HTMLParser):
                 "verified-badge",
                 "fin-period",
                 "visual-source-caption",
+                "section-nav",
+                "section-nav-item",
+                "section-nav-dot",
+                "section-nav-toc-item",
             }:
                 return True
             # 간지 프리뷰(divider-items) = short_title 복제 — 원본(h1)이 면제이므로 복제도 면제(7/3).

@@ -482,6 +482,263 @@ class HarnessContractTests(unittest.TestCase):
 
         self.assertTrue(any("title_band title exceeds" in str(v) for v in violations))
 
+    def test_c6_accepts_derived_metric_contract_and_inherited_sources(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_cagr": {
+                    "label": "훈련 데이터 연평균 성장률",
+                    "value": "260",
+                    "unit": "%/년",
+                    "derivation": "cagr",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                },
+            },
+        }
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    allowed_source_ids=[],
+                    allowed_metric_ids=["metric_cagr"],
+                    content=[{"type": "metric", "metric_id": "metric_cagr"}, {"type": "citation", "src_id": "src_a"}],
+                )
+            ]
+        }
+
+        self.assertEqual(validate_c6_content_authority(spec, registry, ""), [])
+
+    def test_c6_rejects_invalid_derived_metric_contracts(self):
+        cases = {
+            "bad_enum": (
+                {
+                    "metric_bad": {
+                        "value": "260",
+                        "unit": "%",
+                        "derivation": "ratio",
+                        "derived_from": ["metric_click_drop", "metric_measurement"],
+                        "source_ids": [],
+                        "status": "derived",
+                    }
+                },
+                "unsupported metric derivation: ratio",
+            ),
+            "unknown_ref": (
+                {
+                    "metric_bad": {
+                        "value": "260",
+                        "unit": "%",
+                        "derivation": "cagr",
+                        "derived_from": ["metric_click_drop", "metric_missing"],
+                        "source_ids": [],
+                        "status": "derived",
+                    }
+                },
+                "derived_from references unknown metric: metric_missing",
+            ),
+            "single_ref": (
+                {
+                    "metric_bad": {
+                        "value": "260",
+                        "unit": "%",
+                        "derivation": "cagr",
+                        "derived_from": ["metric_click_drop"],
+                        "source_ids": [],
+                        "status": "derived",
+                    }
+                },
+                "derived metric must include at least 2 derived_from refs",
+            ),
+            "non_empty_sources": (
+                {
+                    "metric_bad": {
+                        "value": "260",
+                        "unit": "%",
+                        "derivation": "cagr",
+                        "derived_from": ["metric_click_drop", "metric_measurement"],
+                        "source_ids": ["src_a"],
+                        "status": "derived",
+                    }
+                },
+                "derived metric source_ids must be empty",
+            ),
+            "cycle": (
+                {
+                    "metric_a": {
+                        "value": "1",
+                        "unit": "%",
+                        "derivation": "delta_pct",
+                        "derived_from": ["metric_b", "metric_click_drop"],
+                        "source_ids": [],
+                        "status": "derived",
+                    },
+                    "metric_b": {
+                        "value": "2",
+                        "unit": "%",
+                        "derivation": "delta_pct",
+                        "derived_from": ["metric_a", "metric_measurement"],
+                        "source_ids": [],
+                        "status": "derived",
+                    },
+                },
+                "derived metric cycle",
+            ),
+        }
+        for name, (extra_metrics, expected) in cases.items():
+            with self.subTest(name=name):
+                registry = {
+                    "sources": VALID_CONTENT_REGISTRY["sources"],
+                    "metrics": {**VALID_CONTENT_REGISTRY["metrics"], **extra_metrics},
+                }
+                violations = validate_c6_content_authority(VALID_DECK_SPEC, registry, "")
+                self.assertTrue(any(expected in str(v) for v in violations), [str(v) for v in violations])
+
+    def test_c6_accepts_r3_section_nav_annotations_and_metric_commentary_schema(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_delta_yoy": {
+                    "label": "YoY 변화",
+                    "value": "18",
+                    "unit": "%",
+                    "derivation": "delta_pct",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                },
+                "metric_delta_qoq": {
+                    "label": "QoQ 변화",
+                    "value": "7",
+                    "unit": "%",
+                    "derivation": "delta_pct",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                },
+            },
+        }
+        spec = {
+            "meta": {"section_nav": "chips"},
+            "pages": [
+                {
+                    "page_id": "r3_schema",
+                    "short_title": "Metric Commentary",
+                    "layout": "metric_commentary",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": ["metric_click_drop", "metric_measurement", "metric_delta_yoy", "metric_delta_qoq"],
+                    "rows": [
+                        {
+                            "heading_metric_id": "metric_measurement",
+                            "headline_metric_id": "metric_delta_yoy",
+                            "bullets": [
+                                {"label": "YoY", "metric_id": "metric_delta_yoy"},
+                                {"label": "QoQ", "metric_id": "metric_delta_qoq"},
+                            ],
+                            "chart": {
+                                "chart": "quarterly_bars",
+                                "series": [
+                                    {"metric_id": "metric_click_drop", "role": "baseline"},
+                                    {"metric_id": "metric_measurement", "role": "highlight"},
+                                ],
+                            },
+                        }
+                    ],
+                    "content": [],
+                },
+                {
+                    "page_id": "r3_viz",
+                    "short_title": "Annotated Trend",
+                    "layout": "statement",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": ["metric_click_drop", "metric_measurement", "metric_delta_yoy"],
+                    "content": [
+                        {
+                            "type": "viz",
+                            "chart": "multi_line",
+                            "series": [
+                                {"label": "Start", "metric_id": "metric_click_drop", "role": "baseline"},
+                                {"label": "End", "metric_id": "metric_measurement", "role": "highlight"},
+                            ],
+                            "annotations": [
+                                {"kind": "callout", "metric_id": "metric_delta_yoy", "anchor_series": 1, "shape": "ellipse"},
+                                {"kind": "endpoint_value", "series": 1},
+                                {"kind": "trend_arrow", "series": 0},
+                                {"kind": "event_band", "label": "COVID", "from_key": "Start", "to_key": "End"},
+                            ],
+                        }
+                    ],
+                },
+            ],
+        }
+
+        self.assertEqual(validate_c6_content_authority(spec, registry, ""), [])
+
+    def test_c6_rejects_invalid_r3_section_nav_annotations_and_metric_commentary(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_delta_yoy": {
+                    "label": "YoY 변화",
+                    "value": "18",
+                    "unit": "%",
+                    "derivation": "delta_abs",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                },
+            },
+        }
+        spec = {
+            "meta": {"section_nav": "freeform"},
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "donut",
+                            "series": [{"label": "Now", "metric_id": "metric_click_drop"}],
+                            "annotations": [
+                                {"kind": "callout", "metric_id": "metric_click_drop", "anchor_series": 0},
+                                {"kind": "event_band", "label": "2020 shock", "from_key": "A", "to_key": "B"},
+                            ],
+                        }
+                    ],
+                ),
+                {
+                    "page_id": "bad_commentary",
+                    "short_title": "Bad Commentary",
+                    "layout": "metric_commentary",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": ["metric_click_drop", "metric_delta_yoy"],
+                    "rows": [
+                        {
+                            "heading_metric_id": "metric_click_drop",
+                            "headline_metric_id": "metric_delta_yoy",
+                            "bullets": [{"label": "YoY", "metric_id": "metric_delta_yoy"}],
+                            "chart": {"chart": "multi_line", "series": [{"metric_id": "metric_click_drop"}]},
+                        }
+                    ],
+                    "content": [],
+                },
+            ],
+        }
+
+        violations = validate_c6_content_authority(spec, registry, "")
+
+        self.assertTrue(any("unsupported section_nav: freeform" in str(v) for v in violations))
+        self.assertTrue(any("annotations are supported only for" in str(v) for v in violations))
+        self.assertTrue(any("callout annotation metric must reference a derived metric" in str(v) for v in violations))
+        self.assertTrue(any("event_band label contains raw number" in str(v) for v in violations))
+        self.assertTrue(any("event_band from_key must reference a series label" in str(v) for v in violations))
+        self.assertTrue(any("metric_commentary headline_metric_id must reference delta_pct" in str(v) for v in violations))
+        self.assertTrue(any("metric_commentary chart must be quarterly_bars" in str(v) for v in violations))
+
     def test_c6_rejects_unknown_viz_series_role(self):
         invalid = {
             "pages": [
@@ -1752,6 +2009,198 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("visual-title-band", html)
         self.assertNotIn("chrome-title-band", html)
 
+    def test_render_deck_renders_derived_metric_value_but_inherits_sources(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_cagr": {
+                    "label": "훈련 데이터 연평균 성장률",
+                    "value": "260",
+                    "unit": "%/년",
+                    "derivation": "cagr",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                },
+            },
+        }
+        spec = {
+            "pages": [
+                {
+                    "page_id": "derived_render",
+                    "short_title": "Derived Metric",
+                    "layout": "statement",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": ["metric_cagr"],
+                    "content": [{"type": "metric", "metric_id": "metric_cagr"}],
+                }
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="Derived Fixture")
+
+        self.assertIn('data-metric-id="metric_cagr"', html)
+        self.assertIn("260%/년", html)
+        self.assertIn("Pew Research Center", html)
+        self.assertIn("IAB", html)
+        self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
+
+    def test_render_deck_outputs_r3_annotations_from_registry_metrics(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_growth": {
+                    "label": "성장률",
+                    "value": "260",
+                    "unit": "%/년",
+                    "derivation": "cagr",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                },
+            },
+        }
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    page_id="annotated_fixture",
+                    allowed_source_ids=[],
+                    allowed_metric_ids=["metric_click_drop", "metric_measurement", "metric_growth"],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "multi_line",
+                            "series": [
+                                {"label": "Start", "metric_id": "metric_click_drop", "role": "baseline"},
+                                {"label": "End", "metric_id": "metric_measurement", "role": "highlight"},
+                            ],
+                            "annotations": [
+                                {"kind": "callout", "metric_id": "metric_growth", "anchor_series": 1, "shape": "ellipse"},
+                                {"kind": "endpoint_value", "series": 1},
+                                {"kind": "trend_arrow", "series": 0},
+                                {"kind": "event_band", "label": "COVID", "from_key": "Start", "to_key": "End"},
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="Annotated Fixture")
+
+        self.assertIn('data-annotation-kind="callout"', html)
+        self.assertIn('data-annotation-kind="endpoint_value"', html)
+        self.assertIn('data-annotation-kind="trend_arrow"', html)
+        self.assertIn('data-annotation-kind="event_band"', html)
+        self.assertIn('data-metric-id="metric_growth"', html)
+        self.assertIn("260%/년", html)
+        self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
+
+    def test_render_deck_outputs_section_nav_from_divider_labels(self):
+        spec = {
+            "meta": {"section_nav": "chips"},
+            "pages": [
+                dict(VALID_COVER_DECK_SPEC["pages"][0]),
+                {
+                    "page_id": "divider_a",
+                    "short_title": "증거 — 시장 신호",
+                    "layout": "divider",
+                    "section_index": 1,
+                    "section_label": "증거",
+                    "section_nav_label": "designer free text must not render",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": [],
+                    "content": [{"type": "headline", "text": "증거 — 시장 신호"}],
+                },
+                dict(VALID_DECK_SPEC["pages"][0], page_id="body_a"),
+                {
+                    "page_id": "divider_b",
+                    "short_title": "행동 — 운영 전환",
+                    "layout": "divider",
+                    "section_index": 2,
+                    "section_label": "행동",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": [],
+                    "content": [{"type": "headline", "text": "행동 — 운영 전환"}],
+                },
+            ],
+        }
+
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Section Nav Fixture")
+
+        self.assertIn("section-nav section-nav-chips", html)
+        self.assertIn("증거", html)
+        self.assertIn("행동", html)
+        self.assertNotIn("designer free text must not render", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_metric_commentary_layout(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_delta_yoy": {
+                    "label": "YoY 변화",
+                    "value": "18",
+                    "unit": "%",
+                    "derivation": "delta_pct",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                },
+                "metric_delta_qoq": {
+                    "label": "QoQ 변화",
+                    "value": "7",
+                    "unit": "%",
+                    "derivation": "delta_pct",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                },
+            },
+        }
+        spec = {
+            "pages": [
+                {
+                    "page_id": "metric_commentary_fixture",
+                    "short_title": "Revenue Momentum",
+                    "layout": "metric_commentary",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": ["metric_click_drop", "metric_measurement", "metric_delta_yoy", "metric_delta_qoq"],
+                    "rows": [
+                        {
+                            "heading_metric_id": "metric_measurement",
+                            "headline_metric_id": "metric_delta_yoy",
+                            "bullets": [
+                                {"label": "YoY", "metric_id": "metric_delta_yoy"},
+                                {"label": "QoQ", "metric_id": "metric_delta_qoq"},
+                            ],
+                            "chart": {
+                                "chart": "quarterly_bars",
+                                "series": [
+                                    {"metric_id": "metric_click_drop", "role": "baseline"},
+                                    {"metric_id": "metric_measurement", "role": "highlight"},
+                                ],
+                            },
+                        }
+                    ],
+                    "content": [],
+                }
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="Metric Commentary Fixture")
+
+        self.assertIn("metric-commentary-body", html)
+        self.assertIn("metric-commentary-headline", html)
+        self.assertIn("commentary-bullet-label", html)
+        self.assertIn("visual-quarterly-bars", html)
+        self.assertIn("18%", html)
+        self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
+
     def test_render_deck_outputs_side_wordmark_from_context(self):
         spec = {
             "meta": {"short_title": "Proof OS"},
@@ -1925,6 +2374,12 @@ class HarnessContractTests(unittest.TestCase):
 
         self.assertIn("FIT_BAND_OVERFLOW", script)
         self.assertIn("bandovf", script)
+
+    def test_capture_deck_includes_fit_annotation_overlap_gate(self):
+        script = CAPTURE_DECK_SH.read_text(encoding="utf-8")
+
+        self.assertIn("FIT_ANNOTATION_OVERLAP", script)
+        self.assertIn("annotationOverlap", script)
 
     def test_validate_all_contracts_can_raise(self):
         broken = dict(VALID_DECK, rendered_pages=[{"title": "신뢰도 강등", "body": "본문"}])

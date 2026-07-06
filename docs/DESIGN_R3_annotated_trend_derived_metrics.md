@@ -23,6 +23,7 @@
 }
 ```
 - **산출 주체 = verifier** (02 단계): page-planner/analyst가 "이 두 metric의 CAGR 필요"를 `derived_request`로 올리면 verifier가 검산 후 registry append. 렌더러는 절대 계산하지 않는다 (검증 우회 차단)
+<!-- verifier protocol: analyst/page-planner emits derived_request {metric_id, derivation, derived_from[], formula_note}. verifier recomputes from source metric values, appends the registry metric with status:"derived", source_ids:[], and derived_from[] intact. renderer/verifier handoff contract is read-only after 02_verified.json; renderer may format value/unit but must never calculate derivation. -->
 - contract_checks 신설: `derivation` enum 검증 · `derived_from`이 실재 metric 참조 · derived metric의 source_ids는 비워야 함(상속 강제) · 순환 참조 금지
 
 ### 1b. C6 유지
