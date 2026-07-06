@@ -1609,16 +1609,17 @@ def _render_block(
         return "", []
     if block_type == "metric":
         metric_id = str(block.get("metric_id", "")).strip()
-        return _render_metric(metric_id, page_id, registry, str(block.get("label", "")).strip()), []
+        return _render_metric(metric_id, page_id, registry, str(block.get("label", "")).strip(), tone=str(block.get("tone", "")).strip()), []
     if block_type in {"metrics", "metric_grid", "stat_grid"}:
         metric_ids = _as_list(block.get("metric_ids"))
+        tone = str(block.get("tone", "")).strip()
         # 카드들의 출처가 둘 이상으로 갈리면 카드별 출처를 켠다(같은 출처면 footer만·중복 방지).
         src_keys = [
             (_metric_source_ids(mid, page_id, registry) or [""])[0]
             for mid in metric_ids
         ]
         show_src = len({s for s in src_keys if s}) > 1
-        cards = [_render_metric(metric_id, page_id, registry, "", show_source=show_src) for metric_id in metric_ids]
+        cards = [_render_metric(metric_id, page_id, registry, "", show_source=show_src, tone=tone) for metric_id in metric_ids]
         return f'<div class="metric-grid">{"".join(cards)}</div>', []
     if block_type == "viz":
         return _render_viz(block, page_id, registry, palette), []
@@ -1700,6 +1701,7 @@ def _render_metric(
     registry: dict[str, dict[str, Any]],
     label_override: str,
     show_source: bool = False,
+    tone: str = "",
 ) -> str:
     metric = _require_metric(metric_id, page_id, registry)
     value = _format_metric_value(metric)
@@ -1721,8 +1723,10 @@ def _render_metric(
         direction = str(metric.get("delta_dir") or "").strip()
         arrow = {"up": "▲ ", "down": "▼ "}.get(direction, "")
         delta_html = f'\n  <div class="metric-delta {_escape(direction)}" data-metric-id="{_escape(metric_id)}">{arrow}{_escape(delta)}</div>'
+    # CL-semantic_color 카드 확장(7/7 R4 QA — 악화 지표가 액센트색으로 '좋은 숫자' 오독): tone = neutral|negative|positive.
+    tone_class = f" metric-tone-{tone}" if tone in {"neutral", "negative", "positive"} else ""
     return f"""
-<article class="metric-card" data-metric-id="{_escape(metric_id)}">
+<article class="metric-card{tone_class}" data-metric-id="{_escape(metric_id)}">
   <div class="metric-label" data-metric-id="{_escape(metric_id)}">{_escape(label)}</div>
   <div class="metric-value" data-metric-id="{_escape(metric_id)}">{_escape(value)}</div>{delta_html}{src_html}
 </article>""".strip()
@@ -1908,11 +1912,17 @@ def _source_caption_name(src_id: str, page_id: str, registry: dict[str, dict[str
     if short_name:
         return short_name
     publisher = str(source.get("publisher") or source.get("title") or src_id).strip()
-    # 중간 잘림 금지 (7/7 블라인드 QA): 구분자 앞 첫 세그먼트를 통째로 — "매일경제·이코노미스트" → "매일경제"
-    for sep in ("(", "·", "/", ","):
-        if sep in publisher:
-            publisher = publisher.split(sep)[0].strip()
-            break
+    # 중간 잘림 금지 (7/7 블라인드 QA): 구분자 세그먼트 단위로만 자른다 — 앞에서부터 16자에 들어가는
+    # 만큼 통째로. (기존 '첫 구분자 split 후 [:16]'은 첫 세그먼트 묶음이 길면 다시 중간 잘림 — R4 재발 실측)
+    segments = [seg.strip() for seg in re.split(r"[(·/,+]", publisher) if seg.strip()]
+    if segments:
+        name = segments[0]
+        for seg in segments[1:]:
+            candidate = f"{name}·{seg}"
+            if len(candidate) > 16:
+                break
+            name = candidate
+        publisher = name
     return publisher[:16].strip() or src_id[:8]
 
 
@@ -2440,6 +2450,20 @@ def _svg_quarterly_bars(
 ) -> str:
     # IR 분기 막대: 값은 막대 안에 올리고, 마지막/비교 분기만 강조한다.
     rows = series[:8]
+    # 5점+ 시계열에서 공통 단위 접미사('백만원' 등)는 온바 라벨에서 떼고 좌상단 '단위:' 한 번만 —
+    # 값 라벨끼리 옆 막대를 침범하던 겹침의 근본 원인(7/7 R4 p06 실측). 숫자 자체는 registry 그대로.
+    unit_label = ""
+    if len(rows) >= 5:
+        def _unit_suffix(value: str) -> str:
+            match = re.match(r"^[+-]?[\d.,]+", value.strip())
+            return value.strip()[match.end():].strip() if match else ""
+        suffixes = {_unit_suffix(str(item.get("value", ""))) for item in rows}
+        if len(suffixes) == 1:
+            shared = suffixes.pop()
+            if shared:
+                unit_label = shared
+                for item in rows:
+                    item["value"] = str(item["value"]).strip()[: -len(shared)].strip()
     numbers = [abs(item["number"]) for item in rows if isinstance(item.get("number"), (int, float))]
     max_value = max(numbers) if numbers else 1.0
     x0, area_w = 56, 888
@@ -2456,6 +2480,8 @@ def _svg_quarterly_bars(
         body.append(f'<line x1="{x0}" y1="{base_y}" x2="{x0 + area_w}" y2="{base_y}" stroke="var(--line)" stroke-width="2"/>')
     if (block or {}).get("axis_break"):
         body.append(f'<text x="{x0 - 24}" y="{base_y - 42}" class="visual-note" font-size="28">≈</text>')
+    if unit_label:
+        body.append(f'<text x="{x0}" y="{CHART_TITLE_GAP + 4}" class="visual-note" font-size="14">단위: {_escape(unit_label)}</text>')
     for index, item in enumerate(rows):
         number = item["number"] if isinstance(item.get("number"), (int, float)) else 0.0
         h = max(14.0, abs(number) / max_value * max_h) if max_value else 14.0
@@ -2463,8 +2489,10 @@ def _svg_quarterly_bars(
         y = base_y - h if number >= 0 else base_y
         fill = _series_color(item, index, rows, accent, "color-mix(in srgb, var(--ink) 18%, transparent)")
         label_y = base_y + 28
-        value_y = y + min(h - 8, 24) if number >= 0 and h > 36 else y - 10
-        value_fill = "#FFFFFF" if number >= 0 and h > 36 and fill != "color-mix(in srgb, var(--ink) 18%, transparent)" else fill
+        # 온바 백색 값은 막대 폭 안에 들어갈 때만 — 막대보다 넓은 값은 배경(연회색)으로 새어 안 보인다(7/7 R4 p06 실측).
+        fits_on_bar = len(str(item["value"])) * 10.5 <= col_w + 8
+        value_y = y + min(h - 8, 24) if number >= 0 and h > 36 and fits_on_bar else y - 10
+        value_fill = "#FFFFFF" if number >= 0 and h > 36 and fits_on_bar and fill != "color-mix(in srgb, var(--ink) 18%, transparent)" else fill
         cx = x + col_w / 2
         anchor_y = y if number >= 0 else y + h
         points.append({"x": cx, "y": anchor_y, "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
@@ -3651,6 +3679,10 @@ h1 {{
 .metric-delta {{ font-size: 14px; font-weight: 800; margin-top: 8px; font-variant-numeric: tabular-nums; }}
 .metric-delta.up {{ color: #2E9E6B; }}
 .metric-delta.down {{ color: #C8553D; }}
+/* CL-semantic_color 카드 확장(7/7 R4) — 악화·하락 지표 카드는 액센트 금지. 값 색만 바꾼다(크롬 유지). */
+.metric-card.metric-tone-neutral .metric-value {{ color: var(--ink); }}
+.metric-card.metric-tone-negative .metric-value {{ color: var(--semantic-negative); }}
+.metric-card.metric-tone-positive .metric-value {{ color: var(--semantic-positive); }}
 /* 키워드 색전환(==키워드==·백로그 Phase 1) — 강조어만 accent. 슬라이드당 절제. */
 .kw {{ color: var(--accent); }}
 .bullet-list {{
@@ -4621,6 +4653,13 @@ h1 {{
 .body:not(.layout-body) > .metric-card {{ max-width: 460px; }}
 /* stack 컴포지션 — 전폭 차트도 세로 비율이 안 터지게 상한. */
 .stack-outer > .visual-card {{ width: min(100%, 760px); }}
+/* hero 차트 페이지의 보조 카드열은 낮춰 잡는다 — 주인공이 세로 2배를 가져간 뒤 남는 FIT 룸(7/7 R4 실측 +79px). */
+.stack-outer > .visual-hero ~ .stack-row {{ margin-top: 0; }}
+.stack-outer > .visual-hero ~ .stack-row .metric-card {{ padding: 14px 20px; }}
+.stack-outer > .visual-hero ~ .stack-row .metric-value {{ font-size: 42px; }}
+/* hero 페이지 본문은 행간도 좁힌다 — 24px 기본 row-gap이 마지막 5~20px 초과의 원인(7/7 R4 실측). */
+.body:has(> .visual-hero) {{ row-gap: 10px; padding-bottom: 0; }}
+.body:has(> .visual-hero) > .note-row {{ margin-top: 0; }}
 .stack-row {{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

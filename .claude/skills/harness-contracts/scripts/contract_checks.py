@@ -863,7 +863,8 @@ def _validate_viz_block(
         if chart not in {"swot_quad", "fin_table"} and not str(item.get("metric_id", "")).strip():
             violations.append(ContractViolation("C6", "viz series item must include metric_id", f"{item_path}.metric_id"))
         label = item.get("label")
-        if isinstance(label, str) and RAW_NUMBER_PATTERN.search(label):
+        # 연도(2018·2024 등)는 데이터 값이 아니라 축 키 — rendered authority 검사와 동일 면제(R4 시계열 계약·연도 키).
+        if isinstance(label, str) and RAW_NUMBER_PATTERN.search(FOUR_DIGIT_YEAR_PATTERN.sub("", label)):
             violations.append(ContractViolation("C6", "viz label contains raw number", f"{item_path}.label"))
         if chart == "swot_quad":
             items = item.get("items")
