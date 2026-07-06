@@ -489,12 +489,14 @@ class HarnessContractTests(unittest.TestCase):
                 **VALID_CONTENT_REGISTRY["metrics"],
                 "metric_cagr": {
                     "label": "훈련 데이터 연평균 성장률",
-                    "value": "260",
+                    "value": "8.9",
                     "unit": "%/년",
                     "derivation": "cagr",
                     "derived_from": ["metric_click_drop", "metric_measurement"],
                     "source_ids": [],
                     "status": "derived",
+                    "period": "2020~2025",
+                    "formula_note": "(72/47)^(1/5)-1",
                 },
             },
         }
@@ -596,12 +598,13 @@ class HarnessContractTests(unittest.TestCase):
                 violations = validate_c6_content_authority(VALID_DECK_SPEC, registry, "")
                 self.assertTrue(any(expected in str(v) for v in violations), [str(v) for v in violations])
 
-    def test_c6_accepts_r3_section_nav_annotations_and_metric_commentary_schema(self):
+    def test_c6_rejects_derived_metric_with_wrong_recomputed_value(self):
+        # 검산 게이트 (7/7 제대리 리뷰): 원천값 재계산과 등재값이 안 맞으면 위반
         registry = {
             "sources": VALID_CONTENT_REGISTRY["sources"],
             "metrics": {
                 **VALID_CONTENT_REGISTRY["metrics"],
-                "metric_delta_yoy": {
+                "metric_bad_delta": {
                     "label": "YoY 변화",
                     "value": "18",
                     "unit": "%",
@@ -609,15 +612,56 @@ class HarnessContractTests(unittest.TestCase):
                     "derived_from": ["metric_click_drop", "metric_measurement"],
                     "source_ids": [],
                     "status": "derived",
+                    "formula_note": "(72-47)/47*100",
                 },
-                "metric_delta_qoq": {
-                    "label": "QoQ 변화",
-                    "value": "7",
+            },
+        }
+        violations = validate_c6_content_authority({"pages": []}, registry, "")
+        self.assertTrue(any("!= recomputed" in str(v) for v in violations), [str(v) for v in violations])
+
+    def test_c6_rejects_derived_metric_without_formula_note(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_no_note": {
+                    "label": "배수",
+                    "value": "1.53",
+                    "unit": "배",
+                    "derivation": "multiple",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                },
+            },
+        }
+        violations = validate_c6_content_authority({"pages": []}, registry, "")
+        self.assertTrue(any("formula_note" in str(v) for v in violations), [str(v) for v in violations])
+
+    def test_c6_accepts_r3_section_nav_annotations_and_metric_commentary_schema(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_delta_yoy": {
+                    "label": "YoY 변화",
+                    "value": "53.2",
                     "unit": "%",
                     "derivation": "delta_pct",
                     "derived_from": ["metric_click_drop", "metric_measurement"],
                     "source_ids": [],
                     "status": "derived",
+                    "formula_note": "(72-47)/47*100",
+                },
+                "metric_delta_qoq": {
+                    "label": "QoQ 변화",
+                    "value": "53.2",
+                    "unit": "%",
+                    "derivation": "delta_pct",
+                    "derived_from": ["metric_click_drop", "metric_measurement"],
+                    "source_ids": [],
+                    "status": "derived",
+                    "formula_note": "(72-47)/47*100",
                 },
             },
         }
@@ -2016,12 +2060,14 @@ class HarnessContractTests(unittest.TestCase):
                 **VALID_CONTENT_REGISTRY["metrics"],
                 "metric_cagr": {
                     "label": "훈련 데이터 연평균 성장률",
-                    "value": "260",
+                    "value": "8.9",
                     "unit": "%/년",
                     "derivation": "cagr",
                     "derived_from": ["metric_click_drop", "metric_measurement"],
                     "source_ids": [],
                     "status": "derived",
+                    "period": "2020~2025",
+                    "formula_note": "(72/47)^(1/5)-1",
                 },
             },
         }
@@ -2041,7 +2087,7 @@ class HarnessContractTests(unittest.TestCase):
         html = render_deck_module.render_deck(spec, registry, title="Derived Fixture")
 
         self.assertIn('data-metric-id="metric_cagr"', html)
-        self.assertIn("260%/년", html)
+        self.assertIn("8.9%/년", html)
         self.assertIn("Pew Research Center", html)
         self.assertIn("IAB", html)
         self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
@@ -2053,12 +2099,14 @@ class HarnessContractTests(unittest.TestCase):
                 **VALID_CONTENT_REGISTRY["metrics"],
                 "metric_growth": {
                     "label": "성장률",
-                    "value": "260",
+                    "value": "8.9",
                     "unit": "%/년",
                     "derivation": "cagr",
                     "derived_from": ["metric_click_drop", "metric_measurement"],
                     "source_ids": [],
                     "status": "derived",
+                    "period": "2020~2025",
+                    "formula_note": "(72/47)^(1/5)-1",
                 },
             },
         }
@@ -2096,7 +2144,7 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn('data-annotation-kind="trend_arrow"', html)
         self.assertIn('data-annotation-kind="event_band"', html)
         self.assertIn('data-metric-id="metric_growth"', html)
-        self.assertIn("260%/년", html)
+        self.assertIn("8.9%/년", html)
         self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
 
     def test_render_deck_outputs_section_nav_from_divider_labels(self):
@@ -2144,21 +2192,23 @@ class HarnessContractTests(unittest.TestCase):
                 **VALID_CONTENT_REGISTRY["metrics"],
                 "metric_delta_yoy": {
                     "label": "YoY 변화",
-                    "value": "18",
+                    "value": "53.2",
                     "unit": "%",
                     "derivation": "delta_pct",
                     "derived_from": ["metric_click_drop", "metric_measurement"],
                     "source_ids": [],
                     "status": "derived",
+                    "formula_note": "(72-47)/47*100",
                 },
                 "metric_delta_qoq": {
                     "label": "QoQ 변화",
-                    "value": "7",
+                    "value": "53.2",
                     "unit": "%",
                     "derivation": "delta_pct",
                     "derived_from": ["metric_click_drop", "metric_measurement"],
                     "source_ids": [],
                     "status": "derived",
+                    "formula_note": "(72-47)/47*100",
                 },
             },
         }

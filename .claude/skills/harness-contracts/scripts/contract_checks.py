@@ -1133,6 +1133,7 @@ def _validate_registry_fields(
             violations.append(
                 ContractViolation("C6", "derived metric source_ids must be empty", f"content_registry.metrics.{metric_id}.source_ids")
             )
+        violations.extend(_recompute_derived_metric(metric_id, metric, metric_registry))
 
     for metric_id in metric_registry:
         if _has_metric_cycle(metric_id, metric_registry, [], set()):
@@ -1152,6 +1153,82 @@ def _validate_r2_registry_fields(
 
 def _is_derived_metric(metric: Any) -> bool:
     return isinstance(metric, dict) and str(metric.get("status", "")).strip() == "derived"
+
+
+_DERIVATION_ARITY = {"cagr": 2, "delta_pct": 2, "delta_abs": 2, "multiple": 2, "share": 2}
+
+
+def _metric_number(metric: Any) -> float | None:
+    if not isinstance(metric, dict):
+        return None
+    raw = str(metric.get("value", "")).strip().replace(",", "")
+    try:
+        return float(raw)
+    except ValueError:
+        return None
+
+
+def _period_span_years(metric: Any) -> float | None:
+    years = re.findall(r"\b(?:19|20)\d{2}\b", str((metric or {}).get("period", "")))
+    if len(years) < 2:
+        return None
+    span = abs(int(years[-1]) - int(years[0]))
+    return float(span) if span else None
+
+
+def _recompute_derived_metric(
+    metric_id: str,
+    metric: dict[str, Any],
+    metric_registry: dict[str, Any],
+) -> list[ContractViolation]:
+    # 검산 게이트 (7/7 제대리 리뷰 root fix): 파생값이 verifier 문서 프로토콜에만 있으면
+    # 틀린 파생값이 계약을 통과한다 — 원천값으로 재계산해 등재값과 대조한다.
+    path = f"content_registry.metrics.{metric_id}"
+    derivation = str(metric.get("derivation", "")).strip()
+    arity = _DERIVATION_ARITY.get(derivation)
+    derived_from = metric.get("derived_from")
+    if arity is None or not isinstance(derived_from, list) or len(derived_from) < 2:
+        return []  # enum·최소 개수 위반은 상위에서 이미 보고됨
+    violations: list[ContractViolation] = []
+    if len(derived_from) != arity:
+        violations.append(
+            ContractViolation("C6", f"derivation {derivation} requires exactly {arity} derived_from refs", f"{path}.derived_from")
+        )
+        return violations
+    if not str(metric.get("formula_note", "")).strip():
+        violations.append(ContractViolation("C6", "derived metric must include formula_note", f"{path}.formula_note"))
+    a = _metric_number(metric_registry.get(str(derived_from[0]).strip()))
+    b = _metric_number(metric_registry.get(str(derived_from[1]).strip()))
+    registered = _metric_number(metric)
+    if a is None or b is None or registered is None:
+        violations.append(
+            ContractViolation("C6", "derived metric requires numeric single-value sources for recompute", f"{path}.derived_from")
+        )
+        return violations
+    expected: float | None = None
+    if derivation == "delta_abs":
+        expected = b - a
+    elif derivation == "delta_pct" and a:
+        expected = (b - a) / a * 100.0
+    elif derivation == "multiple" and a:
+        expected = b / a
+    elif derivation == "share" and b:
+        expected = a / b * 100.0
+    elif derivation == "cagr":
+        years = _period_span_years(metric)
+        if years and a > 0 and b > 0:
+            expected = ((b / a) ** (1.0 / years) - 1.0) * 100.0
+    if expected is None:
+        violations.append(
+            ContractViolation("C6", f"derivation {derivation} not recomputable (zero source or missing period years)", path)
+        )
+        return violations
+    tolerance = max(abs(expected) * 0.02, 0.51)
+    if abs(registered - expected) > tolerance:
+        violations.append(
+            ContractViolation("C6", f"derived metric value {registered} != recomputed {expected:.2f} ({derivation})", f"{path}.value")
+        )
+    return violations
 
 
 def _has_metric_cycle(
