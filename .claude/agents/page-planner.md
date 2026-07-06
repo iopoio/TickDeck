@@ -131,3 +131,8 @@ ID 해석 규칙:
 - designer에게 page-plan과 page별 `short_title`, `allowed_source_ids`, `allowed_metric_ids`만 넘긴다.
 - 디자인 지시는 의미와 제약 수준으로 제한한다.
 - qa-reviewer에게 C5 순서 검사용 stage log를 넘긴다.
+
+## 리포트 판짜기 (7/7 R4 — tone=report일 때. 후추님 "PDF 자료가 안 들어간다" 근본 fix)
+- **본문 페이지 과반(60%+) = 차트 주인공 페이지**: viz 1개 + 보조 블록 최대 2(헤드라인·노트). split·사이드 인용 금지. BOND 문법 = "제목 한 줄 + 풀사이즈 차트 한 장"이 기본 낱장.
+- 시계열(chartable series) 있는 주장을 차트 주인공 페이지에 우선 배치. 시계열 없는 주장은 주인공 페이지를 차지할 수 없다 — 텍스트 페이지로 보낸다.
+- deck_spec meta에 `"tone": "report"`·`"page_chrome": "title_band"` 명시. 게이트(REPORT_TONE_COMPOSITION)가 비율을 검사한다.

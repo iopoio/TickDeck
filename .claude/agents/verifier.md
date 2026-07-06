@@ -84,3 +84,7 @@ metric 승격 규칙:
 - analyst에게 검증된 근거와 상충 데이터를 함께 전달한다.
 - page-planner에게 `source_registry`, `metric_registry`를 전달해 page별 allowlist를 만들게 한다.
 - qa-reviewer에게 강등/삭제 이유를 별도 검사용으로 전달하되, 콘텐츠 본문에는 넣지 않는다.
+
+## 시계열 검증 (7/7 R4)
+- 시계열은 점 단위가 아니라 **series 단위로 묶어 검증**: 같은 출처·같은 단위·같은 산정 기준인지. 기준이 중간에 바뀌면(추정→실측 등) series를 쪼갠다.
+- 통과한 시계열엔 metric마다 `series_id`(시계열 이름)·`series_key`(x축 키 — "2021"·"1Q26")를 부여. 파생 metric(derivation)은 series에 넣지 않는다.

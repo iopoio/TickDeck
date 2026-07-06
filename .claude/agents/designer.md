@@ -159,3 +159,8 @@ SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md` + `v3/axis2_layouts/DECK_ARCHETYPES.
 - page-planner에게 공간/밀도/잘림 근거가 있는 루프 B만 보낸다.
 - 코드 렌더러에게 `06_deck_spec.json`만 넘긴다.
 - qa-reviewer에게 deck_spec, fit check, C6 contract 결과를 전달한다.
+
+## 리포트 톤 선택 규칙 (7/7 R4 — tone=report일 때)
+- PG-title_band 크롬 기본·source_caption 기본 on·CL-semantic_color 의무(빨강=악화 전용·초록=상승·액센트=주인공).
+- 차트 주인공 페이지는 여백 과시 금지 — 차트가 본문 폭 전체를 쓴다. 시계열 차트엔 annotations(끝점 강조·콜아웃·이벤트 밴드)로 서사를 싣는다 (CH-annotated_trend).
+- 반복 일관성 > 페이지별 변주: 같은 골격을 반복하는 게 실전 신뢰 문법이다 (컴포지션 다양화 룰은 tone=report에선 후순위).
