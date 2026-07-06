@@ -3470,7 +3470,8 @@ body {{
   background-size: var(--slide-bg-size);
 }}
 .slide-head {{ flex: 0 0 auto; }}
-.page-title-band.slide {{ padding-top: 114px; }}
+/* 크롬 예약 공간은 테마 .slide padding shorthand에 지면 안 됨 — element+2class로 특이도 우위 (7/7 시연덱 세리프 실측: dek가 밴드 밑에 깔림) */
+section.slide.page-title-band {{ padding-top: 124px; }}
 .title-band {{
   position: absolute;
   top: 0;
