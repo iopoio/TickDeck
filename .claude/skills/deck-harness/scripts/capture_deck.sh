@@ -31,7 +31,7 @@ cp "$ABS" "$FIT"
 cat >> "$FIT" <<'EOF'
 <script>
 (function(){
-  var ovf=[], sparse=[], hovf=[], lowc=[], ovl=[];
+  var ovf=[], sparse=[], hovf=[], sourceClips=[], lowc=[], ovl=[];
   document.querySelectorAll('.slide').forEach(function(s){
     var b=s.querySelector('.body'); if(!b) return;
     var gap=b.clientHeight-b.scrollHeight, id=s.dataset.pageId||'?';
@@ -42,6 +42,12 @@ cat >> "$FIT" <<'EOF'
     else if(gap > 240 && !/layout-(divider|closing|cover|index|matrix)/.test(s.className)) sparse.push(id);
     // hero_bleed는 블리드가 문법(수치가 우측 여백 너머로) — 의도된 가로 초과라 hovf 제외
     if(b.scrollWidth - b.clientWidth > 4 && !/layout-hero-bleed/.test(s.className)) hovf.push(id);
+    s.querySelectorAll('.source-row,.source-link').forEach(function(el){
+      var cs=getComputedStyle(el);
+      var hides=/hidden|clip/.test(cs.overflowX+' '+cs.overflowY);
+      var noWrap=cs.whiteSpace==='nowrap';
+      if((hides || noWrap) && el.scrollWidth - el.clientWidth > 4 && sourceClips.indexOf(id)<0) sourceClips.push(id);
+    });
   });
   // 저대비 무독 텍스트 — closing 칩 navy-on-navy처럼 글자색≈배경색이라 실측으로만 잡히던 클래스(7/3).
   // 텍스트 leaf의 색 vs 가장 가까운 불투명 배경색의 명도차. 그라디언트(background-image) 조상은 판정 불가라 skip.
@@ -110,7 +116,7 @@ cat >> "$FIT" <<'EOF'
       }
     }
   });
-  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',')+'|hovf:'+hovf.join(',')+'|ovl:'+ovl.join(',')+'|lowc:'+lowc.join(',');
+  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',')+'|hovf:'+hovf.join(',')+'|sclip:'+sourceClips.join(',')+'|ovl:'+ovl.join(',')+'|lowc:'+lowc.join(',');
 })();
 </script>
 EOF
@@ -120,6 +126,7 @@ if [ -n "$RAW" ]; then
   _t="${RAW#*ovf:}"; OVF="${_t%%|*}"
   _t="${RAW#*sparse:}"; SPARSE="${_t%%|*}"
   _t="${RAW#*hovf:}"; HOVF="${_t%%|*}"
+  _t="${RAW#*sclip:}"; SCLIP="${_t%%|*}"
   _t="${RAW#*ovl:}"; OVL="${_t%%|*}"
   LOWC="${RAW##*lowc:}"
   if [ -n "$OVF" ]; then
@@ -132,6 +139,9 @@ if [ -n "$RAW" ]; then
   fi
   if [ -n "$HOVF" ]; then
     echo "FIT_HOVERFLOW: $HOVF — 본문 가로 초과(칩·nowrap·SVG 폭). 잘린 글자 확인 필요."
+  fi
+  if [ -n "$SCLIP" ]; then
+    echo "FIT_SOURCE_CLIP: $SCLIP — source-row/source-link가 hidden·nowrap으로 가로 내용을 잘라냄. 출처 랩/축약 필요."
   fi
   if [ -n "$OVL" ]; then
     echo "FIT_TEXT_OVERLAP: $OVL — 텍스트 상호 겹침 의심. 실측 확인 필요."
