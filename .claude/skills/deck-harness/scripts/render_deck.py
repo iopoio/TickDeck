@@ -25,6 +25,8 @@ if str(CONTRACTS_SCRIPT_DIR) not in sys.path:
 
 from contract_checks import SUPPORTED_CONTENT_BLOCK_TYPES, SUPPORTED_VIZ_CHART_TYPES, normalize_enclosed_numerals
 
+SOURCE_ROW_VISIBLE_LIMIT = 4
+
 
 PALETTES = {
     "editorial": {
@@ -390,7 +392,12 @@ def normalize_registry(content_registry: dict[str, Any]) -> dict[str, dict[str, 
 
 def _resolve_palette(deck_spec: dict[str, Any], explicit_theme: str | None) -> dict[str, str]:
     theme = explicit_theme if explicit_theme else str(deck_spec.get("theme") or "editorial")
-    return PALETTES.get(theme, PALETTES["editorial"])
+    palette = dict(PALETTES.get(theme, PALETTES["editorial"]))
+    # 의미색은 차트가 직접 hex를 들고 있지 않고 시스템 토큰만 참조한다.
+    palette.setdefault("semantic_negative", "#B42318")
+    palette.setdefault("semantic_positive", "#13795B")
+    palette.setdefault("semantic_brand", palette["accent"])
+    return palette
 
 
 # 표지·간지·클로징·source_appendix·outro는 "본문"이 아니다 — running_head 페이지분수는
@@ -1601,16 +1608,54 @@ def _viz_series(
     for index, item in enumerate(series):
         if not isinstance(item, dict):
             raise ValueError(f"{page_id}: viz series item {index} must be an object")
+        if str(block.get("chart", "")).strip() == "fin_table":
+            cells = item.get("cells")
+            if not isinstance(cells, list) or not cells:
+                raise ValueError(f"{page_id}: fin_table series item {index} must include cells")
+            rendered_cells: list[dict[str, Any]] = []
+            for cell_index, cell in enumerate(cells):
+                if not isinstance(cell, dict):
+                    raise ValueError(f"{page_id}: fin_table cell {cell_index} must be an object")
+                cell_metric_id = str(cell.get("metric_id", "")).strip()
+                if cell_metric_id:
+                    metric = _require_metric(cell_metric_id, page_id, registry)
+                    rendered_cells.append(
+                        {
+                            "metric_id": cell_metric_id,
+                            "value": _format_metric_value(metric),
+                            "number": _metric_number(metric),
+                            "text": "",
+                        }
+                    )
+                else:
+                    text = str(cell.get("text", "")).strip()
+                    if not text:
+                        raise ValueError(f"{page_id}: fin_table cell {cell_index} must include metric_id or text")
+                    rendered_cells.append({"metric_id": "", "value": "", "number": None, "text": text})
+            rendered.append(
+                {
+                    "metric_id": "",
+                    "label": str(item.get("label", "")).strip(),
+                    "role": str(item.get("role", "")).strip(),
+                    "row_role": str(item.get("row_role", "")).strip(),
+                    "cells": rendered_cells,
+                    "color": _safe_svg_color(str(item.get("color", "")).strip()),
+                }
+            )
+            continue
         raw_id = item.get("metric_id")
         metric_id = str(raw_id).strip() if raw_id not in (None, "") else ""
         if metric_id:
             metric = _require_metric(metric_id, page_id, registry)
             value = _format_metric_value(metric)
             number = _metric_number(metric)
+            fallback_label = str(metric.get("label") or metric.get("scope") or metric_id).strip()
         else:
             # flow 등 개념 흐름 차트는 수치 없는 라벨 노드 허용(C6: 라벨에 raw 숫자만 없으면 OK).
             value, number = "", None
-        label = str(item.get("label") or metric_id).strip()
+            fallback_label = metric_id
+        brand_color = str(item.get("color") or block.get("brand_color") or "").strip()
+        label = str(item.get("label") or fallback_label).strip()
         rendered.append(
             {
                 "metric_id": metric_id,
@@ -1618,6 +1663,7 @@ def _viz_series(
                 "role": str(item.get("role", "")).strip(),
                 "value": value,
                 "number": number,
+                "color": _safe_svg_color(brand_color),
             }
         )
     return rendered
@@ -1654,9 +1700,9 @@ def _svg_before_after(
         bar_y = top + 26
         width = _scale_metric_width(item, scale_base, bar_full)
         highlight = _is_highlight(item, index, rows)
-        color = accent if highlight else "#B0A491"  # 비강조 막대 진슬레이트(트랙과 구분)
+        color = _series_color(item, index, rows, accent, "#B0A491")  # 비강조 막대 진슬레이트(트랙과 구분)
         value_x = min(980, width + 22)
-        value_class = "visual-value-accent" if color == accent else "visual-value"
+        value_class = _value_class(item, color == accent)
         # 델타는 값 바로 옆 tspan — 떨어뜨려 놓으면 어느 막대의 변화량인지 붕 뜬다(7/2 데모 QA).
         delta_tspan = f'<tspan dx="20" class="visual-delta">{_escape(delta_text)}</tspan>' if highlight and delta_text else ""
         body.append(
@@ -1811,8 +1857,8 @@ def _svg_gap_map(
         if is_benchmark:
             color, opacity = "#1F2733", ' fill-opacity=".14"'
         else:
-            color, opacity = (accent if is_highlight else "#B0A491"), ""  # 비강조 막대: 진슬레이트(트랙과 구분·후추님 6/30)
-        value_class = "visual-value-accent" if is_highlight else "visual-value"
+            color, opacity = _series_color(item, index, rows, accent, "#B0A491"), ""  # 비강조 막대: 진슬레이트(트랙과 구분·후추님 6/30)
+        value_class = _value_class(item, is_highlight)
         body.append(
             f"""
             <g data-metric-id="{_escape(item["metric_id"])}">
@@ -1886,7 +1932,7 @@ def _svg_funnel(
         bar_y = cy - bar_h / 2
         width = _scale_metric_width(item, max_value, bar_track)  # 값에 정비례(180 바닥값 제거 — 비율 왜곡 fix)
         highlight = _is_highlight(item, index, rows)
-        fill = accent if highlight else "#D7DCE2"
+        fill = _series_color(item, index, rows, accent, "#D7DCE2")
         body.append(
             f"""
             <g data-metric-id="{_escape(item["metric_id"])}">
@@ -2092,11 +2138,12 @@ def _svg_rising_columns(
         tops.append((x + col_w / 2, y))
         is_last = index == len(rows) - 1
         opacity = 0.34 + (0.66 * index / max(1, len(rows) - 1))
-        value_class = "visual-value-accent" if is_last else "visual-value"
+        fill = _series_color(item, index, rows, accent)
+        value_class = _value_class(item, is_last)
         body.append(
             f"""
             <g data-metric-id="{_escape(item["metric_id"])}">
-              <rect x="{x:.1f}" y="{y:.1f}" width="{col_w:.1f}" height="{h:.1f}" rx="6" fill="{accent}" fill-opacity="{opacity:.2f}"/>
+              <rect x="{x:.1f}" y="{y:.1f}" width="{col_w:.1f}" height="{h:.1f}" rx="6" fill="{fill}" fill-opacity="{opacity:.2f}"/>
               <text x="{x + col_w / 2:.1f}" y="{y - 12:.1f}" text-anchor="middle" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
               <text x="{x + col_w / 2:.1f}" y="{base_y + 26}" text-anchor="middle" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
             </g>"""
@@ -2113,6 +2160,49 @@ def _svg_rising_columns(
             </g>"""
         )
     return _svg_shell("rising-columns", title, note, base_y + 44 + (28 if note else 0), "".join(body), page_id)
+
+
+def _svg_quarterly_bars(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # IR 분기 막대: 값은 막대 안에 올리고, 마지막/비교 분기만 강조한다.
+    rows = series[:8]
+    numbers = [abs(item["number"]) for item in rows if isinstance(item.get("number"), (int, float))]
+    max_value = max(numbers) if numbers else 1.0
+    x0, area_w = 56, 888
+    step = area_w / max(1, len(rows))
+    col_w = min(92, step * 0.58)
+    base_y = CHART_TITLE_GAP + 188
+    max_h = 148
+    show_axis = (block or {}).get("axis") not in (False, "hidden", "none")
+    body: list[str] = []
+    if show_axis:
+        body.append(f'<line x1="{x0}" y1="{base_y}" x2="{x0 + area_w}" y2="{base_y}" stroke="var(--line)" stroke-width="2"/>')
+    if (block or {}).get("axis_break"):
+        body.append(f'<text x="{x0 - 24}" y="{base_y - 42}" class="visual-note" font-size="28">≈</text>')
+    for index, item in enumerate(rows):
+        number = item["number"] if isinstance(item.get("number"), (int, float)) else 0.0
+        h = max(14.0, abs(number) / max_value * max_h) if max_value else 14.0
+        x = x0 + step * index + (step - col_w) / 2
+        y = base_y - h if number >= 0 else base_y
+        fill = _series_color(item, index, rows, accent, "color-mix(in srgb, var(--ink) 18%, transparent)")
+        label_y = base_y + 28
+        value_y = y + min(h - 8, 24) if number >= 0 and h > 36 else y - 10
+        value_fill = "#FFFFFF" if number >= 0 and h > 36 and fill != "color-mix(in srgb, var(--ink) 18%, transparent)" else fill
+        body.append(
+            f"""
+            <g data-metric-id="{_escape(item["metric_id"])}">
+              <rect x="{x:.1f}" y="{y:.1f}" width="{col_w:.1f}" height="{h:.1f}" rx="6" fill="{fill}"/>
+              <text x="{x + col_w / 2:.1f}" y="{value_y:.1f}" text-anchor="middle" class="quarter-value-onbar" fill="{value_fill}" font-size="17" font-weight="900" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+              <text x="{x + col_w / 2:.1f}" y="{label_y}" text-anchor="middle" class="visual-label" font-size="15" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+            </g>"""
+        )
+    return _svg_shell("quarterly-bars", title, note, base_y + 52 + (28 if note else 0), "".join(body), page_id)
 
 
 # chart enum(계약 SoT)과 렌더러 1:1 — 빠지면 테스트가 잡는다(test_contracts 커버리지).
@@ -2240,6 +2330,78 @@ def _svg_data_table(
     return _svg_shell("data_table", title, note, y0 + row_h * (len(rows) + 1) + 30, "".join(body), page_id)
 
 
+def _svg_fin_table(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    columns = (block or {}).get("columns")
+    if not isinstance(columns, list) or not columns:
+        raise ValueError(f"{page_id}: fin_table must include columns")
+    rows = series[:7]
+    label_w = 250
+    value_w = (1000 - label_w) / max(1, len(columns))
+    row_h = 42 if len(rows) >= 6 else 48
+    y0 = CHART_TITLE_GAP - 18
+    table_h = row_h * (len(rows) + 1)
+    body: list[str] = [
+        f'<rect x="0" y="{y0}" width="1000" height="{row_h}" rx="6" fill="color-mix(in srgb, {accent} 12%, transparent)"/>',
+        f'<text x="20" y="{y0 + row_h / 2 + 6:.0f}" fill="{accent}" font-size="15" font-weight="900">항목</text>',
+    ]
+    accent_column = (block or {}).get("accent_column")
+    accent_index = accent_column if isinstance(accent_column, int) and 0 <= accent_column < len(columns) else None
+    if accent_index is not None:
+        ax = label_w + value_w * accent_index
+        body.append(
+            f'<rect class="fin-accent-column" x="{ax:.1f}" y="{y0}" width="{value_w:.1f}" height="{table_h}" rx="8" fill="none" stroke="{accent}" stroke-width="2.5"/>'
+        )
+    for col_index, column in enumerate(columns):
+        x = label_w + value_w * col_index + value_w / 2
+        fill = accent if col_index == accent_index else "var(--ink)"
+        body.append(
+            f'<text x="{x:.1f}" y="{y0 + row_h / 2 + 6:.0f}" text-anchor="middle" class="fin-period" fill="{fill}" font-size="15" font-weight="900">{_escape(str(column))}</text>'
+        )
+    for row_index, item in enumerate(rows):
+        y = y0 + row_h * (row_index + 1)
+        row_role = str(item.get("row_role", "")).strip()
+        row_class = f"fin-row-{_class_name(row_role)}" if row_role else "fin-row"
+        if row_index % 2 == 0:
+            body.append(f'<rect x="0" y="{y}" width="1000" height="{row_h}" fill="var(--ink)" opacity=".04"/>')
+        label_x = 20 + (20 if row_role == "sub" else 0)
+        label_weight = "900" if row_role == "group" else "650"
+        label_style = ' font-style="italic"' if row_role == "ratio" else ""
+        body.append(
+            f'<text x="{label_x}" y="{y + row_h / 2 + 6:.0f}" class="{row_class}" fill="var(--ink)" font-size="15" font-weight="{label_weight}"{label_style}>{_escape(item["label"])}</text>'
+        )
+        cells = item.get("cells") if isinstance(item.get("cells"), list) else []
+        for col_index, cell in enumerate(cells[: len(columns)]):
+            x = label_w + value_w * col_index + value_w - 18
+            cell_text, metric_id, number = _fin_cell_text(cell, str((block or {}).get("negative_style", "red")))
+            fill = "var(--semantic-negative)" if isinstance(number, (int, float)) and number < 0 else "var(--ink)"
+            weight = "900" if row_role == "group" else "720"
+            style = ' font-style="italic"' if row_role == "ratio" else ""
+            metric_attr = f' data-metric-id="{_escape(metric_id)}"' if metric_id else ""
+            body.append(
+                f'<text x="{x:.1f}" y="{y + row_h / 2 + 6:.0f}" text-anchor="end" fill="{fill}" font-size="16" font-weight="{weight}"{style}{metric_attr}>{_escape(cell_text)}</text>'
+            )
+        body.append(f'<line x1="0" y1="{y + row_h}" x2="1000" y2="{y + row_h}" stroke="var(--line)" stroke-width="1"/>')
+    return _svg_shell("fin-table", title, note, y0 + table_h + 28, "".join(body), page_id)
+
+
+def _fin_cell_text(cell: dict[str, Any], negative_style: str) -> tuple[str, str, float | None]:
+    metric_id = str(cell.get("metric_id", "")).strip()
+    if metric_id:
+        text = str(cell.get("value", "")).strip()
+        number = cell.get("number")
+        if negative_style == "paren" and isinstance(number, (int, float)) and number < 0:
+            text = f"({text.lstrip('-−')})"
+        return text, metric_id, number if isinstance(number, (int, float)) else None
+    return str(cell.get("text", "")).strip(), "", None
+
+
 # ── 승격 라운드(2026-07-04 후추님 승인·PATTERN_LIBRARY ⬜→✅): report_ops 정체성 4종.
 
 def _svg_multi_line(
@@ -2252,9 +2414,11 @@ def _svg_multi_line(
 ) -> str:
     # 다계열 라인(관찰 8/8 dashboard + 4/5 report_ops): role "highlight"=액센트 선, "baseline"=회색 선.
     # 각 항목 = 한 점(순서 = x축). 점 위 값 라벨. 시계열 배열이 아니라 registry 스칼라 점들의 연결.
-    lanes: dict[str, list[dict[str, Any]]] = {"highlight": [], "baseline": []}
+    lanes: dict[str, list[dict[str, Any]]] = {"highlight": [], "baseline": [], "negative": [], "positive": [], "brand": []}
     for item in series:
-        lanes["baseline" if item.get("role") == "baseline" else "highlight"].append(item)
+        role = str(item.get("role", "")).strip()
+        lane = role if role in lanes else "highlight"
+        lanes[lane].append(item)
     y0, h, x0, w = CHART_TITLE_GAP, 150, 80, 860
     numbers = [i["number"] for lane in lanes.values() for i in lane if i["number"] is not None]
     vmax = max(numbers) if numbers else 1
@@ -2262,7 +2426,7 @@ def _svg_multi_line(
     for lane_name, pts in lanes.items():
         if not pts:
             continue
-        color = accent if lane_name == "highlight" else "var(--muted)"
+        color = _series_color(pts[0], 0, pts, accent) if lane_name != "baseline" else "var(--muted)"
         step = w / max(1, len(pts) - 1) if len(pts) > 1 else 0
         coords = []
         for i, item in enumerate(pts):
@@ -2416,6 +2580,8 @@ _CHART_RENDERERS = {
     "arrow_flow": _svg_arrow_flow,
     "timeline_bars": _svg_timeline_bars,
     "data_table": _svg_data_table,
+    "fin_table": _svg_fin_table,
+    "quarterly_bars": _svg_quarterly_bars,
     "before_after": _svg_before_after,
     "dumbbell": _svg_dumbbell,
     "flow": _svg_flow,
@@ -2523,6 +2689,33 @@ def _is_highlight(item: dict[str, Any], index: int, rows: list[dict[str, Any]]) 
     return item.get("role") == "highlight" or (not any(row.get("role") == "highlight" for row in rows) and index == len(rows) - 1)
 
 
+def _safe_svg_color(value: str) -> str:
+    value = value.strip()
+    if re.fullmatch(r"#[0-9A-Fa-f]{3}(?:[0-9A-Fa-f]{3})?", value):
+        return value
+    if re.fullmatch(r"var\(--[A-Za-z0-9_-]+\)", value):
+        return value
+    return ""
+
+
+def _series_color(item: dict[str, Any], index: int, rows: list[dict[str, Any]], accent: str, muted: str = "var(--muted)") -> str:
+    role = str(item.get("role", "")).strip()
+    if role == "negative":
+        return "var(--semantic-negative)"
+    if role == "positive":
+        return "var(--semantic-positive)"
+    if role == "brand":
+        return str(item.get("color") or "var(--semantic-brand)")
+    return accent if _is_highlight(item, index, rows) else muted
+
+
+def _value_class(item: dict[str, Any], accented: bool = False) -> str:
+    role = str(item.get("role", "")).strip()
+    if role in {"negative", "positive", "brand"}:
+        return f"visual-value-{role}"
+    return "visual-value-accent" if accented else "visual-value"
+
+
 def _highlight_or_first(series: list[dict[str, Any]]) -> dict[str, Any]:
     for item in series:
         if item.get("role") == "highlight":
@@ -2538,10 +2731,14 @@ def _viz_accent(block: dict[str, Any], palette: dict[str, str]) -> str:
 def _render_sources(source_ids: list[str], registry: dict[str, dict[str, Any]]) -> str:
     seen: set[str] = set()
     rendered: list[str] = []
+    unique_ids = []
     for src_id in source_ids:
         if src_id in seen:
             continue
         seen.add(src_id)
+        unique_ids.append(src_id)
+    visible_ids = unique_ids[:SOURCE_ROW_VISIBLE_LIMIT]
+    for src_id in visible_ids:
         source = _require_source(src_id, "render", registry)
         publisher = str(source.get("publisher") or source.get("title") or src_id)
         url = str(source.get("url") or "").strip()
@@ -2551,6 +2748,9 @@ def _render_sources(source_ids: list[str], registry: dict[str, dict[str, Any]]) 
             )
         else:
             rendered.append(f'<span class="source-link" data-src-id="{_escape(src_id)}">{_escape(publisher)}</span>')
+    hidden_count = len(unique_ids) - len(visible_ids)
+    if hidden_count > 0:
+        rendered.append(f'<span class="source-more">+{hidden_count}</span>')
     return "".join(rendered)
 
 
@@ -2744,6 +2944,9 @@ def _css(palette: dict[str, str]) -> str:
   --c30: {palette["c30"]};
   --accent: {palette["accent"]};
   --accent2: {palette["accent2"]};
+  --semantic-negative: {palette["semantic_negative"]};
+  --semantic-positive: {palette["semantic_positive"]};
+  --semantic-brand: {palette["semantic_brand"]};
   --divider-accent: {_divider_accent_color(palette)};
   --divider-accent-fg: {"#F8FAFC" if _hex_luminance(_divider_accent_color(palette)) < 0.45 else "color-mix(in srgb, " + palette["ink"] + " 92%, black)"};
   --ink: {palette["ink"]};
@@ -3034,21 +3237,24 @@ h1 {{
   font-size: 12px;
   letter-spacing: .08em;
 }}
-/* 출처 = 푸터 선 위 한 줄(후추님 6/30). nowrap으로 한 줄 유지·선 아래로 안 내려감. */
+/* 출처 = 마이크로 캡션. 실전 리포트는 2줄까지 정상 문법으로 보고, 긴 행은 renderer가 +N으로 접는다. */
 .source-row {{
   flex: 0 0 auto;
   display: flex;
-  gap: 14px;
-  white-space: nowrap;
-  overflow: hidden;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  white-space: normal;
+  overflow: visible;
   color: var(--muted);
-  font-size: 12px;
-  letter-spacing: .08em;
+  font-size: 10.5px;
+  line-height: 1.25;
+  letter-spacing: .04em;
   margin-bottom: 2px;
 }}
-.source-link {{ color: var(--muted); text-decoration: none; white-space: nowrap; }}
+.source-link, .source-more {{ color: var(--muted); text-decoration: none; white-space: normal; overflow-wrap: anywhere; }}
 .source-link::before {{ content: "["; color: var(--accent); }}
 .source-link::after {{ content: "]"; color: var(--accent); }}
+.source-more {{ font-weight: 800; color: var(--accent); }}
 /* 용어 풀이 각주 = 출처행 위, 작게(일반 청중 배려). 줄바꿈 허용(한 줄 강제 X). */
 .footnote-row {{
   flex: 0 0 auto;
@@ -3858,6 +4064,9 @@ h1 {{
 .visual-label {{ fill: var(--ink); font-size: 20px; font-weight: 500; }}
 .visual-value {{ fill: var(--ink); font-size: 28px; font-weight: 900; }}
 .visual-value-accent {{ fill: var(--accent); font-size: 35px; font-weight: 900; }}
+.visual-value-negative {{ fill: var(--semantic-negative); font-size: 35px; font-weight: 900; }}
+.visual-value-positive {{ fill: var(--semantic-positive); font-size: 35px; font-weight: 900; }}
+.visual-value-brand {{ fill: var(--semantic-brand); font-size: 35px; font-weight: 900; }}
 /* 델타 주석(전·후 변화량·×N 브래킷) — 렌더러 계산값. accent2로 값과 위계 분리. */
 .visual-delta {{ fill: var(--accent2); font-size: 22px; font-weight: 900; }}
 .visual-fo-label {{

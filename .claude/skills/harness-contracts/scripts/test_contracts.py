@@ -47,6 +47,7 @@ run_contracts_module = importlib.util.module_from_spec(RUN_CONTRACTS_SPEC)
 RUN_CONTRACTS_SPEC.loader.exec_module(run_contracts_module)
 
 RUN_DECK_SH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "run_deck.sh"
+CAPTURE_DECK_SH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "capture_deck.sh"
 
 
 VALID_DAG = {
@@ -365,6 +366,97 @@ class HarnessContractTests(unittest.TestCase):
 
     def test_c6_accepts_viz_blocks_with_metric_id_series(self):
         self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC_WITH_VIZ, VALID_CONTENT_REGISTRY, ""), [])
+
+    def test_c6_rejects_unknown_viz_series_role(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "before_after",
+                            "series": [
+                                {"label": "Baseline", "metric_id": "metric_measurement", "role": "decorative"},
+                                {"label": "With Summary", "metric_id": "metric_click_drop", "role": "highlight"},
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+
+        self.assertTrue(any("unsupported viz series role: decorative" in str(v) for v in violations))
+
+    def test_c6_accepts_semantic_color_roles_and_new_finance_charts(self):
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "quarterly_bars",
+                            "series": [
+                                {"metric_id": "metric_measurement", "role": "baseline"},
+                                {"metric_id": "metric_click_drop", "role": "positive"},
+                                {"metric_id": "metric_measurement", "role": "negative"},
+                                {"metric_id": "metric_click_drop", "role": "brand", "color": "#F7931A"},
+                            ],
+                        },
+                        {
+                            "type": "viz",
+                            "chart": "fin_table",
+                            "columns": ["이전", "현재", "변화"],
+                            "series": [
+                                {
+                                    "label": "매출",
+                                    "row_role": "group",
+                                    "cells": [
+                                        {"metric_id": "metric_measurement"},
+                                        {"metric_id": "metric_click_drop"},
+                                        {"text": "흑자전환"},
+                                    ],
+                                }
+                            ],
+                        },
+                    ],
+                )
+            ]
+        }
+
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+
+    def test_c6_rejects_fin_table_raw_number_text_cells(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "fin_table",
+                            "columns": ["이전", "현재"],
+                            "series": [
+                                {
+                                    "label": "매출",
+                                    "cells": [
+                                        {"metric_id": "metric_measurement"},
+                                        {"text": "999억"},
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+
+        self.assertTrue(any("fin_table text cell contains raw number" in str(v) for v in violations))
 
     def test_c6_accepts_text_table_without_numeric_cells(self):
         spec = {
@@ -1093,6 +1185,46 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("overflow: hidden;", html)
         self.assertIn('class="page-number" data-page-number>01 / 02</span>', html)
 
+    def test_render_deck_wraps_and_abbreviates_long_source_rows(self):
+        registry = {
+            "sources": {
+                f"src_{index}": {"publisher": f"Very Long Publisher Name {index}", "url": f"https://example.com/{index}"}
+                for index in range(1, 7)
+            },
+            "metrics": VALID_CONTENT_REGISTRY["metrics"],
+        }
+        spec = {
+            "pages": [
+                {
+                    "page_id": "source_fixture",
+                    "short_title": "Source Fixture",
+                    "layout": "statement",
+                    "allowed_source_ids": [f"src_{index}" for index in range(1, 7)],
+                    "allowed_metric_ids": [],
+                    "content": [
+                        {"type": "headline", "text": "Source Fixture"},
+                        *({"type": "citation", "src_id": f"src_{index}"} for index in range(1, 7)),
+                    ],
+                }
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="Source Fixture")
+        source_css = html.split(".source-row {", 1)[1].split("}", 1)[0]
+
+        self.assertIn("flex-wrap: wrap;", source_css)
+        self.assertIn("white-space: normal;", source_css)
+        self.assertNotIn("overflow: hidden;", source_css)
+        self.assertIn('class="source-more"', html)
+        self.assertIn("+2", html)
+        self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
+
+    def test_capture_deck_detects_hidden_source_row_clips(self):
+        script = CAPTURE_DECK_SH.read_text(encoding="utf-8")
+
+        self.assertIn("FIT_SOURCE_CLIP", script)
+        self.assertIn("sourceClips", script)
+
     def test_render_deck_outputs_closing_layout(self):
         html = render_deck_module.render_deck(VALID_CLOSING_DECK_SPEC, VALID_CONTENT_REGISTRY, title="Closing Fixture")
         self.assertIn("layout-closing", html)
@@ -1214,6 +1346,129 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("swot-cell-highlight", html)
         self.assertIn("Proof library", html)
         self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_semantic_color_roles(self):
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "before_after",
+                            "series": [
+                                {"label": "Baseline", "metric_id": "metric_measurement", "role": "baseline"},
+                                {"label": "Bad", "metric_id": "metric_click_drop", "role": "negative"},
+                                {"label": "Good", "metric_id": "metric_measurement", "role": "positive"},
+                                {"label": "Brand", "metric_id": "metric_click_drop", "role": "brand", "color": "#F7931A"},
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Semantic Fixture")
+
+        self.assertIn("var(--semantic-negative)", html)
+        self.assertIn("var(--semantic-positive)", html)
+        self.assertIn("#F7931A", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_quarterly_bars_with_onbar_labels(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                "quarter_a": {"value": "120", "unit": "억", "label": "Q1", "source_ids": ["src_a"]},
+                "quarter_b": {"value": "160", "unit": "억", "label": "Q2", "source_ids": ["src_a"]},
+                "quarter_c": {"value": "142", "unit": "억", "label": "Q3", "source_ids": ["src_a"]},
+                "quarter_d": {"value": "210", "unit": "억", "label": "Q4", "source_ids": ["src_a"]},
+            },
+        }
+        spec = {
+            "pages": [
+                {
+                    "page_id": "quarterly_fixture",
+                    "short_title": "Quarterly Bars",
+                    "layout": "statement",
+                    "allowed_source_ids": ["src_a"],
+                    "allowed_metric_ids": ["quarter_a", "quarter_b", "quarter_c", "quarter_d"],
+                    "content": [
+                        {"type": "viz", "chart": "quarterly_bars", "axis": "hidden", "axis_break": True, "series": [
+                            {"metric_id": "quarter_a", "role": "baseline"},
+                            {"metric_id": "quarter_b", "role": "baseline"},
+                            {"metric_id": "quarter_c", "role": "highlight"},
+                            {"metric_id": "quarter_d", "role": "highlight"},
+                        ]},
+                    ],
+                }
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="Quarterly Fixture")
+
+        self.assertIn("visual-quarterly-bars", html)
+        self.assertIn("quarter-value-onbar", html)
+        self.assertIn("≈", html)
+        self.assertIn('data-metric-id="quarter_d"', html)
+        self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
+
+    def test_render_deck_outputs_fin_table_options(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                "revenue_prev": {"value": "120", "unit": "억", "source_ids": ["src_a"]},
+                "revenue_now": {"value": "180", "unit": "억", "source_ids": ["src_a"]},
+                "profit_prev": {"value": "-12", "unit": "억", "source_ids": ["src_a"]},
+                "profit_now": {"value": "24", "unit": "억", "source_ids": ["src_a"]},
+                "margin_prev": {"value": "-10", "unit": "%", "source_ids": ["src_a"]},
+                "margin_now": {"value": "13", "unit": "%", "source_ids": ["src_a"]},
+            },
+        }
+        spec = {
+            "pages": [
+                {
+                    "page_id": "fin_fixture",
+                    "short_title": "Financial Table",
+                    "layout": "statement",
+                    "allowed_source_ids": ["src_a"],
+                    "allowed_metric_ids": [
+                        "revenue_prev",
+                        "revenue_now",
+                        "profit_prev",
+                        "profit_now",
+                        "margin_prev",
+                        "margin_now",
+                    ],
+                    "content": [
+                        {
+                            "type": "viz",
+                            "chart": "fin_table",
+                            "columns": ["이전", "현재", "변화"],
+                            "accent_column": 1,
+                            "negative_style": "paren",
+                            "series": [
+                                {"label": "매출", "row_role": "group", "cells": [{"metric_id": "revenue_prev"}, {"metric_id": "revenue_now"}, {"text": "성장"}]},
+                                {"label": "영업이익", "row_role": "sub", "cells": [{"metric_id": "profit_prev"}, {"metric_id": "profit_now"}, {"text": "흑자전환"}]},
+                                {"label": "영업이익률", "row_role": "ratio", "cells": [{"metric_id": "margin_prev"}, {"metric_id": "margin_now"}, {"text": "개선"}]},
+                            ],
+                        },
+                    ],
+                }
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="Financial Fixture")
+
+        self.assertIn("visual-fin-table", html)
+        self.assertIn("fin-accent-column", html)
+        self.assertIn("fin-row-group", html)
+        self.assertIn("fin-row-sub", html)
+        self.assertIn("font-style=\"italic\"", html)
+        self.assertIn("(12억)", html)
+        self.assertIn("var(--semantic-negative)", html)
+        self.assertIn("흑자전환", html)
+        self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
 
     def test_render_deck_outputs_running_head_chrome_for_body_pages(self):
         spec = {

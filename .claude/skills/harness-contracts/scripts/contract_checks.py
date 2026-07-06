@@ -84,6 +84,21 @@ SUPPORTED_VIZ_CHART_TYPES = frozenset(
         "target_vs_actual",  # 계획(점선 고스트) vs 실제(채움) 짝 — series 연속 2개=1행
         "radial_progress",   # 단일 링 진척 게이지·% 중앙 (최대 3링)
         "swot_quad",         # 2×2 정성 사분면 — metric_id 없이 series[].items 텍스트만 허용
+        "quarterly_bars",    # IR 분기 막대 — 마지막/비교 분기 액센트, 나머지 뮤트
+        "fin_table",         # IR 재무 표 — 행 계층·현재 열 아웃라인·음수 의미색
+    }
+)
+SUPPORTED_VIZ_SERIES_ROLES = frozenset(
+    {
+        "",
+        "baseline",
+        "highlight",
+        "benchmark",
+        "left",
+        "right",
+        "negative",
+        "positive",
+        "brand",
     }
 )
 SUPPORTED_LAYOUTS = frozenset(
@@ -755,7 +770,10 @@ def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolat
         if not isinstance(item, dict):
             violations.append(ContractViolation("C6", "viz series item must be an object", item_path))
             continue
-        if chart != "swot_quad" and not str(item.get("metric_id", "")).strip():
+        role = str(item.get("role", "")).strip()
+        if role not in SUPPORTED_VIZ_SERIES_ROLES:
+            violations.append(ContractViolation("C6", f"unsupported viz series role: {role}", f"{item_path}.role"))
+        if chart not in {"swot_quad", "fin_table"} and not str(item.get("metric_id", "")).strip():
             violations.append(ContractViolation("C6", "viz series item must include metric_id", f"{item_path}.metric_id"))
         label = item.get("label")
         if isinstance(label, str) and RAW_NUMBER_PATTERN.search(label):
@@ -771,6 +789,25 @@ def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolat
                         violations.append(ContractViolation("C6", "swot_quad item must be text", text_path))
                     elif RAW_NUMBER_PATTERN.search(text):
                         violations.append(ContractViolation("C6", "swot_quad item contains raw number", text_path))
+        if chart == "fin_table":
+            cells = item.get("cells")
+            if not isinstance(cells, list) or not cells:
+                violations.append(ContractViolation("C6", "fin_table series item must include cells list", f"{item_path}.cells"))
+            else:
+                for cell_index, cell in enumerate(cells):
+                    cell_path = f"{item_path}.cells[{cell_index}]"
+                    if not isinstance(cell, dict):
+                        violations.append(ContractViolation("C6", "fin_table cell must be an object", cell_path))
+                        continue
+                    has_metric = bool(str(cell.get("metric_id", "")).strip())
+                    has_text = bool(str(cell.get("text", "")).strip())
+                    if has_metric == has_text:
+                        violations.append(
+                            ContractViolation("C6", "fin_table cell must include exactly one of metric_id or text", cell_path)
+                        )
+                    text = cell.get("text")
+                    if isinstance(text, str) and RAW_NUMBER_PATTERN.search(text):
+                        violations.append(ContractViolation("C6", "fin_table text cell contains raw number", f"{cell_path}.text"))
         for field in ("value", "unit", "values", "data"):
             if field in item:
                 violations.append(ContractViolation("C6", f"viz series must not include direct {field}", f"{item_path}.{field}"))
@@ -854,7 +891,18 @@ class _RenderedAuthorityParser(HTMLParser):
                 return True
             # running-head-frac = 러닝헤드 크롬의 페이지분수(NN/총) — 렌더러 생성 페이지번호라 page-number와 동일 면제(배치3 running_head 도입 시 화이트리스트 누락분·7/4).
             # verified-badge = 렌더러가 registry에서 계산한 출처 수 — page-number와 동일 면제(레버2·7/5).
-            if classes & {"page-number", "citation-index", "source-index", "eyebrow", "cover-eyebrow", "copyright", "running-head-frac", "verified-badge"}:
+            if classes & {
+                "page-number",
+                "citation-index",
+                "source-index",
+                "source-more",
+                "eyebrow",
+                "cover-eyebrow",
+                "copyright",
+                "running-head-frac",
+                "verified-badge",
+                "fin-period",
+            }:
                 return True
             # 간지 프리뷰(divider-items) = short_title 복제 — 원본(h1)이 면제이므로 복제도 면제(7/3).
             # 각주(footnote-row) = 조사 정의 병기·조건부 캐비앳이 본질이라 숫자 필요(writing-standard 9b·D-12).
