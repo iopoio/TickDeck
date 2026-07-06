@@ -31,7 +31,7 @@ cp "$ABS" "$FIT"
 cat >> "$FIT" <<'EOF'
 <script>
 (function(){
-  var ovf=[], sparse=[], hovf=[], sourceClips=[], lowc=[], ovl=[];
+  var ovf=[], sparse=[], hovf=[], sourceClips=[], bandovf=[], lowc=[], ovl=[];
   document.querySelectorAll('.slide').forEach(function(s){
     var b=s.querySelector('.body'); if(!b) return;
     var gap=b.clientHeight-b.scrollHeight, id=s.dataset.pageId||'?';
@@ -47,6 +47,11 @@ cat >> "$FIT" <<'EOF'
       var hides=/hidden|clip/.test(cs.overflowX+' '+cs.overflowY);
       var noWrap=cs.whiteSpace==='nowrap';
       if((hides || noWrap) && el.scrollWidth - el.clientWidth > 4 && sourceClips.indexOf(id)<0) sourceClips.push(id);
+    });
+    s.querySelectorAll('.title-band-text,.visual-title-band').forEach(function(el){
+      if((el.scrollHeight - el.clientHeight > 2 || el.scrollWidth - el.clientWidth > 2) && bandovf.indexOf(id)<0) {
+        bandovf.push(id);
+      }
     });
   });
   // 저대비 무독 텍스트 — closing 칩 navy-on-navy처럼 글자색≈배경색이라 실측으로만 잡히던 클래스(7/3).
@@ -116,7 +121,7 @@ cat >> "$FIT" <<'EOF'
       }
     }
   });
-  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',')+'|hovf:'+hovf.join(',')+'|sclip:'+sourceClips.join(',')+'|ovl:'+ovl.join(',')+'|lowc:'+lowc.join(',');
+  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',')+'|hovf:'+hovf.join(',')+'|sclip:'+sourceClips.join(',')+'|bandovf:'+bandovf.join(',')+'|ovl:'+ovl.join(',')+'|lowc:'+lowc.join(',');
 })();
 </script>
 EOF
@@ -127,6 +132,7 @@ if [ -n "$RAW" ]; then
   _t="${RAW#*sparse:}"; SPARSE="${_t%%|*}"
   _t="${RAW#*hovf:}"; HOVF="${_t%%|*}"
   _t="${RAW#*sclip:}"; SCLIP="${_t%%|*}"
+  _t="${RAW#*bandovf:}"; BANDOVF="${_t%%|*}"
   _t="${RAW#*ovl:}"; OVL="${_t%%|*}"
   LOWC="${RAW##*lowc:}"
   if [ -n "$OVF" ]; then
@@ -142,6 +148,9 @@ if [ -n "$RAW" ]; then
   fi
   if [ -n "$SCLIP" ]; then
     echo "FIT_SOURCE_CLIP: $SCLIP — source-row/source-link가 hidden·nowrap으로 가로 내용을 잘라냄. 출처 랩/축약 필요."
+  fi
+  if [ -n "$BANDOVF" ]; then
+    echo "FIT_BAND_OVERFLOW: $BANDOVF — title band 텍스트가 2줄/밴드 높이를 초과함. 제목 축약 또는 크롬 해제 필요."
   fi
   if [ -n "$OVL" ]; then
     echo "FIT_TEXT_OVERLAP: $OVL — 텍스트 상호 겹침 의심. 실측 확인 필요."

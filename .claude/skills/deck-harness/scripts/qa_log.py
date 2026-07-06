@@ -20,6 +20,7 @@ CONTRACTS_SCRIPT = SCRIPT_DIR.parents[1] / "harness-contracts" / "scripts" / "ru
 CAPTURE_SCRIPT = SCRIPT_DIR / "capture_deck.sh"
 FIT_PRIORITY = (
     "FIT_TEXT_OVERLAP",
+    "FIT_BAND_OVERFLOW",
     "FIT_OVERFLOW",
     "FIT_HOVERFLOW",
     "FIT_LOWCONTRAST",
