@@ -830,6 +830,10 @@ def _validate_viz_block(
     if title_style not in SUPPORTED_VIZ_TITLE_STYLES:
         violations.append(ContractViolation("C6", f"unsupported viz title_style: {title_style}", f"{path}.title_style"))
 
+    size = str(block.get("size", "")).strip()
+    if size not in ("", "hero"):
+        violations.append(ContractViolation("C6", f"unsupported viz size: {size}", f"{path}.size"))
+
     for field in ("title", "note"):
         text = block.get(field)
         if isinstance(text, str) and RAW_NUMBER_PATTERN.search(text):
@@ -1384,7 +1388,7 @@ class _RenderedAuthorityParser(HTMLParser):
     def handle_data(self, data: str) -> None:
         if not data.strip() or self._inside_ignored_tag():
             return
-        if "출처:" in data and not self._manual_source_seen:
+        if "출처:" in data and not self._manual_source_seen and not self._inside_generated_caption():
             self._manual_source_seen = True
             self.violations.append(
                 ContractViolation("C6", "manual source label in rendered output; citations must be generated", "rendered_html")
@@ -1411,6 +1415,11 @@ class _RenderedAuthorityParser(HTMLParser):
             self.violations.append(
                 ContractViolation("C6", "untagged number in rendered output; use metric_id injection", "rendered_html")
             )
+
+    def _inside_generated_caption(self) -> bool:
+        # visual-source-caption = 렌더러가 registry에서 생성한 출처 캡션 (7/7 — "출처:" 한국어화).
+        # manual source label 금지는 writer 손글씨를 막는 것이지 렌더러 생성물이 아니다.
+        return any("visual-source-caption" in item.get("class", "") for item in self.stack)
 
     def _inside_ignored_tag(self) -> bool:
         # <title>은 문서 메타(브라우저 탭)지 슬라이드 콘텐츠가 아니다 — 연도 포함 제목이

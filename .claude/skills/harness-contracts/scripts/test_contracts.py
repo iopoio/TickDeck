@@ -2046,7 +2046,7 @@ class HarnessContractTests(unittest.TestCase):
         html = render_deck_module.render_deck(spec, registry, title="Source Caption Fixture")
 
         self.assertIn("visual-source-caption", html)
-        self.assertIn("— 1Q26 · per IAB, Pew", html)
+        self.assertIn("— 1Q26 · 출처: IAB, Pew", html)
         self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
 
     def test_render_deck_source_caption_falls_back_to_source_publisher_prefix(self):
@@ -2086,7 +2086,7 @@ class HarnessContractTests(unittest.TestCase):
 
         html = render_deck_module.render_deck(spec, registry, title="Fallback Caption Fixture")
 
-        self.assertIn("per 식품의약품안", html)
+        self.assertIn("출처: 식품의약품안전처", html)
 
     def test_render_deck_viz_title_style_band_is_block_local(self):
         spec = {

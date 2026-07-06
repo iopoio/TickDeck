@@ -1757,7 +1757,8 @@ def _render_viz(
     render_block = dict(block)
     render_block["_registry"] = registry
     svg = renderer(series, svg_title, note, accent, page_id, render_block)
-    return f'<aside class="visual-card visual-{_class_name(chart)}">{title_html}{caption_html}{svg}</aside>'
+    hero_class = " visual-hero" if str(block.get("size", "")).strip() == "hero" else ""
+    return f'<aside class="visual-card visual-{_class_name(chart)}{hero_class}">{title_html}{caption_html}{svg}</aside>'
 
 
 def _viz_series(
@@ -1861,9 +1862,9 @@ def _render_viz_source_caption(
 
     period_text = ", ".join(periods)
     if period_text and source_text:
-        caption = f"— {period_text} · per {source_text}"
+        caption = f"— {period_text} · 출처: {source_text}"
     elif source_text:
-        caption = f"— per {source_text}"
+        caption = f"— 출처: {source_text}"
     else:
         caption = f"— {period_text}"
     return f'<div class="visual-source-caption">{_escape(caption)}</div>'
@@ -1907,7 +1908,12 @@ def _source_caption_name(src_id: str, page_id: str, registry: dict[str, dict[str
     if short_name:
         return short_name
     publisher = str(source.get("publisher") or source.get("title") or src_id).strip()
-    return publisher[:8] or src_id[:8]
+    # 중간 잘림 금지 (7/7 블라인드 QA): 구분자 앞 첫 세그먼트를 통째로 — "매일경제·이코노미스트" → "매일경제"
+    for sep in ("(", "·", "/", ","):
+        if sep in publisher:
+            publisher = publisher.split(sep)[0].strip()
+            break
+    return publisher[:16].strip() or src_id[:8]
 
 
 def _source_row_ids_after_caption(source_ids: list[str], caption_source_ids: list[str]) -> list[str]:
@@ -2372,8 +2378,9 @@ def _svg_rising_columns(
     rows = series[:5]
     max_value = _max_metric_number(rows)
     # 높이는 테마 서체가 커도(기본 24px 부제) 720px 슬라이드에 안 넘치는 값 — peppinch(20px)만 통과하던 걸 보정(7/2).
-    base_y = CHART_TITLE_GAP + 176
-    max_h = 148
+    hero = str((block or {}).get("size", "")).strip() == "hero"
+    base_y = CHART_TITLE_GAP + (330 if hero else 176)
+    max_h = 290 if hero else 148
     area_x, area_w = 80, 840
     col_w = min(140, area_w / max(1, len(rows)) * 0.56)
     step = area_w / max(1, len(rows))
@@ -2438,8 +2445,9 @@ def _svg_quarterly_bars(
     x0, area_w = 56, 888
     step = area_w / max(1, len(rows))
     col_w = min(92, step * 0.58)
-    base_y = CHART_TITLE_GAP + 188
-    max_h = 148
+    hero = str((block or {}).get("size", "")).strip() == "hero"
+    base_y = CHART_TITLE_GAP + (330 if hero else 188)
+    max_h = 280 if hero else 148
     show_axis = (block or {}).get("axis") not in (False, "hidden", "none")
     body: list[str] = []
     points: list[dict[str, Any]] = []
@@ -2687,7 +2695,8 @@ def _svg_multi_line(
         role = str(item.get("role", "")).strip()
         lane = role if role in lanes else "highlight"
         lanes[lane].append(item)
-    y0, h, x0, w = CHART_TITLE_GAP, 150, 80, 860
+    hero = str((block or {}).get("size", "")).strip() == "hero"
+    y0, h, x0, w = CHART_TITLE_GAP, (300 if hero else 150), 80, 860
     numbers = [i["number"] for lane in lanes.values() for i in lane if i["number"] is not None]
     vmax = max(numbers) if numbers else 1
     body = [f'<line x1="{x0}" y1="{y0 + h}" x2="{x0 + w}" y2="{y0 + h}" stroke="var(--line)" stroke-width="2"/>']
@@ -4606,6 +4615,9 @@ h1 {{
 .visual-card svg {{ display: block; width: 100%; height: auto; overflow: visible; }}
 /* statement(상하 전폭) flow — SVG가 전폭 비율로 부풀어 세로가 터지는 것 방지(7/3 p04·p05). */
 .body:not(.layout-body) > .visual-card {{ width: min(100%, 820px); }}
+/* 차트 주인공 페이지 (7/7 R4 블라인드 QA — 실전 리포트는 차트가 지면 전폭): 폭 상한 해제, 세로는 hero viewBox가 담당 */
+.body:not(.layout-body) > .visual-card.visual-hero,
+.stack-outer > .visual-card.visual-hero {{ width: 100%; }}
 .body:not(.layout-body) > .metric-card {{ max-width: 460px; }}
 /* stack 컴포지션 — 전폭 차트도 세로 비율이 안 터지게 상한. */
 .stack-outer > .visual-card {{ width: min(100%, 760px); }}
