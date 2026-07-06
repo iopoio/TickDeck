@@ -2389,9 +2389,9 @@ def _svg_rising_columns(
     max_value = _max_metric_number(rows)
     # 높이는 테마 서체가 커도(기본 24px 부제) 720px 슬라이드에 안 넘치는 값 — peppinch(20px)만 통과하던 걸 보정(7/2).
     hero = str((block or {}).get("size", "")).strip() == "hero"
-    base_y = CHART_TITLE_GAP + (330 if hero else 176)
-    max_h = 290 if hero else 148
-    area_x, area_w = 80, 840
+    base_y = CHART_TITLE_GAP + (265 if hero else 176)
+    max_h = 215 if hero else 148
+    area_x, area_w = (70, 1260) if hero else (80, 840)
     col_w = min(140, area_w / max(1, len(rows)) * 0.56)
     step = area_w / max(1, len(rows))
     delta_text = _delta_annotation([rows[0], rows[-1]]) if len(rows) >= 2 and (block or {}).get("delta", True) else ""
@@ -2437,7 +2437,7 @@ def _svg_rising_columns(
             </g>"""
         )
     body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, CHART_TITLE_GAP - 12, base_y))
-    return _svg_shell("rising-columns", title, note, base_y + 44 + (28 if note else 0), "".join(body), page_id)
+    return _svg_shell("rising-columns", title, note, base_y + 44 + (28 if note else 0), "".join(body), page_id, width=(1400 if hero else 1000))
 
 
 def _svg_quarterly_bars(
@@ -2466,12 +2466,12 @@ def _svg_quarterly_bars(
                     item["value"] = str(item["value"]).strip()[: -len(shared)].strip()
     numbers = [abs(item["number"]) for item in rows if isinstance(item.get("number"), (int, float))]
     max_value = max(numbers) if numbers else 1.0
-    x0, area_w = 56, 888
-    step = area_w / max(1, len(rows))
-    col_w = min(92, step * 0.58)
     hero = str((block or {}).get("size", "")).strip() == "hero"
-    base_y = CHART_TITLE_GAP + (330 if hero else 188)
-    max_h = 280 if hero else 148
+    x0, area_w = (56, 1300) if hero else (56, 888)
+    step = area_w / max(1, len(rows))
+    col_w = min(140 if hero else 92, step * 0.58)
+    base_y = CHART_TITLE_GAP + (265 if hero else 188)
+    max_h = 215 if hero else 148
     show_axis = (block or {}).get("axis") not in (False, "hidden", "none")
     body: list[str] = []
     points: list[dict[str, Any]] = []
@@ -2506,7 +2506,7 @@ def _svg_quarterly_bars(
             </g>"""
         )
     body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, CHART_TITLE_GAP - 12, base_y))
-    return _svg_shell("quarterly-bars", title, note, base_y + 52 + (28 if note else 0), "".join(body), page_id)
+    return _svg_shell("quarterly-bars", title, note, base_y + 52 + (28 if note else 0), "".join(body), page_id, width=(1400 if hero else 1000))
 
 
 # chart enum(계약 SoT)과 렌더러 1:1 — 빠지면 테스트가 잡는다(test_contracts 커버리지).
@@ -2724,7 +2724,8 @@ def _svg_multi_line(
         lane = role if role in lanes else "highlight"
         lanes[lane].append(item)
     hero = str((block or {}).get("size", "")).strip() == "hero"
-    y0, h, x0, w = CHART_TITLE_GAP, (300 if hero else 150), 80, 860
+    # hero = 와이드 viewBox(1400): 가로 잉크 전폭 + 세로 스케일 복원, 렌더 높이는 안 부풂 (7/7 2R 테마 폭 상한 충돌 근본 풀이)
+    y0, h, x0, w = CHART_TITLE_GAP, (225 if hero else 150), (70 if hero else 80), (1260 if hero else 860)
     numbers = [i["number"] for lane in lanes.values() for i in lane if i["number"] is not None]
     vmax = max(numbers) if numbers else 1
     body = [f'<line x1="{x0}" y1="{y0 + h}" x2="{x0 + w}" y2="{y0 + h}" stroke="var(--line)" stroke-width="2"/>']
@@ -2759,7 +2760,7 @@ def _svg_multi_line(
         points.append({"x": coord[0], "y": coord[1], "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
     body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, y0 - 12, y0 + h))
     # x축 라벨(y0+h+24)과 shell note(height-10)가 겹치지 않게 높이 여유(+70) — 스모크 실측.
-    return _svg_shell("multi_line", title, note, y0 + h + 70, "".join(body), page_id)
+    return _svg_shell("multi_line", title, note, y0 + h + 70, "".join(body), page_id, width=(1400 if hero else 1000))
 
 
 def _svg_progress_bar(
@@ -3106,13 +3107,13 @@ def _wrap_text(text: str, max_chars: int) -> list[str]:
     return lines or [text]
 
 
-def _svg_shell(kind: str, title: str, note: str, height: int, body: str, page_id: str) -> str:
+def _svg_shell(kind: str, title: str, note: str, height: int, body: str, page_id: str, width: int = 1000) -> str:
     title_html = f'<text x="0" y="20" class="visual-title">{_escape(title)}</text>' if title else ""
     note_html = ""
     if note:
         # note를 viewBox(1000) 폭에 맞춰 줄바꿈(17px Korean ≈ 52자/줄)하고, 늘어난 줄만큼 SVG를 키운다.
         # SVG <text>는 wrap이 없어 한 줄이 오른쪽으로 잘리던 버그(코덱스 p08 지적) 근본 풀이.
-        lines = _wrap_text(note, 52)
+        lines = _wrap_text(note, int(52 * width / 1000))
         line_h = 22
         first_y = height - 10
         height = height + (len(lines) - 1) * line_h
@@ -3122,7 +3123,7 @@ def _svg_shell(kind: str, title: str, note: str, height: int, body: str, page_id
         )
         note_html = f'<text x="0" y="{first_y}" class="visual-note">{tspans}</text>'
     return f"""
-<svg viewBox="0 0 1000 {height}" role="img" aria-label="{_escape(kind)} chart for {_escape(page_id)}">
+<svg viewBox="0 0 {width} {height}" role="img" aria-label="{_escape(kind)} chart for {_escape(page_id)}">
   {title_html}
   {body}
   {note_html}
@@ -4649,14 +4650,14 @@ h1 {{
 .body:not(.layout-body) > .visual-card {{ width: min(100%, 820px); }}
 /* 차트 주인공 페이지 (7/7 R4 블라인드 QA — 실전 리포트는 차트가 지면 전폭): 폭 상한 해제, 세로는 hero viewBox가 담당 */
 .body:not(.layout-body) > .visual-card.visual-hero,
-.stack-outer > .visual-card.visual-hero {{ width: 100%; }}
+.stack-outer > .visual-card.visual-hero {{ width: 100% !important; }} /* 테마별 폭 상한(0,3,0)에 밀리던 것 — hero 의미상 전폭 고정 (7/7 2R) */
 .body:not(.layout-body) > .metric-card {{ max-width: 460px; }}
 /* stack 컴포지션 — 전폭 차트도 세로 비율이 안 터지게 상한. */
 .stack-outer > .visual-card {{ width: min(100%, 760px); }}
 /* hero 차트 페이지의 보조 카드열은 낮춰 잡는다 — 주인공이 세로 2배를 가져간 뒤 남는 FIT 룸(7/7 R4 실측 +79px). */
 .stack-outer > .visual-hero ~ .stack-row {{ margin-top: 0; }}
-.stack-outer > .visual-hero ~ .stack-row .metric-card {{ padding: 14px 20px; }}
-.stack-outer > .visual-hero ~ .stack-row .metric-value {{ font-size: 42px; }}
+.stack-outer > .visual-hero ~ .stack-row .metric-card {{ padding: 10px 20px 8px; }}
+.stack-outer > .visual-hero ~ .stack-row .metric-value {{ font-size: 38px; }}
 /* hero 페이지 본문은 행간도 좁힌다 — 24px 기본 row-gap이 마지막 5~20px 초과의 원인(7/7 R4 실측). */
 .body:has(> .visual-hero) {{ row-gap: 10px; padding-bottom: 0; }}
 .body:has(> .visual-hero) > .note-row {{ margin-top: 0; }}
