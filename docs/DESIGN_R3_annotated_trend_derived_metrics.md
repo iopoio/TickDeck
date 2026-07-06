@@ -1,7 +1,7 @@
 # R3 설계 — 파생 metric 계약 + CH-annotated_trend·PG-toc_progress·PG-metric_commentary (2026-07-07)
 
 > 근거: PATTERN_LIBRARY §승격안 R3 · 코과장 7/6 리뷰 "C6 파생 metric 체계 선행 안 하면 검증 게이트에서 깨지는 장식".
-> 상태: **후추님 결재 대기.** R2 완료 후 착수 (annotation 캡션이 R2 source_caption 층 위에 얹힘).
+> 상태: **✅ 구현 완료 (7/7)** — 결재 포인트 2개는 후추님 위임으로 추천안 확정(verifier 산출·4개 묶음). 커밋 c4d4966·b7850ba·24f6a40. 시각QA에서 endpoint_value·기본 라벨 이중 렌더 1건 발견·수술 완료.
 
 ## 0. 실측 전제
 - C6 계약 (contract_checks.py `_validate_viz_block`): viz title/note에 raw number 금지·직접 value 금지 — **모든 표시 숫자는 metric_id 경유**

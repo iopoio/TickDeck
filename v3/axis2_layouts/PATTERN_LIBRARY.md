@@ -34,10 +34,10 @@
 | PG-profile_row | 아바타+이름 인물 카드 열(관찰 15+ — report_ops 3 + 2R 9 + 7/6 실전 3: 삼성 003·KPMG 오토 013·M&A 013) | 팀·전문가 소개 | 전체 | ⬜(사진 자산 정책 미정이었으나 **KPMG 실물이 사진 없는 텍스트 연락처 그리드** — 아바타 없이 구현 가능 실증, 보류 사유 완화) |
 | PG-color_block_bento | 전면 색면 직사각형 베노(여백 없이 컬러블록 맞물림+번호/사진 삽입, 관찰 3 — 2R Artista·Ombar·dark-normal) | 강렬 편집·표지 | pop·creative | ⬜ |
 | PG-title_band | 상단 전폭 솔리드 색밴드(높이 10~14%)에 좌정렬 흰 제목 1~2줄, 본문 백지. 간지 = 같은 밴드를 **비우고** 중앙 스테이트먼트만. 착지 2형: ①페이지 제목형(BOND trends_ai ~330장 + 2015 덱 본문 전수 = **10년 크롬**) ②차트 제목형(밴드가 차트 제목 — Activate 5개년 본문 전수·BOND 메모 카드 헤더) ⚠ 승격 전 미결: 밴드의 auto-fit 제외 여부·제목 2줄 시 높이 규칙 (7/6 리뷰) | 실전 리포트 크롬 | corporate·mono·전체 | ✅(7/7 R2 — 착지 2형·간지 비움·FIT_BAND_OVERFLOW) |
-| PG-toc_progress | 섹션 시작마다 진행 표시. 변주 3형: ①목차 전체 재출력+현재 행 반전(KPMG ces 4·Activate 2021/2024 3) ②상단 번호 칩 현재만 채움(KPMG 오토 11) ③섹션 필+도트 ●○○○○(KPMG M&A 7) | 긴 일하는 덱 내비 | corporate·전체 | ⬜(3발행처 25관찰) |
+| PG-toc_progress | 섹션 시작마다 진행 표시. 변주 3형: ①목차 전체 재출력+현재 행 반전(KPMG ces 4·Activate 2021/2024 3) ②상단 번호 칩 현재만 채움(KPMG 오토 11) ③섹션 필+도트 ●○○○○(KPMG M&A 7) | 긴 일하는 덱 내비 | corporate·전체 | ✅(7/7 R3 — section_nav chips/dots/toc 3형) |
 | PG-item_profile | 반복 아이템 카탈로그: 카테고리 필(+메타 칩) → 헤드라인 → 2~4줄 dek → 좌 라벨바+이미지 패널 / 우 틴트 카드(액센트 볼드 미니헤드 + 불릿 2단 • → –) (관찰 — KPMG ces2026 ~30장 **단독**. ⚠ 7/6 배치 15건 재확증 0 — KPMG 다른 발행물 2건에도 없음 → 1건 출처 강등. 구현 비용도 최고(이미지 자산 정책 선결)) | 카탈로그·사례집 | corporate·전체 | ⬜(1건 출처·승격 보류) |
 | PG-prose_page | 문단 에세이 페이지 — 불릿 없이 문단 스택. 변형 3: ①중앙정렬 에세이(BOND trends_ai 5장) ②좌정렬 메모 prose+볼드 리드인(BOND 메모 3건 — 문서 전체가 prose) ③IR 유의사항/Disclaimer(카카오·네이버·삼성 모두 2페이지째) + Activate 테이크어웨이 스택 변형(볼드 런인 리드+헤어라인 룰, act25 001~003) | 서문·맺음·면책 | mono·corporate | ⬜(7건 재확증) |
-| PG-metric_commentary | IR 원자 블록: 지표명 헤딩 + `+X% YoY, ±Y% QoQ` 델타쌍 헤드라인 + (YoY)/(QoQ) 라벨 불릿 + 분기 차트. 페이지당 1~2행 스택 (관찰 12+ — 카카오 016~019 2행형·네이버 003~008 1행형) | 실적·상태 보고 | corporate·전체 | ⬜ |
+| PG-metric_commentary | IR 원자 블록: 지표명 헤딩 + `+X% YoY, ±Y% QoQ` 델타쌍 헤드라인 + (YoY)/(QoQ) 라벨 불릿 + 분기 차트. 페이지당 1~2행 스택 (관찰 12+ — 카카오 016~019 2행형·네이버 003~008 1행형) | 실적·상태 보고 | corporate·전체 | ✅(7/7 R3) |
 
 ## C. 차트·다이어그램 (수치 비교 12종 + 관계·프로세스 4종)
 
@@ -57,7 +57,7 @@
 | CH-kpi_delta_card | 숫자+델타+미니추세 KPI 블록(관찰 11+ — dashboard 8 + report_ops 3 + 2R 델타스택·타깃블록) | 계기판 단위 | ⬜(델타·숫자블록은 ✅ — 미니추세 스파크라인만 백로그) |
 | CH-puzzle/gear/polygon | 퍼즐·기어·다각형 인포그래픽(pop 스샷 관찰) | 구성요소·맞물림 은유 | ⬜ |
 | CH-swot_quad | 2×2 SWOT/정성 사분면 — 중앙 십자축·highlight 사분면 틴트(관찰 4). 스펙: viz `"chart": "swot_quad"`, series 4개 = 사분면(`label`+`items` 문자열 배열·숫자 금지), metric_id 예외 유일 차트 | 전략·경쟁분석 | ✅(7/4 배치3) |
-| CH-annotated_trend | 성장 서사 라인차트 주석 레이어 4종: 성장률 타원 콜아웃("+X%/Year")·보조 추세 화살표·끝점 굵은 수치·**이벤트 구간 세로 음영 밴드+상단 라벨**(usa_inc WWII·COVID / a16z "ICO boom" 에포크 밴드 흡수). 기존 multi_line 확장 (관찰 20+ — BOND 4/4 아이템·2015까지 10년 연속 + Activate/a16z 10) ⚠ 구현 선결: C6 계약상 title/note raw number 금지 — 파생값(성장률) metric 체계 설계 먼저 (7/6 코과장 리뷰) | 추세에 서사 싣기 | ⬜ |
+| CH-annotated_trend | 성장 서사 라인차트 주석 레이어 4종: 성장률 타원 콜아웃("+X%/Year")·보조 추세 화살표·끝점 굵은 수치·**이벤트 구간 세로 음영 밴드+상단 라벨**(usa_inc WWII·COVID / a16z "ICO boom" 에포크 밴드 흡수). 기존 multi_line 확장 (관찰 20+ — BOND 4/4 아이템·2015까지 10년 연속 + Activate/a16z 10) ⚠ 구현 선결: C6 계약상 title/note raw number 금지 — 파생값(성장률) metric 체계 설계 먼저 (7/6 코과장 리뷰) | 추세에 서사 싣기 | ✅(7/7 R3 — annotations 4종·파생 metric 계약·endpoint 이중라벨 수술) |
 | CH-chart_card_grid | 차트 카드 그리드(2×2·3×2·세로 스택) — 카드별 미니 헤더밴드 (관찰 10+장 — BOND 3/4 아이템: our_new_world 007·015~017 / ai_education 004·007~009 / usa_inc 002·004·022) ⚠ 코너 번호닷+"Details on Page N"은 trends_ai 1건 고유 장식으로 분리 — 그리드만 등재 | 익제큐티브 서머리 | ⬜ |
 | CH-quarterly_bars | 분기 시계열 막대: 데이터 라벨 온바(축눈금 생략)·마지막/비교 분기만 액센트 나머지 뮤트·옵션 축절단 `≈`. 기존 rising_columns 확장 (관찰 20+ — 카카오 014~019·025 / 네이버 003~009 / 삼성 005~010 = **IR 3사 관통**) | 실적 시계열 | ✅(7/6 R1) |
 | CH-fin_table | data_table 확장: 분기 열+YoY/QoQ 파생 열·**현재 분기 열 액센트 아웃라인 박스**(3사 관통 최강)·그룹행 볼드/하위행 들여쓰기·비율행 이탤릭·음수 빨강 또는 괄호·"흑자전환" 텍스트 셀 (관찰 9 — 카카오 020·021 / 네이버 002·007·015 / 삼성 011~014) | 재무·지표 표 | ✅(7/6 R1) |
@@ -106,7 +106,7 @@
   - **0순위 (선결·버그)**: overflow 게이트 신뢰성 — clo_v51 p08 출처 칩 잘림이 게이트 미검출로 통과한 사고. 뿌리 특정됨(source-row CSS `nowrap+hidden` clip). 긴 텍스트 얹는 모든 패턴의 선결 조건. 코과장 위임 1건. → ✅ 완료(7/6 R1 — flex-wrap 2줄+`+N` 축약·FIT_SOURCE_CLIP 게이트 신설·clo_v51 p08 실측 해소·commit cf15859)
   - **R1 (저비용·고관통)**: ✅ 완료(7/6 — commit e3a39a8·test 84/84·데모 4/4) CL-semantic_color + CH-quarterly_bars + CH-fin_table
   - **R2**: ✅ 완료(7/7 — commit 53d3f52·ef4c97a·54ca3a2·test 93/93·시각QA 본부 실측) TY-source_infra + PG-title_band
-  - **R3 (계약 설계 후)**: CH-annotated_trend(C6 파생 metric 체계 선행 — 안 하면 "검증 게이트에서 깨지는 장식", 코과장) + PG-toc_progress(3발행처 25관찰) + PG-metric_commentary
+  - **R3**: ✅ 완료(7/7 — commit c4d4966·b7850ba·24f6a40·test 102/102·회귀 6/6·시각QA 실측) 파생 metric 계약 + annotated_trend + toc_progress + metric_commentary
   - **강등·보류**: PG-item_profile(재확증 0 — 1건 출처 강등 + 구현 비용 최고) · CH-photo_bar/logo_connector_map(자산 정책 선결)
   - 옛 "1순위 title_band·item_profile" 표기는 리뷰로 교정됨 — 구현 비용 실측(deck_spec source 구조·C6 계약) 반영.
 - 미등재 기록 (1건 출처 — 다음 수집 배치 재확증 대상): DC-pixel_block(a16z)·CH-redline_edit(usa_inc 업데이트판 문법)·PG-results_outlook(삼성 좌Results/우Outlook)·CH-ranked_leaderboard(KPMG 오토)·PG-boxed_section_label(BOND 메모 간지)·PG-perspective_sidebar(Activate 의견 박스 — KPMG 틴트 카드와 병합 시 3+)·PG-contacts_closing(KPMG 하우스)·히트 열 테이블(a16z 008)
