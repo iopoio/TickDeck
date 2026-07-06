@@ -363,6 +363,12 @@ def validate_c6_content_authority(
     section_nav = str(meta.get("section_nav", "")).strip()
     if section_nav not in SUPPORTED_SECTION_NAVS:
         violations.append(ContractViolation("C6", f"unsupported section_nav: {section_nav}", "deck_spec.meta.section_nav"))
+    tone = str(meta.get("tone", "")).strip()
+    if tone not in ("", "report"):
+        violations.append(ContractViolation("C6", f"unsupported tone: {tone}", "deck_spec.meta.tone"))
+    violations.extend(_validate_series_fields(metric_registry))
+    if tone == "report":
+        violations.extend(_validate_report_tone(pages, metric_registry))
 
     for page_index, page in enumerate(pages):
         if not isinstance(page, dict):
@@ -1149,6 +1155,90 @@ def _validate_r2_registry_fields(
     metric_registry: dict[str, Any],
 ) -> list[ContractViolation]:
     return _validate_registry_fields(source_registry, metric_registry)
+
+
+def _series_groups(metric_registry: dict[str, Any]) -> dict[str, list[tuple[str, dict[str, Any]]]]:
+    groups: dict[str, list[tuple[str, dict[str, Any]]]] = {}
+    for metric_id, metric in metric_registry.items():
+        if not isinstance(metric, dict):
+            continue
+        series_id = str(metric.get("series_id", "")).strip()
+        if series_id:
+            groups.setdefault(series_id, []).append((metric_id, metric))
+    return groups
+
+
+def _validate_series_fields(metric_registry: dict[str, Any]) -> list[ContractViolation]:
+    # 시계열 계약 (7/7 R4): 점 1개 = metric 1개, 같은 series_id로 묶임. 차트 세울 재료의 무결성.
+    violations: list[ContractViolation] = []
+    for series_id, members in _series_groups(metric_registry).items():
+        seen_keys: set[str] = set()
+        units: set[str] = set()
+        for metric_id, metric in members:
+            path = f"content_registry.metrics.{metric_id}"
+            if _is_derived_metric(metric):
+                violations.append(ContractViolation("C6", "derived metric cannot join a series", f"{path}.series_id"))
+            key = str(metric.get("series_key", "")).strip()
+            if not key:
+                violations.append(ContractViolation("C6", "series member requires series_key", f"{path}.series_key"))
+                continue
+            if key in seen_keys:
+                violations.append(ContractViolation("C6", f"duplicate series_key '{key}' in series {series_id}", f"{path}.series_key"))
+            seen_keys.add(key)
+            units.add(str(metric.get("unit", "")).strip())
+        if len(units) > 1:
+            violations.append(
+                ContractViolation("C6", f"series {series_id} mixes units: {sorted(units)}", f"content_registry.series.{series_id}")
+            )
+    return violations
+
+
+_NON_BODY_LAYOUTS = {"cover", "divider", "closing", "outro", "source_appendix", "toc", "index"}
+
+
+def _chartable_series_count(metric_registry: dict[str, Any]) -> int:
+    count = 0
+    for _series_id, members in _series_groups(metric_registry).items():
+        keys = {str(m.get("series_key", "")).strip() for _mid, m in members if str(m.get("series_key", "")).strip()}
+        if len(keys) >= 4:
+            count += 1
+    return count
+
+
+def _validate_report_tone(pages: list[Any], metric_registry: dict[str, Any]) -> list[ContractViolation]:
+    # 리포트 판짜기 게이트 (7/7 R4): 시계열 재료 없이·차트 주인공 페이지 없이 "리포트 톤"을 자칭 못 하게.
+    violations: list[ContractViolation] = []
+    if _chartable_series_count(metric_registry) < 3:
+        violations.append(
+            ContractViolation(
+                "C6",
+                "REPORT_TONE_DATA_THIN: report tone requires >=3 chartable series (>=4 points each) — 수집 단계로 되돌릴 것",
+                "content_registry.metrics",
+            )
+        )
+    body_pages = 0
+    hero_pages = 0
+    for page in pages:
+        if not isinstance(page, dict):
+            continue
+        layout = str(page.get("layout", "")).strip()
+        if layout in _NON_BODY_LAYOUTS:
+            continue
+        body_pages += 1
+        content = page.get("content") if isinstance(page.get("content"), list) else []
+        viz_blocks = [b for b in content if isinstance(b, dict) and b.get("type") == "viz"]
+        other_blocks = [b for b in content if isinstance(b, dict) and b.get("type") != "viz"]
+        if len(viz_blocks) == 1 and len(other_blocks) <= 2:
+            hero_pages += 1
+    if body_pages and hero_pages * 2 < body_pages:
+        violations.append(
+            ContractViolation(
+                "C6",
+                f"REPORT_TONE_COMPOSITION: chart-hero pages {hero_pages}/{body_pages} < 50% — 판짜기 단계로 되돌릴 것",
+                "deck_spec.pages",
+            )
+        )
+    return violations
 
 
 def _is_derived_metric(metric: Any) -> bool:

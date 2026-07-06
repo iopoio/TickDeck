@@ -598,6 +598,68 @@ class HarnessContractTests(unittest.TestCase):
                 violations = validate_c6_content_authority(VALID_DECK_SPEC, registry, "")
                 self.assertTrue(any(expected in str(v) for v in violations), [str(v) for v in violations])
 
+    def _series_registry(self, n_series=3, n_points=4, unit="%"):
+        metrics = dict(VALID_CONTENT_REGISTRY["metrics"])
+        for s in range(n_series):
+            for p in range(n_points):
+                metrics[f"metric_s{s}_p{p}"] = {
+                    "value": str(10 + p),
+                    "unit": unit,
+                    "source_ids": ["src_a"],
+                    "series_id": f"series_{s}",
+                    "series_key": f"202{p}",
+                }
+        return {"sources": VALID_CONTENT_REGISTRY["sources"], "metrics": metrics}
+
+    def test_c6_rejects_series_with_duplicate_keys_or_mixed_units(self):
+        registry = self._series_registry(n_series=1)
+        registry["metrics"]["metric_dup"] = {
+            "value": "99", "unit": "%", "source_ids": ["src_a"],
+            "series_id": "series_0", "series_key": "2020",
+        }
+        registry["metrics"]["metric_unit"] = {
+            "value": "5", "unit": "억", "source_ids": ["src_a"],
+            "series_id": "series_0", "series_key": "2029",
+        }
+        violations = validate_c6_content_authority({"pages": []}, registry, "")
+        self.assertTrue(any("duplicate series_key" in str(v) for v in violations), [str(v) for v in violations])
+        self.assertTrue(any("mixes units" in str(v) for v in violations), [str(v) for v in violations])
+
+    def test_c6_report_tone_requires_chartable_series(self):
+        spec = {"meta": {"tone": "report"}, "pages": []}
+        violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, "")
+        self.assertTrue(any("REPORT_TONE_DATA_THIN" in str(v) for v in violations), [str(v) for v in violations])
+        ok = validate_c6_content_authority(spec, self._series_registry(), "")
+        self.assertFalse(any("REPORT_TONE_DATA_THIN" in str(v) for v in ok), [str(v) for v in ok])
+
+    def test_c6_report_tone_requires_chart_hero_composition(self):
+        hero = {
+            "page_id": "hero", "short_title": "h", "layout": "statement",
+            "allowed_source_ids": ["src_a"], "allowed_metric_ids": ["metric_s0_p0"],
+            "content": [
+                {"type": "headline", "text": "차트 주인공"},
+                {"type": "viz", "chart": "multi_line", "title": "Trend",
+                 "series": [{"label": "L", "metric_id": "metric_s0_p0", "role": "highlight"}]},
+            ],
+        }
+        texty = {
+            "page_id": "texty", "short_title": "t", "layout": "stack",
+            "allowed_source_ids": ["src_a"], "allowed_metric_ids": [],
+            "content": [{"type": "headline", "text": "글"}, {"type": "note", "text": "글"}, {"type": "note", "text": "글"}],
+        }
+        registry = self._series_registry()
+        bad = {"meta": {"tone": "report"}, "pages": [texty, dict(texty, page_id="t2"), dict(texty, page_id="t3"), hero]}
+        violations = validate_c6_content_authority(bad, registry, "")
+        self.assertTrue(any("REPORT_TONE_COMPOSITION" in str(v) for v in violations), [str(v) for v in violations])
+        good = {"meta": {"tone": "report"}, "pages": [hero, dict(hero, page_id="h2"), texty]}
+        ok = validate_c6_content_authority(good, registry, "")
+        self.assertFalse(any("REPORT_TONE_COMPOSITION" in str(v) for v in ok), [str(v) for v in ok])
+
+    def test_c6_no_report_tone_checks_without_tone(self):
+        spec = {"pages": []}
+        violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, "")
+        self.assertFalse(any("REPORT_TONE" in str(v) for v in violations), [str(v) for v in violations])
+
     def test_c6_rejects_derived_metric_with_wrong_recomputed_value(self):
         # 검산 게이트 (7/7 제대리 리뷰): 원천값 재계산과 등재값이 안 맞으면 위반
         registry = {
