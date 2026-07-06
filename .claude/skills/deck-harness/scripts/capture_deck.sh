@@ -31,7 +31,7 @@ cp "$ABS" "$FIT"
 cat >> "$FIT" <<'EOF'
 <script>
 (function(){
-  var ovf=[], sparse=[], hovf=[], sourceClips=[], bandovf=[], lowc=[], ovl=[];
+  var ovf=[], sparse=[], hovf=[], sourceClips=[], bandovf=[], annotationOverlap=[], lowc=[], ovl=[];
   document.querySelectorAll('.slide').forEach(function(s){
     var b=s.querySelector('.body'); if(!b) return;
     var gap=b.clientHeight-b.scrollHeight, id=s.dataset.pageId||'?';
@@ -121,7 +121,37 @@ cat >> "$FIT" <<'EOF'
       }
     }
   });
-  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',')+'|hovf:'+hovf.join(',')+'|sclip:'+sourceClips.join(',')+'|bandovf:'+bandovf.join(',')+'|ovl:'+ovl.join(',')+'|lowc:'+lowc.join(',');
+  document.querySelectorAll('.slide').forEach(function(s){
+    var id=s.dataset.pageId||'?';
+    var anns=[].filter.call(s.querySelectorAll('[data-annotation-kind]'),function(el){
+      if(el.offsetParent===null && !(el instanceof SVGElement)) return false;
+      var r=el.getBoundingClientRect();
+      return r.width>0 && r.height>0;
+    }).map(function(el){
+      var r=el.getBoundingClientRect();
+      var svg=el.closest('svg');
+      return {el:el, rect:r, svgRect:svg?svg.getBoundingClientRect():null};
+    });
+    anns.forEach(function(a){
+      if(!a.svgRect) return;
+      if(a.rect.left<a.svgRect.left-4 || a.rect.right>a.svgRect.right+4 || a.rect.top<a.svgRect.top-4 || a.rect.bottom>a.svgRect.bottom+4){
+        if(annotationOverlap.indexOf(id)<0) annotationOverlap.push(id);
+      }
+    });
+    for(var i=0;i<anns.length;i++){
+      for(var j=i+1;j<anns.length;j++){
+        if(anns[i].el.contains(anns[j].el)||anns[j].el.contains(anns[i].el)) continue;
+        var a=anns[i].rect, b=anns[j].rect;
+        var x=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left));
+        var y=Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+        if(x*y>Math.min(a.width*a.height,b.width*b.height)*0.28){
+          if(annotationOverlap.indexOf(id)<0) annotationOverlap.push(id);
+          i=anns.length; break;
+        }
+      }
+    }
+  });
+  document.title='FITREPORT|ovf:'+ovf.join(',')+'|sparse:'+sparse.join(',')+'|hovf:'+hovf.join(',')+'|sclip:'+sourceClips.join(',')+'|bandovf:'+bandovf.join(',')+'|annovl:'+annotationOverlap.join(',')+'|ovl:'+ovl.join(',')+'|lowc:'+lowc.join(',');
 })();
 </script>
 EOF
@@ -133,6 +163,7 @@ if [ -n "$RAW" ]; then
   _t="${RAW#*hovf:}"; HOVF="${_t%%|*}"
   _t="${RAW#*sclip:}"; SCLIP="${_t%%|*}"
   _t="${RAW#*bandovf:}"; BANDOVF="${_t%%|*}"
+  _t="${RAW#*annovl:}"; ANNOVL="${_t%%|*}"
   _t="${RAW#*ovl:}"; OVL="${_t%%|*}"
   LOWC="${RAW##*lowc:}"
   if [ -n "$OVF" ]; then
@@ -151,6 +182,9 @@ if [ -n "$RAW" ]; then
   fi
   if [ -n "$BANDOVF" ]; then
     echo "FIT_BAND_OVERFLOW: $BANDOVF — title band 텍스트가 2줄/밴드 높이를 초과함. 제목 축약 또는 크롬 해제 필요."
+  fi
+  if [ -n "$ANNOVL" ]; then
+    echo "FIT_ANNOTATION_OVERLAP: $ANNOVL — annotation 겹침/차트 밖 이탈 의심. 앵커·형태·차트 분리 확인 필요."
   fi
   if [ -n "$OVL" ]; then
     echo "FIT_TEXT_OVERLAP: $OVL — 텍스트 상호 겹침 의심. 실측 확인 필요."

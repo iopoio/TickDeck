@@ -19,6 +19,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 CONTRACTS_SCRIPT = SCRIPT_DIR.parents[1] / "harness-contracts" / "scripts" / "run_contracts.py"
 CAPTURE_SCRIPT = SCRIPT_DIR / "capture_deck.sh"
 FIT_PRIORITY = (
+    "FIT_ANNOTATION_OVERLAP",
     "FIT_TEXT_OVERLAP",
     "FIT_BAND_OVERFLOW",
     "FIT_OVERFLOW",
