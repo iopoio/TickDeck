@@ -59,8 +59,8 @@
 | CH-swot_quad | 2×2 SWOT/정성 사분면 — 중앙 십자축·highlight 사분면 틴트(관찰 4). 스펙: viz `"chart": "swot_quad"`, series 4개 = 사분면(`label`+`items` 문자열 배열·숫자 금지), metric_id 예외 유일 차트 | 전략·경쟁분석 | ✅(7/4 배치3) |
 | CH-annotated_trend | 성장 서사 라인차트 주석 레이어 4종: 성장률 타원 콜아웃("+X%/Year")·보조 추세 화살표·끝점 굵은 수치·**이벤트 구간 세로 음영 밴드+상단 라벨**(usa_inc WWII·COVID / a16z "ICO boom" 에포크 밴드 흡수). 기존 multi_line 확장 (관찰 20+ — BOND 4/4 아이템·2015까지 10년 연속 + Activate/a16z 10) ⚠ 구현 선결: C6 계약상 title/note raw number 금지 — 파생값(성장률) metric 체계 설계 먼저 (7/6 코과장 리뷰) | 추세에 서사 싣기 | ⬜ |
 | CH-chart_card_grid | 차트 카드 그리드(2×2·3×2·세로 스택) — 카드별 미니 헤더밴드 (관찰 10+장 — BOND 3/4 아이템: our_new_world 007·015~017 / ai_education 004·007~009 / usa_inc 002·004·022) ⚠ 코너 번호닷+"Details on Page N"은 trends_ai 1건 고유 장식으로 분리 — 그리드만 등재 | 익제큐티브 서머리 | ⬜ |
-| CH-quarterly_bars | 분기 시계열 막대: 데이터 라벨 온바(축눈금 생략)·마지막/비교 분기만 액센트 나머지 뮤트·옵션 축절단 `≈`. 기존 rising_columns 확장 (관찰 20+ — 카카오 014~019·025 / 네이버 003~009 / 삼성 005~010 = **IR 3사 관통**) | 실적 시계열 | ⬜ |
-| CH-fin_table | data_table 확장: 분기 열+YoY/QoQ 파생 열·**현재 분기 열 액센트 아웃라인 박스**(3사 관통 최강)·그룹행 볼드/하위행 들여쓰기·비율행 이탤릭·음수 빨강 또는 괄호·"흑자전환" 텍스트 셀 (관찰 9 — 카카오 020·021 / 네이버 002·007·015 / 삼성 011~014) | 재무·지표 표 | ⬜ |
+| CH-quarterly_bars | 분기 시계열 막대: 데이터 라벨 온바(축눈금 생략)·마지막/비교 분기만 액센트 나머지 뮤트·옵션 축절단 `≈`. 기존 rising_columns 확장 (관찰 20+ — 카카오 014~019·025 / 네이버 003~009 / 삼성 005~010 = **IR 3사 관통**) | 실적 시계열 | ✅(7/6 R1) |
+| CH-fin_table | data_table 확장: 분기 열+YoY/QoQ 파생 열·**현재 분기 열 액센트 아웃라인 박스**(3사 관통 최강)·그룹행 볼드/하위행 들여쓰기·비율행 이탤릭·음수 빨강 또는 괄호·"흑자전환" 텍스트 셀 (관찰 9 — 카카오 020·021 / 네이버 002·007·015 / 삼성 011~014) | 재무·지표 표 | ✅(7/6 R1) |
 | CH-quote_card | 카드 그리드 안에 차트 대신 센터 이탤릭 인용문+"이름 – 직함, 날짜" 어트리뷰션. 기존 카드 부품 재사용 (관찰 2아이템 6회 — our_new_world 015~019 / 2015 045 풀페이지 간지형) | 정성 근거 착지 | ⬜ |
 | CH-photo_bar | 사진/포스터/커버가 막대·타일 그 자체가 되는 차트(값 라벨 칩 부착). 엔진은 색면+이니셜 플레이스홀더 구현 (관찰 5 — act25 060·096·144 / act24 100 / act22 050) | 실전 데이터 톤 | ⬜(사진 자산 정책 선결) |
 | CH-logo_connector_map | 좌 주체 열 ↔ 우 대상 열 곡선 점선 연결 관계 지도 + 로고 랜드스케이프(카테고리 구획) (관찰 3 — act24 150 / act25 168·180. 로고 자산 의존 — 텍스트 칩 대체 구현) | 관계·생태계 | ⬜ |
@@ -90,7 +90,7 @@
 | TY-kicker | 초소형 자간 키커 라벨 (5/8+ · report_ops 다수) | _grammar | ✅ |
 | CL-gradient_accent | 그라디언트 액센트를 지배색으로 (관찰 4 — report_ops 2 + 2R Inside 무지개 웨이브·corporate 마젠타→퍼플 풀블리드) | inbox 실측 | ⬜(creative/dark 한정 승격 후보) |
 | TY-source_infra | 출처 다층 체계: ① 차트 제목 안 "– 기간, per 출처" ② 하단 Note:/Source: 마이크로 캡션 ③ 번호 각주 1)2)3)·※사진 출처 분리(IR) ④ **데이터 성격 배지**(Activate "FORECAST" 배지·자체조사 스탬프·파트너 로고 박스 — 예측/실측/외부를 시각 구분). 실전 신뢰 문법의 핵 — 템플릿 46건 관찰 0 ⚠ 구현 선결: deck_spec `source`가 페이지 레벨 배열(viz/series 1:1 아님) → 스키마 확장 필요 + 현 source-row CSS가 한 줄 clip(nowrap+hidden, render_deck.py ~3038) — overflow 정책 먼저 (7/6 리뷰 실측) | **17/17 전 실전 아이템** — BOND 2015부터 10년 무결점·Activate 4층·KPMG 하우스·IR 3사 | ⬜(실전 톤 의무 후보) |
-| CL-semantic_color | 색 = 의미 고정: 액센트 1색 = 주인공, 빨강 = 악화·음수 전용(또는 괄호), 초록 = 상승·개선. 장식 다색 금지. 추가 룰 2: **브랜드/체인색 = 시리즈색 예외**(a16z 비트코인 주황·Activate 인스타 보라 — 덱 전체 불변) · 잉크는 비교 대상에만(마지막 분기·비교쌍만 액센트, 나머지 뮤트). 구현: series role `negative`/`positive`/`brand` — 코과장 평가 최저비용 | BOND 3/4(2015엔 약함 = 최근 10년 문법)·Activate/a16z 12+·IR 3사·KPMG — 5발행처 관통 | ⬜(data 계열 의무 후보) |
+| CL-semantic_color | 색 = 의미 고정: 액센트 1색 = 주인공, 빨강 = 악화·음수 전용(또는 괄호), 초록 = 상승·개선. 장식 다색 금지. 추가 룰 2: **브랜드/체인색 = 시리즈색 예외**(a16z 비트코인 주황·Activate 인스타 보라 — 덱 전체 불변) · 잉크는 비교 대상에만(마지막 분기·비교쌍만 액센트, 나머지 뮤트). 구현: series role `negative`/`positive`/`brand` — 코과장 평가 최저비용 | BOND 3/4(2015엔 약함 = 최근 10년 문법)·Activate/a16z 12+·IR 3사·KPMG — 5발행처 관통 | ✅(7/6 R1 — series role negative/positive/brand) |
 | TY-headline_highlight | 헤드라인 핵심 구절에만 솔리드 형광 마커 색면(섹션 액센트색 연동·목차 색칩과 색 코딩). `<mark>` 스타일 1개 — 구현 최저비용·효과 최대급 | a16z 9관찰 (004~052) — 1발행물 출처라 재확증 대기 | ⬜(1건 출처) |
 | TY-bold_lead_bullet | 불릿 = "**볼드 결론구** – 뒷받침 문장" 리드인 구조 (writer 룰 후보) | BOND 메모 2건 10장+ (ai_education 003~014 등) | ⬜(writer 룰 검토) |
 | CL-accent_rotation | 섹션/세그먼트별 액센트 1색 로테이션 — 페이지 안은 여전히 단일 액센트(CL-single_accent와 양립) | 4발행물 — KPMG 오토 4색·네이버 세그먼트 5색·Activate 2022/2024 섹션별 키커색 | ⬜ |
@@ -103,8 +103,8 @@
 - 다음 후보(관찰 재확인 후): PG-nav_chrome(관찰 8)·PG-color_block_bento(관찰 3)·CL-gradient_accent(관찰 4)·CH-rating_dots(관찰 5·자산 무관 도트라 사진 정책과 분리 가능)
 - 보류 유지: CH-choropleth(SVG 자산 정책 선결)·PG-profile_row/DC-photo_frame(사진·아바타 자산 정책 선결)·CH-kpi_delta_card 스파크라인
 - **실전 PDF 승격안 (7/6 확정 — 17건 실측 + 제대리·코과장 교차 리뷰 반영·후추님 결재 대기):**
-  - **0순위 (선결·버그)**: overflow 게이트 신뢰성 — clo_v51 p08 출처 칩 잘림이 게이트 미검출로 통과한 사고. 뿌리 특정됨(source-row CSS `nowrap+hidden` clip). 긴 텍스트 얹는 모든 패턴의 선결 조건. 코과장 위임 1건.
-  - **R1 (저비용·고관통)**: CL-semantic_color(코과장 평가 최저비용·5발행처) + CH-quarterly_bars·CH-fin_table(IR 3사 관통·기존 rising_columns/data_table 확장이라 계약 충돌 최소)
+  - **0순위 (선결·버그)**: overflow 게이트 신뢰성 — clo_v51 p08 출처 칩 잘림이 게이트 미검출로 통과한 사고. 뿌리 특정됨(source-row CSS `nowrap+hidden` clip). 긴 텍스트 얹는 모든 패턴의 선결 조건. 코과장 위임 1건. → ✅ 완료(7/6 R1 — flex-wrap 2줄+`+N` 축약·FIT_SOURCE_CLIP 게이트 신설·clo_v51 p08 실측 해소·commit cf15859)
+  - **R1 (저비용·고관통)**: ✅ 완료(7/6 — commit e3a39a8·test 84/84·데모 4/4) CL-semantic_color + CH-quarterly_bars + CH-fin_table
   - **R2 (스키마 설계 선행)**: TY-source_infra(17/17 관통 — 단 source를 viz/series 단위로 스키마 확장 먼저) + PG-title_band(auto-fit 정책 결정 먼저·착지 2형 스펙)
   - **R3 (계약 설계 후)**: CH-annotated_trend(C6 파생 metric 체계 선행 — 안 하면 "검증 게이트에서 깨지는 장식", 코과장) + PG-toc_progress(3발행처 25관찰) + PG-metric_commentary
   - **강등·보류**: PG-item_profile(재확증 0 — 1건 출처 강등 + 구현 비용 최고) · CH-photo_bar/logo_connector_map(자산 정책 선결)
