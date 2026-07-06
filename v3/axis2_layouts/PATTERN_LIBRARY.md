@@ -33,7 +33,7 @@
 | PG-scenario_cards | headline이 카드를 열고 후속 블록이 카드에 착지 — 시나리오/케이스 N열 카드(트렌드 장르 Scenarios 착지용) | 시나리오·결론 비교 | dark·pop | ✅(7/4 배치2 — 카드당 블록 3개+ 밀도 규칙. **도입용 단독 headline 금지** — 카드 개시 문법이라 빈 카드가 됨, 7/4 run4 실측) |
 | PG-profile_row | 아바타+이름 인물 카드 열(관찰 15+ — report_ops 3 + 2R 9 + 7/6 실전 3: 삼성 003·KPMG 오토 013·M&A 013) | 팀·전문가 소개 | 전체 | ⬜(사진 자산 정책 미정이었으나 **KPMG 실물이 사진 없는 텍스트 연락처 그리드** — 아바타 없이 구현 가능 실증, 보류 사유 완화) |
 | PG-color_block_bento | 전면 색면 직사각형 베노(여백 없이 컬러블록 맞물림+번호/사진 삽입, 관찰 3 — 2R Artista·Ombar·dark-normal) | 강렬 편집·표지 | pop·creative | ⬜ |
-| PG-title_band | 상단 전폭 솔리드 색밴드(높이 10~14%)에 좌정렬 흰 제목 1~2줄, 본문 백지. 간지 = 같은 밴드를 **비우고** 중앙 스테이트먼트만. 착지 2형: ①페이지 제목형(BOND trends_ai ~330장 + 2015 덱 본문 전수 = **10년 크롬**) ②차트 제목형(밴드가 차트 제목 — Activate 5개년 본문 전수·BOND 메모 카드 헤더) ⚠ 승격 전 미결: 밴드의 auto-fit 제외 여부·제목 2줄 시 높이 규칙 (7/6 리뷰) | 실전 리포트 크롬 | corporate·mono·전체 | ⬜(3발행처) |
+| PG-title_band | 상단 전폭 솔리드 색밴드(높이 10~14%)에 좌정렬 흰 제목 1~2줄, 본문 백지. 간지 = 같은 밴드를 **비우고** 중앙 스테이트먼트만. 착지 2형: ①페이지 제목형(BOND trends_ai ~330장 + 2015 덱 본문 전수 = **10년 크롬**) ②차트 제목형(밴드가 차트 제목 — Activate 5개년 본문 전수·BOND 메모 카드 헤더) ⚠ 승격 전 미결: 밴드의 auto-fit 제외 여부·제목 2줄 시 높이 규칙 (7/6 리뷰) | 실전 리포트 크롬 | corporate·mono·전체 | ✅(7/7 R2 — 착지 2형·간지 비움·FIT_BAND_OVERFLOW) |
 | PG-toc_progress | 섹션 시작마다 진행 표시. 변주 3형: ①목차 전체 재출력+현재 행 반전(KPMG ces 4·Activate 2021/2024 3) ②상단 번호 칩 현재만 채움(KPMG 오토 11) ③섹션 필+도트 ●○○○○(KPMG M&A 7) | 긴 일하는 덱 내비 | corporate·전체 | ⬜(3발행처 25관찰) |
 | PG-item_profile | 반복 아이템 카탈로그: 카테고리 필(+메타 칩) → 헤드라인 → 2~4줄 dek → 좌 라벨바+이미지 패널 / 우 틴트 카드(액센트 볼드 미니헤드 + 불릿 2단 • → –) (관찰 — KPMG ces2026 ~30장 **단독**. ⚠ 7/6 배치 15건 재확증 0 — KPMG 다른 발행물 2건에도 없음 → 1건 출처 강등. 구현 비용도 최고(이미지 자산 정책 선결)) | 카탈로그·사례집 | corporate·전체 | ⬜(1건 출처·승격 보류) |
 | PG-prose_page | 문단 에세이 페이지 — 불릿 없이 문단 스택. 변형 3: ①중앙정렬 에세이(BOND trends_ai 5장) ②좌정렬 메모 prose+볼드 리드인(BOND 메모 3건 — 문서 전체가 prose) ③IR 유의사항/Disclaimer(카카오·네이버·삼성 모두 2페이지째) + Activate 테이크어웨이 스택 변형(볼드 런인 리드+헤어라인 룰, act25 001~003) | 서문·맺음·면책 | mono·corporate | ⬜(7건 재확증) |
@@ -89,7 +89,7 @@
 | TY-extreme_ratio | 헤드:본문 극단 크기비 (미니멀 8/8) | _grammar/minimal | ✅(minimal) |
 | TY-kicker | 초소형 자간 키커 라벨 (5/8+ · report_ops 다수) | _grammar | ✅ |
 | CL-gradient_accent | 그라디언트 액센트를 지배색으로 (관찰 4 — report_ops 2 + 2R Inside 무지개 웨이브·corporate 마젠타→퍼플 풀블리드) | inbox 실측 | ⬜(creative/dark 한정 승격 후보) |
-| TY-source_infra | 출처 다층 체계: ① 차트 제목 안 "– 기간, per 출처" ② 하단 Note:/Source: 마이크로 캡션 ③ 번호 각주 1)2)3)·※사진 출처 분리(IR) ④ **데이터 성격 배지**(Activate "FORECAST" 배지·자체조사 스탬프·파트너 로고 박스 — 예측/실측/외부를 시각 구분). 실전 신뢰 문법의 핵 — 템플릿 46건 관찰 0 ⚠ 구현 선결: deck_spec `source`가 페이지 레벨 배열(viz/series 1:1 아님) → 스키마 확장 필요 + 현 source-row CSS가 한 줄 clip(nowrap+hidden, render_deck.py ~3038) — overflow 정책 먼저 (7/6 리뷰 실측) | **17/17 전 실전 아이템** — BOND 2015부터 10년 무결점·Activate 4층·KPMG 하우스·IR 3사 | ⬜(실전 톤 의무 후보) |
+| TY-source_infra | 출처 다층 체계: ① 차트 제목 안 "– 기간, per 출처" ② 하단 Note:/Source: 마이크로 캡션 ③ 번호 각주 1)2)3)·※사진 출처 분리(IR) ④ **데이터 성격 배지**(Activate "FORECAST" 배지·자체조사 스탬프·파트너 로고 박스 — 예측/실측/외부를 시각 구분). 실전 신뢰 문법의 핵 — 템플릿 46건 관찰 0 ⚠ 구현 선결: deck_spec `source`가 페이지 레벨 배열(viz/series 1:1 아님) → 스키마 확장 필요 + 현 source-row CSS가 한 줄 clip(nowrap+hidden, render_deck.py ~3038) — overflow 정책 먼저 (7/6 리뷰 실측) | **17/17 전 실전 아이템** — BOND 2015부터 10년 무결점·Activate 4층·KPMG 하우스·IR 3사 | ✅(7/7 R2 — viz 단위 캡션 자동 생성·short_name/period·칩 공존. 각주/배지 층은 R3+) |
 | CL-semantic_color | 색 = 의미 고정: 액센트 1색 = 주인공, 빨강 = 악화·음수 전용(또는 괄호), 초록 = 상승·개선. 장식 다색 금지. 추가 룰 2: **브랜드/체인색 = 시리즈색 예외**(a16z 비트코인 주황·Activate 인스타 보라 — 덱 전체 불변) · 잉크는 비교 대상에만(마지막 분기·비교쌍만 액센트, 나머지 뮤트). 구현: series role `negative`/`positive`/`brand` — 코과장 평가 최저비용 | BOND 3/4(2015엔 약함 = 최근 10년 문법)·Activate/a16z 12+·IR 3사·KPMG — 5발행처 관통 | ✅(7/6 R1 — series role negative/positive/brand) |
 | TY-headline_highlight | 헤드라인 핵심 구절에만 솔리드 형광 마커 색면(섹션 액센트색 연동·목차 색칩과 색 코딩). `<mark>` 스타일 1개 — 구현 최저비용·효과 최대급 | a16z 9관찰 (004~052) — 1발행물 출처라 재확증 대기 | ⬜(1건 출처) |
 | TY-bold_lead_bullet | 불릿 = "**볼드 결론구** – 뒷받침 문장" 리드인 구조 (writer 룰 후보) | BOND 메모 2건 10장+ (ai_education 003~014 등) | ⬜(writer 룰 검토) |
@@ -105,7 +105,7 @@
 - **실전 PDF 승격안 (7/6 확정 — 17건 실측 + 제대리·코과장 교차 리뷰 반영·후추님 결재 대기):**
   - **0순위 (선결·버그)**: overflow 게이트 신뢰성 — clo_v51 p08 출처 칩 잘림이 게이트 미검출로 통과한 사고. 뿌리 특정됨(source-row CSS `nowrap+hidden` clip). 긴 텍스트 얹는 모든 패턴의 선결 조건. 코과장 위임 1건. → ✅ 완료(7/6 R1 — flex-wrap 2줄+`+N` 축약·FIT_SOURCE_CLIP 게이트 신설·clo_v51 p08 실측 해소·commit cf15859)
   - **R1 (저비용·고관통)**: ✅ 완료(7/6 — commit e3a39a8·test 84/84·데모 4/4) CL-semantic_color + CH-quarterly_bars + CH-fin_table
-  - **R2 (스키마 설계 선행)**: TY-source_infra(17/17 관통 — 단 source를 viz/series 단위로 스키마 확장 먼저) + PG-title_band(auto-fit 정책 결정 먼저·착지 2형 스펙)
+  - **R2**: ✅ 완료(7/7 — commit 53d3f52·ef4c97a·54ca3a2·test 93/93·시각QA 본부 실측) TY-source_infra + PG-title_band
   - **R3 (계약 설계 후)**: CH-annotated_trend(C6 파생 metric 체계 선행 — 안 하면 "검증 게이트에서 깨지는 장식", 코과장) + PG-toc_progress(3발행처 25관찰) + PG-metric_commentary
   - **강등·보류**: PG-item_profile(재확증 0 — 1건 출처 강등 + 구현 비용 최고) · CH-photo_bar/logo_connector_map(자산 정책 선결)
   - 옛 "1순위 title_band·item_profile" 표기는 리뷰로 교정됨 — 구현 비용 실측(deck_spec source 구조·C6 계약) 반영.
