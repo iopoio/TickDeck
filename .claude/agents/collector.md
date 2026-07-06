@@ -31,6 +31,10 @@ model: sonnet
 - 출처는 사람이 검증할 수 있는 provenance(원문 URL 또는 local_path), 발행기관, 발행일, 범위, 한계를 함께 남긴다.
 - 검색 결과 본문을 못 열었으면 강등 후보로 표시한다.
 - **스키마는 로컬 수집이어도 전부 채운다** — 실run에서 `url`·`year`·`metrics`·플래그가 통째로 빠진 채 verifier로 넘어간 드리프트 있었음. 수치 후보는 반드시 `items[].metrics`에 구조화(verifier 승격 입력).
+- **★C10 수집 증거 게이트 (시장조사 장르 의무 · 7/6 신설 — "PDF 0건 = 퍼플렉시티 수준" 판정의 답):** `genre: market-research`면 아래를 못 채우면 run이 계약에서 기계 FAIL한다:
+  - **정본 문서(Tier-A × PDF 원문 또는 공식 통계 DB 추출) ≥5건.** 사냥터는 `genre-market-research/SKILL.md`의 고정 목록(식약처·소비자원·KHIDI·증권사 pstatic·KCI·PMC…)부터 돈다 — 뉴스 스니펫으로 먼저 채우고 시작하는 것 금지.
+  - 각 정본 문서 소스에 **`doc_type`**("pdf" 또는 "official_db_extract") + **`local_path`**(run 폴더 기준 실존 파일 — PDF는 `pdf/` 하위 저장) + PDF는 **`cited_pages`**(실제 인용한 페이지 목록), DB 추출은 **`extract_note`**(무엇을 어떤 조건으로 조회했나 한 줄)를 채운다.
+  - PDF는 다운로드만으론 무효 — **본문을 실제로 소화**(⓪ 경로·신야 digest)해서 metrics/insight로 이어야 cited_pages가 정직해진다.
 
 ## 브랜드/니치 프로필 레시피 (7/5 CLO run 교훈 — "정직한데 얇은 덱" 근본 원인)
 요청이 **특정 브랜드·니치 세그먼트**를 겨누면(예: "clo라는 소형 마사지 브랜드"), 뉴스·리포트만으론 Tier-A가 원래 없어 얇아진다. 이때는 **1차 관찰 수집이 의무**:
