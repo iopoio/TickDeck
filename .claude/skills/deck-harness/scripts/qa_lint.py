@@ -73,6 +73,8 @@ READER_FIRST_EPISTEMIC_TERMS = (
     "표본",
 )
 READER_FIRST_SELF_REF_TERMS = ("이 덱", "이 보고서", "이 비교군", "이 장만")
+READER_FIRST_JARGON_TERMS = ("좌표", "배경층", "저진입", "저신뢰", "양날", "유사군", "매핑", "신뢰 전달 장치", "성과 신호")
+READER_FIRST_JARGON_AXIS_PATTERN = re.compile(r"\d+\s*[x×]\s*\d+\s*축|\d+축")
 
 SEVERITY = {
     "RAW_NUMBER_IN_LABEL": "high",
@@ -84,6 +86,7 @@ SEVERITY = {
     "READER_FIRST_EPISTEMIC": "high",
     "READER_FIRST_CAVEAT": "high",
     "READER_FIRST_SELF_REF": "high",
+    "READER_FIRST_JARGON": "high",
 }
 
 
@@ -177,6 +180,7 @@ def lint_deck(deck_spec: dict[str, Any], registry: dict[str, Any], deck_path: Pa
 
         if not _reader_first_exempt_page(page):
             defects.extend(_reader_first_defects(content, page_id, f"{page_path}.content"))
+            defects.extend(_reader_first_jargon_defects(page, content, page_id, page_path))
 
         for defect in _raw_number_defects(content, page_id, f"{page_path}.content"):
             raw_paths.add((defect["page_id"], defect["where"]))
@@ -476,6 +480,25 @@ def _reader_first_defects(value: Any, page_id: str, path: str) -> list[dict[str,
     return defects
 
 
+def _reader_first_jargon_defects(page: dict[str, Any], content: Any, page_id: str, page_path: str) -> list[dict[str, str]]:
+    defects: list[dict[str, str]] = []
+    for text, text_path in _iter_reader_first_jargon_texts(page, content, page_path):
+        jargon_term = _first_contained_term(text, READER_FIRST_JARGON_TERMS)
+        if not jargon_term:
+            axis_match = READER_FIRST_JARGON_AXIS_PATTERN.search(text)
+            jargon_term = axis_match.group(0) if axis_match else ""
+        if jargon_term:
+            defects.append(
+                _defect(
+                    "READER_FIRST_JARGON",
+                    page_id,
+                    text_path,
+                    f"reader-first jargon term '{jargon_term}': {_clip(text)}",
+                )
+            )
+    return defects
+
+
 def _unbacked_number_defects(
     value: Any,
     page_id: str,
@@ -588,6 +611,35 @@ def _iter_reader_first_texts(value: Any, path: str, parent_block_type: str = "")
     elif isinstance(value, list):
         for index, nested in enumerate(value):
             yield from _iter_reader_first_texts(nested, f"{path}[{index}]", parent_block_type)
+
+
+def _iter_reader_first_jargon_texts(page: dict[str, Any], content: Any, page_path: str):
+    short_title = page.get("short_title")
+    if isinstance(short_title, str):
+        yield short_title, f"{page_path}.short_title"
+    for text, text_path, _field_kind in _iter_reader_first_texts(content, f"{page_path}.content"):
+        yield text, text_path
+    yield from _iter_reader_first_text_table_columns(content, f"{page_path}.content")
+
+
+def _iter_reader_first_text_table_columns(value: Any, path: str, parent_block_type: str = ""):
+    if isinstance(value, dict):
+        block_type = str(value.get("type", parent_block_type)).strip() or parent_block_type
+        for key, nested in value.items():
+            next_path = f"{path}.{key}"
+            if block_type == "text_table" and key == "columns":
+                if isinstance(nested, list):
+                    for index, column in enumerate(nested):
+                        column_path = f"{next_path}[{index}]"
+                        if isinstance(column, str):
+                            yield column, column_path
+                        else:
+                            yield from _iter_reader_first_text_table_columns(column, column_path, block_type)
+                continue
+            yield from _iter_reader_first_text_table_columns(nested, next_path, block_type)
+    elif isinstance(value, list):
+        for index, nested in enumerate(value):
+            yield from _iter_reader_first_text_table_columns(nested, f"{path}[{index}]", parent_block_type)
 
 
 def _iter_reader_first_items(items: list[Any], path: str, parent_block_type: str):
@@ -812,6 +864,123 @@ def _run_selfcheck() -> int:
             },
             {"READER_FIRST_CAVEAT", "READER_FIRST_EPISTEMIC", "RAW_NUMBER_IN_LABEL"},
             set(),
+        ),
+        (
+            "jargon_headline_detected",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "jargon_headline",
+                        "short_title": "본문",
+                        "layout": "body",
+                        "content": [
+                            {
+                                "type": "headline",
+                                "text": "성장 신호를 낸 유사군은 저마다 ==신뢰 전달 장치==를 가졌다 — CLO에는 아직 없다",
+                            }
+                        ],
+                    }
+                ],
+            },
+            {"READER_FIRST_JARGON"},
+            set(),
+        ),
+        (
+            "jargon_short_title_detected",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "jargon_short_title",
+                        "short_title": "경영 요약 — 좌표·참고·결정 한 장",
+                        "layout": "body",
+                        "content": [{"type": "body", "text": "지금 상황과 해야 할 일을 정리한다"}],
+                    }
+                ],
+            },
+            {"READER_FIRST_JARGON"},
+            set(),
+        ),
+        (
+            "jargon_table_column_detected",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "jargon_table_column",
+                        "short_title": "표",
+                        "layout": "statement",
+                        "content": [
+                            {
+                                "type": "text_table",
+                                "columns": ["브랜드", "신뢰 전달 장치", "성과 신호 성격"],
+                                "rows": [["A", "소개 페이지", "성장했다"]],
+                            }
+                        ],
+                    }
+                ],
+            },
+            {"READER_FIRST_JARGON"},
+            set(),
+        ),
+        (
+            "jargon_axis_pattern_detected",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "jargon_axis_pattern",
+                        "short_title": "본문",
+                        "layout": "body",
+                        "content": [{"type": "headline", "text": "플레이어 비교표 — 상위 7 × 4축"}],
+                    }
+                ],
+            },
+            {"READER_FIRST_JARGON"},
+            set(),
+        ),
+        (
+            "jargon_clean_pass",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "jargon_clean",
+                        "short_title": "한 장 요약: 지금 상황과 해야 할 일",
+                        "layout": "statement",
+                        "content": [
+                            {
+                                "type": "headline",
+                                "text": "잘 큰 경쟁사는 다 ==믿게 만드는 창구==가 있었다 — CLO만 아직 없다",
+                            },
+                            {
+                                "type": "text_table",
+                                "columns": ["브랜드", "무엇으로 믿게 만드나", "실제로 컸나"],
+                                "rows": [["A", "소개 페이지", "그렇다"]],
+                            },
+                        ],
+                    }
+                ],
+            },
+            set(),
+            {"READER_FIRST_JARGON"},
+        ),
+        (
+            "jargon_appendix_skipped",
+            {
+                "archetype": "selfcheck",
+                "pages": [
+                    {
+                        "page_id": "jargon_appendix",
+                        "short_title": "출처",
+                        "layout": "source_appendix",
+                        "content": [{"type": "body", "text": "좌표"}],
+                    }
+                ],
+            },
+            set(),
+            {"READER_FIRST_JARGON"},
         ),
     ]
 
