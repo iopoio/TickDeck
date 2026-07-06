@@ -441,6 +441,10 @@ def _running_head_html(eyebrow_text: str, deck_short_title: str, body_page_numbe
 </div>""".strip()
 
 
+def _title_band_html(title_text: str) -> str:
+    return f'<div class="title-band" aria-hidden="true"><span class="title-band-text">{_escape(title_text)}</span></div>'
+
+
 def _side_wordmark_html(page: dict[str, Any], deck_short_title: str) -> str:
     # 텍스트는 designer 자유 입력이 아니라 페이지 컨텍스트(section_label)나 덱 short title에서만 취득.
     text = str(page.get("section_label", "")).strip() or deck_short_title
@@ -483,6 +487,7 @@ def _render_page(
     body_parts: list[str] = []
     rendered_pairs: list[tuple[Any, str]] = []  # (block, html) — matrix처럼 블록 의미로 배치하는 레이아웃용
     cited_source_ids: list[str] = []
+    caption_source_ids: list[str] = []
     footnotes: list[dict[str, Any]] = []
     # eyebrow는 designer가 준 명시 블록만 — role/layout 내부명 폴백은 C2(검증 메타데이터
     # 노출 금지) 계열이라 크롬(7/4)에 이어 본체 헤더에서도 제거.
@@ -500,6 +505,8 @@ def _render_page(
             body_parts.append(block_html)
             rendered_pairs.append((block, block_html))
         cited_source_ids.extend(block_sources)
+        if bt == "viz":
+            caption_source_ids.extend(_viz_caption_source_ids(block, page_id, registry))
 
     for metric_id in _iter_metric_ids(content):
         metric = _require_metric(metric_id, page_id, registry)
@@ -517,8 +524,11 @@ def _render_page(
         if running_head_enabled
         else ""
     )
+    title_band_enabled = page_chrome == "title_band" and layout not in {"cover", "closing", "outro", "source_appendix"}
+    title_band_html = _title_band_html("" if layout == "divider" else title_text) if title_band_enabled else ""
     side_wordmark_html = _side_wordmark_html(page, deck_short_title) if page.get("decor") == "side_wordmark" else ""
     # 카드가 우하단에 자기 출처를 표시한 페이지(다출처 stat_grid)는 하단 source-row가 중복 → 생략(후추님 6/30).
+    cited_source_ids = _source_row_ids_after_caption(cited_source_ids, caption_source_ids)
     source_row = "" if _page_has_per_card_sources(content, page_id, registry) else f'<div class="source-row">{_render_sources(cited_source_ids, registry)}</div>'
     footnote_row = _render_footnotes(footnotes)
     # 간지(divider)는 표지·outro처럼 푸터(출처행·카피라이트·페이지번호)를 렌더하지 않는다(후추님 6/30).
@@ -551,6 +561,8 @@ def _render_page(
         section_classes.append("divider-hero")
     if running_head_enabled:
         section_classes.append("chrome-running-head")
+    if title_band_enabled:
+        section_classes.append("page-title-band")
     if page.get("decor") == "side_wordmark":
         section_classes.append("decor-side-wordmark")
         if str(page.get("wordmark_side", page.get("side_wordmark_side", ""))).strip().lower() == "right":
@@ -560,6 +572,7 @@ def _render_page(
   {motif_html}
   {side_wordmark_html}
   {running_head_html}
+  {title_band_html}
   <header class="slide-head">
     {f'<div class="eyebrow{" eyebrow-chip" if page.get("eyebrow_chip") else ""}">{_escape(eyebrow_text)}</div>' if eyebrow_text else ""}
     <h1>{_rich(title_text)}</h1>
@@ -1591,8 +1604,18 @@ def _render_viz(
     renderer = _CHART_RENDERERS.get(chart)
     if renderer is None:
         raise ValueError(f"{page_id}: viz chart has no renderer: {chart}")
-    svg = renderer(series, title, note, accent, page_id, block)
-    return f'<aside class="visual-card visual-{_class_name(chart)}">{svg}</aside>'
+    title_style = str(block.get("title_style", "")).strip()
+    caption_html = _render_viz_source_caption(block, page_id, registry)
+    title_html = ""
+    svg_title = title
+    if title_style == "band":
+        title_html = f'<div class="visual-title-band">{_escape(title)}</div>' if title else ""
+        svg_title = ""
+    elif caption_html and title:
+        title_html = f'<div class="visual-title-html">{_escape(title)}</div>'
+        svg_title = ""
+    svg = renderer(series, svg_title, note, accent, page_id, block)
+    return f'<aside class="visual-card visual-{_class_name(chart)}">{title_html}{caption_html}{svg}</aside>'
 
 
 def _viz_series(
@@ -1667,6 +1690,92 @@ def _viz_series(
             }
         )
     return rendered
+
+
+def _render_viz_source_caption(
+    block: dict[str, Any],
+    page_id: str,
+    registry: dict[str, dict[str, Any]],
+) -> str:
+    source_ids = _viz_caption_source_ids(block, page_id, registry)
+    if str(block.get("source_caption", "")).strip() != "on" or not source_ids:
+        return ""
+
+    periods: list[str] = []
+    seen_periods: set[str] = set()
+    for metric_id in _viz_caption_metric_ids(block):
+        metric = _require_metric(metric_id, page_id, registry)
+        period = str(metric.get("period", "")).strip()
+        if period and period not in seen_periods:
+            seen_periods.add(period)
+            periods.append(period)
+
+    names = [_source_caption_name(src_id, page_id, registry) for src_id in source_ids]
+    visible_names = names[:2]
+    hidden_count = len(names) - len(visible_names)
+    source_text = ", ".join(visible_names)
+    if hidden_count > 0:
+        source_text = f"{source_text} 외 {hidden_count}"
+
+    period_text = ", ".join(periods)
+    if period_text and source_text:
+        caption = f"— {period_text} · per {source_text}"
+    elif source_text:
+        caption = f"— per {source_text}"
+    else:
+        caption = f"— {period_text}"
+    return f'<div class="visual-source-caption">{_escape(caption)}</div>'
+
+
+def _viz_caption_source_ids(
+    block: dict[str, Any],
+    page_id: str,
+    registry: dict[str, dict[str, Any]],
+) -> list[str]:
+    if str(block.get("source_caption", "")).strip() != "on":
+        return []
+    source_ids: list[str] = []
+    seen: set[str] = set()
+    for metric_id in _viz_caption_metric_ids(block):
+        metric = _require_metric(metric_id, page_id, registry)
+        for src_id in _as_list(metric.get("source_ids")):
+            _require_source(src_id, page_id, registry)
+            if src_id not in seen:
+                seen.add(src_id)
+                source_ids.append(src_id)
+    return source_ids
+
+
+def _viz_caption_metric_ids(block: dict[str, Any]) -> list[str]:
+    metric_ids: list[str] = []
+    series = block.get("series")
+    if not isinstance(series, list):
+        return metric_ids
+    for item in series:
+        if not isinstance(item, dict):
+            continue
+        metric_id = str(item.get("metric_id", "")).strip()
+        if metric_id:
+            metric_ids.append(metric_id)
+    return metric_ids
+
+
+def _source_caption_name(src_id: str, page_id: str, registry: dict[str, dict[str, Any]]) -> str:
+    source = _require_source(src_id, page_id, registry)
+    short_name = str(source.get("short_name", "")).strip()
+    if short_name:
+        return short_name
+    publisher = str(source.get("publisher") or source.get("title") or src_id).strip()
+    return publisher[:8] or src_id[:8]
+
+
+def _source_row_ids_after_caption(source_ids: list[str], caption_source_ids: list[str]) -> list[str]:
+    if not caption_source_ids:
+        return source_ids
+    captioned = set(caption_source_ids)
+    return [src_id for src_id in source_ids if src_id not in captioned] + [
+        src_id for src_id in source_ids if src_id in captioned
+    ]
 
 
 # 모든 차트 함수가 공유하는 소제목(visual-title y=20)→첫 요소 사이 세로 여백(후추님 6/30 통일).
@@ -2990,6 +3099,35 @@ body {{
   background-size: var(--slide-bg-size);
 }}
 .slide-head {{ flex: 0 0 auto; }}
+.page-title-band.slide {{ padding-top: 114px; }}
+.title-band {{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 86px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  padding: 0 72px;
+  background: var(--accent);
+  color: #FFFFFF;
+}}
+.title-band-text {{
+  display: -webkit-box;
+  max-height: 70px;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: #FFFFFF;
+  font-family: var(--font-head);
+  font-size: 32px;
+  font-weight: 850;
+  line-height: 1.08;
+  letter-spacing: 0;
+}}
+.page-title-band .slide-head {{ display: none; }}
+.page-title-band .body {{ padding-top: 0; }}
 /* 배경 코너 노드 모티프(후추님 #4) — 최소 강도. 콘텐츠보다 뒤·가독성 비방해. */
 .slide-motif {{
   position: absolute;
@@ -3943,6 +4081,33 @@ h1 {{
   border-top: 1px solid var(--line);
   padding-top: 16px;
   margin: 8px 0 6px;  /* 차트 위아래 약간의 숨 (후추님 6/30 — 조금씩·dense 슬라이드 안 넘치게) */
+}}
+.visual-title-html {{
+  margin: 0 0 3px;
+  color: var(--ink);
+  font-family: var(--font-chart, "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1.2;
+}}
+.visual-title-band {{
+  margin: 0 0 6px;
+  padding: 9px 14px 10px;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-family: var(--font-chart, "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 19px;
+  font-weight: 850;
+  line-height: 1.16;
+}}
+.visual-source-caption {{
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-family: var(--mono-font);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: 0;
 }}
 .visual-card svg {{ display: block; width: 100%; height: auto; overflow: visible; }}
 /* statement(상하 전폭) flow — SVG가 전폭 비율로 부풀어 세로가 터지는 것 방지(7/3 p04·p05). */
