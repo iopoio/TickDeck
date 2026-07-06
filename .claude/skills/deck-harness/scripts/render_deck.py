@@ -324,6 +324,7 @@ def render_deck(
     palette = _resolve_palette(deck_spec, theme)
     meta = deck_spec.get("meta") if isinstance(deck_spec.get("meta"), dict) else {}
     page_chrome = str(meta.get("page_chrome", "")).strip()
+    section_nav = str(meta.get("section_nav", "")).strip()
     deck_short_title = _deck_short_title(deck_spec, title)
     archetype_class = _deck_archetype_class(deck_spec)
     body_classes = [f'deck-theme-{_class_name(palette["theme"])}']
@@ -331,6 +332,7 @@ def render_deck(
         body_classes.append(archetype_class)
     body_ordinals = _body_page_ordinals(pages)
     deck_cited_source_ids = _deck_cited_source_ids(pages, registry)
+    section_items = _section_items(pages) if section_nav else []
     # 표지 밴드 수 = 실제 파트 수. 간지 수로 세되, 페이지에 명시된 part_count가 있으면 그게 정답
     # (간지 없는 1부가 있는 덱에서 표지 2밴드 vs 간지 티커 3의 불일치 방지·7/2).
     divider_n = sum(1 for page in pages if isinstance(page, dict) and str(page.get("layout")) == "divider")
@@ -354,6 +356,8 @@ def render_deck(
                 deck_short_title,
                 body_ordinal,
                 len(body_ordinals),
+                section_nav,
+                section_items,
             )
         )
     if len(rendered_pages) != len(pages):
@@ -465,6 +469,8 @@ def _render_page(
     deck_short_title: str = "",
     body_page_number: int | None = None,
     body_page_count: int = 0,
+    section_nav: str = "",
+    section_items: list[dict[str, Any]] | None = None,
 ) -> str:
     page_id = str(page.get("page_id", f"p{page_number:02d}"))
     layout = str(page.get("layout", "statement"))
@@ -509,10 +515,23 @@ def _render_page(
             caption_source_ids.extend(_viz_caption_source_ids(block, page_id, registry))
 
     for metric_id in _iter_metric_ids(content):
-        metric = _require_metric(metric_id, page_id, registry)
-        cited_source_ids.extend(_as_list(metric.get("source_ids")))
+        cited_source_ids.extend(_metric_source_ids(metric_id, page_id, registry))
 
-    body_html = _render_layout_body(layout, body_parts, page, content, page_number, rendered_pairs)
+    if layout == "metric_commentary":
+        body_html = _render_metric_commentary(page, page_id, registry, palette)
+        for metric_id in _iter_metric_ids(page.get("rows", [])):
+            cited_source_ids.extend(_metric_source_ids(metric_id, page_id, registry))
+    else:
+        body_html = _render_layout_body(
+            layout,
+            body_parts,
+            page,
+            content,
+            page_number,
+            rendered_pairs,
+            section_nav,
+            section_items or [],
+        )
     motif_html = _slide_motif_html(layout, page_number, palette)
     running_head_enabled = (
         page_chrome == "running_head"
@@ -776,6 +795,8 @@ def _render_layout_body(
     content: list[Any],
     page_number: int,
     rendered_pairs: list[tuple[Any, str]] | None = None,
+    section_nav: str = "",
+    section_items: list[dict[str, Any]] | None = None,
 ) -> str:
     if layout == "split":
         return _render_split(body_parts, page)
@@ -810,7 +831,7 @@ def _render_layout_body(
     if layout == "index":
         return _render_index(body_parts, content)
     if layout == "divider":
-        return _render_divider(page, content, page_number)
+        return _render_divider(page, content, page_number, section_nav, section_items or [])
     if layout == "closing":
         return _render_closing(content)
     body_class = "body body-grid" if layout in {"stat_grid", "metric_grid", "cards"} else "body"
@@ -1200,10 +1221,17 @@ def _render_index(body_parts: list[str], content: list[Any]) -> str:
     return f'<main class="body layout-body index-body"><section class="index-list">{rows}</section></main>'
 
 
-def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) -> str:
+def _render_divider(
+    page: dict[str, Any],
+    content: list[Any],
+    page_number: int,
+    section_nav: str = "",
+    section_items: list[dict[str, Any]] | None = None,
+) -> str:
     title = _clean_title_text(_first_block_text(content, {"headline", "title"}) or str(page.get("short_title", "")).strip())
     subtitle = _first_block_text(content, {"summary", "body", "text", "note"})
     part_index, part_label = _divider_part_meta(page, content, page_number)
+    section_nav_html = _section_nav_html(section_nav, section_items or [], part_index)
     # 헤드라인이 파트명("설정 —"·"증거·")으로 시작하면 제거 — 바로 위 "PART n · 설정"과 중복(후추님 6/30).
     if part_label:
         title = re.sub(rf"^\s*{re.escape(part_label)}\s*[—·\-:]\s*", "", title).strip() or title
@@ -1240,6 +1268,7 @@ def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) 
     if str(page.get("divider_style", "")).lower() == "quiet":
         return f"""
 <main class="body layout-body divider-body divider-quiet">
+  {section_nav_html}
   <p class="eyebrow divider-part">{_escape(part_label)}</p>
   <div class="divider-quiet-num" aria-hidden="true">{part_index:02d}</div>
   <h2 class="divider-title">{title_html}</h2>
@@ -1250,6 +1279,7 @@ def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) 
     return f"""
 <main class="body layout-body divider-body">
   <div class="divider-motif" aria-hidden="true"></div>
+  {section_nav_html}
   {ghost_html}
   <div class="divider-progress" aria-label="part progress">{progress}</div>
   <p class="eyebrow divider-part">PART {part_index} · {_escape(part_label)}</p>
@@ -1257,6 +1287,70 @@ def _render_divider(page: dict[str, Any], content: list[Any], page_number: int) 
   {subtitle_html}
   {items_html}
 </main>""".strip()
+
+
+def _render_metric_commentary(
+    page: dict[str, Any],
+    page_id: str,
+    registry: dict[str, dict[str, Any]],
+    palette: dict[str, str],
+) -> str:
+    rows = page.get("rows")
+    if not isinstance(rows, list) or not rows:
+        raise ValueError(f"{page_id}: metric_commentary rows must be a non-empty list")
+
+    row_html: list[str] = []
+    for index, row in enumerate(rows[:2]):
+        if not isinstance(row, dict):
+            raise ValueError(f"{page_id}: metric_commentary row {index} must be an object")
+        heading_id = str(row.get("heading_metric_id", "")).strip()
+        headline_id = str(row.get("headline_metric_id", "")).strip()
+        heading_metric = _require_metric(heading_id, page_id, registry)
+        headline_metric = _require_metric(headline_id, page_id, registry)
+        heading = str(heading_metric.get("label") or heading_metric.get("scope") or heading_id).strip()
+        headline = _format_metric_value(headline_metric)
+        headline_label = str(headline_metric.get("label") or headline_metric.get("scope") or "").strip()
+        headline_label_html = (
+            f'<span class="metric-commentary-headline-label">{_escape(headline_label)}</span>'
+            if headline_label
+            else ""
+        )
+
+        bullet_items: list[str] = []
+        bullets = row.get("bullets") if isinstance(row.get("bullets"), list) else []
+        for bullet in bullets[:2]:
+            if not isinstance(bullet, dict):
+                continue
+            label = str(bullet.get("label", "")).strip()
+            bullet_metric_id = str(bullet.get("metric_id", "")).strip()
+            bullet_metric = _require_metric(bullet_metric_id, page_id, registry)
+            bullet_items.append(
+                f"""
+                <li>
+                  <span class="commentary-bullet-label">{_escape(label)}</span>
+                  <span class="commentary-bullet-value" data-metric-id="{_escape(bullet_metric_id)}">{_escape(_format_metric_value(bullet_metric))}</span>
+                </li>"""
+            )
+        bullets_html = f'<ul class="metric-commentary-bullets">{"".join(bullet_items)}</ul>' if bullet_items else ""
+
+        chart = row.get("chart")
+        if not isinstance(chart, dict):
+            raise ValueError(f"{page_id}: metric_commentary row {index} chart must be an object")
+        chart_html = _render_viz(dict(chart), page_id, registry, palette)
+        row_html.append(
+            f"""
+            <article class="metric-commentary-row">
+              <section class="metric-commentary-summary">
+                <div class="metric-commentary-heading" data-metric-id="{_escape(heading_id)}">{_escape(heading)}</div>
+                <div class="metric-commentary-headline" data-metric-id="{_escape(headline_id)}">{_escape(headline)}</div>
+                {headline_label_html}
+                {bullets_html}
+              </section>
+              <section class="metric-commentary-chart">{chart_html}</section>
+            </article>"""
+        )
+
+    return f'<main class="body layout-body metric-commentary-body rows-{len(row_html)}">{"".join(row_html)}</main>'
 
 
 def _render_closing(content: list[Any]) -> str:
@@ -1413,6 +1507,52 @@ def _divider_part_count(page: dict[str, Any], part_index: int) -> int:
     return max(part_index, count, 1)
 
 
+def _section_items(pages: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for page_number, page in enumerate(pages, start=1):
+        if not isinstance(page, dict) or str(page.get("layout", "")) != "divider":
+            continue
+        content = page.get("content", [])
+        if not isinstance(content, list):
+            content = []
+        section_index, label = _divider_part_meta(page, content, page_number)
+        if label:
+            items.append({"index": section_index, "label": label})
+    items.sort(key=lambda item: int(item.get("index", 0)))
+    deduped: list[dict[str, Any]] = []
+    seen: set[int] = set()
+    for item in items:
+        index = int(item.get("index", 0))
+        if index in seen:
+            continue
+        seen.add(index)
+        deduped.append(item)
+    return deduped
+
+
+def _section_nav_html(section_nav: str, section_items: list[dict[str, Any]], active_index: int) -> str:
+    nav = str(section_nav or "").strip()
+    if nav not in {"chips", "dots", "toc"} or not section_items:
+        return ""
+
+    if nav == "chips":
+        items = "".join(
+            f'<span class="section-nav-item{" is-active" if int(item["index"]) == active_index else ""}">{_escape(str(item["label"]))}</span>'
+            for item in section_items
+        )
+    elif nav == "dots":
+        items = "".join(
+            f'<span class="section-nav-dot{" is-active" if int(item["index"]) == active_index else ""}" aria-label="{_escape(str(item["label"]))}"></span>'
+            for item in section_items
+        )
+    else:
+        items = "".join(
+            f'<span class="section-nav-toc-item{" is-active" if int(item["index"]) == active_index else ""}">{_escape(str(item["label"]))}</span>'
+            for item in section_items
+        )
+    return f'<nav class="section-nav section-nav-{_class_name(nav)}" aria-label="section navigation">{items}</nav>'
+
+
 def _cover_decor_html(palette: dict[str, str], part_count: int = 0) -> str:
     theme = palette["theme"]
     if theme == "tech":
@@ -1474,7 +1614,7 @@ def _render_block(
         metric_ids = _as_list(block.get("metric_ids"))
         # 카드들의 출처가 둘 이상으로 갈리면 카드별 출처를 켠다(같은 출처면 footer만·중복 방지).
         src_keys = [
-            (_as_list(_require_metric(mid, page_id, registry).get("source_ids")) or [""])[0]
+            (_metric_source_ids(mid, page_id, registry) or [""])[0]
             for mid in metric_ids
         ]
         show_src = len({s for s in src_keys if s}) > 1
@@ -1546,7 +1686,7 @@ def _page_has_per_card_sources(content: list[Any], page_id: str, registry: dict[
         if _block_type(block) not in {"metrics", "metric_grid", "stat_grid"}:
             continue
         src_keys = {
-            (_as_list(_require_metric(mid, page_id, registry).get("source_ids")) or [""])[0]
+            (_metric_source_ids(mid, page_id, registry) or [""])[0]
             for mid in _as_list(block.get("metric_ids"))
         }
         if len({s for s in src_keys if s}) > 1:
@@ -1568,7 +1708,7 @@ def _render_metric(
     # data-src-id로 감싸 기관명이 C6 authorized context에 들게 한다.
     src_html = ""
     if show_source:
-        src_ids = _as_list(metric.get("source_ids"))
+        src_ids = _metric_source_ids(metric_id, page_id, registry)
         if src_ids:
             pub = str(registry.get("sources", {}).get(src_ids[0], {}).get("publisher") or "").strip()
             if pub:
@@ -1614,7 +1754,9 @@ def _render_viz(
     elif caption_html and title:
         title_html = f'<div class="visual-title-html">{_escape(title)}</div>'
         svg_title = ""
-    svg = renderer(series, svg_title, note, accent, page_id, block)
+    render_block = dict(block)
+    render_block["_registry"] = registry
+    svg = renderer(series, svg_title, note, accent, page_id, render_block)
     return f'<aside class="visual-card visual-{_class_name(chart)}">{title_html}{caption_html}{svg}</aside>'
 
 
@@ -1737,8 +1879,7 @@ def _viz_caption_source_ids(
     source_ids: list[str] = []
     seen: set[str] = set()
     for metric_id in _viz_caption_metric_ids(block):
-        metric = _require_metric(metric_id, page_id, registry)
-        for src_id in _as_list(metric.get("source_ids")):
+        for src_id in _metric_source_ids(metric_id, page_id, registry):
             _require_source(src_id, page_id, registry)
             if src_id not in seen:
                 seen.add(src_id)
@@ -2239,21 +2380,31 @@ def _svg_rising_columns(
     delta_text = _delta_annotation([rows[0], rows[-1]]) if len(rows) >= 2 and (block or {}).get("delta", True) else ""
     body = []
     tops: list[tuple[float, float]] = []
+    points: list[dict[str, Any]] = []
+    key_positions: dict[str, tuple[float, float, float]] = {}
     for index, item in enumerate(rows):
         number = abs(item["number"]) if isinstance(item.get("number"), (int, float)) else 0.0
         h = max(10.0, (number / max_value) * max_h) if max_value else 10.0
         x = area_x + step * index + (step - col_w) / 2
         y = base_y - h
         tops.append((x + col_w / 2, y))
+        cx = x + col_w / 2
+        points.append({"x": cx, "y": y, "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
+        key_positions[item["label"]] = (cx, x, x + col_w)
         is_last = index == len(rows) - 1
         opacity = 0.34 + (0.66 * index / max(1, len(rows) - 1))
         fill = _series_color(item, index, rows, accent)
         value_class = _value_class(item, is_last)
+        value_text = (
+            f'<text x="{x + col_w / 2:.1f}" y="{y - 12:.1f}" text-anchor="middle" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>'
+            if item["metric_id"] not in _endpoint_suppressed_metric_ids(block, rows)
+            else ""
+        )
         body.append(
             f"""
             <g data-metric-id="{_escape(item["metric_id"])}">
               <rect x="{x:.1f}" y="{y:.1f}" width="{col_w:.1f}" height="{h:.1f}" rx="6" fill="{fill}" fill-opacity="{opacity:.2f}"/>
-              <text x="{x + col_w / 2:.1f}" y="{y - 12:.1f}" text-anchor="middle" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+              {value_text}
               <text x="{x + col_w / 2:.1f}" y="{base_y + 26}" text-anchor="middle" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
             </g>"""
         )
@@ -2268,6 +2419,7 @@ def _svg_rising_columns(
               <text x="{(x1 + x2) / 2:.1f}" y="{bracket_y - 10:.1f}" text-anchor="middle" class="visual-delta" data-metric-id="{_escape(last_id)}">{_escape(delta_text)}</text>
             </g>"""
         )
+    body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, CHART_TITLE_GAP - 12, base_y))
     return _svg_shell("rising-columns", title, note, base_y + 44 + (28 if note else 0), "".join(body), page_id)
 
 
@@ -2290,6 +2442,8 @@ def _svg_quarterly_bars(
     max_h = 148
     show_axis = (block or {}).get("axis") not in (False, "hidden", "none")
     body: list[str] = []
+    points: list[dict[str, Any]] = []
+    key_positions: dict[str, tuple[float, float, float]] = {}
     if show_axis:
         body.append(f'<line x1="{x0}" y1="{base_y}" x2="{x0 + area_w}" y2="{base_y}" stroke="var(--line)" stroke-width="2"/>')
     if (block or {}).get("axis_break"):
@@ -2303,6 +2457,10 @@ def _svg_quarterly_bars(
         label_y = base_y + 28
         value_y = y + min(h - 8, 24) if number >= 0 and h > 36 else y - 10
         value_fill = "#FFFFFF" if number >= 0 and h > 36 and fill != "color-mix(in srgb, var(--ink) 18%, transparent)" else fill
+        cx = x + col_w / 2
+        anchor_y = y if number >= 0 else y + h
+        points.append({"x": cx, "y": anchor_y, "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
+        key_positions[item["label"]] = (cx, x, x + col_w)
         body.append(
             f"""
             <g data-metric-id="{_escape(item["metric_id"])}">
@@ -2311,6 +2469,7 @@ def _svg_quarterly_bars(
               <text x="{x + col_w / 2:.1f}" y="{label_y}" text-anchor="middle" class="visual-label" font-size="15" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
             </g>"""
         )
+    body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, CHART_TITLE_GAP - 12, base_y))
     return _svg_shell("quarterly-bars", title, note, base_y + 52 + (28 if note else 0), "".join(body), page_id)
 
 
@@ -2532,6 +2691,8 @@ def _svg_multi_line(
     numbers = [i["number"] for lane in lanes.values() for i in lane if i["number"] is not None]
     vmax = max(numbers) if numbers else 1
     body = [f'<line x1="{x0}" y1="{y0 + h}" x2="{x0 + w}" y2="{y0 + h}" stroke="var(--line)" stroke-width="2"/>']
+    coord_by_metric_id: dict[str, tuple[float, float]] = {}
+    key_positions: dict[str, tuple[float, float, float]] = {}
     for lane_name, pts in lanes.items():
         if not pts:
             continue
@@ -2543,13 +2704,23 @@ def _svg_multi_line(
             x = x0 + (step * i if len(pts) > 1 else w / 2)
             y = y0 + h - h * 0.82 * frac
             coords.append((x, y, item))
+            coord_by_metric_id[item["metric_id"]] = (x, y)
+            key_positions[item["label"]] = (x, x - 20, x + 20)
         path = " ".join(f"{'M' if i == 0 else 'L'}{x:.0f},{y:.0f}" for i, (x, y, _) in enumerate(coords))
         body.append(f'<path d="{path}" fill="none" stroke="{color}" stroke-width="4" stroke-linejoin="round"/>')
+        endpoint_owned = _endpoint_suppressed_metric_ids(block, series)
         for x, y, item in coords:
             body.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="6" fill="{color}"/>')
-            if item["value"]:
+            if item["value"] and item["metric_id"] not in endpoint_owned:
                 body.append(f'<text x="{x:.0f}" y="{y - 14:.0f}" text-anchor="middle" class="visual-value" font-size="19" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
             body.append(f'<text x="{x:.0f}" y="{y0 + h + 24:.0f}" text-anchor="middle" class="visual-label" font-size="15">{_escape(item["label"])}</text>')
+    points = []
+    for item in series:
+        coord = coord_by_metric_id.get(item["metric_id"])
+        if not coord:
+            continue
+        points.append({"x": coord[0], "y": coord[1], "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
+    body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, y0 - 12, y0 + h))
     # x축 라벨(y0+h+24)과 shell note(height-10)가 겹치지 않게 높이 여유(+70) — 스모크 실측.
     return _svg_shell("multi_line", title, note, y0 + h + 70, "".join(body), page_id)
 
@@ -2678,6 +2849,182 @@ def _svg_swot_quad(
     body.append(f'<line x1="{cross_x}" y1="{y0}" x2="{cross_x}" y2="{y0 + grid_h}" stroke="var(--line)" stroke-width="2"/>')
     body.append(f'<line x1="{x0}" y1="{cross_y}" x2="{x0 + grid_w}" y2="{cross_y}" stroke="var(--line)" stroke-width="2"/>')
     return _svg_shell("swot_quad", title, note, y0 + grid_h + 20, "".join(body), page_id)
+
+
+def _viz_annotation_layer(
+    block: dict[str, Any] | None,
+    points: list[dict[str, Any]],
+    key_positions: dict[str, tuple[float, float, float]],
+    page_id: str,
+    accent: str,
+    chart_top: float,
+    chart_bottom: float,
+) -> str:
+    annotations = (block or {}).get("annotations")
+    if not isinstance(annotations, list) or not annotations or not points:
+        return ""
+    registry = (block or {}).get("_registry") if isinstance((block or {}).get("_registry"), dict) else {}
+    metrics = registry.get("metrics", {}) if isinstance(registry, dict) else {}
+    marker_id = f"annotation-arrow-{_class_name(page_id)}"
+    parts: list[str] = []
+    needs_marker = any(isinstance(item, dict) and item.get("kind") == "trend_arrow" for item in annotations)
+    if needs_marker:
+        parts.append(
+            f"""
+            <defs>
+              <marker id="{marker_id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="{accent}"/>
+              </marker>
+            </defs>"""
+        )
+
+    for annotation in annotations:
+        if not isinstance(annotation, dict):
+            continue
+        kind = str(annotation.get("kind", "")).strip()
+        if kind == "event_band":
+            rendered = _render_event_band_annotation(annotation, key_positions, chart_top, chart_bottom)
+        elif kind == "trend_arrow":
+            rendered = _render_trend_arrow_annotation(annotation, points, accent, marker_id)
+        elif kind == "endpoint_value":
+            rendered = _render_endpoint_annotation(annotation, points)
+        elif kind == "callout":
+            rendered = _render_callout_annotation(annotation, points, metrics, accent)
+        else:
+            rendered = ""
+        if rendered:
+            parts.append(rendered)
+    if not parts:
+        return ""
+    return f'<g class="viz-annotation-layer">{"".join(parts)}</g>'
+
+
+def _render_event_band_annotation(
+    annotation: dict[str, Any],
+    key_positions: dict[str, tuple[float, float, float]],
+    chart_top: float,
+    chart_bottom: float,
+) -> str:
+    from_key = str(annotation.get("from_key", "")).strip()
+    to_key = str(annotation.get("to_key", "")).strip()
+    label = str(annotation.get("label", "")).strip()
+    if from_key not in key_positions or to_key not in key_positions or not label:
+        return ""
+    from_center, from_left, from_right = key_positions[from_key]
+    to_center, to_left, to_right = key_positions[to_key]
+    x1 = min(from_left, to_left, from_center, to_center)
+    x2 = max(from_right, to_right, from_center, to_center)
+    if x2 - x1 < 24:
+        x1 -= 18
+        x2 += 18
+    y = max(0.0, chart_top)
+    height = max(18.0, chart_bottom - y)
+    return f"""
+    <g class="viz-annotation annotation-event-band" data-annotation-kind="event_band">
+      <rect x="{x1:.1f}" y="{y:.1f}" width="{x2 - x1:.1f}" height="{height:.1f}" fill="var(--ink)" opacity=".055"/>
+      <line x1="{x1:.1f}" y1="{y:.1f}" x2="{x1:.1f}" y2="{chart_bottom:.1f}" stroke="{_escape('var(--line)')}" stroke-width="1.5"/>
+      <line x1="{x2:.1f}" y1="{y:.1f}" x2="{x2:.1f}" y2="{chart_bottom:.1f}" stroke="{_escape('var(--line)')}" stroke-width="1.5"/>
+      <text x="{(x1 + x2) / 2:.1f}" y="{max(16.0, y - 8):.1f}" text-anchor="middle" class="annotation-event-label">{_escape(label)}</text>
+    </g>"""
+
+
+def _render_trend_arrow_annotation(
+    annotation: dict[str, Any],
+    points: list[dict[str, Any]],
+    accent: str,
+    marker_id: str,
+) -> str:
+    index = _annotation_point_index(annotation, "series", points, 0)
+    if index is None:
+        return ""
+    start = points[index]
+    end = points[min(index + 1, len(points) - 1)]
+    if end is start and index > 0:
+        start = points[index - 1]
+        end = points[index]
+    if end is start:
+        return ""
+    return f"""
+    <g class="viz-annotation annotation-trend-arrow" data-annotation-kind="trend_arrow">
+      <path d="M {start["x"]:.1f} {start["y"] - 22:.1f} C {(start["x"] + end["x"]) / 2:.1f} {min(start["y"], end["y"]) - 56:.1f}, {(start["x"] + end["x"]) / 2:.1f} {min(start["y"], end["y"]) - 56:.1f}, {end["x"]:.1f} {end["y"] - 22:.1f}" fill="none" stroke="{accent}" stroke-width="2.5" marker-end="url(#{marker_id})" opacity=".78"/>
+    </g>"""
+
+
+def _render_endpoint_annotation(annotation: dict[str, Any], points: list[dict[str, Any]]) -> str:
+    index = _annotation_point_index(annotation, "series", points, len(points) - 1)
+    if index is None:
+        return ""
+    point = points[index]
+    metric_id = str(point.get("metric_id", "")).strip()
+    value = str(point.get("value", "")).strip()
+    if not metric_id or not value:
+        return ""
+    x = min(960.0, max(40.0, float(point["x"]) + 18.0))
+    y = max(24.0, float(point["y"]) - 18.0)
+    return f"""
+    <g class="viz-annotation annotation-endpoint" data-annotation-kind="endpoint_value" data-metric-id="{_escape(metric_id)}">
+      <text x="{x:.1f}" y="{y:.1f}" class="annotation-endpoint-value" data-metric-id="{_escape(metric_id)}">{_escape(value)}</text>
+    </g>"""
+
+
+def _render_callout_annotation(
+    annotation: dict[str, Any],
+    points: list[dict[str, Any]],
+    metrics: dict[str, Any],
+    accent: str,
+) -> str:
+    metric_id = str(annotation.get("metric_id", "")).strip()
+    metric = metrics.get(metric_id)
+    if not metric_id or not isinstance(metric, dict):
+        return ""
+    index = _annotation_point_index(annotation, "anchor_series", points, len(points) - 1)
+    if index is None:
+        return ""
+    point = points[index]
+    text = _format_metric_value(metric)
+    cx = min(930.0, max(70.0, float(point["x"]) + 76.0))
+    cy = max(42.0, float(point["y"]) - 58.0)
+    shape = str(annotation.get("shape", "ellipse")).strip()
+    if shape == "box":
+        shape_html = f'<rect x="{cx - 58:.1f}" y="{cy - 24:.1f}" width="116" height="48" rx="8" fill="#FFFFFF" stroke="{accent}" stroke-width="2"/>'
+    else:
+        shape_html = f'<ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="62" ry="27" fill="#FFFFFF" stroke="{accent}" stroke-width="2"/>'
+    return f"""
+    <g class="viz-annotation annotation-callout" data-annotation-kind="callout" data-metric-id="{_escape(metric_id)}">
+      <line x1="{point["x"]:.1f}" y1="{point["y"]:.1f}" x2="{cx:.1f}" y2="{cy + 26:.1f}" stroke="{accent}" stroke-width="1.6" opacity=".55"/>
+      {shape_html}
+      <text x="{cx:.1f}" y="{cy + 6:.1f}" text-anchor="middle" class="annotation-callout-text" data-metric-id="{_escape(metric_id)}">{_escape(text)}</text>
+    </g>"""
+
+
+def _endpoint_suppressed_metric_ids(block: dict[str, Any] | None, series: list[dict[str, Any]]) -> set[str]:
+    # endpoint_value 주석이 맡은 점은 차트 기본 값 라벨을 양보한다 — 같은 수치 이중 렌더 방지 (7/7 R3 시각QA 실측).
+    raw = (block or {}).get("annotations") if isinstance(block, dict) else None
+    targets: set[str] = set()
+    for ann in raw if isinstance(raw, list) else []:
+        if not (isinstance(ann, dict) and str(ann.get("kind", "")).strip() == "endpoint_value"):
+            continue
+        idx = ann.get("series")
+        idx = idx if isinstance(idx, int) else len(series) - 1
+        if 0 <= idx < len(series):
+            metric_id = str(series[idx].get("metric_id", "")).strip()
+            if metric_id:
+                targets.add(metric_id)
+    return targets
+
+
+def _annotation_point_index(
+    annotation: dict[str, Any],
+    key: str,
+    points: list[dict[str, Any]],
+    default: int,
+) -> int | None:
+    raw = annotation.get(key)
+    if raw is None:
+        raw = default
+    if not isinstance(raw, int) or raw < 0 or raw >= len(points):
+        return None
+    return raw
 
 
 _CHART_RENDERERS = {
@@ -2879,11 +3226,35 @@ def _deck_cited_source_ids(pages: list[Any], registry: dict[str, dict[str, Any]]
         for src_id in _iter_source_ids(content):
             add(src_id)
         for metric_id in _iter_metric_ids(content):
-            metric = registry["metrics"].get(metric_id)
-            if isinstance(metric, dict):
-                for src_id in _as_list(metric.get("source_ids")):
+            for src_id in _metric_source_ids(metric_id, "deck", registry):
+                add(src_id)
+        if str(page.get("layout", "")) == "metric_commentary":
+            for metric_id in _iter_metric_ids(page.get("rows", [])):
+                for src_id in _metric_source_ids(metric_id, "deck", registry):
                     add(src_id)
     return cited
+
+
+def _metric_source_ids(
+    metric_id: str,
+    page_id: str,
+    registry: dict[str, dict[str, Any]],
+    seen: set[str] | None = None,
+) -> list[str]:
+    seen = set(seen or set())
+    if metric_id in seen:
+        return []
+    seen.add(metric_id)
+    metric = _require_metric(metric_id, page_id, registry)
+    source_ids: list[str] = []
+    for src_id in _as_list(metric.get("source_ids")):
+        if src_id not in source_ids:
+            source_ids.append(src_id)
+    for ref_id in _as_list(metric.get("derived_from")):
+        for src_id in _metric_source_ids(ref_id, page_id, registry, seen):
+            if src_id not in source_ids:
+                source_ids.append(src_id)
+    return source_ids
 
 
 def _format_metric_value(metric: dict[str, Any]) -> str:
@@ -2893,7 +3264,7 @@ def _format_metric_value(metric: dict[str, Any]) -> str:
         raise ValueError("metric value is required")
     if not unit or value.endswith(unit):
         return value
-    if unit in {"%", "pp", "p", "x", "X", "조", "억", "만", "명", "개", "건", "원", "달러"}:
+    if unit.startswith("%") or unit in {"pp", "p", "x", "X", "조", "억", "만", "명", "개", "건", "원", "달러"}:
         return f"{value}{unit}"
     return f"{value} {unit}"
 
@@ -3995,6 +4366,47 @@ h1 {{
   background: rgba(248,250,252,.22);
 }}
 .divider-progress .is-active {{ background: var(--accent2); }}
+.section-nav {{
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+}}
+.section-nav-item,
+.section-nav-toc-item {{
+  border: 1px solid rgba(248,250,252,.26);
+  color: rgba(248,250,252,.72);
+  font-family: var(--mono-font);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 8px 12px;
+}}
+.section-nav-item.is-active,
+.section-nav-toc-item.is-active {{
+  border-color: var(--accent2);
+  background: var(--accent2);
+  color: var(--divider-accent-fg);
+}}
+.section-nav-dots {{ gap: 10px; }}
+.section-nav-dot {{
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(248,250,252,.26);
+}}
+.section-nav-dot.is-active {{
+  width: 22px;
+  border-radius: 999px;
+  background: var(--accent2);
+}}
+.section-nav-toc {{
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 7px;
+}}
 .divider-part {{
   margin: 0;
   color: var(--accent2);
@@ -4076,6 +4488,87 @@ h1 {{
   height: 2px;
   background: var(--accent2);
 }}
+.metric-commentary-body {{
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(0, 1fr));
+  gap: 18px;
+  padding-top: 4px;
+}}
+.metric-commentary-row {{
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}}
+.metric-commentary-row:first-child {{ border-top: 0; padding-top: 0; }}
+.metric-commentary-summary {{
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}}
+.metric-commentary-heading {{
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 800;
+  word-break: keep-all;
+}}
+.metric-commentary-headline {{
+  color: var(--accent);
+  font-size: 56px;
+  line-height: .96;
+  font-weight: 930;
+  font-variant-numeric: tabular-nums;
+}}
+.metric-commentary-headline-label {{
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 750;
+}}
+.metric-commentary-bullets {{
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  flex-wrap: wrap;
+}}
+.metric-commentary-bullets li {{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  padding: 6px 8px;
+  min-width: 76px;
+}}
+.commentary-bullet-label {{
+  color: var(--muted);
+  font-family: var(--mono-font);
+  font-size: 11px;
+  font-weight: 800;
+}}
+.commentary-bullet-value {{
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}}
+.metric-commentary-chart {{
+  min-width: 0;
+}}
+.metric-commentary-chart .visual-card {{
+  width: 100%;
+  margin: 0;
+  padding-top: 0;
+  border-top: 0;
+}}
 .visual-card {{
   width: min(100%, 1040px);
   border-top: 1px solid var(--line);
@@ -4134,6 +4627,20 @@ h1 {{
   font-family: var(--font-chart, "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif);
   letter-spacing: 0;
 }}
+.viz-annotation-layer {{ pointer-events: none; }}
+.annotation-event-label {{
+  fill: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}}
+.annotation-callout-text,
+.annotation-endpoint-value {{
+  fill: var(--ink);
+  font-size: 18px;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+}}
+.annotation-endpoint-value {{ paint-order: stroke; stroke: var(--slide-bg); stroke-width: 4px; }}
 /* editorial_serif — 차트도 팔레트 스와핑에 그치지 않게: 막대/필 모서리를 각지게(rx 0), 수치 조판을
    세리프로 바꿔 "기술 대시보드 각바" 관례에서 이탈시킨다(후추님 7/3 "결국 컬러 변경된거고 구성은 그대로" 지적). */
 .theme-editorial-serif rect {{ rx: 0; ry: 0; }}
