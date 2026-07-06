@@ -636,6 +636,160 @@ class HarnessContractTests(unittest.TestCase):
         page_plan = {"pages": []}
         self.assertEqual(check_c8_genre_artifacts({}, evidence_pool, page_plan), [])
 
+    def _write_c10_run(self, run_dir: pathlib.Path, genre: str, source_registry):
+        (run_dir / "00_intake.json").write_text(json.dumps({"genre": genre}), encoding="utf-8")
+        (run_dir / "02_verified.json").write_text(
+            json.dumps({"source_registry": source_registry}),
+            encoding="utf-8",
+        )
+
+    def _check_c10(self, run_dir: pathlib.Path):
+        self.assertTrue(
+            hasattr(contract_checks_module, "check_c10_collection_evidence"),
+            "check_c10_collection_evidence must exist",
+        )
+        return contract_checks_module.check_c10_collection_evidence(run_dir)
+
+    def test_c10_market_research_rejects_legacy_registry_without_doc_type(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            self._write_c10_run(
+                run_dir,
+                "market-research",
+                {"src_1": {"tier": "Tier-A", "local_path": "pdf/source.pdf"}},
+            )
+
+            violations = self._check_c10(run_dir)
+
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C10")
+        self.assertIn("doc_type", violations[0].message)
+        self.assertEqual(violations[0].path, "02_verified.json.source_registry")
+
+    def test_c10_market_research_rejects_fewer_than_five_canonical_sources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            for index in range(4):
+                source_file = run_dir / "pdf" / f"source_{index}.pdf"
+                source_file.parent.mkdir(exist_ok=True)
+                source_file.write_text("pdf", encoding="utf-8")
+            self._write_c10_run(
+                run_dir,
+                "market-research",
+                {
+                    f"src_{index}": {
+                        "tier": "Tier-A",
+                        "doc_type": "pdf",
+                        "local_path": f"pdf/source_{index}.pdf",
+                        "cited_pages": [1],
+                    }
+                    for index in range(4)
+                },
+            )
+
+            violations = self._check_c10(run_dir)
+
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C10")
+        self.assertIn("at least 5 canonical document sources (found 4)", violations[0].message)
+
+    def test_c10_market_research_accepts_five_pdf_sources_with_files_and_pages(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            for index in range(5):
+                source_file = run_dir / "pdf" / f"source_{index}.pdf"
+                source_file.parent.mkdir(exist_ok=True)
+                source_file.write_text("pdf", encoding="utf-8")
+            self._write_c10_run(
+                run_dir,
+                "market-research",
+                {
+                    f"src_{index}": {
+                        "tier": "Tier-A",
+                        "doc_type": "pdf",
+                        "local_path": f"pdf/source_{index}.pdf",
+                        "cited_pages": [1, "12-15"],
+                    }
+                    for index in range(5)
+                },
+            )
+
+            violations = self._check_c10(run_dir)
+
+        self.assertEqual(violations, [])
+
+    def test_c10_market_research_rejects_missing_local_path_file_per_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            for index in range(4):
+                source_file = run_dir / "pdf" / f"source_{index}.pdf"
+                source_file.parent.mkdir(exist_ok=True)
+                source_file.write_text("pdf", encoding="utf-8")
+            self._write_c10_run(
+                run_dir,
+                "market-research",
+                {
+                    f"src_{index}": {
+                        "tier": "Tier-A",
+                        "doc_type": "pdf",
+                        "local_path": f"pdf/source_{index}.pdf",
+                        "cited_pages": [1],
+                    }
+                    for index in range(5)
+                },
+            )
+
+            violations = self._check_c10(run_dir)
+
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C10")
+        self.assertIn("local_path file missing", violations[0].message)
+        self.assertEqual(violations[0].path, "02_verified.json.source_registry.src_4.local_path")
+
+    def test_c10_market_research_requires_pdf_pages_but_accepts_extract_note(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            for index in range(5):
+                source_file = run_dir / "pdf" / f"source_{index}.pdf"
+                source_file.parent.mkdir(exist_ok=True)
+                source_file.write_text("source", encoding="utf-8")
+            self._write_c10_run(
+                run_dir,
+                "market-research",
+                {
+                    "src_pdf": {
+                        "tier": "Tier-A",
+                        "doc_type": "pdf",
+                        "local_path": "pdf/source_0.pdf",
+                    },
+                    **{
+                        f"src_db_{index}": {
+                            "tier": "Tier-A",
+                            "doc_type": "official_db_extract",
+                            "local_path": f"pdf/source_{index}.pdf",
+                            "extract_note": "official database extract",
+                        }
+                        for index in range(1, 5)
+                    },
+                },
+            )
+
+            violations = self._check_c10(run_dir)
+
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C10")
+        self.assertIn("cited_pages", violations[0].message)
+        self.assertEqual(violations[0].path, "02_verified.json.source_registry.src_pdf.cited_pages")
+
+    def test_c10_skips_non_market_research_genre(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            self._write_c10_run(run_dir, "trend-report", {})
+
+            violations = self._check_c10(run_dir)
+
+        self.assertEqual(violations, [])
+
     def test_c9_rejects_missing_external_review_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             run_dir = pathlib.Path(tmp)

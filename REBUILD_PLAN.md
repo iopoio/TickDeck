@@ -19,11 +19,13 @@
 - 모델: 스펙 Fable / 구현 Codex / 검수 Fable.
 - 완료 증거: 문서분 커밋 da5d485(writing-standard 7규칙) / 기계분 = qa_lint READER_FIRST_JARGON 스캔(개념어 9종+N×M축 정규식, short_title·eyebrow·표 열이름까지) — selfcheck 6케이스 GREEN·계약 테스트 65건 GREEN·**4차 CLO 덱 소급 실행 시 25건 검거 확인**(부록2 '다시' 문장은 통과). 기계분 커밋: 아래 진행 기록 참조.
 
-### A2. 수집 계약 게이트 신설 (C10) [ ]
+### A2. 수집 계약 게이트 신설 (C10) [x] (2026-07-06 완료)
 - 내용: 시장조사 장르 = **Tier-A PDF 원문 ≥ 5건** + 각 PDF 인용에 페이지 번호 명시 + PDF 실물 로컬 보관(`_workspace/<run>/pdf/`). 미달 시 수집 단계 불통과(재수집 루프 강제). run_contracts에 등록.
-- 수용 기준: CLO 4차 run에 소급 실행하면 **FAIL이 떠야 한다**(PDF 0건이므로) + 신규 테스트 GREEN.
+- 수용 기준: CLO 4차 run에 소급 실행하면 **FAIL이 떠야 한다**(PDF 0건이므로) + 신규 테스트 GREEN. ✅
 - 모델: 스펙 Fable / 구현 Codex / 검수 Fable.
-- 완료 증거: 커밋 ________ / 4차 소급 FAIL 출력 ________
+- 완료 증거: 계약 테스트 71건 GREEN(신규 6건 포함) / 4차 소급 실측 = `FAIL C10: source_registry에 doc_type 필드 부재 — 수집 단계가 C10 스키마 미준수 → 1건 위반` / 스키마 = doc_type("pdf"|"official_db_extract")·local_path(상대경로 실존)·cited_pages(PDF)·extract_note(DB 추출) / collector 의무 명문화 커밋 4932065. 구현 커밋: 진행 기록 참조.
+
+### Phase A 완료 (2026-07-06) → 후추님 개입 지점 ⓐ 도달. 승인 시 Phase B 시동.
 
 ### A3. PDF 벤치마크 → 사냥터 고정 [x] (2026-07-06 완료)
 - 내용: PDF 사냥 에이전트 5기 결과를 클차장이 diff 판정 → 실제로 나온 사냥터를 collector 시장조사 장르 프로필에 **고정 목록**으로 명시.

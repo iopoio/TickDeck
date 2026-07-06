@@ -405,12 +405,7 @@ def check_c8_genre_artifacts(
     evidence_pool: dict[str, Any],
     page_plan: dict[str, Any],
 ) -> list[ContractViolation]:
-    genre = str(intake.get("genre", "")).lower()
-    genre_compact = re.sub(r"[\s_-]+", "", genre)
-    if not (
-        any(term in genre for term in ("market-research", "market_research", "brand-research", "brand_research"))
-        or any(term in genre_compact for term in ("marketresearch", "brandresearch", "시장조사", "경쟁분석"))
-    ):
+    if not _is_market_research_genre(intake.get("genre", "")):
         return []
 
     violations: list[ContractViolation] = []
@@ -455,6 +450,88 @@ def check_c8_genre_artifacts(
                 "evidence_pool.items",
             )
         )
+
+    return violations
+
+
+def check_c10_collection_evidence(run_dir: Path | str) -> list[ContractViolation]:
+    run_path = Path(run_dir)
+    try:
+        intake = json.loads((run_path / "00_intake.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [ContractViolation("C10", f"C10 intake unreadable: {exc}", "00_intake.json")]
+    if not _is_market_research_genre(intake.get("genre", "")):
+        return []
+
+    try:
+        verified = json.loads((run_path / "02_verified.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [ContractViolation("C10", f"C10 verified registry unreadable: {exc}", "02_verified.json")]
+
+    source_registry = verified.get("source_registry")
+    if not isinstance(source_registry, dict):
+        source_registry = {}
+    sources = [(str(source_id), source) for source_id, source in source_registry.items() if isinstance(source, dict)]
+
+    if not any("doc_type" in source for _, source in sources):
+        return [
+            ContractViolation(
+                "C10",
+                "source_registry에 doc_type 필드 부재 — 수집 단계가 C10 스키마 미준수",
+                "02_verified.json.source_registry",
+            )
+        ]
+
+    qualified = [
+        (source_id, source)
+        for source_id, source in sources
+        if str(source.get("tier", "")).strip() == "Tier-A"
+        and str(source.get("doc_type", "")).strip().lower() in {"pdf", "official_db_extract"}
+    ]
+
+    violations: list[ContractViolation] = []
+    if len(qualified) < 5:
+        violations.append(
+            ContractViolation(
+                "C10",
+                f"market-research requires at least 5 canonical document sources (found {len(qualified)})",
+                "02_verified.json.source_registry",
+            )
+        )
+
+    for source_id, source in qualified:
+        base_path = f"02_verified.json.source_registry.{source_id}"
+        local_path = source.get("local_path")
+        if not isinstance(local_path, str) or not local_path.strip():
+            violations.append(ContractViolation("C10", "canonical source requires local_path", f"{base_path}.local_path"))
+        else:
+            relative_path = Path(local_path)
+            if relative_path.is_absolute():
+                violations.append(
+                    ContractViolation("C10", "local_path must be relative to run_dir", f"{base_path}.local_path")
+                )
+            elif not (run_path / relative_path).is_file():
+                violations.append(ContractViolation("C10", "local_path file missing", f"{base_path}.local_path"))
+
+        doc_type = str(source.get("doc_type", "")).strip().lower()
+        if doc_type == "pdf":
+            cited_pages = source.get("cited_pages")
+            if not isinstance(cited_pages, list) or not cited_pages or not all(
+                isinstance(page, int) or (isinstance(page, str) and page.strip()) for page in cited_pages
+            ):
+                violations.append(
+                    ContractViolation("C10", "pdf canonical source requires non-empty cited_pages", f"{base_path}.cited_pages")
+                )
+        elif doc_type == "official_db_extract":
+            extract_note = source.get("extract_note")
+            if not isinstance(extract_note, str) or not extract_note.strip():
+                violations.append(
+                    ContractViolation(
+                        "C10",
+                        "official_db_extract canonical source requires extract_note",
+                        f"{base_path}.extract_note",
+                    )
+                )
 
     return violations
 
@@ -587,6 +664,15 @@ def _registry_map(registry: dict[str, Any], keys: tuple[str, ...]) -> dict[str, 
         if isinstance(value, dict):
             return {str(item_key): item_value for item_key, item_value in value.items()}
     return {}
+
+
+def _is_market_research_genre(genre_value: Any) -> bool:
+    genre = str(genre_value).lower()
+    genre_compact = re.sub(r"[\s_-]+", "", genre)
+    return (
+        any(term in genre for term in ("market-research", "market_research", "brand-research", "brand_research"))
+        or any(term in genre_compact for term in ("marketresearch", "brandresearch", "시장조사", "경쟁분석"))
+    )
 
 
 def _string_set(value: Any) -> set[str]:
