@@ -121,6 +121,9 @@ RAW_NUMBER_PATTERN = re.compile(
     r"(?<![A-Za-z0-9_])[+-]?\d+(?:[.,]\d+)*(?:\.\d+)?"
     r"(?:\s?(?:%|\$|조|억|만|명|개|건|pp|p|B|M|K|원|달러|USD|YoY))?(?![A-Za-z0-9_])"
 )
+NUMBER_CORE_PATTERN = re.compile(r"[+-]?\d+(?:[.,]\d+)*(?:\.\d+)?")
+FOUR_DIGIT_YEAR_PATTERN = re.compile(r"(?<!\d)(?:19|20)\d{2}(?!\d)")
+YEAR_RANGE_PREFIX_PATTERN = re.compile(r"(?:19|20)\d{2}\s*[~\-–—]\s*$")
 ENCLOSED_NUMERAL_PATTERN = re.compile(
     "[\u2460-\u249b\u24ea-\u24ff\u2776-\u2793\u3251-\u325f\u32b1-\u32bf]"
 )
@@ -395,7 +398,9 @@ def validate_c6_content_authority(
             violations.append(ContractViolation("C6", f"unsupported layout: {layout}", f"{page_path}.layout"))
 
     if rendered_html:
-        violations.extend(_validate_rendered_content_authority(rendered_html))
+        violations.extend(
+            _validate_rendered_content_authority(rendered_html, _metric_registry_numbers(metric_registry))
+        )
 
     return violations
 
@@ -773,8 +778,11 @@ def _validate_viz_block(block: dict[str, Any], path: str) -> list[ContractViolat
     return violations
 
 
-def _validate_rendered_content_authority(rendered_html: str) -> list[ContractViolation]:
-    parser = _RenderedAuthorityParser()
+def _validate_rendered_content_authority(
+    rendered_html: str,
+    backed_numbers: set[str] | None = None,
+) -> list[ContractViolation]:
+    parser = _RenderedAuthorityParser(backed_numbers or set())
     parser.feed(rendered_html)
     return parser.violations
 
@@ -783,10 +791,11 @@ class _RenderedAuthorityParser(HTMLParser):
     _NUMBER_PATTERN = RAW_NUMBER_PATTERN
     _ENCLOSED_NUMERAL_PATTERN = ENCLOSED_NUMERAL_PATTERN
 
-    def __init__(self) -> None:
+    def __init__(self, backed_numbers: set[str]) -> None:
         super().__init__()
         self.stack: list[dict[str, str]] = []
         self.violations: list[ContractViolation] = []
+        self._backed_numbers = backed_numbers
         self._manual_source_seen = False
         self._untagged_number_seen = False
         self._enclosed_numeral_seen = False
@@ -820,7 +829,14 @@ class _RenderedAuthorityParser(HTMLParser):
                     "rendered_html",
                 )
             )
-        if self._NUMBER_PATTERN.search(data) and not self._inside_authorized_numeric_context() and not self._untagged_number_seen:
+        if not self._inside_authorized_numeric_context() and not self._untagged_number_seen:
+            unauthorized_number = any(
+                not self._authorized_number_match(data, match)
+                for match in self._NUMBER_PATTERN.finditer(data)
+            )
+        else:
+            unauthorized_number = False
+        if unauthorized_number:
             self._untagged_number_seen = True
             self.violations.append(
                 ContractViolation("C6", "untagged number in rendered output; use metric_id injection", "rendered_html")
@@ -854,6 +870,45 @@ class _RenderedAuthorityParser(HTMLParser):
             if item.get("_tag") in {"h1", "h2"} or classes & {"block-title", "cover-lockup"}:
                 return True
         return False
+
+    def _authorized_number_match(self, data: str, match: re.Match[str]) -> bool:
+        number = _normalize_number_token(match.group(0))
+        if not number:
+            return True
+        if number in self._backed_numbers:
+            return True
+        if FOUR_DIGIT_YEAR_PATTERN.fullmatch(number):
+            return True
+        if re.fullmatch(r"\d{2}", number):
+            return bool(
+                YEAR_RANGE_PREFIX_PATTERN.search(data[: match.start()])
+                and re.match(r"\s*년", data[match.end() :])
+            )
+        return False
+
+
+def _metric_registry_numbers(metric_registry: dict[str, Any]) -> set[str]:
+    numbers: set[str] = set()
+    for metric in metric_registry.values():
+        if not isinstance(metric, dict):
+            continue
+        value = metric.get("value")
+        if isinstance(value, (int, float)):
+            value = str(value)
+        if not isinstance(value, str):
+            continue
+        for match in RAW_NUMBER_PATTERN.finditer(value):
+            number = _normalize_number_token(match.group(0))
+            if number:
+                numbers.add(number)
+    return numbers
+
+
+def _normalize_number_token(value: str) -> str:
+    match = NUMBER_CORE_PATTERN.search(value)
+    if not match:
+        return ""
+    return match.group(0).replace(",", "").strip()
 
 
 def normalize_enclosed_numerals(text: str) -> str:

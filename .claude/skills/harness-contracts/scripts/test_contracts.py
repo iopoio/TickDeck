@@ -354,7 +354,7 @@ class HarnessContractTests(unittest.TestCase):
             ),
             "untagged_number": (
                 VALID_DECK_SPEC,
-                "<section><p>CTR fell 47% after AI summaries.</p></section>",
+                "<section><p>CTR fell 999% after AI summaries.</p></section>",
                 "untagged number in rendered output",
             ),
         }
@@ -408,7 +408,7 @@ class HarnessContractTests(unittest.TestCase):
                         {
                             "type": "text_table",
                             "columns": ["브랜드", "주력 제품", "가격대", "포지션"],
-                            "rows": [["CLO", "넥앤프로", "중가", "인지도 47%"]],
+                            "rows": [["CLO", "넥앤프로", "중가", "인지도 999%"]],
                         },
                     ],
                 )
@@ -417,6 +417,48 @@ class HarnessContractTests(unittest.TestCase):
         html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Text Table Numeric Fixture")
         violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html)
         self.assertTrue(any("untagged number in rendered output" in str(v) for v in violations))
+
+    def test_c6_backed_number_in_body_passes(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_launch_sales": {
+                    "value": "300",
+                    "unit": "만개",
+                    "source_ids": ["src_a"],
+                }
+            },
+        }
+        rendered = "<section><p>검증된 성과는 300만 개였다.</p></section>"
+
+        self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC, registry, rendered), [])
+
+    def test_c6_unbacked_number_in_body_fails(self):
+        rendered = "<section><p>근거 없는 매출 999억이 본문에 들어갔다.</p></section>"
+
+        violations = validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, rendered)
+
+        self.assertTrue(any("untagged number in rendered output" in str(v) for v in violations))
+
+    def test_c6_year_in_body_passes(self):
+        rendered = "<section><p>2018~19년 흐름과 2024년 기준 변화가 이어졌다.</p></section>"
+
+        self.assertEqual(validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, rendered), [])
+
+    def test_c6_manual_source_label_still_fails(self):
+        rendered = "<section><p>출처: 어쩌구</p></section>"
+
+        violations = validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, rendered)
+
+        self.assertTrue(any("manual source label" in str(v) for v in violations))
+
+    def test_c6_enclosed_numeral_still_fails(self):
+        rendered = "<section><p>① 첫 번째 근거를 본문에 썼다.</p></section>"
+
+        violations = validate_c6_content_authority(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, rendered)
+
+        self.assertTrue(any("enclosed numeral" in str(v) for v in violations))
 
     def test_c6_accepts_closing_layout_in_supported_layout_enum(self):
         self.assertIn("closing", contract_checks_module.SUPPORTED_LAYOUTS)
@@ -570,7 +612,7 @@ class HarnessContractTests(unittest.TestCase):
         rendered = """
         <section class="slide">
           <h1>Manual Render</h1>
-          <p>CTR fell 47% after AI summaries.</p>
+          <p>CTR fell 999% after AI summaries.</p>
           <p>출처: Pew Research Center</p>
         </section>
         """
