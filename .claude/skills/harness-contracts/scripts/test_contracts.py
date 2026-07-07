@@ -1426,6 +1426,86 @@ class HarnessContractTests(unittest.TestCase):
 
         self.assertEqual(violations, [])
 
+    def test_c12_accepts_seed_sources_registered_and_appendix_split(self):
+        deck_spec = {
+            "pages": [
+                {
+                    "page_id": "appendix",
+                    "short_title": "출처",
+                    "layout": "source_appendix",
+                    "allowed_source_ids": ["src_seed", "src_research"],
+                    "allowed_metric_ids": [],
+                    "content": [{"type": "headline", "text": "출처"}],
+                }
+            ]
+        }
+        registry = {
+            "source_registry": {
+                "src_seed": {
+                    "publisher": "Client",
+                    "title": "Client Deck 2026",
+                    "local_path": "seed/client_deck.pdf",
+                    "provenance": "seed",
+                },
+                "src_research": {
+                    "publisher": "Pew",
+                    "title": "Pew Report",
+                    "url": "https://example.com/report",
+                    "provenance": "research",
+                },
+            },
+            "metric_registry": VALID_CONTENT_REGISTRY["metrics"],
+        }
+        html = render_deck_module.render_deck(deck_spec, registry, title="Seed Appendix Fixture")
+        deck = dict(
+            VALID_DECK,
+            intake={"provided_sources": [{"kind": "file", "ref": "uploads/client_deck.pdf"}]},
+            deck_spec=deck_spec,
+            content_registry=registry,
+            rendered_html=html,
+        )
+
+        self.assertIn("제공하신 자료", html)
+        self.assertIn("추가 조사", html)
+        self.assertEqual(validate_all_contracts(deck), [])
+
+    def test_c12_rejects_provided_source_missing_from_registry(self):
+        deck_spec = {
+            "pages": [
+                {
+                    "page_id": "appendix",
+                    "short_title": "출처",
+                    "layout": "source_appendix",
+                    "allowed_source_ids": ["src_research"],
+                    "allowed_metric_ids": [],
+                    "content": [{"type": "headline", "text": "출처"}],
+                }
+            ]
+        }
+        registry = {
+            "source_registry": {
+                "src_research": {
+                    "publisher": "Pew",
+                    "title": "Pew Report",
+                    "url": "https://example.com/report",
+                    "provenance": "research",
+                },
+            },
+            "metric_registry": VALID_CONTENT_REGISTRY["metrics"],
+        }
+        deck = dict(
+            VALID_DECK,
+            intake={"provided_sources": [{"kind": "url", "ref": "https://example.com/client"}]},
+            deck_spec=deck_spec,
+            content_registry=registry,
+            rendered_html="<section><div class='eyebrow'>제공하신 자료 (1건)</div><div class='eyebrow'>추가 조사 (1건)</div></section>",
+        )
+
+        violations = validate_all_contracts(deck)
+
+        self.assertEqual(len([violation for violation in violations if violation.contract_id == "C12"]), 1)
+        self.assertIn("provided source missing", str(violations[-1]))
+
     def test_c9_rejects_missing_external_review_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             run_dir = pathlib.Path(tmp)

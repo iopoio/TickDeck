@@ -662,6 +662,68 @@ def check_c10_collection_evidence(run_dir: Path | str) -> list[ContractViolation
     return violations
 
 
+def validate_c12_seed_integrity(
+    intake: dict[str, Any],
+    verified: dict[str, Any],
+    rendered_html: str = "",
+) -> list[ContractViolation]:
+    provided_sources = intake.get("provided_sources") if isinstance(intake, dict) else None
+    if not isinstance(provided_sources, list) or not provided_sources:
+        return []
+
+    source_registry = _registry_map(verified, ("source_registry", "sources"))
+    sources = {
+        source_id: source
+        for source_id, source in source_registry.items()
+        if isinstance(source, dict)
+    }
+    violations: list[ContractViolation] = []
+
+    for index, provided_source in enumerate(provided_sources):
+        kind, ref = _provided_source_kind_ref(provided_source)
+        path = f"00_intake.json.provided_sources[{index}]"
+        if not ref:
+            violations.append(ContractViolation("C12", "provided source requires ref/url/file", path))
+            continue
+
+        matching_source_ids = _matching_seed_source_ids(kind, ref, sources)
+        if not matching_source_ids:
+            violations.append(
+                ContractViolation(
+                    "C12",
+                    f"provided source missing from source_registry: {ref}",
+                    path,
+                )
+            )
+            continue
+
+        seed_source_ids = [
+            source_id
+            for source_id in matching_source_ids
+            if str(sources[source_id].get("provenance") or "research").strip().lower() == "seed"
+        ]
+        if not seed_source_ids:
+            violations.append(
+                ContractViolation(
+                    "C12",
+                    f"provided source must have provenance='seed': {ref}",
+                    f"02_verified.json.source_registry.{matching_source_ids[0]}.provenance",
+                )
+            )
+
+    html = rendered_html if isinstance(rendered_html, str) else ""
+    if "제공하신 자료" not in html or "추가 조사" not in html:
+        violations.append(
+            ContractViolation(
+                "C12",
+                "rendered deck HTML missing seed/research appendix section headers",
+                "rendered_html",
+            )
+        )
+
+    return violations
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -767,6 +829,14 @@ def validate_all_contracts(deck: dict[str, Any], raise_on_error: bool = False) -
                 deck.get("page_plan", {}),
             )
         )
+    if "intake" in deck:
+        violations.extend(
+            validate_c12_seed_integrity(
+                deck.get("intake", {}),
+                deck.get("content_registry", {}),
+                deck.get("rendered_html", ""),
+            )
+        )
 
     if raise_on_error and violations:
         raise ContractViolation("CONTRACTS", "; ".join(str(item) for item in violations))
@@ -799,6 +869,44 @@ def _is_market_research_genre(genre_value: Any) -> bool:
         any(term in genre for term in ("market-research", "market_research", "brand-research", "brand_research"))
         or any(term in genre_compact for term in ("marketresearch", "brandresearch", "시장조사", "경쟁분석"))
     )
+
+
+def _provided_source_kind_ref(provided_source: Any) -> tuple[str, str]:
+    kind = ""
+    ref = ""
+    if isinstance(provided_source, dict):
+        kind = str(provided_source.get("kind") or provided_source.get("type") or "").strip().lower()
+        for key in ("ref", "url", "file", "path", "local_path"):
+            value = provided_source.get(key)
+            if isinstance(value, str) and value.strip():
+                ref = value.strip()
+                break
+    elif isinstance(provided_source, str):
+        ref = provided_source.strip()
+
+    if kind in {"local", "local_path", "path"}:
+        kind = "file"
+    if kind not in {"url", "file"}:
+        kind = "url" if ref.startswith(("http://", "https://")) else "file"
+    return kind, ref
+
+
+def _matching_seed_source_ids(kind: str, ref: str, sources: dict[str, dict[str, Any]]) -> list[str]:
+    if kind == "url":
+        return [
+            source_id
+            for source_id, source in sources.items()
+            if str(source.get("url") or "").strip() == ref
+        ]
+
+    filename = Path(ref).name
+    if not filename:
+        return []
+    return [
+        source_id
+        for source_id, source in sources.items()
+        if Path(str(source.get("local_path") or "")).name == filename
+    ]
 
 
 def _string_set(value: Any) -> set[str]:

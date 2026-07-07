@@ -689,7 +689,13 @@ def _render_source_appendix_page(
     # 출처가 많으면(>10행) 행 간격·폰트를 압축 — 14출처 덱에서 appendix가 넘치던 근본 결함(7/2).
     compact = " appendix-compact" if len(src_ids) > 10 else ""
     rows = []
-    for src_id in src_ids:
+    seed_src_ids = [
+        src_id
+        for src_id in src_ids
+        if str(_require_source(src_id, page_id, registry).get("provenance") or "research").strip().lower() == "seed"
+    ]
+
+    def append_source_row(src_id: str) -> None:
         source = _require_source(src_id, page_id, registry)
         publisher = str(source.get("publisher") or src_id)
         sttl = str(source.get("title") or "")
@@ -703,6 +709,19 @@ def _render_source_appendix_page(
           <span class="appendix-title" data-src-id="{_escape(src_id)}">{title_html}</span>
         </article>"""
         )
+
+    if seed_src_ids:
+        seed_src_id_set = set(seed_src_ids)
+        research_src_ids = [src_id for src_id in src_ids if src_id not in seed_src_id_set]
+        rows.append(f'<div class="eyebrow appendix-section-heading">제공하신 자료 ({len(seed_src_ids)}건)</div>')
+        for src_id in seed_src_ids:
+            append_source_row(src_id)
+        rows.append(f'<div class="eyebrow appendix-section-heading">추가 조사 ({len(research_src_ids)}건)</div>')
+        for src_id in research_src_ids:
+            append_source_row(src_id)
+    else:
+        for src_id in src_ids:
+            append_source_row(src_id)
     motif_html = _slide_motif_html("source_appendix", page_number, palette)
     return f"""
 <section class="slide theme-{_class_name(palette["theme"])} layout-source_appendix" data-page-id="{_escape(page_id)}">
