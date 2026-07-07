@@ -2740,10 +2740,10 @@ def _svg_multi_line(
     body = [f'<line x1="{x0}" y1="{y0 + h}" x2="{x0 + w}" y2="{y0 + h}" stroke="var(--line)" stroke-width="2"/>']
     coord_by_metric_id: dict[str, tuple[float, float]] = {}
     key_positions: dict[str, tuple[float, float, float]] = {}
+    lane_coords: dict[str, list[tuple[float, float, dict[str, Any]]]] = {}
     for lane_name, pts in lanes.items():
         if not pts:
             continue
-        color = _series_color(pts[0], 0, pts, accent) if lane_name != "baseline" else "var(--muted)"
         step = w / max(1, len(pts) - 1) if len(pts) > 1 else 0
         coords = []
         for i, item in enumerate(pts):
@@ -2753,16 +2753,20 @@ def _svg_multi_line(
             coords.append((x, y, item))
             coord_by_metric_id[item["metric_id"]] = (x, y)
             key_positions[item["label"]] = (x, x - 20, x + 20)
+        lane_coords[lane_name] = coords
+    endpoint_owned = _endpoint_suppressed_metric_ids(block, series)
+    for lane_name, coords in lane_coords.items():
+        color = _series_color(lanes[lane_name][0], 0, lanes[lane_name], accent) if lane_name != "baseline" else "var(--muted)"
         path = " ".join(f"{'M' if i == 0 else 'L'}{x:.0f},{y:.0f}" for i, (x, y, _) in enumerate(coords))
         body.append(f'<path d="{path}" fill="none" stroke="{color}" stroke-width="4" stroke-linejoin="round"/>')
-        endpoint_owned = _endpoint_suppressed_metric_ids(block, series)
-        multi_lane = sum(1 for _pts in lanes.values() if _pts) > 1
         for x, y, item in coords:
             body.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="6" fill="{color}"/>')
             if item["value"] and item["metric_id"] not in endpoint_owned:
-                # 2계열+: baseline 라벨은 점 아래 — 근접 지수선에서 상대 계열 라벨/점과 겹침 방지 (7/7 QA p05 실측)
-                label_y = y + 30 if (multi_lane and lane_name == "baseline") else y - 14
-                label_x = min(max(x, 90.0), (w + x0) - 30.0)  # 첫/끝점 라벨 좌우단 잘림 방지 (7/7 QA p04 "100.00" 실측)
+                # 라벨은 상대 계열 반대쪽으로 — 선이 교차·수렴해도 안 겹침 (7/7 p17 수렴 구간 실측·below/above 고정 방식 폐기)
+                others = [oy for ln, ocs in lane_coords.items() if ln != lane_name for ox, oy, _o in ocs if abs(ox - x) < 1.0]
+                nearest = min(others, key=lambda oy: abs(oy - y)) if others else None
+                label_y = y - 14 if (nearest is None or nearest >= y) else y + 30
+                label_x = min(max(x, 90.0), (w + x0) - 30.0)  # 첫/끝점 라벨 좌우단 잘림 방지
                 body.append(f'<text x="{label_x:.0f}" y="{label_y:.0f}" text-anchor="middle" class="visual-value" font-size="19" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
             body.append(f'<text x="{x:.0f}" y="{y0 + h + 24:.0f}" text-anchor="middle" class="visual-label" font-size="15">{_escape(item["label"])}</text>')
     points = []
