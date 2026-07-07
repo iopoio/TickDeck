@@ -5238,6 +5238,10 @@ h1 {{
 .theme-pop-dark .visual-note {{ fill: var(--muted); }}
 .theme-pop-dark .visual-card {{ border-top-color: rgba(245,242,236,.16); }}
 /* 오렌지 북엔드 위 ==키워드== 강조색(오렌지)이 배경과 동화되던 무독(자동검출 lowc 실검출) — 잉크로. */
+/* tech 다크 표지/간지 — accent(딥네이비)가 다크 배경과 동화 (후추님 7/7 표지 지적). 밝은 틴트로. */
+.theme-tech.cover-slide .kw,
+.theme-tech.layout-divider .kw {{ color: color-mix(in srgb, var(--accent) 25%, #E8F0FA); }}
+.theme-tech.cover-slide .cover-eyebrow {{ color: color-mix(in srgb, var(--accent2) 55%, #E8F0FA); }}
 .theme-pop-dark.cover-slide .kw,
 .theme-pop-dark.layout-divider .kw {{ color: #17120E; text-decoration: underline; text-underline-offset: 6px; }}
 .theme-pop-dark .stack-outer > .visual-card {{ width: min(100%, 680px); }}
