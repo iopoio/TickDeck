@@ -1923,6 +1923,15 @@ def _source_caption_name(src_id: str, page_id: str, registry: dict[str, dict[str
                 break
             name = candidate
         publisher = name
+    if len(publisher) > 16:
+        # 공백 경계 절단 — 라틴 다어절 발행처 "Stanford Institu" 중간잘림 재발 fix (7/7 2번째 run 실측)
+        words = publisher.split()
+        name = words[0] if words else publisher
+        for w in words[1:]:
+            if len(f"{name} {w}") > 16:
+                break
+            name = f"{name} {w}"
+        publisher = name
     return publisher[:16].strip() or src_id[:8]
 
 
