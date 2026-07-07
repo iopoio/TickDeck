@@ -1932,6 +1932,7 @@ def _source_caption_name(src_id: str, page_id: str, registry: dict[str, dict[str
                 break
             name = f"{name} {w}"
         publisher = name
+    publisher = publisher.rstrip("&·,-— ").strip()  # 어절 절단 뒤 매달린 접속 기호 제거 ("McKinsey &" 7/7 실측)
     return publisher[:16].strip() or src_id[:8]
 
 
