@@ -49,3 +49,4 @@ tickdeck_harness/runs/
 *.png
 .pytest_cache/
 .DS_Store
+corpus/
