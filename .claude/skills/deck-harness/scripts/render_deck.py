@@ -5415,8 +5415,9 @@ h1 {{
 
 .theme-data-mono .index-list {{
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  /* 목차 2분할 금지 — 세로 한 줄 (후추님 7/7 확정 취향) */
+  grid-template-columns: 1fr;
+  gap: 6px;
   width: min(100%, 1000px);
 }}
 .theme-data-mono .index-row {{
@@ -5558,8 +5559,9 @@ h1 {{
 
 .theme-pop-dark .index-list {{
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  /* 목차 2분할 금지 — 세로 한 줄 (후추님 7/7 확정 취향) */
+  grid-template-columns: 1fr;
+  gap: 6px;
   width: min(100%, 1040px);
 }}
 .theme-pop-dark .index-row {{
