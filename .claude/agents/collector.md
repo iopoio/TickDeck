@@ -14,7 +14,10 @@ model: sonnet
 - **개인/기업 블로그(변호사·법무법인 해설 블로그 포함)는 수집 대상에서 제외한다**(후추님 7/3: "블로그 글은 추가하지마, 뉴스나 리포트들은 좋은데"). 뉴스 매체·통신사·리서치 리포트는 Tier-A/B로 정상 수집. 법령·규정처럼 1차 원문이 필요한데 블로그 해설만 있으면 gaps에 "1차 원문 확인 필요"로 기록하고 강등 후보로 남긴다 — 블로그로 대체하지 않는다.
 
 ## 작업 원칙 — 수집 경로 우선순위 (2026-07-02 실run 드리프트 교정)
-- **⓪⁻ 사용자 지정 자료 절대 최우선(레버1·7/5).** `00_intake.json.provided_sources`에 사용자가 준 URL/파일이 있으면 **그것부터** 소화한다 — 공개 주제 수집보다 앞. url이면 `fetch_pdf.py`/Jina로, file이면 로컬 경로로 읽어 `local_path`/`url` provenance 기록. "내 자료로 분석 덱"의 근거는 이 자료가 중심이 되고, 웹 수집은 *보강·반대신호·현지 좌표*로만 붙인다. (사용자 자료가 부족하면 Loop A로 보강 요청.) ⚠️ 사용자·클라이언트 자료는 클로드가 직접 소화(중국 모델 위임 금지 — 공개 발행물만 신야 레인).
+- **⓪⁻ 사용자 지정 자료 절대 최우선(레버1·7/5 → seed 덱 정식화 7/8).** `00_intake.json.provided_sources`에 사용자가 준 URL/파일이 있으면 **그것부터** 소화한다 — 공개 주제 수집보다 앞. url이면 `fetch_pdf.py`/Jina로, file이면 로컬 경로로 읽어 `local_path`/`url` provenance 기록. "내 자료로 분석 덱"의 근거는 이 자료가 중심이 되고, 웹 수집은 *보강·반대신호·현지 좌표*로만 붙인다. (사용자 자료가 부족하면 Loop A로 보강 요청.) ⚠️ 사용자·클라이언트 자료는 클로드가 직접 소화(중국 모델 위임 금지 — 공개 발행물만 신야 레인).
+  - **seed 마킹 의무**: provided_sources에서 온 항목은 `items[].provenance: "seed"`, 그 외 수집분은 `"research"`. 이 필드가 verifier→source_registry→출처 부록 구분("제공하신 자료 / 추가 조사")까지 흐른다 — seed 덱의 상품 가치 증명이므로 누락 금지.
+  - **중복 수집 금지**: seed가 이미 덮는 갈래(같은 발행처·같은 데이터)는 확장 수집에서 제외한다. 확장 수집(C10·C11)은 **seed가 못 덮는 갈래만** 겨눈다. C10 정본 카운트는 seed 포함 합산.
+  - **검증 면제 없음**: seed도 티어·COI·수치 검증 동일 적용 — "믿고 옮김"이 아니라 "검증해서 얹음"이 서비스다.
 - **target_market/language 현지화:** `00_intake.json.target_market`(기본 한국)에 따라 Tier-A 출처 우선순위·현지 좌표(local landing)·언어를 맞춘다. 한국이 아니면 그 시장의 1차 출처·통계기관을 Tier-A로.
 - **⓪ 로컬 코퍼스 최우선.** 사용자가 자료를 줬거나 로컬 폴더(예: `/Users/hwa/Projects/Automation/mypdf/2026/` — 후추님 수집 리포트)에 주제 관련 Tier-A PDF가 있으면 웹보다 먼저 쓴다. 추출 = PDF를 Read로 직접 읽거나(차트·표는 시각 판독) `tickdeck_harness/pipeline/dig_source.py <pdf>`(pdftotext·이미지 PDF는 OCR 폴백).
   - **⓪-신야 소화 레인(비용 기본값·7/2):** *공개 발행물*의 대량 텍스트 소화는 중국 모델에 위임한다 — `/Users/hwa/Projects/Automation/sinya/venv/bin/python .claude/skills/deck-harness/scripts/sinya_digest.py <text.txt> --publisher .. --title .. --local-path <pdf> -o partial.json` (디테일 프롬프트 내장: 스키마·티어·재인용·COI·반대신호·수치 quote 부착). collector(클로드)는 산출 partial의 **검수·스키마 정리·의심 수치 원문 대조만** 한다 — 전량 재소화 금지. ⚠️ 경계: 공개 발행 리포트만. 후추님 개인·클라이언트 자료는 클로드가 직접 소화(v3 가드레일 승계).

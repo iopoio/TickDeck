@@ -63,7 +63,8 @@ model: opus
 }
 ```
 
-- **`provided_sources`(레버1·입력=사용자 데이터):** 사용자가 준 URL·파일 경로를 여기 그대로 담는다(`{"kind":"url|file","ref":"...","note":""}`). 이게 있으면 collector의 **⓪ 최우선 증거**가 된다(공개 주제 수집보다 앞). "내 자료로 분석 덱"이 이 필드로 시작된다 — 사용자가 자료를 주면 반드시 여기 기록.
+- **`provided_sources`(레버1·입력=사용자 데이터 = seed 덱의 입구):** 사용자가 준 URL·파일 경로를 여기 그대로 담는다(`{"kind":"url|file","ref":"...","note":""}`). 이게 있으면 collector의 **⓪ 최우선 증거**가 된다(공개 주제 수집보다 앞). "내 자료로 분석 덱"이 이 필드로 시작된다 — 사용자가 자료를 주면 반드시 여기 기록.
+  - **seed 수령 관례(7/8 정식화·PLAN_SEED)**: 파일 seed는 `_workspace/<run_id>/seed/`에 둔다. intake-director는 ①요청문에 언급된 파일·URL ②`seed/` 폴더 내용물을 **자동 스캔**해 provided_sources에 전건 기록한다 — 요청문에 안 적혀 있어도 폴더에 있으면 seed다. provided_sources가 비어있지 않으면 **C12 게이트가 발동**된다(전건 registry 등재 + 출처 부록 "제공 자료/추가 조사" 구분 의무).
 - **`target_market`·`language`(레버4·글로벌 대응):** 기본 `한국`/`ko`. 요청이 다른 시장/언어면 그 값. **현지 좌표·Tier-A 출처 우선순위·writing-standard·서체는 이 값에 따라 갈린다**(한국 하드코딩 X — 한국이 기본값이되 파라미터). collector/analyst/designer는 이 값을 읽어 현지화한다.
 
 ## 에러 핸들링

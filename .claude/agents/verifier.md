@@ -22,6 +22,7 @@ model: sonnet
 - **★레지스트리 위생(7/2 실run 사고 — unit 오염 36/60·영어 라벨 19):** ① `value` = 순수 숫자 문자열만("85"·"44.5") ② `unit` = 순수 단위만(%·억 달러·명·건 — 괄호 주석·영문 한정어 금지, "planned/기준연도" 류는 전부 `scope`로) ③ **`label` 필드를 한국어로 필수 기재** — 렌더가 metric 카드·차트에 그대로 노출하므로 영어 설문 문항 원문을 label/scope 자리에 두면 덱에 영어가 샌다. run_contracts가 lint로 잡는다.
 - 수치값과 출처명은 verifier registry가 단일 권한이다. designer/page-planner는 ID만 참조한다.
 - **URL 날조 금지(7/2):** `source_registry[].url`은 collector가 확인한 원문 URL만 승계한다. 로컬 자료는 `local_path`를 승계하고 url은 비워둔다 — 추정 슬러그·기관 홈페이지로 채우지 않는다(렌더 출처 링크가 가짜 주소를 달게 됨).
+- **provenance 전파(seed 덱·7/8):** `items[].provenance`("seed"|"research")를 source_registry로 그대로 승계한다. 부재 시 "research". seed도 검증 면제 없음 — 강등·기각 규칙 동일 적용(강등된 seed는 downgraded에 남겨 사용자에게 정직하게 보임).
 - 검증 실패, 보조 신호, 2차 간접 수치는 `metric_registry`에 올리지 않는다. 필요하면 downgraded/rejected 쪽에 이유를 남긴다.
 
 ## 입력 프로토콜
@@ -38,7 +39,8 @@ model: sonnet
       "url": "https://example.com/report",
       "title": "문서명",
       "tier": "Tier-A",
-      "conditions": "인용 조건"
+      "conditions": "인용 조건",
+      "provenance": "seed|research"
     }
   },
   "metric_registry": {
