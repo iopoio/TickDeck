@@ -693,13 +693,8 @@ def _render_source_appendix_page(
         source = _require_source(src_id, page_id, registry)
         publisher = str(source.get("publisher") or src_id)
         sttl = str(source.get("title") or "")
-        url = str(source.get("url") or "").strip()
-        parsed_url = urlparse(url)
-        title_html = (
-            f'<a class="appendix-link" href="{_escape(url)}">{_escape(sttl)} ↗</a>'
-            if parsed_url.scheme in {"http", "https"} and parsed_url.netloc
-            else _escape(sttl)
-        )
+        # 출처는 기관·문서명 텍스트만 — 링크·화살표 불필요 (후추님 7/7. URL은 registry에 보존 — 검증 추적 유지)
+        title_html = _escape(sttl)
         # 넘버링·구분선 없이 "기관 — 리포트명" 한 줄 플랫 리스트(후추님 7/2).
         rows.append(
             f"""
