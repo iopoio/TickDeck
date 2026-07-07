@@ -2756,10 +2756,14 @@ def _svg_multi_line(
         path = " ".join(f"{'M' if i == 0 else 'L'}{x:.0f},{y:.0f}" for i, (x, y, _) in enumerate(coords))
         body.append(f'<path d="{path}" fill="none" stroke="{color}" stroke-width="4" stroke-linejoin="round"/>')
         endpoint_owned = _endpoint_suppressed_metric_ids(block, series)
+        multi_lane = sum(1 for _pts in lanes.values() if _pts) > 1
         for x, y, item in coords:
             body.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="6" fill="{color}"/>')
             if item["value"] and item["metric_id"] not in endpoint_owned:
-                body.append(f'<text x="{x:.0f}" y="{y - 14:.0f}" text-anchor="middle" class="visual-value" font-size="19" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+                # 2계열+: baseline 라벨은 점 아래 — 근접 지수선에서 상대 계열 라벨/점과 겹침 방지 (7/7 QA p05 실측)
+                label_y = y + 30 if (multi_lane and lane_name == "baseline") else y - 14
+                label_x = min(max(x, 90.0), (w + x0) - 30.0)  # 첫/끝점 라벨 좌우단 잘림 방지 (7/7 QA p04 "100.00" 실측)
+                body.append(f'<text x="{label_x:.0f}" y="{label_y:.0f}" text-anchor="middle" class="visual-value" font-size="19" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
             body.append(f'<text x="{x:.0f}" y="{y0 + h + 24:.0f}" text-anchor="middle" class="visual-label" font-size="15">{_escape(item["label"])}</text>')
     points = []
     for item in series:
