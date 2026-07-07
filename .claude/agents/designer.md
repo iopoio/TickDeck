@@ -164,3 +164,6 @@ SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md` + `v3/axis2_layouts/DECK_ARCHETYPES.
 - PG-title_band 크롬 기본·source_caption 기본 on·CL-semantic_color 의무(빨강=악화 전용·초록=상승·액센트=주인공).
 - 차트 주인공 페이지는 여백 과시 금지 — 차트가 본문 폭 전체를 쓴다. 시계열 차트엔 annotations(끝점 강조·콜아웃·이벤트 밴드)로 서사를 싣는다 (CH-annotated_trend).
 - 반복 일관성 > 페이지별 변주: 같은 골격을 반복하는 게 실전 신뢰 문법이다 (컴포지션 다양화 룰은 tone=report에선 후순위).
+
+## 카피 문체 (7/7)
+- 페이지 카피(headline·note·카드 라벨) 작성·수정 시 `docs/STYLE_KR_CONSULTING.md` 적용 규칙 10개 준수 — 명사형 종결·불릿 마침표 없음·은유 마무리 금지·이모지 0.
