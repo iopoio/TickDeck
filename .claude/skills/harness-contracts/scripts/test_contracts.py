@@ -660,6 +660,30 @@ class HarnessContractTests(unittest.TestCase):
         violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, "")
         self.assertFalse(any("REPORT_TONE" in str(v) for v in violations), [str(v) for v in violations])
 
+    def test_c11_requires_source_coverage_and_big3_axes(self):
+        import tempfile, pathlib
+        from contract_checks import check_c11_source_coverage
+        with tempfile.TemporaryDirectory() as tmp:
+            run = pathlib.Path(tmp)
+            # coverage 부재
+            (run / "01_evidence_pool.json").write_text(json.dumps({"items": []}), encoding="utf-8")
+            vs = check_c11_source_coverage(run)
+            self.assertTrue(any("source_coverage 부재" in str(v) for v in vs))
+            # none 판정에 검색어 1개 = 조기 포기 위반 + 축 누락
+            (run / "01_evidence_pool.json").write_text(json.dumps({
+                "source_coverage": [
+                    {"axis": "kpmg", "queries": ["kpmg ai jobs"], "found": [], "verdict": "none"},
+                ]
+            }), encoding="utf-8")
+            vs = check_c11_source_coverage(run)
+            self.assertTrue(any("조기 포기" in str(v) for v in vs), [str(v) for v in vs])
+            self.assertTrue(any("미탐색: pwc" in str(v) for v in vs))
+            # 정상 케이스
+            rows = [{"axis": a, "queries": ["q1", "q2"], "found": ["src_001"], "verdict": "found"}
+                    for a in ("kpmg", "pwc", "deloitte", "government_stats", "academic")]
+            (run / "01_evidence_pool.json").write_text(json.dumps({"source_coverage": rows}), encoding="utf-8")
+            self.assertEqual(check_c11_source_coverage(run), [])
+
     def test_c6_rejects_derived_metric_with_wrong_recomputed_value(self):
         # 검산 게이트 (7/7 제대리 리뷰): 원천값 재계산과 등재값이 안 맞으면 위반
         registry = {

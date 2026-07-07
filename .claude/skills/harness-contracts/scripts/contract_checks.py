@@ -519,6 +519,67 @@ def check_c8_genre_artifacts(
     return violations
 
 
+C11_REQUIRED_AXES = ("kpmg", "pwc", "deloitte", "government_stats", "academic")
+
+
+def check_c11_source_coverage(run_dir: Path | str) -> list[ContractViolation]:
+    """수집 커버리지 게이트 (7/7 후추님 — "안 찾음"과 "없음"의 구조적 구분).
+
+    collector는 01_evidence_pool.json 최상위 `source_coverage` 배열로 소스 축별 탐색 기록을 남겨야 한다.
+    행 스키마: {"axis": str, "queries": [실행 검색어...], "found": [src_id...], "verdict": "found|none|blocked"}
+    - Big3(kpmg·pwc·deloitte) + 정부통계 + 학술 축은 필수.
+    - verdict가 none이면 검색어 2개 이상(일반 웹검색 포함)이 있어야 한다 — 검색 없이 '없음' 판정 금지.
+    """
+    run_path = Path(run_dir)
+    pool_path = run_path / "01_evidence_pool.json"
+    if not pool_path.exists():
+        return []
+    try:
+        pool = json.loads(pool_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [ContractViolation("C11", f"evidence pool unreadable: {exc}", "01_evidence_pool.json")]
+    coverage = pool.get("source_coverage")
+    if not isinstance(coverage, list) or not coverage:
+        return [
+            ContractViolation(
+                "C11",
+                "source_coverage 부재 — collector는 소스 축별 탐색 기록(axis·queries·verdict) 의무",
+                "01_evidence_pool.source_coverage",
+            )
+        ]
+    violations: list[ContractViolation] = []
+    seen_axes: set[str] = set()
+    for index, row in enumerate(coverage):
+        path = f"01_evidence_pool.source_coverage[{index}]"
+        if not isinstance(row, dict):
+            violations.append(ContractViolation("C11", "coverage row must be an object", path))
+            continue
+        axis = str(row.get("axis", "")).strip().lower()
+        seen_axes.add(axis)
+        queries = [q for q in row.get("queries", []) if str(q).strip()] if isinstance(row.get("queries"), list) else []
+        verdict = str(row.get("verdict", "")).strip().lower()
+        if verdict not in ("found", "none", "blocked"):
+            violations.append(ContractViolation("C11", f"unsupported verdict: {verdict}", f"{path}.verdict"))
+        if not queries:
+            violations.append(ContractViolation("C11", f"axis {axis}: 탐색 검색어 기록 없음", f"{path}.queries"))
+        if verdict == "none" and len(queries) < 2:
+            violations.append(
+                ContractViolation(
+                    "C11",
+                    f"axis {axis}: 'none' 판정엔 검색어 2개 이상(일반 웹검색 포함) 필요 — 조기 포기 금지",
+                    f"{path}.queries",
+                )
+            )
+        if verdict == "found" and not row.get("found"):
+            violations.append(ContractViolation("C11", f"axis {axis}: found 판정인데 src 목록 비어 있음", f"{path}.found"))
+    for axis in C11_REQUIRED_AXES:
+        if axis not in seen_axes:
+            violations.append(
+                ContractViolation("C11", f"필수 소스 축 미탐색: {axis} (Big3+정부통계+학술 의무)", "01_evidence_pool.source_coverage")
+            )
+    return violations
+
+
 def check_c10_collection_evidence(run_dir: Path | str) -> list[ContractViolation]:
     run_path = Path(run_dir)
     try:

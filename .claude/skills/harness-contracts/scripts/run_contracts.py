@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from contract_checks import check_c10_collection_evidence, check_c9_final_review, validate_all_contracts
+from contract_checks import check_c10_collection_evidence, check_c11_source_coverage, check_c9_final_review, validate_all_contracts
 
 
 def _load(run_dir: Path, *names: str):
@@ -206,7 +206,8 @@ def main() -> int:
     c10_applied = has_c10_inputs
     if c10_applied:
         violations.extend(check_c10_collection_evidence(run_dir))
-    contract_range = "C1~C10" if c10_applied else ("C1~C9" if c9_applied else "C1~C8")
+    violations.extend(check_c11_source_coverage(run_dir))
+    contract_range = "C1~C11" if c10_applied else ("C1~C9+C11" if c9_applied else "C1~C8")
     print(f"run: {run_dir.name} · html: {html_path.name if html_path else '-'}")
     if violations:
         for violation in violations:
