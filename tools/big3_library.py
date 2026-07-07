@@ -10,7 +10,7 @@ PDF 실물을 받아 로컬 코퍼스에 쌓는다. collector는 웹검색 전�
   python3 tools/big3_library.py search "고용" --deep  # + PDF 앞 3페이지 본문 검색
 
 코퍼스: corpus/big3/<firm>/<파일>.pdf + corpus/big3/index.json
-# ponytail: Deloitte 목록은 JS 렌더라 v1은 크롤 불가 — refresh가 정직하게 0건 보고, collector가 웹검색 폴백.
+# ponytail: Deloitte KR 목록은 JS 렌더 — 글로벌 영문 목록(server-rendered)으로 커버, 부족분은 웹검색 폴백.
 """
 import json
 import re
@@ -25,20 +25,26 @@ CORPUS = ROOT / "corpus" / "big3"
 INDEX = CORPUS / "index.json"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
 
+# 한국어 + 글로벌 영문 라이브러리 (7/7 후추님 "영문으로 된 거 찾아서 분석하면 되잖아")
 LISTINGS = {
     "kpmg": [
         "https://kpmg.com/kr/ko/insights/eri/past-reports.html",
         "https://kpmg.com/kr/ko/insights.html",
+        "https://kpmg.com/xx/en/our-insights.html",
     ],
     "pwc": [
         "https://www.pwc.com/kr/ko/insights/samil-insight.html",
         "https://www.pwc.com/kr/ko/publications.html",
+        "https://www.pwc.com/gx/en/issues/artificial-intelligence.html",
+        "https://www.pwc.com/gx/en/services/consulting/publications.html",
     ],
     "deloitte": [
         "https://www.deloitte.com/kr/ko/insights.html",
+        "https://www.deloitte.com/global/en/insights.html",
+        "https://www2.deloitte.com/us/en/insights/topics/artificial-intelligence.html",
     ],
 }
-PWC_DETAIL_LIMIT = 15  # ponytail: run당 신규 상세 페이지 상한 — 필요해지면 올린다
+DETAIL_LIMIT = 20  # ponytail: run당 발행처별 신규 상세 페이지 상한 — 필요해지면 올린다
 
 
 def _fetch(url: str, timeout: int = 40) -> str:
@@ -113,7 +119,8 @@ def _pdf_links(html: str, base: str) -> list[tuple[str, str]]:
 
 def _detail_links(html: str, base: str) -> list[str]:
     urls = []
-    for m in re.finditer(r'href="([^"]+/insights/[^"]+\.html)"', html, re.I):
+    # 발행처 공통 상세 페이지 경로: insights·issues·publications·articles·research
+    for m in re.finditer(r'href="([^"]+/(?:insights|issues|publications|articles|research)/[^"]+\.html)"', html, re.I):
         u = urljoin(base, m.group(1))
         if u not in urls:
             urls.append(u)
@@ -126,6 +133,7 @@ def refresh() -> int:
     report = {}
     for firm, pages in LISTINGS.items():
         added, seen_detail = 0, 0
+        visited_details: set = set(e.get("source_page", "") for e in idx["entries"] if e.get("firm") == firm)
         for page in pages:
             html = _fetch(page)
             if not html:
@@ -134,22 +142,24 @@ def refresh() -> int:
                 if url not in known and _download(firm, url, title, page, idx):
                     known.add(url)
                     added += 1
-            if firm == "pwc":
-                # PwC는 목록→상세→PDF 2단계
-                for detail in _detail_links(html, page):
-                    if seen_detail >= PWC_DETAIL_LIMIT:
-                        break
-                    seen_detail += 1
-                    dhtml = _fetch(detail)
-                    for url, title in _pdf_links(dhtml, detail):
-                        if url not in known and _download(firm, url, title, detail, idx):
-                            known.add(url)
-                            added += 1
+            # 전 발행처 목록→상세→PDF 2단계 (영문 사이트는 직링크 0 — 상세 안에 PDF)
+            for detail in _detail_links(html, page):
+                if seen_detail >= DETAIL_LIMIT:
+                    break
+                if detail in visited_details:
+                    continue
+                visited_details.add(detail)
+                seen_detail += 1
+                dhtml = _fetch(detail)
+                for url, title in _pdf_links(dhtml, detail):
+                    if url not in known and _download(firm, url, title, detail, idx):
+                        known.add(url)
+                        added += 1
         report[firm] = added
     _save_index(idx)
     total = len(idx["entries"])
     for firm, added in report.items():
-        note = " (JS 렌더 목록 — 웹검색 폴백 필요)" if firm == "deloitte" and added == 0 else ""
+        note = " (목록 크롤 0건 — 웹검색 폴백 필요)" if added == 0 else ""
         print(f"{firm}: 신규 {added}건{note}")
     print(f"코퍼스 총 {total}건 → {INDEX.relative_to(ROOT)}")
     return 0
