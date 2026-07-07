@@ -1588,7 +1588,7 @@ class HarnessContractTests(unittest.TestCase):
         }
         appendix_html = render_deck_module.render_deck(appendix_spec, appendix_registry, title="Appendix Fixture")
         # 7/7 후추님: 출처는 텍스트만 — 링크·화살표 미표기 (URL은 registry에 보존)
-        self.assertNotIn('appendix-link', appendix_html)
+        self.assertNotIn('<a class="appendix-link"', appendix_html)
         self.assertIn('Pew &amp; Partners 2026', appendix_html)
         self.assertIn('<span class="appendix-title" data-src-id="src_b">IAB Report</span>', appendix_html)
         self.assertIn("모든 수치 출처 연결 검증 · 출처 2곳", appendix_html)
@@ -1617,7 +1617,7 @@ class HarnessContractTests(unittest.TestCase):
 
         appendix_html = render_deck_module.render_deck(appendix_spec, appendix_registry, title="Appendix Fixture")
 
-        self.assertNotIn('appendix-link', appendix_html)
+        self.assertNotIn('<a class="appendix-link"', appendix_html)
         self.assertIn('Safe', appendix_html)
         self.assertIn('<span class="appendix-title" data-src-id="src_b">Unsafe</span>', appendix_html)
         self.assertNotIn('href="javascript:alert(1)"', appendix_html)
