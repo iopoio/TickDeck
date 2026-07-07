@@ -2751,6 +2751,7 @@ def _svg_multi_line(
             key_positions[item["label"]] = (x, x - 20, x + 20)
         lane_coords[lane_name] = coords
     endpoint_owned = _endpoint_suppressed_metric_ids(block, series)
+    pending_labels: list[dict[str, Any]] = []
     for lane_name, coords in lane_coords.items():
         color = _series_color(lanes[lane_name][0], 0, lanes[lane_name], accent) if lane_name != "baseline" else "var(--muted)"
         path = " ".join(f"{'M' if i == 0 else 'L'}{x:.0f},{y:.0f}" for i, (x, y, _) in enumerate(coords))
@@ -2758,13 +2759,38 @@ def _svg_multi_line(
         for x, y, item in coords:
             body.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="6" fill="{color}"/>')
             if item["value"] and item["metric_id"] not in endpoint_owned:
-                # 라벨은 상대 계열 반대쪽으로 — 선이 교차·수렴해도 안 겹침 (7/7 p17 수렴 구간 실측·below/above 고정 방식 폐기)
+                # 라벨은 상대 계열 반대쪽으로 (7/7 p17) + 같은 x 클러스터 세로 겹침 해소는 아래 일괄 pass (7/7 v2 p04 — 3계열 수렴 실측)
                 others = [oy for ln, ocs in lane_coords.items() if ln != lane_name for ox, oy, _o in ocs if abs(ox - x) < 1.0]
                 nearest = min(others, key=lambda oy: abs(oy - y)) if others else None
                 label_y = y - 14 if (nearest is None or nearest >= y) else y + 30
                 label_x = min(max(x, 90.0), (w + x0) - 30.0)  # 첫/끝점 라벨 좌우단 잘림 방지
-                body.append(f'<text x="{label_x:.0f}" y="{label_y:.0f}" text-anchor="middle" class="visual-value" font-size="19" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+                pending_labels.append({"x": label_x, "y": label_y, "item": item})
             body.append(f'<text x="{x:.0f}" y="{y0 + h + 24:.0f}" text-anchor="middle" class="visual-label" font-size="15">{_escape(item["label"])}</text>')
+    # 같은 x 클러스터(±44px) 안 라벨 최소 세로 간격 22px 강제 — 위에서부터 그리디로 밀어냄
+    clusters: dict[int, list[dict[str, Any]]] = {}
+    for lab in pending_labels:
+        clusters.setdefault(int(lab["x"] // 88), []).append(lab)
+    for group in clusters.values():
+        # 같은 클러스터에 같은 값 텍스트 중복(공통 기준점 100 등) = 1개만 (7/7 — 3계열 시작점 3연타 실측)
+        seen_values: set = set()
+        for lab in list(group):
+            v = str(lab["item"]["value"]).strip()
+            if v in seen_values:
+                group.remove(lab)
+                pending_labels.remove(lab)
+            else:
+                seen_values.add(v)
+        group.sort(key=lambda l: l["y"])
+        for i in range(1, len(group)):
+            if group[i]["y"] - group[i - 1]["y"] < 22:
+                group[i]["y"] = group[i - 1]["y"] + 22
+        overflow = group[-1]["y"] - (y0 + h + 16)
+        if overflow > 0:  # 축 라벨 침범 시 클러스터 전체를 위로
+            for lab in group:
+                lab["y"] -= overflow
+    for lab in pending_labels:
+        item = lab["item"]
+        body.append(f'<text x="{lab["x"]:.0f}" y="{lab["y"]:.0f}" text-anchor="middle" class="visual-value" font-size="19" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
     points = []
     for item in series:
         coord = coord_by_metric_id.get(item["metric_id"])
