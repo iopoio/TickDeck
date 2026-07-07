@@ -75,3 +75,6 @@ model: opus
 - collector에게 `evidence_profile`을 전달한다.
 - verifier와 analyst에게 `analysis_recipe`를 전달한다.
 - qa-reviewer에게 미정 항목과 리스크를 전달한다.
+
+## 수집 지시 생성 룰 (7/7 후추님)
+- 00_intake의 수집 지시에 **"KPMG·PwC·Deloitte 선탐색 의무"를 항상 명시** — 주제 불문 (collector.md Big3 룰과 짝).
