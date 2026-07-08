@@ -53,6 +53,10 @@ python .claude/skills/deck-harness/scripts/render_deck.py \
 9. Run C6 content-authority gate before QA.
 10. `qa-reviewer` creates `_workspace/<run_id>/07_qa_report.json`.
 
+## 런 원가 기록 (7/9 신설 — test-time compute 뷰 흡수·EP102)
+
+성능 경쟁의 단위가 "점수"에서 "같은 품질을 얼마나 적은 토큰으로"로 이동했다 (Noam Brown 프레임). 우리 버전: **매 런 종료 시 `_workspace/<run_id>/cost_note.md`에 주요 배치별 토큰 사용량·모델을 3~5줄로 기록**한다 (서브에이전트 완료 통보의 usage 수치 전기). 목적 ① 품질 래칫과 나란히 원가 래칫 — 같은 게이트 통과를 더 싸게 ② B형 SaaS 가격 책정의 원가 기초 데이터 (게이트 판정 시 필수). 정밀 계측 시스템을 만들지 말 것 — 손 전기 3~5줄이면 충분, 쌓이면 그때 자동화 판단.
+
 ## 검토 단계 (4층)
 
 1. 1층 자동 체크(만드는 내내): `contract_checks` + `naturalness_check` + 커버리지. 거의 공짜라 초안·수정본마다 돌린다.
