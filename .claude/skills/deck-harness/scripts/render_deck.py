@@ -363,6 +363,8 @@ def render_deck(
     if len(rendered_pages) != len(pages):
         raise ValueError("every deck_spec page must be an object")
 
+    telemetry_html = _render_telemetry(deck_spec, meta)
+    body_tail = [telemetry_html, "</body>"] if telemetry_html else ["</body>"]
     return "\n".join(
         [
             "<!doctype html>",
@@ -375,10 +377,94 @@ def render_deck(
             "</head>",
             f'<body class="{" ".join(body_classes)}">',
             *rendered_pages,
-            "</body>",
+            *body_tail,
             "</html>",
         ]
     )
+
+
+def _render_telemetry(deck_spec: dict[str, Any], meta: dict[str, Any]) -> str:
+    # R6 독자 텔레메트리(DESIGN_R6_reader_telemetry.md) — 기본 OFF. meta.telemetry.ga_id
+    # 있을 때만 삽입, 없으면 이 함수는 빈 문자열 → 출력 바이트 불변.
+    telemetry = meta.get("telemetry") if isinstance(meta.get("telemetry"), dict) else {}
+    ga_id = str(telemetry.get("ga_id") or "").strip()
+    if not ga_id:
+        return ""
+    deck_id = str(telemetry.get("deck_id") or meta.get("run_id") or deck_spec.get("run_id") or "unknown").strip()
+    ga_id_js = json.dumps(ga_id)
+    deck_id_js = json.dumps(deck_id)
+    return f"""<script async src="{_escape("https://www.googletagmanager.com/gtag/js?id=" + ga_id)}"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){{dataLayer.push(arguments);}}
+gtag('js', new Date());
+gtag('config', {ga_id_js});
+</script>
+<script>
+(function () {{
+  if (typeof gtag !== 'function') return;
+  var DECK_ID = {deck_id_js};
+  var pages = Array.prototype.slice.call(document.querySelectorAll('section.slide'));
+  var state = new Map();
+  var maxPageSeen = pages.length ? 1 : 0;
+  var totalPages = pages.length;
+  function pageNo(el) {{ return pages.indexOf(el) + 1; }}
+  function bucket(ms) {{
+    if (ms < 3000) return null;
+    if (ms < 10000) return '3s';
+    if (ms < 30000) return '10s';
+    if (ms < 60000) return '30s';
+    return '60s+';
+  }}
+  function flush(el) {{
+    var st = state.get(el);
+    if (!st) return;
+    if (st.start !== null) {{ st.accum += performance.now() - st.start; st.start = null; }}
+    var b = bucket(st.accum);
+    if (b) gtag('event', 'deck_page', {{ deck_id: DECK_ID, page_no: pageNo(el), dwell_bucket: b }});
+    st.accum = 0;
+  }}
+  var io = new IntersectionObserver(function (entries) {{
+    entries.forEach(function (entry) {{
+      var el = entry.target;
+      var st = state.get(el) || {{ accum: 0, start: null, intersecting: false }};
+      state.set(el, st);
+      st.intersecting = entry.isIntersecting;
+      if (entry.isIntersecting) {{
+        if (!document.hidden) st.start = performance.now();
+        if (pageNo(el) > maxPageSeen) maxPageSeen = pageNo(el);
+      }} else {{
+        if (st.start !== null) {{ st.accum += performance.now() - st.start; st.start = null; }}
+        flush(el);
+      }}
+    }});
+  }}, {{ threshold: 0.5 }});
+  pages.forEach(function (el) {{ io.observe(el); }});
+  document.addEventListener('visibilitychange', function () {{
+    var now = performance.now();
+    state.forEach(function (st) {{
+      if (document.hidden) {{
+        if (st.start !== null) {{ st.accum += now - st.start; st.start = null; }}
+      }} else if (st.intersecting) {{
+        st.start = now;
+      }}
+    }});
+  }});
+  document.querySelectorAll('a[href^="http"]').forEach(function (a) {{
+    a.addEventListener('click', function () {{
+      var url = a.getAttribute('href');
+      var domain = url;
+      try {{ domain = new URL(url).hostname; }} catch (e) {{}}
+      var el = a.closest('section.slide');
+      gtag('event', 'deck_source_click', {{ deck_id: DECK_ID, page_no: el ? pageNo(el) : null, url: domain }});
+    }});
+  }});
+  window.addEventListener('pagehide', function () {{
+    pages.forEach(function (el) {{ flush(el); }});
+    gtag('event', 'deck_read_end', {{ deck_id: DECK_ID, max_page: maxPageSeen, total_pages: totalPages }}, {{ transport_type: 'beacon' }});
+  }});
+}})();
+</script>"""
 
 
 def normalize_registry(content_registry: dict[str, Any]) -> dict[str, dict[str, Any]]:

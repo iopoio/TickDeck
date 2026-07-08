@@ -1910,6 +1910,21 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("모든 수치 출처 연결 검증 · 출처 2곳", appendix_html)
         self.assertEqual(validate_c6_content_authority(appendix_spec, appendix_registry, appendix_html), [])
 
+    def test_render_deck_telemetry_absent_by_default(self):
+        # R6 — meta.telemetry 없으면 gtag 문자열 0회 (기본 OFF·출력 바이트 불변 보호)
+        html = render_deck_module.render_deck(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, title="No Telemetry Fixture")
+        self.assertEqual(html.count("gtag"), 0)
+
+    def test_render_deck_telemetry_injects_ga4_snippet_when_enabled(self):
+        # R6 — meta.telemetry.ga_id 있으면 이벤트 3종 + ga_id 삽입
+        telemetry_spec = dict(VALID_DECK_SPEC, meta={"telemetry": {"ga_id": "G-TESTID123"}})
+        html = render_deck_module.render_deck(telemetry_spec, VALID_CONTENT_REGISTRY, title="Telemetry Fixture")
+        self.assertIn("gtag", html)
+        self.assertIn("deck_page", html)
+        self.assertIn("deck_source_click", html)
+        self.assertIn("deck_read_end", html)
+        self.assertIn("G-TESTID123", html)
+
     def test_render_deck_source_appendix_links_only_http_schemes(self):
         appendix_spec = {
             "pages": [
