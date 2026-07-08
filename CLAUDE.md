@@ -9,6 +9,8 @@
 ## 제품화 (2026-06-30 추가)
 - **이거 자체가 유료 제품(B형=라이브 생성기)으로 갈 로드맵 = `PRODUCT_ROADMAP.md`** (Phase 0 베타 쇼케이스 ~ Phase 6 유료 오픈·간트형). 트렐로 "TickDeck 제품화" 리스트로 추적.
 - A형(베타 쇼케이스: 펩핀치 진열대 임베드)·B형(유료) 결정 = `[[project_tickdeck_showcase_plan]]`. v4 덱 하네스(`.claude/skills/deck-harness/`)가 품질 엔진.
+- **운영 원칙 (7/8): 돈이 방향을 정한다** — 서비스 매출→수주 트랙 / 셀프서브 인바운드→B형 / 반응 0→콘텐츠 엔진 강등 (널 분기 사전 확정). 게이트 판정 기준·널 분기 = 글로벌 메모리 `tickdeck-strategy-revenue-led`.
+- **주 1런 관례 (7/8) = `PLAN_WEEKLY_RUN.md`** — 매주 덱 1개 제작→게시→후추님 아쉬움 포인팅→룰 변환. 아쉬움 장부 = `_workspace/_taste_ledger.md`. 게이트 분기와 무관하게 지속.
 
 ## 역할 분리
 | 작업 | 담당 |
