@@ -3194,8 +3194,10 @@ def _svg_two_by_two(
     items = _raw_series_items(block)[:8]
     x_axis = (block or {}).get("x_axis") if isinstance((block or {}).get("x_axis"), dict) else {}
     y_axis = (block or {}).get("y_axis") if isinstance((block or {}).get("y_axis"), dict) else {}
-    plot_x0, plot_y0 = 120.0, CHART_TITLE_GAP + 4
-    plot_w, plot_h = 720.0, 340.0
+    # y축 라벨이 길면 왼쪽 여백을 동적으로 벌린다 (고정 120px는 8자+ 한글 라벨을 캔버스 밖으로 잘랐음 — 7/8)
+    _y_label_chars = max(len(str(y_axis.get("low", "")).strip()), len(str(y_axis.get("high", "")).strip()))
+    plot_x0, plot_y0 = max(120.0, min(240.0, 26.0 + _y_label_chars * 13.0)), CHART_TITLE_GAP + 4
+    plot_w, plot_h = 840.0 - plot_x0, 340.0
     body = [
         f'<rect x="{plot_x0}" y="{plot_y0}" width="{plot_w}" height="{plot_h}" fill="color-mix(in srgb, var(--ink) 4%, transparent)"/>',
         f'<line x1="{plot_x0 + plot_w / 2}" y1="{plot_y0}" x2="{plot_x0 + plot_w / 2}" y2="{plot_y0 + plot_h}" stroke="var(--line)" stroke-width="2"/>',
