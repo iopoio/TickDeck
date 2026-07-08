@@ -27,6 +27,15 @@ LENSES = [
 CODEX_REVIEW_FILE = "review_codex.txt"
 GEMINI_REVIEW_FILE = "review_gemini.txt"
 REVIEW_JSON_FILE = "08_external_review.json"
+
+# R7: spec-stage review reuses factcheck_dump's metric_id/metric_ids walker (sibling script).
+_SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+import factcheck_dump  # noqa: E402
+
+_SPEC_TEXT_KEYS = ("text", "term", "def", "label")
 DEFAULT_GEMINI_WRAPPER = Path("/Users/hwa/Projects/Automation/Think/.claude/scripts/gemini_call_wrapper.py")
 DEFAULT_GEMINI_PYTHON = Path("/Users/hwa/Projects/Automation/Think/.venv/bin/python")
 CODEX_PROMPT_ARGV_LIMIT = 120_000
@@ -143,6 +152,65 @@ def extract_page_texts(deck_html: Path) -> list[dict[str, str]]:
     fallback.feed(html)
     fallback.close()
     return [{"page_id": "document", "text": " ".join(fallback.chunks).strip()}]
+
+
+def _spec_text_chunks(node: Any, chunks: list[str]) -> None:
+    """Recursively collect human-readable text (headline/body/bullets/labels/table cells)."""
+    if isinstance(node, dict):
+        for key in _SPEC_TEXT_KEYS:
+            value = node.get(key)
+            if isinstance(value, str) and value:
+                chunks.append(value)
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                _spec_text_chunks(value, chunks)
+    elif isinstance(node, list):
+        for item in node:
+            if isinstance(item, str):
+                if item:
+                    chunks.append(item)
+            else:
+                _spec_text_chunks(item, chunks)
+
+
+def _metric_value_text(metric_id: str, metric_registry: dict[str, Any]) -> str:
+    metric = metric_registry.get(metric_id)
+    if not metric:
+        return f"[{metric_id}: 레지스트리 없음]"
+    label = metric.get("label", metric_id)
+    value = metric.get("value", "")
+    unit = metric.get("unit", "")
+    period = metric.get("period")
+    period_part = f" ({period})" if period else ""
+    return f"{label} {value}{unit}{period_part}"
+
+
+def extract_page_texts_from_spec(run_dir: Path) -> list[dict[str, str]]:
+    """R7 spec-stage source: pull page title/headline/claims/metric values straight from
+    06_deck_spec.json (+ 02_verified.json for metric values), before render exists."""
+    deck_spec = json.loads((run_dir / "06_deck_spec.json").read_text(encoding="utf-8"))
+    verified_path = run_dir / "02_verified.json"
+    metric_registry: dict[str, Any] = {}
+    if verified_path.exists():
+        verified = json.loads(verified_path.read_text(encoding="utf-8"))
+        metric_registry = verified.get("metric_registry", {})
+
+    pages: list[dict[str, str]] = []
+    for page in deck_spec.get("pages", []):
+        content = page.get("content", [])
+        chunks: list[str] = []
+        title = page.get("short_title", "")
+        if title:
+            chunks.append(title)
+        _spec_text_chunks(content, chunks)
+
+        metric_ids: list[str] = []
+        factcheck_dump.collect_metric_refs(content, metric_ids)
+        for metric_id in dict.fromkeys(metric_ids):  # dedupe, keep first-seen order
+            chunks.append(_metric_value_text(metric_id, metric_registry))
+
+        pages.append({"page_id": str(page.get("page_id", "")), "text": " / ".join(chunks)})
+    return pages
 
 
 def build_review_prompt(pages: list[dict[str, str]]) -> str:
@@ -270,9 +338,17 @@ def run_gemini_reviewer(prompt: str, run_dir: Path, output_path: Path) -> dict[s
             pass
 
 
-def write_review_json(run_dir: Path, deck_hash: str, codex: dict[str, Any], gemini: dict[str, Any]) -> Path:
+def write_review_json(
+    run_dir: Path,
+    hash_field: str,
+    source_hash: str,
+    codex: dict[str, Any],
+    gemini: dict[str, Any],
+    stage: str,
+) -> Path:
     payload = {
-        "deck_html_sha256": deck_hash,
+        hash_field: source_hash,
+        "stage": stage,
         "reviewed_at_kst": datetime.now(ZoneInfo("Asia/Seoul")).isoformat(timespec="seconds"),
         "codex": codex,
         "gemini": gemini,
@@ -285,7 +361,13 @@ def write_review_json(run_dir: Path, deck_hash: str, codex: dict[str, Any], gemi
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run final codex/gemini external review for a TickDeck run.")
-    parser.add_argument("run_dir", help="Run directory containing deck.html, for example _workspace/20260705_clo_market")
+    parser.add_argument("run_dir", help="Run directory, for example _workspace/20260705_clo_market")
+    parser.add_argument(
+        "--stage",
+        choices=["spec", "html"],
+        default="spec",
+        help="review source: spec=06_deck_spec.json before render (default, R7), html=rendered deck.html (legacy)",
+    )
     parser.add_argument("--dry-run", action="store_true", help="Build prompt and write 08 JSON without calling LLMs.")
     args = parser.parse_args(argv)
 
@@ -293,13 +375,25 @@ def main(argv: list[str] | None = None) -> int:
     if not run_dir.is_dir():
         print(f"NO_RUN_DIR: {run_dir}", file=sys.stderr)
         return 2
-    deck_html = run_dir / "deck.html"
-    if not deck_html.exists():
-        print(f"NO_DECK_HTML: {deck_html}", file=sys.stderr)
-        return 2
 
-    deck_hash = sha256_file(deck_html)
-    prompt = build_review_prompt(extract_page_texts(deck_html))
+    if args.stage == "html":
+        deck_html = run_dir / "deck.html"
+        if not deck_html.exists():
+            print(f"NO_DECK_HTML: {deck_html}", file=sys.stderr)
+            return 2
+        hash_field = "deck_html_sha256"
+        source_hash = sha256_file(deck_html)
+        pages = extract_page_texts(deck_html)
+    else:
+        deck_spec_path = run_dir / "06_deck_spec.json"
+        if not deck_spec_path.exists():
+            print(f"NO_DECK_SPEC: {deck_spec_path}", file=sys.stderr)
+            return 2
+        hash_field = "deck_spec_sha256"
+        source_hash = sha256_file(deck_spec_path)
+        pages = extract_page_texts_from_spec(run_dir)
+
+    prompt = build_review_prompt(pages)
 
     codex_file = run_dir / CODEX_REVIEW_FILE
     gemini_file = run_dir / GEMINI_REVIEW_FILE
@@ -310,10 +404,11 @@ def main(argv: list[str] | None = None) -> int:
         codex = run_codex_reviewer(prompt, codex_file)
         gemini = run_gemini_reviewer(prompt, run_dir, gemini_file)
 
-    json_path = write_review_json(run_dir, deck_hash, codex, gemini)
+    json_path = write_review_json(run_dir, hash_field, source_hash, codex, gemini, args.stage)
 
-    print(f"deck_html_sha256: {deck_hash}")
-    print(f"prompt_pages: {len(extract_page_texts(deck_html))}")
+    print(f"stage: {args.stage}")
+    print(f"{hash_field}: {source_hash}")
+    print(f"prompt_pages: {len(pages)}")
     print(f"codex: {'ok' if codex.get('ok') else 'fail'} -> {codex_file}")
     print(f"gemini: {'ok' if gemini.get('ok') else 'fail'} -> {gemini_file}")
     print(f"json: {json_path}")

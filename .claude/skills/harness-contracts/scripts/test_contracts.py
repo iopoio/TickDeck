@@ -2,6 +2,7 @@ import importlib.util
 import json
 import os
 import pathlib
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -26,6 +27,11 @@ RENDER_DECK_SPEC = importlib.util.spec_from_file_location("render_deck", RENDER_
 render_deck_module = importlib.util.module_from_spec(RENDER_DECK_SPEC)
 RENDER_DECK_SPEC.loader.exec_module(render_deck_module)
 
+FACTCHECK_DUMP_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "factcheck_dump.py"
+FACTCHECK_DUMP_SPEC = importlib.util.spec_from_file_location("factcheck_dump", FACTCHECK_DUMP_PATH)
+factcheck_dump_module = importlib.util.module_from_spec(FACTCHECK_DUMP_SPEC)
+FACTCHECK_DUMP_SPEC.loader.exec_module(factcheck_dump_module)
+
 EXTERNAL_REVIEW_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "external_review.py"
 EXTERNAL_REVIEW_SPEC = importlib.util.spec_from_file_location("external_review", EXTERNAL_REVIEW_PATH)
 external_review_module = importlib.util.module_from_spec(EXTERNAL_REVIEW_SPEC)
@@ -45,6 +51,8 @@ RUN_CONTRACTS_PATH = pathlib.Path(__file__).resolve().parent / "run_contracts.py
 RUN_CONTRACTS_SPEC = importlib.util.spec_from_file_location("run_contracts", RUN_CONTRACTS_PATH)
 run_contracts_module = importlib.util.module_from_spec(RUN_CONTRACTS_SPEC)
 RUN_CONTRACTS_SPEC.loader.exec_module(run_contracts_module)
+
+R4_RUN_DIR = pathlib.Path(__file__).resolve().parents[4] / "_workspace" / "20260707_clo_report_r4"
 
 RUN_DECK_SH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "run_deck.sh"
 CAPTURE_DECK_SH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "capture_deck.sh"
@@ -2762,6 +2770,43 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("짧은 프롬프트", command)
         with self.assertRaises(ValueError):
             external_review_module.build_codex_command("x" * (external_review_module.CODEX_PROMPT_ARGV_LIMIT + 1))
+
+    @unittest.skipUnless(R4_RUN_DIR.is_dir(), f"R4 실물 런 없음: {R4_RUN_DIR}")
+    def test_factcheck_dump_builds_crosswalk_table_from_real_r4_run(self):
+        # R4는 읽기 전용 — 08 산출은 tempdir 사본에만 쓴다.
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            shutil.copy(R4_RUN_DIR / "06_deck_spec.json", run_dir / "06_deck_spec.json")
+            shutil.copy(R4_RUN_DIR / "02_verified.json", run_dir / "02_verified.json")
+
+            exit_code = factcheck_dump_module.main(["--run", str(run_dir)])
+            self.assertEqual(exit_code, 0)
+
+            table_path = run_dir / "08_factcheck_table.json"
+            self.assertTrue(table_path.exists())
+            rows = json.loads(table_path.read_text(encoding="utf-8"))
+
+        self.assertGreater(len(rows), 0)
+        for row in rows:
+            self.assertIn("metric_id", row)
+            self.assertIn("page_no", row)
+            self.assertTrue(
+                row.get("source_url") or row.get("local_path") or row.get("source_missing"),
+                f"row without a source pointer or source_missing flag: {row}",
+            )
+
+    @unittest.skipUnless(R4_RUN_DIR.is_dir(), f"R4 실물 런 없음: {R4_RUN_DIR}")
+    def test_external_review_spec_stage_prompt_includes_real_page_text(self):
+        # LLM 호출 없이 프롬프트 구성까지만 — R4 06_deck_spec.json은 읽기만 한다.
+        pages = external_review_module.extract_page_texts_from_spec(R4_RUN_DIR)
+        self.assertGreater(len(pages), 0)
+        prompt = external_review_module.build_review_prompt(pages)
+
+        deck_spec = json.loads((R4_RUN_DIR / "06_deck_spec.json").read_text(encoding="utf-8"))
+        cover_title = deck_spec["pages"][0]["short_title"]
+        self.assertIn(cover_title, prompt)
+        # 06_deck_spec.json에는 metric 값이 없다 — 02_verified.json metric_registry 해석까지 됐는지 확인.
+        self.assertIn("2823억원", prompt)  # metric_127 (세라젬 연결 매출액, 2018)
 
     def test_pptx_export_run_checked_reports_timeout_with_configured_seconds(self):
         with mock.patch.object(

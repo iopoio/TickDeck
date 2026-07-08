@@ -50,3 +50,4 @@ tickdeck_harness/runs/
 .pytest_cache/
 .DS_Store
 corpus/
+.gstack/
