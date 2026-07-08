@@ -1,0 +1,478 @@
+[
+  {
+    "metric_id": "metric_127",
+    "page_no": 5,
+    "value": "2823",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "'성장 시장' 전제는 실적이 기각했다 — 정점은 2021~22년",
+    "source_id": "src_102",
+    "source_url": "https://www.econovill.com/news/articleView.html?idxno=608207"
+  },
+  {
+    "metric_id": "metric_128",
+    "page_no": 5,
+    "value": "6670",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "'성장 시장' 전제는 실적이 기각했다 — 정점은 2021~22년",
+    "source_id": "src_102",
+    "source_url": "https://www.econovill.com/news/articleView.html?idxno=608207"
+  },
+  {
+    "metric_id": "metric_129",
+    "page_no": 5,
+    "value": "7501",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "'성장 시장' 전제는 실적이 기각했다 — 정점은 2021~22년",
+    "source_id": "src_102",
+    "source_url": "https://www.econovill.com/news/articleView.html?idxno=608207"
+  },
+  {
+    "metric_id": "metric_130",
+    "page_no": 5,
+    "value": "5847",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "'성장 시장' 전제는 실적이 기각했다 — 정점은 2021~22년",
+    "source_id": "src_102",
+    "source_url": "https://www.econovill.com/news/articleView.html?idxno=608207"
+  },
+  {
+    "metric_id": "metric_113",
+    "page_no": 6,
+    "value": "6817874",
+    "unit": "백만원",
+    "period": null,
+    "claim_context": "배경 산업 통계도 같은 방향이다 — 정점 뒤 두 해 연속 감소",
+    "source_id": "src_101",
+    "source_url": "https://www.khidi.or.kr/menu?menuId=MENU03194"
+  },
+  {
+    "metric_id": "metric_114",
+    "page_no": 6,
+    "value": "7803910",
+    "unit": "백만원",
+    "period": null,
+    "claim_context": "배경 산업 통계도 같은 방향이다 — 정점 뒤 두 해 연속 감소",
+    "source_id": "src_101",
+    "source_url": "https://www.khidi.or.kr/menu?menuId=MENU03194"
+  },
+  {
+    "metric_id": "metric_115",
+    "page_no": 6,
+    "value": "7531694",
+    "unit": "백만원",
+    "period": null,
+    "claim_context": "배경 산업 통계도 같은 방향이다 — 정점 뒤 두 해 연속 감소",
+    "source_id": "src_101",
+    "source_url": "https://www.khidi.or.kr/menu?menuId=MENU03194"
+  },
+  {
+    "metric_id": "metric_116",
+    "page_no": 6,
+    "value": "9134146",
+    "unit": "백만원",
+    "period": null,
+    "claim_context": "배경 산업 통계도 같은 방향이다 — 정점 뒤 두 해 연속 감소",
+    "source_id": "src_101",
+    "source_url": "https://www.khidi.or.kr/menu?menuId=MENU03194"
+  },
+  {
+    "metric_id": "metric_117",
+    "page_no": 6,
+    "value": "11878168",
+    "unit": "백만원",
+    "period": null,
+    "claim_context": "배경 산업 통계도 같은 방향이다 — 정점 뒤 두 해 연속 감소",
+    "source_id": "src_101",
+    "source_url": "https://www.khidi.or.kr/menu?menuId=MENU03194"
+  },
+  {
+    "metric_id": "metric_118",
+    "page_no": 6,
+    "value": "10726983",
+    "unit": "백만원",
+    "period": null,
+    "claim_context": "배경 산업 통계도 같은 방향이다 — 정점 뒤 두 해 연속 감소",
+    "source_id": "src_101",
+    "source_url": "https://www.khidi.or.kr/menu?menuId=MENU03194"
+  },
+  {
+    "metric_id": "metric_119",
+    "page_no": 6,
+    "value": "10544424",
+    "unit": "백만원",
+    "period": null,
+    "claim_context": "배경 산업 통계도 같은 방향이다 — 정점 뒤 두 해 연속 감소",
+    "source_id": "src_101",
+    "source_url": "https://www.khidi.or.kr/menu?menuId=MENU03194"
+  },
+  {
+    "metric_id": "metric_151",
+    "page_no": 7,
+    "value": "3500",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "'유망 시장' 전망은 반복해서 부풀려져 왔다",
+    "source_id": "src_105",
+    "source_url": "https://newstomato.com/ReadNews.aspx?no=1172131"
+  },
+  {
+    "metric_id": "metric_152",
+    "page_no": 7,
+    "value": "10000",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "'유망 시장' 전망은 반복해서 부풀려져 왔다",
+    "source_id": "src_105",
+    "source_url": "https://newstomato.com/ReadNews.aspx?no=1172131"
+  },
+  {
+    "metric_id": "metric_153",
+    "page_no": 7,
+    "value": "15000",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "'유망 시장' 전망은 반복해서 부풀려져 왔다",
+    "source_id": "src_105",
+    "source_url": "https://newstomato.com/ReadNews.aspx?no=1172131"
+  },
+  {
+    "metric_id": "metric_154",
+    "page_no": 7,
+    "value": "9583",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "'유망 시장' 전망은 반복해서 부풀려져 왔다",
+    "source_id": "src_105",
+    "source_url": "https://newstomato.com/ReadNews.aspx?no=1172131"
+  },
+  {
+    "metric_id": "metric_134",
+    "page_no": 9,
+    "value": "5913",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "매출이 빠지는 동안 이익은 더 깊게 무너졌다",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_135",
+    "page_no": 9,
+    "value": "5220",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "매출이 빠지는 동안 이익은 더 깊게 무너졌다",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_136",
+    "page_no": 9,
+    "value": "4197",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "매출이 빠지는 동안 이익은 더 깊게 무너졌다",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_137",
+    "page_no": 9,
+    "value": "4369",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "매출이 빠지는 동안 이익은 더 깊게 무너졌다",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_156",
+    "page_no": 9,
+    "value": "11.6",
+    "unit": "%",
+    "period": "2021",
+    "claim_context": "매출이 빠지는 동안 이익은 더 깊게 무너졌다",
+    "source_missing": true
+  },
+  {
+    "metric_id": "metric_157",
+    "page_no": 9,
+    "value": "5.2",
+    "unit": "%",
+    "period": "2024",
+    "claim_context": "매출이 빠지는 동안 이익은 더 깊게 무너졌다",
+    "source_missing": true
+  },
+  {
+    "metric_id": "metric_138",
+    "page_no": 10,
+    "value": "685",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "대형사도 못 버는 판 — 영업이익은 바닥, 순이익은 적자",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_139",
+    "page_no": 10,
+    "value": "241",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "대형사도 못 버는 판 — 영업이익은 바닥, 순이익은 적자",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_140",
+    "page_no": 10,
+    "value": "167",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "대형사도 못 버는 판 — 영업이익은 바닥, 순이익은 적자",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_141",
+    "page_no": 10,
+    "value": "226",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "대형사도 못 버는 판 — 영업이익은 바닥, 순이익은 적자",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_159",
+    "page_no": 10,
+    "value": "0.4",
+    "unit": "%",
+    "period": "2024",
+    "claim_context": "대형사도 못 버는 판 — 영업이익은 바닥, 순이익은 적자",
+    "source_missing": true
+  },
+  {
+    "metric_id": "metric_084",
+    "page_no": 10,
+    "value": "6",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "대형사도 못 버는 판 — 영업이익은 바닥, 순이익은 적자",
+    "source_id": "src_064",
+    "source_url": "https://www.ajunews.com/view/20260522171356445"
+  },
+  {
+    "metric_id": "metric_145",
+    "page_no": 11,
+    "value": "172",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "코지마는 다섯 해 만에 아홉 배 컸던 회사다",
+    "source_id": "src_104",
+    "source_url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861"
+  },
+  {
+    "metric_id": "metric_146",
+    "page_no": 11,
+    "value": "481",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "코지마는 다섯 해 만에 아홉 배 컸던 회사다",
+    "source_id": "src_104",
+    "source_url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861"
+  },
+  {
+    "metric_id": "metric_147",
+    "page_no": 11,
+    "value": "888",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "코지마는 다섯 해 만에 아홉 배 컸던 회사다",
+    "source_id": "src_104",
+    "source_url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861"
+  },
+  {
+    "metric_id": "metric_149",
+    "page_no": 11,
+    "value": "1555",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "코지마는 다섯 해 만에 아홉 배 컸던 회사다",
+    "source_id": "src_104",
+    "source_url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861"
+  },
+  {
+    "metric_id": "metric_160",
+    "page_no": 11,
+    "value": "55.3",
+    "unit": "%/년",
+    "period": "2016~2021",
+    "claim_context": "코지마는 다섯 해 만에 아홉 배 컸던 회사다",
+    "source_missing": true
+  },
+  {
+    "metric_id": "metric_080",
+    "page_no": 12,
+    "value": "134",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "그 코지마가 유통을 버리고 자체 제품으로 갈아탔다",
+    "source_id": "src_059",
+    "source_url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861"
+  },
+  {
+    "metric_id": "metric_079",
+    "page_no": 12,
+    "value": "513",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "그 코지마가 유통을 버리고 자체 제품으로 갈아탔다",
+    "source_id": "src_059",
+    "source_url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861"
+  },
+  {
+    "metric_id": "metric_082",
+    "page_no": 12,
+    "value": "-63",
+    "unit": "%",
+    "period": null,
+    "claim_context": "그 코지마가 유통을 버리고 자체 제품으로 갈아탔다",
+    "source_id": "src_059",
+    "source_url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861"
+  },
+  {
+    "metric_id": "metric_081",
+    "page_no": 12,
+    "value": "28",
+    "unit": "%",
+    "period": null,
+    "claim_context": "그 코지마가 유통을 버리고 자체 제품으로 갈아탔다",
+    "source_id": "src_059",
+    "source_url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861"
+  },
+  {
+    "metric_id": "metric_049",
+    "page_no": 14,
+    "value": "32900",
+    "unit": "원",
+    "period": null,
+    "claim_context": "자리는 넓은데 믿게 만드는 창구가 얇다",
+    "source_id": "src_044",
+    "source_url": "https://oa-mall.co.kr/product/list.html?cate_no=70"
+  },
+  {
+    "metric_id": "metric_036",
+    "page_no": 14,
+    "value": "49900",
+    "unit": "원",
+    "period": null,
+    "claim_context": "자리는 넓은데 믿게 만드는 창구가 얇다",
+    "source_id": "src_041",
+    "source_url": "https://klug.kr/category/%EB%AF%B8%EB%8B%88-%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0/26/"
+  },
+  {
+    "metric_id": "metric_017",
+    "page_no": 14,
+    "value": "69000",
+    "unit": "원",
+    "period": null,
+    "claim_context": "자리는 넓은데 믿게 만드는 창구가 얇다",
+    "source_id": "src_020",
+    "source_url": "https://clostore.co.kr/product/%ED%81%B4%EB%A1%9C-%EB%A9%94%EB%94%94%EC%86%8C%EB%8B%89-%EA%B0%88%EB%B0%94%EB%8B%89-%EA%B3%A0%EC%A3%BC%ED%8C%8C-%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0/31/"
+  },
+  {
+    "metric_id": "metric_072",
+    "page_no": 14,
+    "value": "118150",
+    "unit": "원",
+    "period": null,
+    "claim_context": "자리는 넓은데 믿게 만드는 창구가 얇다",
+    "source_id": "src_055",
+    "source_url": "https://search.danawa.com/dsearch.php?query=%EB%AA%A9%EC%96%B4%EA%B9%A8%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0"
+  },
+  {
+    "metric_id": "metric_050",
+    "page_no": 14,
+    "value": "129000",
+    "unit": "원",
+    "period": null,
+    "claim_context": "자리는 넓은데 믿게 만드는 창구가 얇다",
+    "source_id": "src_045",
+    "source_url": "https://search.danawa.com/dsearch.php?query=%EC%BD%94%EC%A7%80%EB%A7%88%20%EB%AA%A9%EC%96%B4%EA%B9%A8%20%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0"
+  },
+  {
+    "metric_id": "metric_070",
+    "page_no": 14,
+    "value": "129000",
+    "unit": "원",
+    "period": null,
+    "claim_context": "자리는 넓은데 믿게 만드는 창구가 얇다",
+    "source_id": "src_055",
+    "source_url": "https://search.danawa.com/dsearch.php?query=%EB%AA%A9%EC%96%B4%EA%B9%A8%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0"
+  },
+  {
+    "metric_id": "metric_043",
+    "page_no": 14,
+    "value": "139690",
+    "unit": "원",
+    "period": null,
+    "claim_context": "자리는 넓은데 믿게 만드는 창구가 얇다",
+    "source_id": "src_042",
+    "source_url": "https://prod.danawa.com/info/?pcode=88219550&keyword=%EB%B8%8C%EB%A0%88%EC%98%A4%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0&cate=17236116"
+  },
+  {
+    "metric_id": "metric_029",
+    "page_no": 16,
+    "value": "291",
+    "unit": "건",
+    "period": null,
+    "claim_context": "효능을 말할 문은 규제와 임상 양쪽에서 좁다",
+    "source_id": "src_032",
+    "source_url": "https://www.medtech.co.kr/news/articleView.html?idxno=1726"
+  },
+  {
+    "metric_id": "metric_129",
+    "page_no": 20,
+    "value": "7501",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "비용이 가장 낮은 다음 한 수 — 내부 판매 추이를 이 흐름 위에 겹친다",
+    "source_id": "src_102",
+    "source_url": "https://www.econovill.com/news/articleView.html?idxno=608207"
+  },
+  {
+    "metric_id": "metric_134",
+    "page_no": 20,
+    "value": "5913",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "비용이 가장 낮은 다음 한 수 — 내부 판매 추이를 이 흐름 위에 겹친다",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_137",
+    "page_no": 20,
+    "value": "4369",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "비용이 가장 낮은 다음 한 수 — 내부 판매 추이를 이 흐름 위에 겹친다",
+    "source_id": "src_103",
+    "source_url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/"
+  },
+  {
+    "metric_id": "metric_149",
+    "page_no": 20,
+    "value": "1555",
+    "unit": "억원",
+    "period": null,
+    "claim_context": "비용이 가장 낮은 다음 한 수 — 내부 판매 추이를 이 흐름 위에 겹친다",
+    "source_id": "src_104",
+    "source_url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861"
+  }
+]

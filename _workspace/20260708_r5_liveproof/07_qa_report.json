@@ -1,0 +1,74 @@
+{
+ "run_id": "20260708_r5_liveproof",
+ "reviewer": "오퍼스 서브에이전트 (R5 논증 도식 실증 재실행)",
+ "reviewed_at": "2026-07-08",
+ "scope_note": "R4(20260707_clo_report_r4)와 동일한 03_insights·04_dag에서 spec 손편집 없이 page-planner 룰만 재적용한 판. QA 초점 = 논증 도식 자발 선택의 타당성 + 렌더 무결성. C9 3층 외부 리뷰는 실증 범위상 미실행([미실행]).",
+ "contract_results": {
+  "gate": "run_contracts.py _workspace/20260708_r5_liveproof",
+  "c1_c8_including_arg_diagram_thin": "PASS — C6·ARG_DIAGRAM_THIN·REPORT_TONE_COMPOSITION 위반 0. two_by_two(아이템 7≥3)·causal_chain(노드 4≥3)·pyramid(근거 3≥2) 슬롯 최소 충족.",
+  "fit": "FIT_OK — 세로 오버플로 0 (초판 p18·p21 오버플로를 1라운드에 해소: p18 pyramid 페이지 본문 압축, p21 출처 페이지 allowlist를 R4 페이지별 분할로 복원).",
+  "ink": "INK_OK — min p24 1.91%.",
+  "passed_note": "C1~C8 전부 통과. FIT_OK.",
+  "failed": [
+   {"contract": "C9", "status": "[미실행]", "detail": "3층 외부 리뷰(codex+gemini) 미수행 — 실증 런 범위상 생략. 납품 시 external_review.py 필수."},
+   {"contract": "C11", "status": "FAIL(계승)", "detail": "01_evidence_pool.source_coverage 부재 — R4 원본에서 그대로 계승된 조건. R4 baseline gate도 동일하게 C11 FAIL(2건 위반). 이 실증이 도입한 결함 아님."}
+  ],
+  "baseline_comparison": "R4 원본에 같은 게이트를 돌리면 C9·C11 2건 위반으로 동일. C10(local_path)은 pdf/ 코퍼스를 R4에서 복사해 해소. 즉 R5 판이 도입한 신규 위반 0건."
+ },
+ "design_hygiene_warn": {
+  "status": "WARN(비차단)",
+  "items": ["본문 14장 중 stack 13장(>60%) 양식 돌려쓰기", "stack 3장 연속 리듬 단조"],
+  "note": "R4도 동일 WARN(10/13 stack). 논증 도식 3종을 stack 골격에 실어 stack 비중이 R4보다 소폭 증가. 차단 아님 — 납품 시 designer가 two_by_two/pyramid 페이지에 전용 골격(statement/poster)을 주면 완화 가능."
+ },
+ "argument_diagram_verdict": {
+  "question": "spec 손편집 없이 page-planner 룰만으로 논증 도식이 자발 선택되는가",
+  "answer": "3/4 자발 선택 (two_by_two·causal_chain·pyramid), tradeoff 정직하게 미선택",
+  "selected": [
+   {"page": "p13", "chart": "two_by_two", "node": "node_07_players", "basis": "node_07의 주장 자체가 좌표 주장('저가 진입 × 최광 폭 자리에 강자 없음'). genre-market-research 필수 산출 '가격 × 소구 유형 2축 포지셔닝'(SKILL §3)과 정합 — 룰이 지목한 '플레이어 포지셔닝(market-research 필수 검토)' 경로. 아이템 7≥3.", "decoration_risk": "없음 — 축이 논증의 실제 변수, 좌표가 강자 없는 사분면을 드러냄."},
+   {"page": "p16", "chart": "causal_chain", "node": "node_09_regulation", "basis": "insight_005의 논증이 '광고 효능 표방 → 의료기기 판정 기준 작동 → 재분류·심의 리스크 → 시연 경로'의 A→B→C→D 인과. arrow_flow와 달리 링크마다 근거(판례 기준·적발 291건 metric_029). 노드 4≥3.", "decoration_risk": "없음 — 노드가 상태 전이 단계, 근거 캡션이 본문과 다름."},
+   {"page": "p18", "chart": "pyramid", "node": "node_12_playbook", "basis": "결론('집중+시연')이 I·II·III부 3진단을 근거 층으로 딛고 섬. 밀도 2겹 룰(핵심 주장 페이지)의 시각 짝. 근거 층 3≥2.", "decoration_risk": "없음 — 근거 층=부별 종합(결론 장의 본질), 권고 2개는 별도 불릿."}
+  ],
+  "not_selected": {
+   "chart": "tradeoff",
+   "reason": "이 덱 자세(overview·market-research)에 질적 양자택일(저울) 구조 부재. 최근접 후보 2개는 더 정확한 형식이 이미 담음 — '성장 편승 vs 집중+시연'은 pyramid 결론의 오답 콜아웃, '코지마 유통 vs 자체제품'은 정량 columns(disc_r4_002가 곡선 잇기 금지). page-planner 룰 '구조 없는 페이지에 도식을 장식으로 넣지 않는다' 준수 → 미선택이 정답.",
+   "significance": "룰이 무차별 채택이 아니라 구조 유무로 판별함을 실증 — 4종 중 맞는 3종만 붙고 안 맞는 1종은 뗀다."
+  },
+  "time_series_untouched": "시계열 차트 주인공 8장(p05·06·07·09·10·11·12·20)은 R4와 동일 유지. 논증 도식이 시계열을 밀어내지 않음 — tone=report '시계열 주장 우선 배치'가 지배하고, 논증 도식은 R4에서 텍스트/표로 압축했던 정성 페이지 3자리만 승격."
+ },
+ "c7_spine_check": {
+  "status": "PASS",
+  "method": "spine_check.py — short_title만 세로 추출해 논증 재구성.",
+  "verdict": "표지 논지 → I 시장 4장(둘로 갈림·정점 기각·배경·전망 과대) → II 경쟁 5장(이익 붕괴·바닥·코지마 성장·전환·좌표) → III 소구(규제·임상 좁음) → IV 판단(집중+시연 결론 → 트리거 → 내부데이터). 병렬 섹션 병렬 제목, 결론→제언 두 박자로 닫힘. 정체불명 은유 제목 없음.",
+  "spine_note": "p13(좌표)·p14(창구)는 node_07 두 얼굴의 병렬 제목 — 흐름 끊김 없음."
+ },
+ "visual_verdict": {
+  "method": "deck.pdf 페이지 PNG 직독 (p13·p16·p18 렌더 확인).",
+  "p13_two_by_two": "PASS — 포지셔닝 맵 정상 렌더. CLO 강조점(녹색 채움)이 '저가 진입 × 최광 폭' 빈 사분면에 단독, 타 브랜드 산포. 축 라벨·사분면 격자·노트·각주 정상. 컨설팅 2x2 관례에 부합.",
+  "p16_causal_chain": "PASS — 4노드 가로 사슬 + 화살표, 링크 근거 캡션, 마지막 노드(합법 경로) 강조색. 적발 291건은 registry 주입(C6 클린). 미세 지적: 291건이 링크 캡션이 아니라 노드 박스에 붙어 위치가 약간 어색(비차단 코스메틱).",
+  "p18_pyramid": "PASS — 사다리꼴 피라미드, 꼭대기 주장(녹색) + 3근거 층(I/II/III부) 하강 확장. 아래 단정 권고 2개 + 오답 콜아웃 + 단서 각주. 컨설팅 논증 피라미드(Minto) 관례에 부합.",
+  "density_monotony": "본문 밀도 적정(게으른 공백 없음). 단조 판정: stack 골격 다수이나 viz 종류가 매장 달라(시계열·표·2x2·사슬·피라미드) 메시지-양식 정합. WARN 수준(R4 동급).",
+  "closing_min_composition": "결론(p18)=피라미드+단정 권고 2개+오답 목록으로 최소 구성 충족. 제언(p19 트리거 표·p20 내부데이터)까지 두 박자. 빈 워크시트·빈칸 없음.",
+  "title_symbol_residue": "제목·헤드라인에 마크다운 잔재·정체불명 기호 없음."
+ },
+ "factory_tea_verdict": {
+  "insight_carryover": "PASS — pyramid 근거 층이 I·II·III부 판정을 명시 재사용, 단절된 증거 장 없음. p13 좌표→p14 창구→p18 결론으로 소형 판 진단이 결론까지 이월.",
+  "deck_unique_claim": "PASS — 추출 주장: '정점 지난 조정기의 CLO 정답은 성장 편승이 아니라 이익 라인 집중 + 시연 창구, 그리고 내부 데이터 결합'. pyramid가 이 주장을 직접 밀고 감.",
+  "arg_diagram_copy_paste": "PASS — two_by_two=좌표(본문 아님)·causal_chain=상태 전이 단계+판례/적발 근거 캡션·pyramid=부별 종합. 세 도식 모두 같은 페이지 본문의 복붙 아님(요약·구조화).",
+  "context_page": "PASS — 표지+p04가 독자(내부 검토용)·범위(소형 세그먼트 CLO 좌표)·기준일(2026-07) 명시."
+ },
+ "blind_comparison": {
+  "status": "PARTIAL(실증 범위)",
+  "note": "논증 도식 3종은 컨설팅 정본 형태(BCG형 2x2 포지셔닝·전략 인과 사슬·Minto 논증 피라미드)에 해당하며 DS 규율(타이틀 밴드·의미색 단일 accent·각주 밀도)이 R4 블라인드 통과분과 동일 계열. 전용 17-PDF 교차 실독은 납품 게이트 몫이라 이 실증에서는 미수행([미검증]).",
+  "axes": {
+   "chart_as_protagonist": "PASS — 3장 모두 도식이 지면 주인공.",
+   "citation_layer": "PASS — 각주·citation 층 실전 밀도 유지(p16 판례·적발·임상 각주 3층).",
+   "color_meaning": "PASS — accent 녹색이 CLO/결론/합법 경로 등 '무게 실린 것'에만."
+  }
+ },
+ "required_fixes": [],
+ "unknowns": [
+  "C9 3층 외부 리뷰 [미실행] — 납품 전 필수.",
+  "블라인드 비교 전용 PDF 교차 실독 [미검증] — 실증 범위 밖.",
+  "two_by_two 좌표값은 정성 배치(진입가 순위+관찰 폭) — 측정치가 아니라 상대 위치. 각주로 명시했으나 '정밀 좌표'로 오독 위험은 남음."
+ ]
+}

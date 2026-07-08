@@ -1,0 +1,3643 @@
+{
+ "run_id": "20260707_clo_report_r4",
+ "verified_at": "2026-07-07",
+ "verifier_notes": "R4 계승분(20260706_clo_v51/02_verified.json — verified_items 61건, source_registry 69건, metric_registry 112건, rejected 3건)은 재검증 없이 그대로 승계한다. 원본 파일을 복제하지 않고 이 run은 신규 시계열 5건(01_evidence_pool.json items, 원 pool의 src_066~070)만 검증한다. ★ID 충돌 주의: 계승 소스 레지스트리에 이미 src_066~069가 다른 항목(파나소닉 고급형 안마의자·코웨이 비렉스 기사 등)으로 점유돼 있어, 이번 run 신규 5건은 src_101~105로 재번호했다(계승분과 물리적으로 겹치지 않음, 렌더 시 두 registry를 병합할 때 src_066~069 재사용 금지). metric_registry도 계승분 최대치가 metric_112라 신규분은 metric_113부터 시작. 5건 모두 원문 WebFetch 직접 대조(khidi html 로컬 파일 grep + econovill/서울거래/신아일보/ziksir/newstomato 원문 fetch)로 재검증했으며, 이 과정에서 collector 수치 오류 2건(바디프랜드 2020년 매출·코지마 2020년 매출)을 rejected 처리했다. circular_citation_flag가 걸린 3건(세라젬·바디프랜드·안마의자 업계추정)은 원문 대조를 우선 수행했다. | [designer 2026-07-07] 렌더·계약 입력용 병합본 — 계승(v51) registry + R4 델타를 이 파일에 물리 병합(델타 원본 = 02_verified.r4_delta.json). 내용 변경 없음, 병합만.",
+ "carryover": {
+  "note": "verified_items 61건 + source_registry 69건 + metric_registry 112건 + rejected_items 3건을 20260706_clo_v51/02_verified.json에서 그대로 계승. 본 파일은 병합본이 아니라 R4 신규분 델타만 담는다 — 렌더러/analyst는 두 02_verified.json을 함께 입력으로 받아야 한다.",
+  "carryover_source": "/Users/hwa/Projects/Automation/TickDeck/_workspace/20260706_clo_v51/02_verified.json",
+  "carried_verified_items_count": 61,
+  "carried_source_registry_count": 69,
+  "carried_metric_registry_count": 112,
+  "carried_rejected_items_count": 3
+ },
+ "source_registry": {
+  "src_001": {
+   "publisher": "식품의약품안전처 (SNUH 미러 게시)",
+   "url": "http://hrpp.snuh.org/edurule/provision/domestic/_/notice/6068/download.do?resId=17659",
+   "title": "의료기기와 개인용 건강관리(웰니스)제품 판단기준 (공무원 지침서)",
+   "tier": "Tier-A",
+   "conditions": "정부 지침서 원문(PDF 직접 확보). 2015년 발간 — 이후 개정 법규 미반영. 공무원 내부 지침서로 대외 법적 효력은 없으나 판단기준 실무 근거로 유효. 마사지기·안마기 품목명이 직접 등장하지 않고 일반원칙·판례로만 구성 — 개별 제품 적용은 유추 해석 필요.",
+   "doc_type": "pdf",
+   "local_path": "pdf/mfds_wellness_criteria_2015.pdf",
+   "cited_pages": [
+    4,
+    5,
+    6,
+    12,
+    13,
+    14
+   ]
+  },
+  "src_002": {
+   "publisher": "식품의약품안전처 (중구보건소 재게시)",
+   "url": "https://www.junggu.seoul.kr/health/cwsboard/board.do?mode=download&bid=840&cid=126212&fileIndex=1&filename=126212_202402291017388010.pdf",
+   "title": "의료기기 광고 해설서 (2023.9 개정)",
+   "tier": "Tier-A",
+   "conditions": "정부 해설서 원문(PDF 직접 확보), 2023.9 개정판. 해설서는 식약처 유권해석 성격 — 개별 제품 최종 분류는 품목허가 여부로 별도 결정. 품목명 병기 규정은 '의료기기로 허가·인증·신고된 제품'에 한정 — 공산품 유통 소형 마사지기(CLO 등)는 이 규정 적용 대상이 아닐 가능성 높음. 공산품의 '안마(기)' 명칭 사용 가능 여부는 이 문서만으로 확정 불가.",
+   "doc_type": "pdf",
+   "local_path": "pdf/mfds_ad_guide_2023.pdf",
+   "cited_pages": [
+    29,
+    40,
+    41
+   ]
+  },
+  "src_003": {
+   "publisher": "한국소비자원",
+   "url": "https://www.kca.go.kr/smartconsumer/board/download.do?fno=10021515&bid=00000146&did=1002638474&menukey=7301",
+   "title": "전기 안마기 위해정보 심층분석",
+   "tier": "Tier-A",
+   "conditions": "정부 산하 소비자보호기관 원문(PDF 직접 확보). 2018년 발간 — CISS 2015~2017년 접수 통계 기준. 시장규모 시계열(2007년 200억원~2018년 7,000억원)은 2018년 발간 시점의 실적+전망치로, 2026 현재 시점과 6~8년 시차 있음(코지마·뉴스1 등 2025년 기사의 1조~1.5조 추정과 시점 격차 큼 — 시계열 직접 연결 금지). 위해사례는 '전기맛사지기' 품목명 조회 기준 — 소형 목/어깨 마사지기 포함 비중 불명. 안마의자(대형) 중심 분석.",
+   "doc_type": "pdf",
+   "local_path": "pdf/kca_massage_chair_hazard_2022.pdf",
+   "cited_pages": [
+    1,
+    2,
+    3
+   ]
+  },
+  "src_004": {
+   "publisher": "한국소비자원",
+   "url": "https://www.kca.go.kr/smartconsumer/board/download.do?menukey=7301&fno=10040845&bid=00000146&did=1003594176",
+   "title": "가정용 안마기기 및 의료기기 렌탈서비스 실태조사",
+   "tier": "Tier-A",
+   "conditions": "정부 산하 소비자보호기관 원문(PDF 직접 확보), 2023년 발간. 안마기기+의료기기 통합 통계 — 안마기기만의 상담건수 별도 분리 안 됨. 대형 렌탈 대상 브랜드(바디프랜드·세라젬·코웨이 등) 중심 조사 — CLO 같은 소형·구매형 브랜드는 조사 대상 밖(렌탈 모델 자체가 없을 가능성).",
+   "doc_type": "pdf",
+   "local_path": "pdf/kca_rental_service_survey.pdf",
+   "cited_pages": [
+    5,
+    12
+   ]
+  },
+  "src_005": {
+   "publisher": "한국소비자원",
+   "url": "https://www.kca.go.kr/kca/board/download.do?menukey=5084&fno=10022184&bid=00000013&did=1002684872",
+   "title": "시트형 안마기 품질비교시험",
+   "tier": "Tier-A",
+   "conditions": "정부 산하 소비자보호기관 원문(PDF 직접 확보), 2018년 발간. 2026년 CLO·클럭 등 최신 라인업 가격과 비교 시 6~8년 시차 유의. 시트형(등·허리·엉덩이 포함) 한정 — CLO 넥앤프로 같은 목·어깨 전용 소형 제품과 폼팩터 다름.",
+   "doc_type": "pdf",
+   "local_path": "pdf/kca_seat_massage_quality_2018.pdf",
+   "cited_pages": [
+    4
+   ]
+  },
+  "src_006": {
+   "publisher": "한화투자증권",
+   "url": "https://stock.pstatic.net/stock-research/company/16/20260511_company_894365000.pdf",
+   "title": "코웨이(021240) 1Q26 Review: 기우에 불과했던 우려들, 제자리로 돌아갈 시간",
+   "tier": "Tier-A",
+   "conditions": "증권사 기업분석 리포트(PDF 직접 확보), Buy 의견 유지 — 낙관 편향 가능하나 실적 수치는 공시 기반. 코웨이 전사 실적 리뷰 — 안마의자('비렉스') 세그먼트만의 매출·M/S는 이 리포트 단독으로는 분리 안 됨.",
+   "doc_type": "pdf",
+   "local_path": "pdf/coway_1q26_review.pdf",
+   "cited_pages": [
+    1
+   ]
+  },
+  "src_007": {
+   "publisher": "한화투자증권",
+   "url": "https://www.ssl.pstatic.net/imgstock/upload/research/company/1707790649053.pdf",
+   "title": "코웨이(021240) 4Q23 리뷰: 경쟁사 압도 중",
+   "tier": "Tier-A",
+   "conditions": "증권사 기업분석 리포트(PDF 직접 확보, wayback 스냅샷 경유 확보), Buy 의견 — 낙관 편향 가능. 비렉스(매트리스+안마의자) 세그먼트 단독 매출·계정수는 분리 공시 안 됨 — 'M/S 확대 지속'은 정성 서술만, 정량 점유율 수치 없음.",
+   "doc_type": "pdf",
+   "local_path": "pdf/hanwha_coway_4q23.pdf",
+   "cited_pages": [
+    1
+   ]
+  },
+  "src_008": {
+   "publisher": "The Spine Journal (PMC, NIH funded)",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4596391/",
+   "title": "Randomized clinical trial assessing whether additional massage treatments for chronic neck pain improve 12- and 26-week outcomes",
+   "tier": "Tier-A",
+   "conditions": "NIH NCCAM 공적자금 지원 RCT 원문(PDF 직접 확보), COI 없음. 전문 마사지 치료사의 60분 시술 기준 RCT — 소형 가정용 마사지 기기(CLO 등) 효능과 직접 등치 불가. '마사지'라는 개입 방식의 임상근거일 뿐 기기 효능 근거 아님. 미국 환자군 대상 — 한국 소비자 적용 시 신체·생활습관 차이 고려 필요.",
+   "doc_type": "pdf",
+   "local_path": "pdf/pmc_neck_pain_rct_2015.pdf",
+   "cited_pages": [
+    2
+   ]
+  },
+  "src_009": {
+   "publisher": "International Journal of Sports Physical Therapy (PMC)",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10069390/",
+   "title": "The Effect Of Percussive Therapy On Musculoskeletal Performance And Experiences Of Pain: A Systematic Literature Review",
+   "tier": "Tier-A",
+   "conditions": "동료심사 SLR 원문(PDF 직접 확보), COI 없음. 일반 마사지건(퍼커시브 테라피) 대상 리뷰 — CLO 넥앤프로(주무름형)·메디소닉(갈바닉)과는 작동 원리가 다른 타건형(percussive) 기기 한정. 포함된 13개 연구 전부 방법론적 질 또는 보고의 한계 보유 — '효과 있음'이 확정적 고품질 근거는 아님(저자 스스로 명시).",
+   "doc_type": "pdf",
+   "local_path": "pdf/pmc_percussive_therapy_slr_2023.pdf",
+   "cited_pages": [
+    1
+   ]
+  },
+  "src_010": {
+   "publisher": "Morgan Reed Insights",
+   "url": "https://www.morganreedinsights.com/south-korea-massage-equipment-market/",
+   "title": "South Korea Massage Equipment Market Size, Share, Growth & Forecast 2026-2035",
+   "tier": "Tier-B",
+   "conditions": "페이월 — 스니펫만 확인. 방법론 미공개. 유료 리서치사 낙관 편향 가능. 보조 참조로만 인용 가능. 한국 원화 환산 기준 미제시.",
+   "_carried_from_4th": "src_001"
+  },
+  "src_011": {
+   "publisher": "H&I Global Research",
+   "url": "https://www.globalresearch.kr/markets/south-korea-massage-chair-market-expert/",
+   "title": "국내 마사지 의자 시장 점유율, 규모, 분석 : 유형별 (일반형, 로봇형), 2026-2035",
+   "tier": "Tier-B",
+   "conditions": "페이월 — 기계번역 요약 수준. 안마의자(massage chair)만 대상 — 소형/휴대용 별도. 방법론 미공개. 보조 참조.",
+   "_carried_from_4th": "src_002"
+  },
+  "src_012": {
+   "publisher": "Bonafide Research",
+   "url": "https://www.globalresearch.kr/bna26kr5346",
+   "title": "한국의 전기 마사지기 시장 동향 (~2031년): 목·어깨, 발, 전신, 휴대용, 안마의자",
+   "tier": "Tier-B",
+   "conditions": "유료 PDF — 구체 수치 스니펫 미확인. 정성 분류 정보만 수집됨. 수치 없음.",
+   "_carried_from_4th": "src_003"
+  },
+  "src_013": {
+   "publisher": "Fortune Business Insights / GII Korea",
+   "url": "https://www.giikorea.co.kr/report/fbs2006013-global-massage-equipment-market-size-share-growth.html",
+   "title": "마사지 장비 시장 규모·점유율·성장률 및 유형별 산업 분석, 지역별 동향 및 예측 2026-2034",
+   "tier": "Tier-B",
+   "conditions": "글로벌 기준 전용 — 한국 수치 없음. 한국 착지 직역 금지. 글로벌 기준선 참조 시에만 인용.",
+   "_carried_from_4th": "src_004"
+  },
+  "src_014": {
+   "publisher": "뉴스1",
+   "url": "https://www.news1.kr/industry/sb-founded/6075330",
+   "title": "코웨이 '비렉스' 약진에 바프·세라젬 긴장…체험 라운지로 반격",
+   "tier": "Tier-B",
+   "conditions": "업계 취재 기사. 안마의자(대형) 중심. 바디프랜드 라운지 수는 기사 내 언급 수치.",
+   "_carried_from_4th": "src_005"
+  },
+  "src_015": {
+   "publisher": "매일경제",
+   "url": "https://www.mk.co.kr/news/business/11219580",
+   "title": "코지마에서 제일 잘 팔린 안마기기는? 실속형 '더블모션'",
+   "tier": "Tier-B",
+   "conditions": "코지마 자사 판매 데이터 기반 PR성 보도. 수치는 코지마 내부 기준만 — 전체 시장 대표성 없음. 인용 시 '코지마 자사 기준' 명시 필수.",
+   "_carried_from_4th": "src_006"
+  },
+  "src_016": {
+   "publisher": "뉴시스",
+   "url": "https://www.newsis.com/view/NISX20250709_0003244464",
+   "title": "\"실속형에 지갑 열었다\"…코지마, 상반기 베스트 셀러는?",
+   "tier": "Tier-B",
+   "conditions": "코지마 자사 판매 데이터 기반 언론보도. 2025년 상반기 기준. 시장 전체 대표성 없음.",
+   "_carried_from_4th": "src_007"
+  },
+  "src_017": {
+   "publisher": "핀포인트뉴스",
+   "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=313923",
+   "title": "지난해 가장 사랑받은 코지마 안마의자·소형마사지기 TOP3는",
+   "tier": "Tier-B",
+   "conditions": "코지마 2024년 연간 데이터 기반. 소형 비중 40%는 코지마 자사 총매출 기준 — 시장 전체 비중이 아님. 외삽 금지.",
+   "_carried_from_4th": "src_008"
+  },
+  "src_018": {
+   "publisher": "STN스포츠",
+   "url": "https://www.stnsports.co.kr/news/articleView.html?idxno=310160",
+   "title": "안마의자 매출 33% 껑충…코지마, 스포츠 ESG로 체질 바꿨다",
+   "tier": "Tier-B",
+   "conditions": "코지마 PR 기반 보도. 독립 검증 없음. 자사 기준 성장률만 인용 가능.",
+   "_carried_from_4th": "src_009"
+  },
+  "src_019": {
+   "publisher": "메디컬리포트뉴스",
+   "url": "https://www.medicalreport.kr/news/articleView.html?idxno=303297",
+   "title": "안마용품 브랜드 트렌드지수 4위 클럭, 1위는?",
+   "tier": "Tier-B",
+   "conditions": "랭키파이 AI 빅데이터 — 온라인 버즈·검색량 기반 지수. 판매량·시장점유율과 다름. 2024년 4월 5주차 단일 스냅샷. 브레오·마이누·CLO 미집계.",
+   "_carried_from_4th": "src_010"
+  },
+  "src_020": {
+   "publisher": "CLO 공식 스토어",
+   "url": "https://clostore.co.kr/product/%ED%81%B4%EB%A1%9C-%EB%A9%94%EB%94%94%EC%86%8C%EB%8B%89-%EA%B0%88%EB%B0%94%EB%8B%89-%EA%B3%A0%EC%A3%BC%ED%8C%8C-%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0/31/",
+   "title": "클로 메디소닉 갈바닉 고주파 마사지기 — CLO 공식 스토어",
+   "tier": "Tier-B",
+   "conditions": "1차 관찰 (2025 기준). 자사 스토어 리뷰 — 비공개 선택·편향 가능. 네이버 독립 리뷰와 구분 필수. 판매지수 아님.",
+   "_carried_from_4th": "src_011"
+  },
+  "src_021": {
+   "publisher": "퍼니즈 (Funiz) 가격비교",
+   "url": "https://funiz.com/goods/19592070",
+   "title": "클로 핸드휴 손마사지기 — 퍼니즈 쇼핑 가격비교",
+   "tier": "Tier-B",
+   "conditions": "1차 관찰 (2026-02-08 기준). 가격비교 플랫폼 스냅샷 — 현재 가격 아닐 수 있음. as-of 날짜 인용 시 명시 필수.",
+   "_carried_from_4th": "src_012"
+  },
+  "src_022": {
+   "publisher": "라이믹스 꿀팁 (RXTip)",
+   "url": "https://rxtip.kr/hotdeal/178009",
+   "title": "[쿠팡] 클로 넥앤프로 무선 목어깨 마사지기 86,200원 핫딜",
+   "tier": "Tier-C",
+   "conditions": "2024-05-27 핫딜 당시 임시 가격. 정가 아님. 현재 가격 반영 불가. 참고용 하한 가격대 시그널로만 사용.",
+   "_carried_from_4th": "src_013"
+  },
+  "src_023": {
+   "publisher": "CLO 공식 스토어",
+   "url": "https://clostore.co.kr",
+   "title": "CLO 공식 스토어 홈 — 카테고리 구조 및 인기 검색어 관찰",
+   "tier": "Tier-B",
+   "conditions": "1차 관찰 (2026-07-05 기준, Jina Reader). 인기 검색어는 스토어 내부 검색 기준 — 외부 플랫폼(네이버·쿠팡) 검색량 아님.",
+   "_carried_from_4th": "src_014"
+  },
+  "src_024": {
+   "publisher": "오늘경제",
+   "url": "https://www.startuptoday.co.kr/news/articleView.html?idxno=515512",
+   "title": "바디프랜드, 2025 헬스케어 트렌드 조사…하체 근력강화 중요",
+   "tier": "Tier-B",
+   "conditions": "바디프랜드 자사 설문 — COI 있음. 표본 n=1,000, 바디프랜드 헬스케어로봇 구매자 한정. 소형 마사지기 소비자 대표성 없음. src_016과 동일 조사 원천.",
+   "_carried_from_4th": "src_015"
+  },
+  "src_025": {
+   "publisher": "더퍼블릭",
+   "url": "https://www.thepublic.kr/news/articleView.html?idxno=287523",
+   "title": "\"가장 선호하는 마사지는 주무름\"…바디프랜드, 고객 대상 설문 발표",
+   "tier": "Tier-B",
+   "conditions": "src_015와 동일 설문 원천 인용 (순환 인용). 바디프랜드 자사 조사 COI. 동일 조사이므로 metric 중복 생성 금지 — src_015 metric에 합산.",
+   "_carried_from_4th": "src_016"
+  },
+  "src_026": {
+   "publisher": "컨슈머포스트",
+   "url": "https://www.consumerpost.co.kr/news/articleView.html?idxno=408507",
+   "title": "[소비자평판] 가정의 달, 가장 받고 싶은 선물 1위 헬스케어로봇·마사지체어",
+   "tier": "Tier-B",
+   "conditions": "바디프랜드×오픈서베이 공동 설문 — COI 있음(바디프랜드 주최). n=500, 모바일 온라인 편향. 마사지체어 과대 대표 가능. 인용 시 출처 성격 명시 필수.",
+   "_carried_from_4th": "src_017"
+  },
+  "src_027": {
+   "publisher": "한국일보",
+   "url": "https://www.hankookilbo.com/news/article/A2026050410560000363",
+   "title": "5060 넘어… 全세대 '가정의 달' 선물 노리는 안마 가전",
+   "tier": "Tier-B",
+   "conditions": "언론 기사. 수치는 바디프랜드 자체 조사 재인용(src_017 원출처). 추가 독립 수치 없음.",
+   "_carried_from_4th": "src_018"
+  },
+  "src_028": {
+   "publisher": "디지털산업정보학회논문지",
+   "url": "https://www.koreascience.kr/article/JAKO202510857606002.page?lang=ko",
+   "title": "인플루언서 유형이 소비자 구매의도에 미치는 영향: 라이브 커머스 중심으로",
+   "tier": "Tier-A",
+   "conditions": "동료 심사 학술논문. 한국·중국 혼합 표본(n=320). 마사지기 특화 연구 아님 — 헬스케어 가전 일반 적용 시 해석 주의.",
+   "_carried_from_4th": "src_019"
+  },
+  "src_029": {
+   "publisher": "세계일보",
+   "url": "https://www.segye.com/newsView/20250706506767",
+   "title": "발견형 쇼핑 시대… 예능급 '라방'으로 고객 유혹",
+   "tier": "Tier-B",
+   "conditions": "라방바 데이터랩 인용. CJ온스타일 단일 기업 데이터. 마사지기 카테고리 특화 아님. 라이브커머스 채널 전반 동향 시그널로 사용.",
+   "_carried_from_4th": "src_020"
+  },
+  "src_030": {
+   "publisher": "인사이트코리아",
+   "url": "https://www.insightkorea.co.kr/news/articleView.html?idxno=227560",
+   "title": "\"400만 팔로워 공략\"…CJ온스타일, '인플루언서 쇼' 연다",
+   "tier": "Tier-B",
+   "conditions": "CJ온스타일 단일 플랫폼. 뷰티·리빙 카테고리 중심. 마사지기 직접 사례 아님. 라이브커머스 인플루언서 효과 시그널.",
+   "_carried_from_4th": "src_021"
+  },
+  "src_031": {
+   "publisher": "매일경제",
+   "url": "https://www.mk.co.kr/news/society/11376567",
+   "title": "3만개 팔린 손발톱무좀 레이저 치료기, 알고보니 무허가 중국산",
+   "tier": "Tier-B",
+   "conditions": "서울시 민생사법경찰국 단속 결과 보도. 레이저 치료기 사례 — 마사지기 직접 아님. 무허가 기기 유통 규제 리스크 간접 증거.",
+   "_carried_from_4th": "src_022"
+  },
+  "src_032": {
+   "publisher": "메디칼디바이스",
+   "url": "https://www.medtech.co.kr/news/articleView.html?idxno=1726",
+   "title": "식약처, 부당광고 및 불법유통 291건 적발",
+   "tier": "Tier-B",
+   "conditions": "식약처 공공기관 보도자료. 마사지기 직접 언급 없음. 의료기기 광고 규제 리스크 간접 증거.",
+   "_carried_from_4th": "src_023"
+  },
+  "src_033": {
+   "publisher": "약사공론",
+   "url": "https://www.kpanews.co.kr/news/articleView.html?idxno=529254",
+   "title": "설 앞두고 '의료제품 선물' 온라인 광고 무더기 적발",
+   "tier": "Tier-B",
+   "conditions": "식약처 특별 점검 보도자료. 저주파자극기가 EMS 마사지기와 분류 경계 — CLO 인접 카테고리 규제 리스크 증거.",
+   "_carried_from_4th": "src_024"
+  },
+  "src_034": {
+   "publisher": "푸드투데이",
+   "url": "https://www.foodtoday.or.kr/news/article.html?no=196397",
+   "title": "\"정식 허가 확인하세요\" 혈압계·제모기 해외직구 불법광고 1천건 적발",
+   "tier": "Tier-B",
+   "conditions": "식약처×녹색소비자연대 모니터링. 마사지기 직접 적발 없음. 카테고리 인접 규제 리스크 시그널.",
+   "_carried_from_4th": "src_025"
+  },
+  "src_035": {
+   "publisher": "IT동아",
+   "url": "https://it.donga.com/29928/",
+   "title": "[리뷰] '클럭 VS 픽스' 저주파 마사지기 장단점은?",
+   "tier": "Tier-B",
+   "conditions": "편집자 비교 리뷰. 저주파 패드형 — CLO 넥앤프로(물리적 주무름형)와 다른 세그먼트. 직접 비교 불가. 경쟁 세그먼트 가격대 참조.",
+   "_carried_from_4th": "src_026"
+  },
+  "src_036": {
+   "publisher": "소비자24 (한국소비자원·공정거래위원회)",
+   "url": "https://www.consumer.go.kr/user/ftc/consumer/cnsmrBBS/80/selectInfoCmprDetail.do?cntntsId=00000205",
+   "title": "무선 마사지건 구입 시, 안전인증·확인에 대한 표시사항 확인 필요",
+   "tier": "Tier-A",
+   "conditions": "소비자원 공식 비교 시험. 마사지건(진동형) 6개 브랜드 한정. CLO 포함 아님. 수치 데이터 미추출. 안전인증 규제 맥락 자료.",
+   "_carried_from_4th": "src_027"
+  },
+  "src_037": {
+   "publisher": "뉴스투데이",
+   "url": "https://www.news2day.co.kr/article/20250117500255",
+   "title": "[N2 뷰] 바디프랜드-세라젬, 1조5000억 안마의자 시장 놓고 용호상박",
+   "tier": "Tier-B",
+   "conditions": "언론 기사. 시장규모 1조~1.5조원은 복수 언론 인용 추정치 — 공식 통계 아님. 세라젬·바디프랜드 매출은 공시 기반으로 신뢰도 높음.",
+   "_carried_from_4th": "src_028"
+  },
+  "src_038": {
+   "publisher": "비즈니스플러스",
+   "url": "https://www.businessplus.kr/news/articleView.html?idxno=100093",
+   "title": "[뷰티디바이스①/시장성] 2030년 시장 규모 '1조원'…홈케어 뷰티시장 주인공으로 주목",
+   "tier": "Tier-B",
+   "conditions": "언론 기사, 리서치사 인용이나 기사 내 출처 리서치사명 미상. 수치 metric 승격 불가 — 보조 시장 맥락으로만 참조.",
+   "_carried_from_4th": "src_029"
+  },
+  "src_039": {
+   "publisher": "뉴스1",
+   "url": "https://www.news1.kr/industry/fashion/5909387",
+   "title": "시장 크기 벌써 2조… 돈 되는 뷰티 디바이스에 줄서는 업체들",
+   "tier": "Tier-B",
+   "conditions": "기각 — 스니펫 기반 수집, 본문 미확인. 2조원 수치 기준연도·출처 미상. metric 사용 불가.",
+   "_carried_from_4th": "src_030"
+  },
+  "src_040": {
+   "publisher": "식품의약품안전처 (행정규칙)",
+   "url": "https://www.law.go.kr/%ED%96%89%EC%A0%95%EA%B7%9C%EC%B9%99/%EC%9D%98%EB%A3%8C%EA%B8%B0%EA%B8%B0%20%ED%92%88%EB%AA%A9%20%EB%B0%8F%20%ED%92%88%EB%AA%A9%EB%B3%84%20%EB%93%B1%EA%B8%89%EC%97%90%20%EA%B4%80%ED%95%9C%20%EA%B7%9C%EC%A0%95",
+   "title": "의료기기 품목 및 품목별 등급에 관한 규정 — 국가법령정보센터",
+   "tier": "Tier-A",
+   "conditions": "식약처 행정규칙 — WebSearch 요약으로 수집, 원문 직접 조회 미확인. EMS/TENS 분류 기준 내용은 1차 원문 확인 권고.",
+   "_carried_from_4th": "src_031"
+  },
+  "src_041": {
+   "publisher": "클럭 KLUG (주식회사 데일리앤코, 공식 스토어)",
+   "url": "https://klug.kr/category/%EB%AF%B8%EB%8B%88-%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0/26/",
+   "title": "클럭(KLUG) 공식 스토어 — 미니 마사지기 카테고리",
+   "tier": "Tier-B",
+   "conditions": "1차 관찰(2026-07-05). 자사 스토어 가격·평점은 채택 가능. '리뷰(294,583)' 표기는 다나와/타 브랜드 대비 자릿수 이상치 — 리뷰수로 승격 금지, 라벨 미상으로 보류.",
+   "_carried_from_4th": "src_032"
+  },
+  "src_042": {
+   "publisher": "다나와 (가격비교 플랫폼, 브레오 유통 제품)",
+   "url": "https://prod.danawa.com/info/?pcode=88219550&keyword=%EB%B8%8C%EB%A0%88%EC%98%A4%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0&cate=17236116",
+   "title": "브레오(Breo) 릴렉서 N2 / NP1 / NP2 air — 다나와 가격비교 통합검색",
+   "tier": "Tier-B",
+   "conditions": "1차 관찰(2026-07-05). 브레오 공식몰(10breo.com) zombie로 접속 실패 — 다나와 대체 사용. 제3자 가격비교, 편향 낮음. 다나와 채널 집계만 반영, 타 채널 리뷰 미포함.",
+   "_carried_from_4th": "src_033"
+  },
+  "src_043": {
+   "publisher": "",
+   "url": "",
+   "title": "마이누(Mynu) 브랜드 — 다나와/웹 검색 관찰 실패 기록",
+   "tier": "FLAG",
+   "conditions": "브랜드 존재 자체를 실측 확인 못함(zombie_flag=true). 플레이어 맵에서 제외 — '미확인' 각주 처리.",
+   "_carried_from_4th": "src_034"
+  },
+  "src_044": {
+   "publisher": "OA 오아 (오아몰, 공식 스토어)",
+   "url": "https://oa-mall.co.kr/product/list.html?cate_no=70",
+   "title": "OA(오아) 공식 몰 — 목/어깨 마사지기 카테고리",
+   "tier": "Tier-B",
+   "conditions": "1차 관찰(2026-07-05). 공식몰 자체 가격·리뷰 — 편향 가능, 독립 플랫폼 리뷰수 미확인.",
+   "_carried_from_4th": "src_035"
+  },
+  "src_045": {
+   "publisher": "다나와 (가격비교 플랫폼, 코지마 유통 제품)",
+   "url": "https://search.danawa.com/dsearch.php?query=%EC%BD%94%EC%A7%80%EB%A7%88%20%EB%AA%A9%EC%96%B4%EA%B9%A8%20%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0",
+   "title": "코지마(Cozyma) 목/어깨 소형 마사지기 라인 — 다나와 통합검색",
+   "tier": "Tier-B",
+   "conditions": "1차 관찰(2026-07-05). 코지마 공식몰(cozymashop.com) 접속 실패로 다나와 대체. 제3자 가격비교, 편향 낮음.",
+   "_carried_from_4th": "src_036"
+  },
+  "src_046": {
+   "publisher": "CLO (클로 공식 스토어)",
+   "url": "https://clostore.co.kr/product/%ED%81%B4%EB%A1%9C-%EB%84%A5%EC%95%A4%ED%94%84%EB%A1%9C-%EB%AA%A9-%EC%96%B4%EA%B9%A8-%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0-%EC%95%88%EB%A7%88%EA%B8%B0/28/",
+   "title": "CLO 넥앤프로 목 어깨 마사지기 상세 페이지 — 리뷰·가격 재확인",
+   "tier": "Tier-B",
+   "conditions": "1차 관찰(2026-07-05). 가격은 채택 가능. 동일 제품 리뷰수 이중 표기(1,222 vs 6,066) — 정의 불명, 보수적으로 낮은 값(1,222)만 참고용 하한으로 제한 승격, 상한은 미승격.",
+   "_carried_from_4th": "src_037"
+  },
+  "src_047": {
+   "publisher": "CLO (클로 공식 스토어)",
+   "url": "https://clostore.co.kr",
+   "title": "CLO 공식 스토어 홈 — 베스트셀러 6종 전체 가격·리뷰 + 브랜드 소구 문구 + SNS 채널 관찰(보강)",
+   "tier": "Tier-B",
+   "conditions": "1차 관찰(2026-07-05), src_014 보강. 가격 채택 가능. 6종 전체에서 리뷰수 이중 표기 패턴 재현 — 정의 불명으로 리뷰수 전부 미승격(claims에만 원문 병기).",
+   "_carried_from_4th": "src_038"
+  },
+  "src_048": {
+   "publisher": "CLO 채널 관찰 기록",
+   "url": "",
+   "title": "CLO 마케팅 채널 실측 — 공식 인스타그램/네이버쇼핑라이브 편성 확인 시도(관찰 실패)",
+   "tier": "FLAG",
+   "conditions": "채널 특정 실패 — '부재 증명'으로 쓰지 않음. metric 없음.",
+   "_carried_from_4th": "src_039"
+  },
+  "src_049": {
+   "publisher": "Instagram (@klug_korea)",
+   "url": "https://www.instagram.com/klug_korea/",
+   "title": "클럭(KLUG) 공식 인스타그램 — 팔로워·게시물 수(검색 스니펫, 원문 열람 실패)",
+   "tier": "Tier-C",
+   "conditions": "원문 로그인 게이트로 직접 열람 실패 — 검색엔진 스니펫 대체. 단일 미검증 출처. 경쟁사 비교 불가(타 브랜드는 전부 미확인).",
+   "_carried_from_4th": "src_040"
+  },
+  "src_050": {
+   "publisher": "한국신용평가(KIS Rating)",
+   "url": "https://kind.krx.co.kr/common/disclsviewer.do?method=search&acptno=20250321001984",
+   "local_path": "/private/tmp/claude-501/-Users-hwa-Projects-Automation-TickDeck/095728a9-89f8-4ea9-8ee4-971fa5b5d555/scratchpad/coway_kis.pdf",
+   "title": "코웨이(주) KIS Credit Opinion — 2025.05.30",
+   "tier": "Tier-A",
+   "conditions": "DART 공시자료(사업보고서·분기보고서) 재구성 인용. 신용평가사 COI(코웨이가 수수료 지급 발행자) 있으나 재무수치는 공시 재구성이라 신뢰도 높음. 대형 렌탈사업 전체 기준 — 소형·휴대용 세그먼트 서술 없음.",
+   "_carried_from_4th": "src_041"
+  },
+  "src_051": {
+   "publisher": "DART 전자공시 회사검색 + 언론 교차확인",
+   "url": "",
+   "title": "바디프랜드·세라젬 상장 여부 확인(양사 비상장)",
+   "tier": "FLAG",
+   "conditions": "DART API 정식 인증키 없이 회사검색 결과 부재 + 언론 IPO 추진 기사로 교차 확인 — 1차 API 조회 재확인 못함. 세라젬 영업이익 수치는 검색 스니펫 기반, 원문 미열람.",
+   "_carried_from_4th": "src_042"
+  },
+  "src_052": {
+   "publisher": "Instagram (@oa.world_official)",
+   "url": "https://www.instagram.com/oa.world_official/",
+   "title": "OA(오아) 공식 인스타그램 — 팔로워·소개문(검색 스니펫, 원문 열람 실패)",
+   "tier": "Tier-C",
+   "conditions": "원문 로그인 게이트로 직접 열람 실패 — 검색엔진 스니펫 대체. 단일 미검증 출처. 클럭(src_040)과 동일 제약 — 일관 처분 적용.",
+   "_carried_from_4th": "src_043"
+  },
+  "src_054": {
+   "publisher": "Instagram (@cozyma.official) / GS샵",
+   "url": "https://www.instagram.com/cozyma.official/",
+   "title": "코지마 공식 인스타그램(스니펫) + GS샵 브랜드관(URL 직접확인)",
+   "tier": "Tier-B",
+   "conditions": "인스타그램 팔로워 수치는 검색 스니펫 기반(클럭 src_040, OA src_043과 동일 제약 — 팔로워 수치는 downgrade). GS샵 브랜드관 존재·URL은 직접 확인(Tier-B 유지).",
+   "_carried_from_4th": "src_045"
+  },
+  "src_053": {
+   "publisher": "",
+   "url": "",
+   "title": "브레오(Breo) 공식 채널 실측 — 핸들 특정, 팔로워 등 정량 데이터 미확보",
+   "tier": "FLAG",
+   "conditions": "인스타그램/페이스북 핸들만 특정, 팔로워·게시물·라이브커머스 편성 정량 데이터 전부 미확인. src_033(10breo.com DNS 미해석) 기록과 연속.",
+   "_carried_from_4th": "src_044"
+  },
+  "src_055": {
+   "publisher": "다나와",
+   "url": "https://search.danawa.com/dsearch.php?query=%EB%AA%A9%EC%96%B4%EA%B9%A8%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0",
+   "title": "목어깨마사지기 다나와 통합검색 — 제조사 필터·인기상품순(직접 관찰)",
+   "tier": "Tier-B",
+   "conditions": "다나와 인기상품순은 자체 알고리즘(광고 포함 가능) — 절대 시장 순위 아님. 제스파는 종합 헬스케어가전(풀카탈로그), 휴플러스는 마사지건(타건형)으로 CLO(주무름형)와 하위 유형 다름 — 세그먼트 구분 필수.",
+   "_carried_from_4th": "src_046"
+  },
+  "src_056": {
+   "publisher": "한경비즈니스",
+   "url": "https://magazine.hankyung.com/business/article/201909035827b",
+   "title": "돌풍 일으킨 미니 마사지기 '클럭'의 3가지 성공 비결",
+   "tier": "Tier-B",
+   "conditions": "2019년 8월 기사 — 데일리앤코 대표 인터뷰 기반, 자사 성공 서사 편향 가능. 수치는 반드시 '2018~2019년 당시' 시점 라벨 병기해 인용할 것 — 2026 현재 성과로 오독 금지. src_010(2024년 트렌드지수 4위)과 5년 시점 격차 있음.",
+   "_carried_from_4th": "src_047"
+  },
+  "src_057": {
+   "publisher": "핸드메이커",
+   "url": "https://www.handmk.com/news/articleView.html?idxno=22178",
+   "title": "데일리앤코 클럭(Klug), 구독자 128만의 크리에이터 '회사원A'와 콜라보 기획전 진행",
+   "tier": "Tier-B",
+   "conditions": "보도자료성 기사 — 협업 실행 사실만 확인, 성과(판매량·조회수) 수치 없음.",
+   "_carried_from_4th": "src_048"
+  },
+  "src_058": {
+   "publisher": "ZDNet Korea",
+   "url": "https://zdnet.co.kr/view/?no=20251230111706",
+   "title": "코지마, 올해 안마의자 매출 33% 증가",
+   "tier": "Tier-B",
+   "conditions": "코지마 자체 발표(보도자료) 기반 — 독립 검증 아님. 공시 기반 src_050(제품매출 28%↑)과 정의·기준 다름, 병기 조건부 인용.",
+   "_carried_from_4th": "src_049"
+  },
+  "src_059": {
+   "publisher": "신아일보",
+   "url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861",
+   "title": "코지마, 제품매출 28%↑상품매출 63%↓…'자체개발' 중심 체질 전환",
+   "tier": "Tier-A",
+   "conditions": "감사보고서·공시 기반 독립 취재 — '제품 매출'과 '상품 매출' 구분은 기사 인용 수준, 원본 감사보고서 대조는 못함.",
+   "_carried_from_4th": "src_050"
+  },
+  "src_060": {
+   "publisher": "서울경제",
+   "url": "https://www.sedaily.com/article/20047563",
+   "title": "GS샵 홈쇼핑 편성 트렌드 — 무형상품 축소, 뷰티/패션/건기식 확대",
+   "tier": "Tier-A",
+   "conditions": "안마의자·마사지기 카테고리 구체 편성 데이터 없음 — 홈쇼핑 업계 전반 구조 변화 맥락 참고용, 코지마 개별 신호로 쓰지 말 것.",
+   "_carried_from_4th": "src_051"
+  },
+  "src_061": {
+   "publisher": "비즈체크",
+   "url": "https://www.bizcheck.co.kr/news/articleView.html?idxno=3408339",
+   "title": "중저가 안마의자 판매 돌풍의 주역 '제스파 김태주 대표'",
+   "tier": "Tier-B",
+   "conditions": "대표이사 인터뷰 기반 — 시장점유율 3위·연매출 500억원은 자사 발표, 공시·감사보고서 등 독립 출처 대조 안 됨. 인용 시 '자사 발표' 명시 필수.",
+   "_carried_from_4th": "src_052"
+  },
+  "src_062": {
+   "publisher": "Vietnam.vn (Báo Sài Gòn Giải phóng)",
+   "url": "https://www.vietnam.vn/ko/breo-ra-mat-cua-hang-dau-tien-tai-viet-nam",
+   "title": "브레오가 베트남에 첫 매장을 오픈했습니다",
+   "tier": "Tier-B",
+   "conditions": "베트남 시장 뉴스 — 한국 시장 마케팅 방식 직접 증거 아님. 한국 vs 해외 채널 투자 격차 대조 신호로만 사용.",
+   "_carried_from_4th": "src_053"
+  },
+  "src_063": {
+   "publisher": "11번가 / 신세계몰",
+   "url": "https://www.11st.co.kr/products/2572576064",
+   "title": "[브레오(Breo)] 프리미엄 4D 입체 목마사지기 NP1 — 11번가/신세계몰 판매 페이지",
+   "tier": "Tier-C",
+   "conditions": "단일 시점 가격 관찰(2026-07-06), 프로모션가일 수 있음. 오픈마켓 유통 채널 구조 관찰용 — 실행 캠페인 증거 아님.",
+   "_carried_from_4th": "src_054"
+  },
+  "src_064": {
+   "publisher": "아주경제",
+   "url": "https://www.ajunews.com/view/20260522171356445",
+   "title": "'우울증 치료기, 뷰티 디바이스까지' 확장하는 안마의자·헬스케어... 실적은 '양극화'",
+   "tier": "Tier-B",
+   "conditions": "복수사 감사보고서 인용 업계 취재. 코지마 736억원(2025)은 src_050(2024년 제품매출 513억+상품매출 134억=647억, 공시 기준)과 연도 다름 — 동일 회사 후속 연도로 교차 확인, 합산 금지.",
+   "_carried_from_4th": "src_055"
+  },
+  "src_065": {
+   "publisher": "디지털투데이",
+   "url": "https://www.digitaltoday.co.kr/news/articleView.html?idxno=659452",
+   "title": "오아, 건강기능식품 사업부문 물적분할 결정 — '쓰리핏' 신설",
+   "tier": "Tier-B",
+   "conditions": "공시 기반 기사 — 831억원은 오아 그룹 전자기기 도소매 전체 매출, 마사지기 단독 매출 아님. 마케팅 실행 정보 없음.",
+   "_carried_from_4th": "src_056"
+  },
+  "src_066": {
+   "publisher": "한국일보",
+   "url": "https://www.hankookilbo.com/News/Read/A2022032309050001802",
+   "title": "국내 고급형 안마의자 시장 — 파나소닉 점유율 관련 기사",
+   "tier": "Tier-B",
+   "doc_type": "news",
+   "conditions": "2022-03-24 발행 뉴스 기사(직접 WebFetch 확인). 국내 700만원 이상 고급형 안마의자 세그먼트 한정 수치 — 전체 안마의자 시장이나 소형/핸디형 마사지기와 혼동 금지. 파나소닉의 소형/핸디형(목·어깨) 제품 한국 정식판매 근거는 본 기사·타 자료 모두 없음."
+  },
+  "src_067": {
+   "publisher": "머니투데이",
+   "url": "https://www.mt.co.kr/living/2026/02/06/2026020610110286085",
+   "title": "코웨이 비렉스(매트리스+안마의자) 실적 관련 기사",
+   "tier": "Tier-B",
+   "doc_type": "news",
+   "conditions": "2026-02-06 발행(직접 WebFetch 확인). 공시 기반 매출 인용이나 안마의자 단독 매출은 비공시 — 비렉스(매트리스+안마의자 통합)와 침대 단독만 분리 공시됨. 안마의자 단독 수치로 사용 금지."
+  },
+  "src_068": {
+   "publisher": "이코노미스트",
+   "url": "https://economist.co.kr/article/view/ecn202412310049",
+   "title": "안마기기 시장규모 업계 추정 관련 기사",
+   "tier": "Tier-B",
+   "doc_type": "news",
+   "conditions": "2024-12-31 발행(직접 WebFetch 확인). 안마의자+소형 마사지기 통합 업계 추정치 — 방법론·표본 미공개. 소형 마사지기 단독 시장규모로 사용 금지."
+  },
+  "src_069": {
+   "publisher": "딜사이트",
+   "url": "https://dealsite.co.kr/articles/126899",
+   "title": "스파알·풀리오 등 소형 마사지기 브랜드 실적 단편 기사",
+   "tier": "Tier-B",
+   "doc_type": "news",
+   "conditions": "발행 시점 기사 인용 수치(직접 WebFetch 확인). 개별 브랜드 단편 실적으로 전체 소형 시장규모 추정에 그대로 확대 적용 금지."
+  },
+  "src_101": {
+   "publisher": "한국보건산업진흥원(KHIDI) — 의료기기산업정보 종합정보시스템(MDTIS), 원자료는 식품의약품안전처",
+   "url": "https://www.khidi.or.kr/menu?menuId=MENU03194",
+   "title": "국내 의료기기 시장규모 현황 (2018~2024)",
+   "tier": "Tier-A",
+   "doc_type": "official_db_extract",
+   "local_path": "pdf/khidi_domestic_medical_device_market_2018_2024.html",
+   "conditions": "정부 위탁기관(KHIDI) 공식 통계 페이지, 원자료는 식약처 '의료기기 생산 및 수출·수입실적 보고' 각 연도. verifier가 로컬 HTML 원문을 직접 grep해 표 전체 대조 — collector 수치와 100% 일치 확인(생산·수출·수입·시장규모·수입점유율 7개 연도 전부). 안마기(마사지기) 세부 품목이 아닌 의료기기 산업 전체 집계 — CLO/안마기 시장 규모 대체 불가, 배경 추세 인용에만 사용.",
+   "extract_note": "khidi.or.kr 원문 HTML 표를 로컬 파일 grep으로 직접 대조 — 시장규모·생산·수출·수입 7개 연도 전부 collector 수치와 일치 확인(verifier 재검증 문구 전사)"
+  },
+  "src_102": {
+   "publisher": "매일경제·이코노믹리뷰·ZDNet Korea(감사보고서/공시 인용 기사) + 한국신용평가(KIS Rating) 신용평가리포트",
+   "url": "https://www.econovill.com/news/articleView.html?idxno=608207",
+   "additional_urls": [
+    "https://www.mk.co.kr/news/business/10988564",
+    "https://zdnet.co.kr/view/?no=20230410175144",
+    "https://m.kisrating.com/fileDown.do?fileName=rs20230126-3.pdf&gubun=2&menuCd=R8"
+   ],
+   "title": "세라젬 연도별 매출액 시계열 (뉴스 인용 감사보고서 수치 + KIS 신용평가 리포트 교차)",
+   "tier": "Tier-B",
+   "doc_type": "official_db_extract",
+   "conditions": "econovill 원문 WebFetch 직접 확인 — 2018년 2,823억·2021년 6,670억·2022년 7,501억·5년 성장률 165.68% 전부 원문과 일치. mk.co.kr(2023년 5,847억 근거)은 WebFetch 접근 실패(사이트 차단) — 2023년 수치는 원문 미확인 상태로 승계, verification_note에 명시. circular_citation_flag=true 실제 확인됨: 복수 매체가 동일 감사보고서 공시를 재인용하는 구조이나 핵심 지점(2018·2021·2022)은 1차 공시 발표를 원문 대조로 확인했으므로 verified 유지. KIS Rating 리포트(2017·2019·2020 수치 출처)는 PDF 원문 미열람 — 뉴스 인용과 교차되지 않는 단독 연도는 downgraded."
+  },
+  "src_103": {
+   "publisher": "서울거래 비상장(공시 기반 재무요약) + 뉴스와이어·포쓰저널·직썰·ZDNet Korea(공시 인용 보도)",
+   "url": "https://www.seoulexchange.kr/stocks/%EB%B0%94%EB%94%94%ED%94%84%EB%9E%9C%EB%93%9C-66/",
+   "additional_urls": [
+    "https://www.newswire.co.kr/newsRead.php?no=1008478",
+    "http://www.4th.kr/news/articleView.html?idxno=2082148",
+    "https://www.ziksir.com/news/articleView.html?idxno=35415",
+    "https://zdnet.co.kr/view/?no=20230401174121"
+   ],
+   "title": "바디프랜드 연도별 매출액·영업이익 시계열 (비상장주식 플랫폼 재무공시 요약 + 뉴스 인용 공시)",
+   "tier": "Tier-B",
+   "doc_type": "official_db_extract",
+   "conditions": "서울거래 비상장 페이지 WebFetch 직접 확인 결과 연결기준 2021~2025년 5개년만 제공(2020년 데이터 없음) — collector가 '2020년' 항목에 넣은 수치는 이 페이지에 존재하지 않는 근거 불명 수치. ziksir·zdnet 원문 확인 결과 2022년 수치가 두 갈래로 상충: 뉴스(ziksir·zdnet, 공시 인용 직접 확인) = 매출 5,220억·영업이익 241억·당기순이익 389억 vs 서울거래(collector 채택) = 매출 5,437억·영업이익 458억·당기순이익 389억. 당기순이익만 일치, 매출·영업이익은 12~90% 격차 — 연결/별도 또는 확정/잠정 기준 차이로 추정되나 원문에 기준 명시 없음(discrepancy로 처리). 2021·2023·2024는 원문 직접 확인(뉴스와이어·4th.kr·zdnet)."
+  },
+  "src_104": {
+   "publisher": "신아일보·직썰(감사보고서/공시 인용 기사) — 코지마 운영사는 ㈜복정제형",
+   "url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=2038861",
+   "additional_urls": [
+    "https://www.ziksir.com/news/articleView.html?idxno=22935"
+   ],
+   "title": "코지마(복정제형) 연도별 매출액 시계열 2016~2024 (뉴스 인용 감사보고서)",
+   "tier": "Tier-B",
+   "doc_type": "official_db_extract",
+   "conditions": "직썰(2022)·신아일보(2024) 원문 WebFetch 직접 확인. 2016=172억·2017=481억·2018=888억·2021=1,555억(전년比 +4.86%)·2024=647억(제품 513+상품 134) 전부 원문과 일치. 2019년은 원문에 '2018년 대비 21% 증가'로 %만 명시 — 역산 시 약 1,074.5억(원문 서술 '약 1,076억'과 근접, 반올림 오차 범위) → 파생 추정치로만 승격, series 미포함. collector가 2020년에 넣은 '848억'은 2021년 '+4.86% YoY' 서술로 역산한 값(약 1,482.9억)과 약 2배 격차 — 원문 어디에도 848억 근거 없음, rejected 처리."
+  },
+  "src_105": {
+   "publisher": "아주경제·한국금융경제신문·뉴스토마토·뉴스투데이·싱글리스트(업계 추정 반복 보도)",
+   "url": "https://newstomato.com/ReadNews.aspx?no=1172131",
+   "additional_urls": [
+    "https://www.ajunews.com/view/20220624151344977",
+    "https://www.kfenews.co.kr/news/articleView.html?idxno=603361",
+    "https://www.news2day.co.kr/article/20230717500180",
+    "https://www.slist.kr/news/articleView.html?idxno=322424"
+   ],
+   "title": "국내 안마의자 시장규모 업계 추정 시계열 2015~2023 (뉴스 인용, 유로모니터/업계 추정 — 정부 통계 아님)",
+   "tier": "Tier-C",
+   "doc_type": "official_db_extract",
+   "conditions": "newstomato 원문 WebFetch 직접 확인 — 2023년 국내 9,583억·세계 6조8,421억·프로스트앤설리번 인용 전부 원문과 정확히 일치. 정부 1차 통계가 아닌 업계·리서치사 추정의 반복 인용(circular_citation_flag=true, 실제 다수 매체가 동일 추정을 재인용하는 구조 확인됨) — src_101(정부 1차)과 절대 병렬 비교 금지, 참조용 Tier-C로만 취급."
+  }
+ },
+ "metric_registry": {
+  "metric_001": {
+   "label": "한국 마사지기기 시장규모(2026 추정)",
+   "value": "13.7",
+   "unit": "억 달러",
+   "source_ids": [
+    "src_010"
+   ],
+   "scope": "한국 전체 마사지기기(안마의자+소형 포함) 2026년 추정. Morgan Reed, 방법론 미공개. 보조 참조용.",
+   "verification_note": "페이월로 원문 미확인. 방법론·표본 미공개. 유료 리서치사 낙관 편향 가능. 단독 채택 불가 — 시장 상한선 참조 시그널로만.",
+   "status": "downgraded"
+  },
+  "metric_002": {
+   "label": "한국 마사지기기 CAGR(2026-2035, Morgan Reed)",
+   "value": "6.72",
+   "unit": "%",
+   "source_ids": [
+    "src_010"
+   ],
+   "scope": "한국 전체 마사지기기 시장 연평균성장률 2026-2035 전망. Morgan Reed 추정.",
+   "verification_note": "방법론 미공개. 보조 참조만.",
+   "status": "downgraded"
+  },
+  "metric_003": {
+   "label": "한국 안마의자 시장규모(2025, H&I)",
+   "value": "227.81",
+   "unit": "백만 달러",
+   "source_ids": [
+    "src_011"
+   ],
+   "scope": "한국 안마의자(massage chair)만. 소형·휴대용 미포함. 2025년 추정. H&I Global Research. (원문: 2억2,781만 달러)",
+   "verification_note": "페이월, 방법론 미공개. 안마의자 세그먼트 한정 — metric_001과 집계 범위 다름(별도 metric 분리). 보조 참조.",
+   "status": "downgraded"
+  },
+  "metric_004": {
+   "label": "한국 안마의자 CAGR(2026-2035, H&I)",
+   "value": "12.50",
+   "unit": "%",
+   "source_ids": [
+    "src_011"
+   ],
+   "scope": "한국 안마의자만 2026-2035 전망. H&I.",
+   "verification_note": "방법론 미공개. 보조.",
+   "status": "downgraded"
+  },
+  "metric_005": {
+   "label": "글로벌 마사지기기 시장규모(2025)",
+   "value": "267.6",
+   "unit": "억 달러",
+   "source_ids": [
+    "src_013"
+   ],
+   "scope": "글로벌 전체. 한국 착지 직역 금지. 한국 시장 기준선 비교 참조용만.",
+   "verification_note": "페이월. 글로벌 수치로 한국 특정 불가. 보조 맥락.",
+   "status": "downgraded"
+  },
+  "metric_006": {
+   "label": "국내 안마의자 시장 규모(2025 언론 추정)",
+   "value": "10000",
+   "unit": "억원",
+   "source_ids": [
+    "src_037"
+   ],
+   "scope": "안마의자+안마베드 포함. 2025년 언론 추정. 하한 1조원, 상한 1.5조원 범위 — 공식 통계 아님. 범위 전체는 scope 기재: 1조~1.5조원.",
+   "verification_note": "복수 언론 인용 추정치나 원출처 불명확. 단, 세라젬(5,460억)+바디프랜드(4,369억) 공시 합산≈9,829억으로 1조 하한이 간접 지지됨. 범위 하한은 수용 가능, 상한 1.5조는 보조. [클차장 7/6 표기 통일: 1조원=10,000억원 — p05 차트 단위 혼합(시각 왜곡) 수정, 값 의미 불변]",
+   "status": "verified"
+  },
+  "metric_007": {
+   "label": "세라젬 매출(2024)",
+   "value": "5460",
+   "unit": "억원",
+   "source_ids": [
+    "src_037"
+   ],
+   "scope": "세라젬 2024년 연결기준 매출. 4년 연속 업계 1위.",
+   "verification_note": "공시 기반 언론 보도. 독립 검증 가능. 안마의자 시장 내 상위 플레이어 규모 시그널.",
+   "status": "verified",
+   "carryover": "20260706_clo_v51"
+  },
+  "metric_008": {
+   "label": "바디프랜드 매출(2024)",
+   "value": "4369",
+   "unit": "억원",
+   "source_ids": [
+    "src_037"
+   ],
+   "scope": "바디프랜드 2024년 매출. 전년 대비 4.1% 성장.",
+   "verification_note": "공시 기반 언론 보도. 독립 검증 가능.",
+   "status": "verified"
+  },
+  "metric_009": {
+   "label": "바디프랜드 직영 라운지 수(2025)",
+   "value": "160",
+   "unit": "개",
+   "source_ids": [
+    "src_014"
+   ],
+   "scope": "바디프랜드 체험형 직영 라운지 수 2025년 기준. 기사 내 약 160~170개 언급 — 하한 160 기준.",
+   "verification_note": "업계 취재 기사. 단일 출처. 참조 가능하나 교차 확인 미완.",
+   "status": "verified"
+  },
+  "metric_010": {
+   "label": "코지마 소형 마사지기 내 매출 비중(2024)",
+   "value": "40",
+   "unit": "%",
+   "source_ids": [
+    "src_017"
+   ],
+   "scope": "코지마 자사 총매출 중 소형 마사지기 비중. 2024년 기준. 코지마 단독 사례 — 전체 시장 외삽 금지.",
+   "verification_note": "코지마 자사 PR 기반 보도. 자사 기준만. 시장 전체 비중 아님 명시 필수.",
+   "status": "verified"
+  },
+  "metric_011": {
+   "label": "코지마 안마의자 매출 증가율(2025 H1)",
+   "value": "36",
+   "unit": "%",
+   "source_ids": [
+    "src_016"
+   ],
+   "scope": "코지마 자사 안마의자 매출 2025년 상반기 vs 2024년 상반기. 코지마 기준만.",
+   "verification_note": "자사 데이터 단일 출처. src_009(연간 33%)와 측정 기간 달라 별도 metric.",
+   "status": "verified"
+  },
+  "metric_012": {
+   "label": "코지마 안마의자 매출 증가율(2025 연간)",
+   "value": "33",
+   "unit": "%",
+   "source_ids": [
+    "src_018"
+   ],
+   "scope": "코지마 자사 안마의자 매출 2025년 vs 2024년 연간. 코지마 기준만.",
+   "verification_note": "PR 기반 보도. 독립 검증 없음. src_011과 측정 기간(상반기 vs 연간) 다름 — 별도 metric 유지.",
+   "status": "verified"
+  },
+  "metric_013": {
+   "label": "안마용품 브랜드 트렌드지수 1위 풀리오(2024.4)",
+   "value": "5962",
+   "unit": "pt",
+   "source_ids": [
+    "src_019"
+   ],
+   "scope": "랭키파이 온라인 버즈·검색량 기반 트렌드지수. 2024년 4월 5주차. 판매량 아님.",
+   "verification_note": "단일 주차 스냅샷. 판매·점유와 다름. 브랜드 온라인 관심도 시그널.",
+   "status": "verified"
+  },
+  "metric_014": {
+   "label": "안마용품 브랜드 트렌드지수 2위 세라젬(2024.4)",
+   "value": "4574",
+   "unit": "pt",
+   "source_ids": [
+    "src_019"
+   ],
+   "scope": "랭키파이 온라인 버즈. 2024년 4월 5주차.",
+   "verification_note": "동상.",
+   "status": "verified"
+  },
+  "metric_015": {
+   "label": "안마용품 브랜드 트렌드지수 3위 바디프랜드(2024.4)",
+   "value": "3849",
+   "unit": "pt",
+   "source_ids": [
+    "src_019"
+   ],
+   "scope": "랭키파이 온라인 버즈. 2024년 4월 5주차.",
+   "verification_note": "동상.",
+   "status": "verified"
+  },
+  "metric_016": {
+   "label": "클럭 트렌드지수(2024.4, 소형 브랜드 최상위)",
+   "value": "969",
+   "unit": "pt",
+   "source_ids": [
+    "src_019"
+   ],
+   "scope": "랭키파이. 2024년 4월 5주차. 소형 마사지기 브랜드 중 최상위 집계.",
+   "verification_note": "동상.",
+   "status": "verified"
+  },
+  "metric_017": {
+   "label": "CLO 메디소닉 판매가(2025)",
+   "value": "69000",
+   "unit": "원",
+   "source_ids": [
+    "src_020"
+   ],
+   "scope": "CLO 공식 스토어 판매가. 2025년 기준. 소비자가 12만원 대비 42.5% 할인 표기.",
+   "verification_note": "1차 관찰. CLO 자사 스토어. 가격 변동 가능. as-of 2025.",
+   "status": "verified"
+  },
+  "metric_018": {
+   "label": "CLO 메디소닉 소비자가(2025)",
+   "value": "120000",
+   "unit": "원",
+   "source_ids": [
+    "src_020"
+   ],
+   "scope": "CLO 공식 스토어 소비자가. 2025년 기준.",
+   "verification_note": "1차 관찰. as-of 2025.",
+   "status": "verified"
+  },
+  "metric_019": {
+   "label": "CLO 메디소닉 공식 스토어 리뷰수(2025)",
+   "value": "521",
+   "unit": "건",
+   "source_ids": [
+    "src_020"
+   ],
+   "scope": "CLO 공식 스토어 자체 리뷰. 2025년. 네이버 독립 리뷰 아님. 판매지수 아님.",
+   "verification_note": "자사 스토어 리뷰 — 편향 가능. 독립 검증 필요(gap_004).",
+   "status": "verified"
+  },
+  "metric_020": {
+   "label": "CLO 핸드휴 최저가(2026.02.08)",
+   "value": "84200",
+   "unit": "원",
+   "source_ids": [
+    "src_021"
+   ],
+   "scope": "CLO 핸드휴 손마사지기. 11번가 기준. 2026-02-08 스냅샷. 현재 가격 아닐 수 있음.",
+   "verification_note": "가격비교 플랫폼. 시점 스냅샷. as-of 2026-02-08.",
+   "status": "verified"
+  },
+  "metric_021": {
+   "label": "CLO 핸드휴 리뷰수(2026.02.08)",
+   "value": "40",
+   "unit": "건",
+   "source_ids": [
+    "src_021"
+   ],
+   "scope": "퍼니즈 가격비교 플랫폼 집계. 2026-02-08. 다채널 합산 가능성 있음.",
+   "verification_note": "가격비교 플랫폼 집계. 단일 채널 아닐 수 있음.",
+   "status": "verified"
+  },
+  "metric_022": {
+   "label": "가정의 달 선물 1위 마사지체어 선호(바디프랜드×오픈서베이)",
+   "value": "41.8",
+   "unit": "%",
+   "source_ids": [
+    "src_026"
+   ],
+   "scope": "유형 선물 중 가장 받고 싶은 선물. 전국 20대 이상 성인 n=500. 바디프랜드×오픈서베이 공동 설문. 2025년. COI — 마사지체어 과대 대표 가능.",
+   "verification_note": "바디프랜드 공동 주최 — COI. n=500 소규모. 소형 마사지기 선호 별도 미측정. 안마의자 선호 맥락 시그널로만.",
+   "status": "verified"
+  },
+  "metric_023": {
+   "label": "마사지체어 선물 이유 — 건강 도움 기대(바디프랜드×오픈서베이)",
+   "value": "80.1",
+   "unit": "%",
+   "source_ids": [
+    "src_026"
+   ],
+   "scope": "마사지체어 선물 받고 싶은 이유 중 건강에 도움. n=500. 2025년. COI.",
+   "verification_note": "동상.",
+   "status": "verified"
+  },
+  "metric_024": {
+   "label": "마사지 건강관리 선호 순위(바디프랜드 자사 설문)",
+   "value": "26.2",
+   "unit": "%",
+   "source_ids": [
+    "src_024",
+    "src_025"
+   ],
+   "scope": "평소 건강관리 방법 중 마사지 2위. 바디프랜드 헬스케어로봇 구매자 n=1,000. 2025년. COI. src_015·016 동일 설문 원천.",
+   "verification_note": "src_016이 동일 설문 순환 인용임을 확인(circular_citation_flag). source_ids 두 기사 병기로 중복 metric 생성 대신 통합. 바디프랜드 구매자 한정 — 소형 소비자 대표성 없음.",
+   "status": "verified"
+  },
+  "metric_025": {
+   "label": "가장 필요한 마사지 부위 — 어깨 승모근+뒷목 합산(바디프랜드 자사 설문)",
+   "value": "41.3",
+   "unit": "%",
+   "source_ids": [
+    "src_025"
+   ],
+   "scope": "어깨 승모근(30.5%)+뒷목(10.8%) 합산. 바디프랜드 구매자 n=1,000. 2025년. COI. 목어깨 부위 핵심 니즈 시그널.",
+   "verification_note": "src_015·016 동일 설문. 구성 수치(30.5+10.8=41.3) 검산 일치. 단, 안마의자 구매자 기준이므로 소형 세그먼트 직접 적용 제한.",
+   "status": "verified"
+  },
+  "metric_026": {
+   "label": "마사지 선호 유형 1위 주무름(바디프랜드 자사 설문)",
+   "value": "46.8",
+   "unit": "%",
+   "source_ids": [
+    "src_025"
+   ],
+   "scope": "가장 선호 마사지 유형 주무름. 바디프랜드 구매자 n=1,000. 2025년. COI.",
+   "verification_note": "동상. 주무름형 제품(CLO 넥앤프로 등) 니즈 간접 시그널 — 단, 안마의자 편향 한계.",
+   "status": "verified"
+  },
+  "metric_027": {
+   "label": "CJ온스타일 모바일 라방 거래액 증가율(2025 Q1)",
+   "value": "92.4",
+   "unit": "%",
+   "source_ids": [
+    "src_029"
+   ],
+   "scope": "CJ온스타일 2025 Q1 모바일 라이브커머스 거래액 전년 동기 대비. 라방바 데이터랩 인용. 마사지기 카테고리 특화 아님.",
+   "verification_note": "라방바 데이터랩 2차 인용. CJ온스타일 단일 기업. 마사지기 직접 효과 아님 — 라이브커머스 채널 성장 전반 시그널.",
+   "status": "verified"
+  },
+  "metric_028": {
+   "label": "전체 라방 거래액 상승률(2025 Q1)",
+   "value": "31",
+   "unit": "%",
+   "source_ids": [
+    "src_029"
+   ],
+   "scope": "전체 라이브커머스 거래액 2025 Q1. 라방바 데이터랩.",
+   "verification_note": "동상. 시장 전반 채널 성장 맥락.",
+   "status": "verified"
+  },
+  "metric_029": {
+   "label": "식약처 의료기기 위반 온라인 광고 적발(2025)",
+   "value": "291",
+   "unit": "건",
+   "source_ids": [
+    "src_032"
+   ],
+   "scope": "식약처 온라인 플랫폼 의료기기 위반 적발. 2025년. 불법 해외직구 광고 285건 포함.",
+   "verification_note": "식약처 공공기관 보도자료. 신뢰도 높음. 마사지기 직접 언급 없음 — 규제 리스크 맥락.",
+   "status": "verified"
+  },
+  "metric_030": {
+   "label": "해외직구 의료기기 불법광고 적발(2025 Q2)",
+   "value": "1009",
+   "unit": "건",
+   "source_ids": [
+    "src_034"
+   ],
+   "scope": "식약처×녹색소비자연대 2025년 3~6월 모니터링. 해외직구 플랫폼.",
+   "verification_note": "공공기관 모니터링. 마사지기 직접 포함 미확인 — 규제 환경 시그널.",
+   "status": "verified"
+  },
+  "metric_031": {
+   "label": "한국 뷰티·에스테틱 디바이스 시장(2025, 리서치사 추정)",
+   "value": "515",
+   "unit": "백만 달러",
+   "source_ids": [
+    "src_038"
+   ],
+   "scope": "한국 미용·에스테틱 디바이스 시장 2025년. 기사 내 리서치사명 미상 인용. CLO 메디소닉 속 세그먼트 경계 미확인. (원문: 5억1,500만 달러)",
+   "verification_note": "원출처 리서치사명 미상 — metric 승격 불가하나 뷰티 디바이스 시장 맥락으로 analyst 참조용 기록. status=downgraded.",
+   "status": "downgraded"
+  },
+  "metric_032": {
+   "label": "뷰티 디바이스 시장 CAGR(2025-2030, 리서치사 추정)",
+   "value": "9.71",
+   "unit": "%",
+   "source_ids": [
+    "src_038"
+   ],
+   "scope": "한국 뷰티·에스테틱 디바이스 2025-2030 CAGR. 기사 내 리서치사명 미상.",
+   "verification_note": "동상. 원출처 미상. 보조 참조만.",
+   "status": "downgraded"
+  },
+  "metric_033": {
+   "label": "세라젬+바디프랜드 공시 매출 합산(2024)",
+   "value": "9829",
+   "unit": "억원",
+   "source_ids": [
+    "src_037"
+   ],
+   "scope": "공시 기반 두 대형사 매출 단순 합산(5,460+4,369). 시장 규모가 아니라 하한 참고선.",
+   "verification_note": "metric_007+metric_008 기계적 파생 — 클차장 직권 등록(7/5), 시장규모 오독 방지 위해 label에 '매출 합산' 명시",
+   "status": "verified"
+  },
+  "metric_034": {
+   "label": "안마의자+베드 시장 언론 추정 상한(2025)",
+   "value": "15000",
+   "unit": "억원",
+   "source_ids": [
+    "src_037"
+   ],
+   "scope": "src_028 언론 추정 범위 1조~1.5조원의 상한. 공식 통계 아님.",
+   "verification_note": "metric_006 scope에 기록된 범위 상한의 분리 등록 — 클차장 직권(7/5). gap_map 비교용",
+   "status": "verified"
+  },
+  "metric_035": {
+   "label": "클럭 미니 마사지기S 판매가",
+   "value": "59900",
+   "unit": "원",
+   "source_ids": [
+    "src_041"
+   ],
+   "scope": "클럭 공식 스토어 판매가. 관찰일 2026-07-05. 정가 75,000원 대비 20% 할인 표기.",
+   "verification_note": "1차 관찰. 자사 스토어 상시 프로모션 여부 미확인.",
+   "status": "verified"
+  },
+  "metric_036": {
+   "label": "클럭 EMS 무릎마사지기 판매가",
+   "value": "49900",
+   "unit": "원",
+   "source_ids": [
+    "src_041"
+   ],
+   "scope": "클럭 공식 스토어 판매가. 관찰일 2026-07-05.",
+   "verification_note": "1차 관찰.",
+   "status": "verified"
+  },
+  "metric_037": {
+   "label": "클럭 미니 마사지기S Duo 판매가",
+   "value": "89900",
+   "unit": "원",
+   "source_ids": [
+    "src_041"
+   ],
+   "scope": "클럭 공식 스토어 판매가(본체 2개+리모컨). 관찰일 2026-07-05.",
+   "verification_note": "1차 관찰.",
+   "status": "verified"
+  },
+  "metric_038": {
+   "label": "클럭 미니 마사지기SE 판매가",
+   "value": "49900",
+   "unit": "원",
+   "source_ids": [
+    "src_041"
+   ],
+   "scope": "클럭 공식 스토어 판매가(본체 1개). 관찰일 2026-07-05.",
+   "verification_note": "1차 관찰.",
+   "status": "verified"
+  },
+  "metric_039": {
+   "label": "브레오 릴렉서 N2 최저가",
+   "value": "296100",
+   "unit": "원",
+   "source_ids": [
+    "src_042"
+   ],
+   "scope": "브레오 릴렉서 N2(목·어깨 안마기) 다나와 최저가. 관찰일 2026-07-05.",
+   "verification_note": "제3자 가격비교 플랫폼 — 공식몰 zombie로 대체 관찰.",
+   "status": "verified"
+  },
+  "metric_040": {
+   "label": "브레오 릴렉서 N2 리뷰수",
+   "value": "26",
+   "unit": "건",
+   "source_ids": [
+    "src_042"
+   ],
+   "scope": "다나와 채널 집계 리뷰수. 관찰일 2026-07-05. 타 채널(네이버·쿠팡) 리뷰 미포함.",
+   "verification_note": "제3자 플랫폼 집계 — 브랜드 전체 리뷰 볼륨의 일부만 반영.",
+   "status": "verified"
+  },
+  "metric_041": {
+   "label": "브레오 NP1 최저가",
+   "value": "140650",
+   "unit": "원",
+   "source_ids": [
+    "src_042"
+   ],
+   "scope": "브레오 NP1(목·어깨 안마기) 다나와 최저가. 관찰일 2026-07-05.",
+   "verification_note": "제3자 가격비교 플랫폼.",
+   "status": "verified"
+  },
+  "metric_042": {
+   "label": "브레오 NP1 리뷰수",
+   "value": "8",
+   "unit": "건",
+   "source_ids": [
+    "src_042"
+   ],
+   "scope": "다나와 채널 집계 리뷰수. 관찰일 2026-07-05.",
+   "verification_note": "제3자 플랫폼 집계 — 부분 반영.",
+   "status": "verified"
+  },
+  "metric_043": {
+   "label": "브레오 NP2 air 최저가",
+   "value": "139690",
+   "unit": "원",
+   "source_ids": [
+    "src_042"
+   ],
+   "scope": "브레오 NP2 air(휴대용 목·어깨 안마기) 다나와 최저가. 관찰일 2026-07-05.",
+   "verification_note": "제3자 가격비교 플랫폼.",
+   "status": "verified"
+  },
+  "metric_044": {
+   "label": "브레오 NP2 air 리뷰수",
+   "value": "1",
+   "unit": "건",
+   "source_ids": [
+    "src_042"
+   ],
+   "scope": "다나와 채널 집계 리뷰수. 관찰일 2026-07-05.",
+   "verification_note": "제3자 플랫폼 집계 — 부분 반영. 표본 1건으로 참고 신호 수준.",
+   "status": "verified"
+  },
+  "metric_045": {
+   "label": "OA 커버넥 판매가",
+   "value": "87900",
+   "unit": "원",
+   "source_ids": [
+    "src_044"
+   ],
+   "scope": "OA 공식몰 판매가(무선 목 어깨 온열 마사지기). 관찰일 2026-07-05.",
+   "verification_note": "1차 관찰, 자사 스토어.",
+   "status": "verified"
+  },
+  "metric_046": {
+   "label": "OA 커버넥 리뷰수",
+   "value": "1",
+   "unit": "건",
+   "source_ids": [
+    "src_044"
+   ],
+   "scope": "OA 공식몰 자체 리뷰수. 관찰일 2026-07-05.",
+   "verification_note": "자사 스토어 리뷰 — 편향 가능, 표본 1건으로 참고 신호 수준.",
+   "status": "verified"
+  },
+  "metric_047": {
+   "label": "OA 굿슬립 PRO 판매가",
+   "value": "79000",
+   "unit": "원",
+   "source_ids": [
+    "src_044"
+   ],
+   "scope": "OA 공식몰 판매가. 관찰일 2026-07-05.",
+   "verification_note": "1차 관찰, 자사 스토어.",
+   "status": "verified"
+  },
+  "metric_048": {
+   "label": "OA 넥앤숄더(OA-MA012) 판매가",
+   "value": "99000",
+   "unit": "원",
+   "source_ids": [
+    "src_044"
+   ],
+   "scope": "OA 공식몰 판매가. 관찰일 2026-07-05. 라인업 내 최고가.",
+   "verification_note": "1차 관찰, 자사 스토어.",
+   "status": "verified"
+  },
+  "metric_049": {
+   "label": "OA 슬리머 판매가",
+   "value": "32900",
+   "unit": "원",
+   "source_ids": [
+    "src_044"
+   ],
+   "scope": "OA 공식몰 판매가. 관찰일 2026-07-05. 라인업 내 최저가.",
+   "verification_note": "1차 관찰, 자사 스토어.",
+   "status": "verified"
+  },
+  "metric_050": {
+   "label": "코지마 네크레오(CMN-700WL) 가격",
+   "value": "129000",
+   "unit": "원",
+   "source_ids": [
+    "src_045"
+   ],
+   "scope": "코지마 소형 목어깨 마사지기 다나와 가격. 관찰일 2026-07-05.",
+   "verification_note": "제3자 가격비교 — 공식몰 접속 실패로 대체 관찰.",
+   "status": "verified"
+  },
+  "metric_051": {
+   "label": "코지마 네크레오 리뷰수",
+   "value": "44",
+   "unit": "건",
+   "source_ids": [
+    "src_045"
+   ],
+   "scope": "다나와 채널 집계 리뷰수. 관찰일 2026-07-05.",
+   "verification_note": "제3자 플랫폼 집계 — 코지마 자사몰·홈쇼핑 판매분 미포함 가능.",
+   "status": "verified"
+  },
+  "metric_052": {
+   "label": "코지마 아센다(CMP-801WL) 가격",
+   "value": "129000",
+   "unit": "원",
+   "source_ids": [
+    "src_045"
+   ],
+   "scope": "코지마 소형 목쿠션 마사지기 다나와 가격. 관찰일 2026-07-05.",
+   "verification_note": "제3자 가격비교.",
+   "status": "verified"
+  },
+  "metric_053": {
+   "label": "코지마 아센다 리뷰수",
+   "value": "11",
+   "unit": "건",
+   "source_ids": [
+    "src_045"
+   ],
+   "scope": "다나와 채널 집계 리뷰수. 관찰일 2026-07-05.",
+   "verification_note": "제3자 플랫폼 집계.",
+   "status": "verified"
+  },
+  "metric_054": {
+   "label": "코지마 컴포넥(CMN-800WL) 가격",
+   "value": "159000",
+   "unit": "원",
+   "source_ids": [
+    "src_045"
+   ],
+   "scope": "코지마 소형 목어깨 마사지기 다나와 가격. 관찰일 2026-07-05.",
+   "verification_note": "제3자 가격비교.",
+   "status": "verified"
+  },
+  "metric_055": {
+   "label": "코지마 컴포넥 리뷰수",
+   "value": "86",
+   "unit": "건",
+   "source_ids": [
+    "src_045"
+   ],
+   "scope": "다나와 채널 집계 리뷰수. 관찰일 2026-07-05. 코지마 소형 라인 중 최다.",
+   "verification_note": "제3자 플랫폼 집계.",
+   "status": "verified"
+  },
+  "metric_056": {
+   "label": "CLO 넥앤프로 소비자가(2026 재확인)",
+   "value": "140000",
+   "unit": "원",
+   "source_ids": [
+    "src_046"
+   ],
+   "scope": "CLO 공식 스토어 소비자가. 관찰일 2026-07-05.",
+   "verification_note": "1차 관찰. metric_017(메디소닉 소비자가)과 다른 제품 — 별도 metric.",
+   "status": "verified"
+  },
+  "metric_057": {
+   "label": "CLO 넥앤프로 판매가(2026 재확인)",
+   "value": "84200",
+   "unit": "원",
+   "source_ids": [
+    "src_046",
+    "src_047"
+   ],
+   "scope": "CLO 공식 스토어 판매가. 관찰일 2026-07-05. 40% 할인 표기. src_037·038 교차 확인(동일 관찰 세션, 동일 수치).",
+   "verification_note": "1차 관찰 2건 교차 일치.",
+   "status": "verified"
+  },
+  "metric_058": {
+   "label": "CLO 넥앤프로 리뷰수(보수적 하한, 카테고리 리스트 표기)",
+   "value": "1222",
+   "unit": "건",
+   "source_ids": [
+    "src_046",
+    "src_047"
+   ],
+   "scope": "CLO 공식 스토어 홈 베스트셀러 목록 요약 카운트. 관찰일 2026-07-05. 동일 페이지 내 배너 표기(6,066건)와 불일치 — 어느 쪽이 실제 작성 리뷰인지 원문에서 구분 불가. 보수적으로 낮은 값만 참고 신호로 승격, 상한(6,066)은 미승격.",
+   "verification_note": "이중 표기 미해소 — status를 verified로 두되 scope에 불확실성 명시. analyst는 정확한 리뷰수 주장 대신 '1,222건 이상' 식 하한 표현 권고.",
+   "status": "verified"
+  },
+  "metric_059": {
+   "label": "CLO 에어코즈 EMS 괄사 종아리 판매가",
+   "value": "118000",
+   "unit": "원",
+   "source_ids": [
+    "src_047"
+   ],
+   "scope": "CLO 공식 스토어 판매가. 관찰일 2026-07-05.",
+   "verification_note": "1차 관찰.",
+   "status": "verified"
+  },
+  "metric_060": {
+   "label": "CLO 핸드휴 손마사지기 판매가(2026 재확인)",
+   "value": "84200",
+   "unit": "원",
+   "source_ids": [
+    "src_047"
+   ],
+   "scope": "CLO 공식 스토어 판매가. 관찰일 2026-07-05. metric_020(퍼니즈 2026-02-08 최저가 84,200원)과 별도 관찰이나 동일 가격대 교차 지지.",
+   "verification_note": "1차 관찰. 시점 다른 두 관찰(퍼니즈 2/8, 공식몰 7/5)이 동일 가격 — 가격 안정성 시그널.",
+   "status": "verified"
+  },
+  "metric_061": {
+   "label": "CLO 핸드휴 리뷰수(보수적 하한, 카테고리 표기)",
+   "value": "4192",
+   "unit": "건",
+   "source_ids": [
+    "src_047"
+   ],
+   "scope": "CLO 공식 스토어 카테고리 요약 리뷰수. 관찰일 2026-07-05. CLO 단품 중 최대치이나 넥앤프로와 동일한 이중 표기 패턴(상한 5,091 별도 관찰) 존재 — 하한만 승격.",
+   "verification_note": "이중 표기 미해소, 보수적 하한 채택. metric_021(퍼니즈 40건, 2026-02-08)과 자릿수 차이 큼 — 채널·시점 다른 별도 metric으로 유지, 합산 금지.",
+   "status": "verified"
+  },
+  "metric_062": {
+   "label": "CLO 실속세트 판매가",
+   "value": "179000",
+   "unit": "원",
+   "source_ids": [
+    "src_047"
+   ],
+   "scope": "CLO 공식 스토어 세트 상품 판매가. 관찰일 2026-07-05.",
+   "verification_note": "1차 관찰.",
+   "status": "verified"
+  },
+  "metric_063": {
+   "label": "CLO 극락세트 판매가",
+   "value": "249000",
+   "unit": "원",
+   "source_ids": [
+    "src_047"
+   ],
+   "scope": "CLO 공식 스토어 세트 상품 판매가. 관찰일 2026-07-05. 라인업 내 최고가.",
+   "verification_note": "1차 관찰.",
+   "status": "verified"
+  },
+  "metric_064": {
+   "label": "CLO 가성비세트 판매가",
+   "value": "149000",
+   "unit": "원",
+   "source_ids": [
+    "src_047"
+   ],
+   "scope": "CLO 공식 스토어 세트 상품 판매가. 관찰일 2026-07-05.",
+   "verification_note": "1차 관찰.",
+   "status": "verified"
+  },
+  "metric_065": {
+   "value": "43101",
+   "unit": "억원",
+   "source_ids": [
+    "src_050"
+   ],
+   "scope": "코웨이 연결 매출액 2024년(K-IFRS). 창사 이래 최초 4조원 상회. 정수기·비데·공기청정기·안마의자 등 렌탈 전체 포함 — 안마의자 단독 매출 아님.",
+   "verification_note": "KIS 신용평가 리포트, DART 공시자료(rcpNo 20250321001984) 재구성 수치. DART 원문 JS뷰어로 1차 직접 대조는 실패했으나 신용평가기관 재구성치로 대체 확인.",
+   "status": "verified"
+  },
+  "metric_066": {
+   "value": "18.5",
+   "unit": "%",
+   "source_ids": [
+    "src_050"
+   ],
+   "scope": "코웨이 연결 영업이익률 2024년. 렌탈 전체 사업 기준.",
+   "verification_note": "KIS 신용평가 리포트, DART 공시 재구성.",
+   "status": "verified"
+  },
+  "metric_067": {
+   "value": "721",
+   "unit": "만 계정",
+   "source_ids": [
+    "src_050"
+   ],
+   "scope": "코웨이 총계정수(렌탈+멤버십, 별도기준) 2025년 3월말. 안마의자 포함 전체 렌탈 제품군 합산 — 안마의자 단독 계정수 아님.",
+   "verification_note": "KIS 신용평가 리포트, DART 공시 재구성.",
+   "status": "verified"
+  },
+  "metric_068": {
+   "value": "391",
+   "unit": "만 계정",
+   "source_ids": [
+    "src_050"
+   ],
+   "scope": "코웨이 해외법인 계정수 2025년 3월말. 최근 5개년 연평균 18% 성장.",
+   "verification_note": "KIS 신용평가 리포트, DART 공시 재구성.",
+   "status": "verified"
+  },
+  "metric_069": {
+   "value": "22",
+   "unit": "억원",
+   "source_ids": [
+    "src_051"
+   ],
+   "scope": "세라젬 2024년 영업이익. 2022년 506억원 대비 95.7% 급감.",
+   "verification_note": "검색 스니펫 기반, 원문 기사 직접 열람 실패 — 원출처 미확인. src_028(뉴스투데이)의 '4년 연속 업계 1위' 낙관 서술과 상충(매출 1위이나 영업이익은 급감). discrepancy로 기록, 두 수치 모두 유지.",
+   "status": "verified",
+   "carryover": "20260706_clo_v51"
+  },
+  "metric_070": {
+   "value": "129000",
+   "unit": "원",
+   "source_ids": [
+    "src_055"
+   ],
+   "scope": "제스파 더툴 300 4D 목어깨 마사지기 다나와 가격. 관찰일 2026-07-05.",
+   "verification_note": "다나와 직접 관찰(Jina Reader), 기존 src_033/035/036/037/038 관찰 방법과 동일.",
+   "status": "verified"
+  },
+  "metric_071": {
+   "value": "305",
+   "unit": "건",
+   "source_ids": [
+    "src_055"
+   ],
+   "scope": "제스파 더툴 300 다나와 채널 집계 리뷰수. 평점 4.78. 관찰일 2026-07-05.",
+   "verification_note": "다나와 직접 관찰.",
+   "status": "verified"
+  },
+  "metric_072": {
+   "value": "118150",
+   "unit": "원",
+   "source_ids": [
+    "src_055"
+   ],
+   "scope": "휴플러스 커브건 PRO C20(마사지건/타건형) 다나와 가격. 관찰일 2026-07-05. CLO 넥앤프로(주무름형)와 하위유형 다름.",
+   "verification_note": "다나와 직접 관찰.",
+   "status": "verified"
+  },
+  "metric_073": {
+   "value": "149630",
+   "unit": "원",
+   "source_ids": [
+    "src_055"
+   ],
+   "scope": "휴플러스 2026년형 커브건 맥스 다나와 가격. 관찰일 2026-07-05.",
+   "verification_note": "다나와 직접 관찰.",
+   "status": "verified"
+  },
+  "metric_074": {
+   "value": "105000",
+   "unit": "원",
+   "source_ids": [
+    "src_055"
+   ],
+   "scope": "동국제약 센시안 무선 목어깨 마사지기 다나와 가격. 관찰일 2026-07-05. 제약사의 헬스케어가전 진출 사례.",
+   "verification_note": "다나와 직접 관찰.",
+   "status": "verified"
+  },
+  "metric_075": {
+   "label": "클럭 누적 판매량(출시 3개월)",
+   "value": "70",
+   "unit": "만개",
+   "source_ids": [
+    "src_056"
+   ],
+   "scope": "클럭 2018년 7월 출시 후 3개월 누적 판매량 — 2018년 당시 실적, 현재(2026) 성과 아님.",
+   "verification_note": "2019년 한경비즈니스 기사(데일리앤코 대표 인터뷰) 단일 출처, 교차 확인 못함. 모회사 인터뷰 기반 COI 있으나 구체 수치라 조건부 승격. basis: 2018-2019 시점 명시 필수.",
+   "status": "verified"
+  },
+  "metric_076": {
+   "label": "클럭 누적 판매량(출시 1년)",
+   "value": "300",
+   "unit": "만개",
+   "source_ids": [
+    "src_056"
+   ],
+   "scope": "클럭 2018년 7월 출시 후 1년(2019년) 누적 판매량 — 2019년 당시 실적, 현재(2026) 성과 아님.",
+   "verification_note": "2019년 한경비즈니스 기사 단일 출처. basis: 2018-2019 시점 명시 필수, src_010(2024 트렌드지수 4위)과 5년 격차 있어 '현재도 압도적 1위'로 오독 금지.",
+   "status": "verified"
+  },
+  "metric_077": {
+   "label": "데일리앤코 분기 영업이익(2019년)",
+   "value": "30",
+   "unit": "억원",
+   "source_ids": [
+    "src_056"
+   ],
+   "scope": "데일리앤코(클럭 운영사) 2019년 분기별 영업이익 — 2019년 당시 수치, 현재 실적 아님. 코지마·바디프랜드 등 타사 2024~2025년 매출 규모와 직접 비교 금지(연도 다름). scope: '30억원 초과'(원문 표현) — 최소치로 승격, 정확한 초과분은 불명.",
+   "verification_note": "2019년 기사 단일 출처, 공시 대조 안 됨(비상장 추정). basis: 2019년 시점 명시 필수.",
+   "status": "verified"
+  },
+  "metric_079": {
+   "label": "코지마 제품 매출(2024)",
+   "value": "513",
+   "unit": "억원",
+   "source_ids": [
+    "src_059"
+   ],
+   "scope": "코지마 운영사 2024년 공시 기준 제품(자체개발) 매출.",
+   "verification_note": "신아일보, 감사보고서·공시 기반 독립 취재(Tier-A) — src_049(자체발표 33%↑ 전체 매출 증가율)와 다른 지표(제품 매출만). 공시 기반이라 우선 승격.",
+   "status": "verified"
+  },
+  "metric_080": {
+   "label": "코지마 상품 매출(2024)",
+   "value": "134",
+   "unit": "억원",
+   "source_ids": [
+    "src_059"
+   ],
+   "scope": "코지마 운영사 2024년 공시 기준 상품(단순유통·OEM 재판매 추정) 매출.",
+   "verification_note": "신아일보, 공시 기반. 제품 매출(513억)의 약 26% 수준 — 격차 확대 추세.",
+   "status": "verified"
+  },
+  "metric_081": {
+   "label": "코지마 제품 매출 증가율(2024)",
+   "value": "28",
+   "unit": "%",
+   "source_ids": [
+    "src_059"
+   ],
+   "scope": "코지마 제품(자체개발) 매출 전년 대비 증가율, 2024년 공시 기준.",
+   "verification_note": "신아일보, 공시 기반 독립 취재 — 공시 기반이므로 src_049(자체발표 '매출 33%↑', 전체 매출 기준)보다 우선 승격. 두 수치는 측정 대상(제품 매출 vs 전체 매출)이 달라 discrepancy로 별도 기록, 병기 조건부.",
+   "status": "verified"
+  },
+  "metric_082": {
+   "label": "코지마 상품 매출 감소율(2024)",
+   "value": "-63",
+   "unit": "%",
+   "source_ids": [
+    "src_059"
+   ],
+   "scope": "코지마 상품(단순유통) 매출 전년 대비 감소율, 2024년 공시 기준.",
+   "verification_note": "신아일보, 공시 기반.",
+   "status": "verified"
+  },
+  "metric_083": {
+   "label": "코지마(복정제형) 매출(2025)",
+   "value": "736",
+   "unit": "억원",
+   "source_ids": [
+    "src_064"
+   ],
+   "scope": "코지마 운영사(복정제형) 2025년 감사보고서 기준 매출액. 전년(2024, src_050 기준 제품+상품=647억원) 대비 8.4% 증가 서술과 방향 일치.",
+   "verification_note": "아주경제, 복수사 감사보고서 인용 업계 취재 — src_050(2024년 647억원=제품513+상품134)과 연도가 다른 후속 수치로 교차 확인. 736/647=13.8%로 기사의 '8.4%↑' 서술과 정확히 일치하진 않음(집계 범위 차이 가능성) — discrepancy로 기록.",
+   "status": "verified",
+   "carryover": "20260706_clo_v51"
+  },
+  "metric_084": {
+   "label": "코지마(복정제형) 영업이익(2025)",
+   "value": "6",
+   "unit": "억원",
+   "source_ids": [
+    "src_064"
+   ],
+   "scope": "코지마 운영사(복정제형) 2025년 감사보고서 기준 영업이익.",
+   "verification_note": "아주경제, 감사보고서 인용. 증감률 방향(13.95%) 원문 모호 — 증감률은 미승격, 절대값만 승격.",
+   "status": "verified"
+  },
+  "metric_085": {
+   "label": "바디프랜드 해외실적(2023)",
+   "value": "115",
+   "unit": "억원",
+   "source_ids": [
+    "src_064"
+   ],
+   "scope": "바디프랜드 해외 실적(로보틱스 기술수출 등) 2023년.",
+   "verification_note": "아주경제, 업계 취재. 2025년 450억원(약 4배) 대비 성장 추이 확인용.",
+   "status": "verified"
+  },
+  "metric_086": {
+   "label": "바디프랜드 해외실적(2025)",
+   "value": "450",
+   "unit": "억원",
+   "source_ids": [
+    "src_064"
+   ],
+   "scope": "바디프랜드 해외 실적 2025년 — 2023년(115억원) 대비 약 4배 증가.",
+   "verification_note": "아주경제, 업계 취재. 2026년 목표(800억원)는 전망치라 미승격(claim으로만 유지).",
+   "status": "verified"
+  },
+  "metric_087": {
+   "label": "오아 존속회사 매출(2025)",
+   "value": "831.4213",
+   "unit": "억원",
+   "source_ids": [
+    "src_065"
+   ],
+   "scope": "오아(코스닥 342870) 물적분할 후 존속회사 2025년 매출액 — 전자기기 도소매 그룹 전체, 마사지기 단독 매출 아님.",
+   "verification_note": "디지털투데이, 공시 기반 기사. 마사지기 카테고리 분리 수치 없음 — 그룹 전체로만 승격, analyst에게 '마사지기 단독 아님' 조건 명시 필수.",
+   "status": "verified"
+  },
+  "metric_078": {
+   "label": "에코마케팅 주가(2018년말 기준)",
+   "value": "11200",
+   "unit": "원",
+   "source_ids": [
+    "src_056"
+   ],
+   "scope": "클럭 모회사 에코마케팅 주가, 2018년 말 기준. 2019년 8월 28일 대비 시점 비교용 — 클럭 성과와 상관관계 서술, 인과 단정 아님.",
+   "verification_note": "2019년 기사 단일 출처. basis: 2018년 시점 명시 필수.",
+   "status": "verified"
+  },
+  "metric_088": {
+   "label": "에코마케팅 주가(2019.8.28 기준)",
+   "value": "27300",
+   "unit": "원",
+   "source_ids": [
+    "src_056"
+   ],
+   "scope": "클럭 모회사 에코마케팅 주가, 2019년 8월 28일 기준. 2018년 말(11,200원) 대비 약 2.4배 — 클럭 성과와 상관관계 서술, 인과 단정 아님.",
+   "verification_note": "2019년 기사 단일 출처. basis: 2019년 시점 명시 필수 + '상관관계, 인과 아님' 조건 병기 필수.",
+   "status": "verified"
+  },
+  "metric_089": {
+   "label": "전기 안마기 위해사례(2015~2017 합계)",
+   "value": "262",
+   "unit": "건",
+   "source_ids": [
+    "src_003"
+   ],
+   "scope": "CISS(소비자위해감시시스템) 2015~2017년 3년간 접수 기준. 매년 증가 추세(71건→92건→99건).",
+   "verification_note": "정부 산하 소비자보호기관 1차 통계. 원문 확보·직접 확인. 2018년 발간 자료 — 2026 현재 위해 발생률과 동일시 금지.",
+   "status": "verified"
+  },
+  "metric_090": {
+   "label": "안마의자 위해정보 비중(2015~2017)",
+   "value": "56.5",
+   "unit": "%",
+   "source_ids": [
+    "src_003"
+   ],
+   "scope": "전기 안마기 위해사례 262건 중 안마의자 관련 148건 비중. 2015~2017년 CISS 접수 기준.",
+   "verification_note": "정부 1차 통계, 원문 확보. 소형 목/어깨 마사지기는 '기타 전기 안마기'(114건, 43.5%)에 뭉뚱그려져 분리 안 됨 — CLO류 소형 제품 위해율 별도 확인 불가.",
+   "status": "verified"
+  },
+  "metric_091": {
+   "label": "국내 안마의자 시장규모(2007, 시계열 기준점)",
+   "value": "200",
+   "unit": "억원",
+   "source_ids": [
+    "src_003"
+   ],
+   "scope": "2007년 국내 안마의자 시장규모. 업계 추산치(2018년 발간 보고서 회고 서술).",
+   "verification_note": "정부 문서 인용이나 원출처는 업계 추산 — 1차 통계 아님. 시계열 기준점으로만 사용, 2026 현재 시장규모 추정에 직접 연결 금지.",
+   "status": "verified"
+  },
+  "metric_092": {
+   "label": "국내 안마의자 시장규모(2018 전망치)",
+   "value": "7000",
+   "unit": "억원",
+   "source_ids": [
+    "src_003"
+   ],
+   "scope": "2018년 당시 업계 전망치(2007년 200억원 대비 '10년 만에 30배 성장' 서술 중 최종년도). 2026 현재 실적 아님 — 2018년 시점의 전망 수치임을 반드시 병기.",
+   "verification_note": "업계 추산 전망치, 정부 문서가 재인용. 2025년 언론 추정(1조~1.5조, 4차 metric_006/034)과 시점 8년 차이 — 직접 비교·시계열 연결 금지, 별도 discrepancy로 기록.",
+   "status": "verified"
+  },
+  "metric_093": {
+   "label": "안마기기·의료기기 렌탈 소비자상담(2021~2022 합계)",
+   "value": "1851",
+   "unit": "건",
+   "source_ids": [
+    "src_004"
+   ],
+   "scope": "1372소비자상담센터 접수 기준, 2021~2022년 2년간. 매년 800건 이상 접수.",
+   "verification_note": "정부 1차 통계, 원문 확보. 안마기기 단독이 아니라 의료기기 렌탈 포함 통합 통계 — 안마기기만의 건수는 분리 불가.",
+   "status": "verified"
+  },
+  "metric_094": {
+   "label": "렌탈 상담 사유 — 품질·A/S불만 비중(2021~2022)",
+   "value": "46.6",
+   "unit": "%",
+   "source_ids": [
+    "src_004"
+   ],
+   "scope": "상담 1,851건 중 '품질 및 A/S불만' 861건 비중. 2021~2022년.",
+   "verification_note": "정부 1차 통계. 대형 렌탈 브랜드 중심 조사 — CLO 같은 소형 구매형 브랜드는 표본 밖일 가능성 높음(렌탈 모델 자체 없음).",
+   "status": "verified"
+  },
+  "metric_095": {
+   "label": "렌탈 피해구제 접수(2021~2022 합계)",
+   "value": "186",
+   "unit": "건",
+   "source_ids": [
+    "src_004"
+   ],
+   "scope": "1372상담센터 상담 중 실제 피해구제 접수로 이어진 건. 2021~2022년. '품질·A/S불만' 108건(58.0%), '계약 관련' 66건(35.5%).",
+   "verification_note": "정부 1차 통계.",
+   "status": "verified"
+  },
+  "metric_096": {
+   "label": "시트형 안마기 시험 제품 가격대(2018, 하한~상한)",
+   "value": "13.1~23.9",
+   "unit": "만원",
+   "source_ids": [
+    "src_005"
+   ],
+   "scope": "소비자원 품질비교시험 대상 9개 제품(30만원 미만 시트형 안마기) 구입가 범위. 2018년 기준. 하한 131,000원(메디하임 MMG-6631)~상한 239,000원(휴플러스 HPC-11700).",
+   "verification_note": "정부 1차 시험 데이터. 2018년 가격 — 2026 CLO·클럭 등 최신 소형 마사지기(5~16만원대) 가격 비교 시 6~8년 시차·폼팩터(시트형 vs 목어깨형) 차이 모두 유의 필요.",
+   "status": "verified"
+  },
+  "metric_097": {
+   "label": "코웨이 매출액(2026 Q1)",
+   "value": "13297",
+   "unit": "억원",
+   "source_ids": [
+    "src_006"
+   ],
+   "scope": "코웨이 2026년 1분기 매출액. 전년 동기 대비 +13.2%. 정수기·안마의자 등 렌탈 전체 포함 — 안마의자 단독 매출 아님.",
+   "verification_note": "증권사 리포트, 공시 기반 수치. 4차 KIS 리포트(metric_065, 2024년 연매출 4.31조원)와 시점 다른 후속 분기 실적 — 연속선상 참조 가능.",
+   "status": "verified"
+  },
+  "metric_098": {
+   "label": "코웨이 영업이익(2026 Q1)",
+   "value": "2509",
+   "unit": "억원",
+   "source_ids": [
+    "src_006"
+   ],
+   "scope": "코웨이 2026년 1분기 영업이익. 전년 동기 대비 +18.8%, 시장 기대치 대비 +3% 상회.",
+   "verification_note": "증권사 리포트, 공시 기반.",
+   "status": "verified"
+  },
+  "metric_099": {
+   "label": "코웨이 매출액(2023 Q4)",
+   "value": "10000",
+   "unit": "억원",
+   "source_ids": [
+    "src_007"
+   ],
+   "scope": "코웨이 2023년 4분기 매출액. 전년 동기 대비 +2.5%. 렌탈 전체 포함 — 안마의자 단독 아님.",
+   "verification_note": "증권사 리포트, 공시 기반. src_006(2026 Q1)과 2년 3개월 시차 — 성장 추이 참조용.",
+   "status": "verified"
+  },
+  "metric_100": {
+   "label": "코웨이 렌탈 판매량(2023 Q4)",
+   "value": "36",
+   "unit": "만 계정",
+   "source_ids": [
+    "src_007"
+   ],
+   "scope": "코웨이 2023년 4분기 렌탈 판매량. 전년 동기 대비 +5.4%. 정수기+비렉스(매트리스·안마의자) 합산 — 안마의자 단독 계정수 아님.",
+   "verification_note": "증권사 리포트, 공시 기반.",
+   "status": "verified"
+  },
+  "metric_101": {
+   "label": "마사지를 더 받은 사람들의 12주째 개선 확률(임상시험, 안 받은 쪽 대비)",
+   "value": "1.56",
+   "unit": "배",
+   "source_ids": [
+    "src_008"
+   ],
+   "scope": "만성 비특이적 목통증 환자, 최초 60분 마사지 수령 후 '부스터'(주1회 60분×6회) 추가군의 12주 시점 위험비(95% CI 1.08-2.25, P=0.018). 전문 치료사 시술 RCT — 기기 효능 근거 아님.",
+   "verification_note": "NIH 공적자금 RCT, COI 없음. src_009(SLR)와 서로 다른 연구·다른 개입(전문 마사지 시술 vs 퍼커시브 기기)임을 명확히 구분해 인용할 것 — 두 수치를 하나의 '마사지 효과'로 합쳐 쓰지 말 것.",
+   "status": "verified"
+  },
+  "metric_102": {
+   "label": "같은 시험 26주째 개선 확률 — 효과가 통계적으로 사라짐",
+   "value": "1.22",
+   "unit": "배",
+   "source_ids": [
+    "src_008"
+   ],
+   "scope": "동일 부스터군의 26주 시점 위험비(95% CI 0.85-1.74) — 통계적으로 유의하지 않음. 12주 효과가 26주까지 지속된다는 근거는 이 연구에서 확인 안 됨.",
+   "verification_note": "12주 유의(metric_101) 대비 26주 유의성 소실 — 마사지 효능의 '지속성 불확실'을 보여주는 반대신호(balancing signal)로 기록. 효능 주장에 이 metric을 반드시 병기해 낙관 편향 방지.",
+   "status": "verified"
+  },
+  "metric_103": {
+   "label": "마사지건 효과를 모아 검토한 연구 수",
+   "value": "13",
+   "unit": "건",
+   "source_ids": [
+    "src_009"
+   ],
+   "scope": "마사지건(퍼커시브 테라피) 근골격계 효과 체계적 문헌고찰(SLR) 포함 연구 수. 성인 참가자 총 255명.",
+   "verification_note": "동료심사 SLR, COI 없음. src_008(RCT, 전문 마사지 시술)과 서로 다른 연구·다른 개입방식(타건형 기기 vs 도수 마사지) — 혼동 금지, 별도 metric 유지.",
+   "status": "verified"
+  },
+  "metric_104": {
+   "label": "그 연구들에 참여한 사람 수 합계",
+   "value": "255",
+   "unit": "명",
+   "source_ids": [
+    "src_009"
+   ],
+   "scope": "13개 포함 연구의 성인 참가자 합계. 2023년 발표.",
+   "verification_note": "동료심사 SLR. 13개 연구 전부 방법론적 한계 보유 — narrative synthesis 수준의 제한적 근거. '효과 있음'을 확정적 고품질 근거로 서술 금지, 방법론 한계를 반드시 병기.",
+   "status": "verified"
+  },
+  "metric_105": {
+   "value": "50",
+   "unit": "%",
+   "source_ids": [
+    "src_066"
+   ],
+   "scope": "국내 고급형(700만원 이상) 안마의자 시장 파나소닉 점유율, 2022년 기사 시점. 전체 안마의자 시장이나 소형/핸디형 마사지기 점유율 아님.",
+   "label": "파나소닉 국내 고급형 안마의자 점유율",
+   "verification_note": "한국일보 2022-03-24 기사 직접 WebFetch 확인. 고급형 세그먼트(700만원+) 한정 수치 — 소형/핸디형(목·어깨) 파나소닉 제품은 한국 정식판매 근거 없음, 별도 세그먼트로 혼동 금지.",
+   "status": "verified"
+  },
+  "metric_106": {
+   "value": "7500",
+   "unit": "억원",
+   "source_ids": [
+    "src_066"
+   ],
+   "scope": "국내 안마의자 시장규모, 2018년 시점(한국일보 2022년 기사 내 인용).",
+   "label": "국내 안마의자 시장규모(2018)",
+   "verification_note": "한국일보 2022-03-24 기사 직접 WebFetch 확인. disc_013 참조 — 소비자원 2018년 전망치(src_003, 7,000억)와 발행 주체·정확 수치가 다름, 별도 인용 계통으로 병기.",
+   "status": "verified"
+  },
+  "metric_107": {
+   "value": "9000",
+   "unit": "억원",
+   "source_ids": [
+    "src_066"
+   ],
+   "scope": "국내 안마의자 시장규모, 2021년 시점 추정(한국일보 2022년 기사).",
+   "label": "국내 안마의자 시장규모(2021 추정)",
+   "verification_note": "한국일보 2022-03-24 기사 직접 WebFetch 확인. '약 9,000억'으로 어림값 표기됨. 2024년 이코노미스트 통합 추정치(1.6조~2조, metric_110)와 시계열 직결 금지 — disc_013.",
+   "status": "verified"
+  },
+  "metric_108": {
+   "value": "7199",
+   "unit": "억원",
+   "source_ids": [
+    "src_067"
+   ],
+   "scope": "코웨이 비렉스(매트리스+안마의자 통합) 매출. 안마의자 단독 아님.",
+   "label": "코웨이 비렉스 통합 매출",
+   "verification_note": "머니투데이 2026-02-06 기사 직접 WebFetch 확인. 공시 기반이나 안마의자 단독 매출은 비공시 — 매트리스와 통합 공시된 수치임을 반드시 병기.",
+   "status": "verified"
+  },
+  "metric_109": {
+   "value": "3654",
+   "unit": "억원",
+   "source_ids": [
+    "src_067"
+   ],
+   "scope": "코웨이 침대(매트리스) 단독 매출, 안마의자 제외 분리공시.",
+   "label": "코웨이 침대 단독 매출",
+   "verification_note": "머니투데이 2026-02-06 기사 직접 WebFetch 확인. 침대만 분리공시되고 안마의자는 단독 수치가 없음 — 역산으로 안마의자 매출 추정 금지(비렉스 통합치에서 침대를 뺀 값은 매트리스 외 요소 포함 가능).",
+   "status": "verified"
+  },
+  "metric_110": {
+   "value": "16000-20000",
+   "unit": "억원",
+   "source_ids": [
+    "src_068"
+   ],
+   "scope": "안마기기(안마의자+소형 마사지기) 통합 시장규모, 업계 추정, 2024년 시점. 소형 마사지기 단독 시장규모 아님.",
+   "label": "안마기기 통합 시장규모(업계 추정)",
+   "verification_note": "이코노미스트 2024-12-31 기사 직접 WebFetch 확인. 방법론·표본 미공개 업계 추정치. 소형 단독 시장규모로 대체 사용 금지 — scope에 통합 명시. disc_013 참조.",
+   "status": "verified"
+  },
+  "metric_111": {
+   "value": "120",
+   "unit": "억원",
+   "source_ids": [
+    "src_069"
+   ],
+   "scope": "스파알 2024년 1분기 매출, 누적 판매 40만개(별도 병기).",
+   "label": "스파알 2024 1분기 매출",
+   "verification_note": "딜사이트 기사 직접 WebFetch 확인. 개별 브랜드 단편 실적 — 전체 소형 시장규모 추정 근거로 확대 사용 금지.",
+   "status": "verified"
+  },
+  "metric_112": {
+   "value": "62",
+   "unit": "억원",
+   "source_ids": [
+    "src_069"
+   ],
+   "scope": "풀리오 종아리 마사지기 V3 출시 1주일 매출.",
+   "label": "풀리오 종아리 V3 출시 1주 매출",
+   "verification_note": "딜사이트 기사 직접 WebFetch 확인. 출시 초기 단기 수치 — 정상 판매 흐름 대표치 아님, 개별 브랜드 단편으로만 인용.",
+   "status": "verified"
+  },
+  "metric_113": {
+   "label": "국내 의료기기 시장규모(생산+수입-수출)",
+   "value": "6817874",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체(안마기 세부 품목 미분리) 시장규모, 2018년",
+   "series_id": "khidi_medical_device_market",
+   "series_key": "2018",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_114": {
+   "label": "국내 의료기기 시장규모(생산+수입-수출)",
+   "value": "7803910",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체(안마기 세부 품목 미분리) 시장규모, 2019년",
+   "series_id": "khidi_medical_device_market",
+   "series_key": "2019",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_115": {
+   "label": "국내 의료기기 시장규모(생산+수입-수출)",
+   "value": "7531694",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체(안마기 세부 품목 미분리) 시장규모, 2020년",
+   "series_id": "khidi_medical_device_market",
+   "series_key": "2020",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_116": {
+   "label": "국내 의료기기 시장규모(생산+수입-수출)",
+   "value": "9134146",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체(안마기 세부 품목 미분리) 시장규모, 2021년",
+   "series_id": "khidi_medical_device_market",
+   "series_key": "2021",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_117": {
+   "label": "국내 의료기기 시장규모(생산+수입-수출)",
+   "value": "11878168",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체(안마기 세부 품목 미분리) 시장규모, 2022년(정점)",
+   "series_id": "khidi_medical_device_market",
+   "series_key": "2022",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_118": {
+   "label": "국내 의료기기 시장규모(생산+수입-수출)",
+   "value": "10726983",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체(안마기 세부 품목 미분리) 시장규모, 2023년",
+   "series_id": "khidi_medical_device_market",
+   "series_key": "2023",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_119": {
+   "label": "국내 의료기기 시장규모(생산+수입-수출)",
+   "value": "10544424",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체(안마기 세부 품목 미분리) 시장규모, 2024년",
+   "series_id": "khidi_medical_device_market",
+   "series_key": "2024",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치. CAGR('18~'24) 7.54%도 원문 표 그대로 확인.",
+   "status": "verified"
+  },
+  "metric_120": {
+   "label": "국내 의료기기 생산액",
+   "value": "6511135",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체 생산액, 2018년",
+   "series_id": "khidi_medical_device_production",
+   "series_key": "2018",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_121": {
+   "label": "국내 의료기기 생산액",
+   "value": "7279384",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체 생산액, 2019년",
+   "series_id": "khidi_medical_device_production",
+   "series_key": "2019",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_122": {
+   "label": "국내 의료기기 생산액",
+   "value": "10135785",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체 생산액, 2020년",
+   "series_id": "khidi_medical_device_production",
+   "series_key": "2020",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_123": {
+   "label": "국내 의료기기 생산액",
+   "value": "12883106",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체 생산액, 2021년",
+   "series_id": "khidi_medical_device_production",
+   "series_key": "2021",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_124": {
+   "label": "국내 의료기기 생산액",
+   "value": "15737442",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체 생산액, 2022년(정점)",
+   "series_id": "khidi_medical_device_production",
+   "series_key": "2022",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치",
+   "status": "verified"
+  },
+  "metric_125": {
+   "label": "국내 의료기기 생산액",
+   "value": "11314751",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체 생산액, 2023년(전년比 -28.10%, 원문에 원인 설명 없음)",
+   "series_id": "khidi_medical_device_production",
+   "series_key": "2023",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치. 급락 원인은 원문에 없음 — analyst 몫으로 미검증 표시 유지.",
+   "status": "verified"
+  },
+  "metric_126": {
+   "label": "국내 의료기기 생산액",
+   "value": "11426706",
+   "unit": "백만원",
+   "source_ids": [
+    "src_101"
+   ],
+   "scope": "국내 의료기기 산업 전체 생산액, 2024년",
+   "series_id": "khidi_medical_device_production",
+   "series_key": "2024",
+   "verification_note": "khidi.or.kr 원문 HTML 표 직접 대조 일치. CAGR('18~'24) 9.83%도 원문 그대로.",
+   "status": "verified"
+  },
+  "metric_127": {
+   "label": "세라젬 연결 매출액",
+   "value": "2823",
+   "unit": "억원",
+   "source_ids": [
+    "src_102"
+   ],
+   "scope": "㈜세라젬 연결기준 매출액, 2018년",
+   "series_id": "cellagem_revenue",
+   "series_key": "2018",
+   "verification_note": "econovill 원문 WebFetch 직접 확인 일치",
+   "status": "verified"
+  },
+  "metric_128": {
+   "label": "세라젬 연결 매출액",
+   "value": "6670",
+   "unit": "억원",
+   "source_ids": [
+    "src_102"
+   ],
+   "scope": "㈜세라젬 연결기준 매출액, 2021년",
+   "series_id": "cellagem_revenue",
+   "series_key": "2021",
+   "verification_note": "econovill 원문 WebFetch 직접 확인 일치. KIS Rating 리포트(6,671억) 대비 반올림 오차 수준 일치.",
+   "status": "verified"
+  },
+  "metric_129": {
+   "label": "세라젬 연결 매출액",
+   "value": "7501",
+   "unit": "억원",
+   "source_ids": [
+    "src_102"
+   ],
+   "scope": "㈜세라젬 연결기준 매출액, 2022년(정점)",
+   "series_id": "cellagem_revenue",
+   "series_key": "2022",
+   "verification_note": "econovill 원문 WebFetch 직접 확인 일치(5년 성장률 165.68% 서술도 원문과 일치)",
+   "status": "verified"
+  },
+  "metric_130": {
+   "label": "세라젬 연결 매출액",
+   "value": "5847",
+   "unit": "억원",
+   "source_ids": [
+    "src_102"
+   ],
+   "scope": "㈜세라젬 연결기준 매출액, 2023년(전년比 -22.1%)",
+   "series_id": "cellagem_revenue",
+   "series_key": "2023",
+   "verification_note": "1차 근거인 mk.co.kr 원문 WebFetch 접근 실패(사이트 차단) — 원문 미확인 상태. 감소 방향(2022 정점 후 조정)은 다른 소스(바디프랜드 동일 업황) 정황과 부합해 보조 신호로만 채택.",
+   "status": "downgraded"
+  },
+  "metric_131": {
+   "label": "세라젬 연결 매출액",
+   "value": "2740",
+   "unit": "억원",
+   "source_ids": [
+    "src_102"
+   ],
+   "scope": "㈜세라젬 연결기준 매출액, 2017년(KIS Rating 리포트 단독 출처)",
+   "series_id": "cellagem_revenue",
+   "series_key": "2017",
+   "verification_note": "KIS Rating PDF 원문 미열람, 뉴스 교차 확인 없는 단독 출처 연도 — 보조 신호로만 채택.",
+   "status": "downgraded"
+  },
+  "metric_132": {
+   "label": "세라젬 연결 매출액",
+   "value": "3438",
+   "unit": "억원",
+   "source_ids": [
+    "src_102"
+   ],
+   "scope": "㈜세라젬 연결기준 매출액, 2019년(KIS Rating 리포트 단독 출처)",
+   "series_id": "cellagem_revenue",
+   "series_key": "2019",
+   "verification_note": "KIS Rating PDF 원문 미열람, 뉴스 교차 확인 없는 단독 출처 연도 — 보조 신호로만 채택.",
+   "status": "downgraded"
+  },
+  "metric_133": {
+   "label": "세라젬 연결 매출액",
+   "value": "3003",
+   "unit": "억원",
+   "source_ids": [
+    "src_102"
+   ],
+   "scope": "㈜세라젬 연결기준 매출액, 2020년(KIS Rating 리포트 단독 출처)",
+   "series_id": "cellagem_revenue",
+   "series_key": "2020",
+   "verification_note": "KIS Rating PDF 원문 미열람, 뉴스 교차 확인 없는 단독 출처 연도 — 보조 신호로만 채택.",
+   "status": "downgraded"
+  },
+  "metric_134": {
+   "label": "바디프랜드 연결 매출액",
+   "value": "5913",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 매출액, 2021년(정점)",
+   "series_id": "bodyfriend_revenue",
+   "series_key": "2021",
+   "verification_note": "newswire 원문 WebFetch 직접 확인 일치",
+   "status": "verified"
+  },
+  "metric_135": {
+   "label": "바디프랜드 연결 매출액",
+   "value": "5220",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 매출액, 2022년(전년比 -12%)",
+   "series_id": "bodyfriend_revenue",
+   "series_key": "2022",
+   "verification_note": "ziksir·zdnet 원문 WebFetch 직접 확인 — 5,220억·-12% YoY 일치. collector가 채택한 서울거래 수치(5,437억)와 상충 — discrepancy 참조, 뉴스 공시 인용 직접 확인분을 채택.",
+   "status": "verified"
+  },
+  "metric_136": {
+   "label": "바디프랜드 연결 매출액",
+   "value": "4197",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 매출액, 2023년",
+   "series_id": "bodyfriend_revenue",
+   "series_key": "2023",
+   "verification_note": "서울거래 원문 WebFetch 직접 확인 일치(2020~2025 표에서 확인)",
+   "status": "verified"
+  },
+  "metric_137": {
+   "label": "바디프랜드 연결 매출액",
+   "value": "4369",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 매출액, 2024년(전년比 +4.1%)",
+   "series_id": "bodyfriend_revenue",
+   "series_key": "2024",
+   "verification_note": "newswire·4th.kr·서울거래 3개 원문 WebFetch 직접 확인 일치(뉴스는 4,368억, 서울거래는 4,369억 — 반올림 차이)",
+   "status": "verified"
+  },
+  "metric_138": {
+   "label": "바디프랜드 연결 영업이익",
+   "value": "685",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 영업이익, 2021년",
+   "series_id": "bodyfriend_operating_profit",
+   "series_key": "2021",
+   "verification_note": "서울거래 원문 WebFetch 직접 확인 일치. 뉴스 교차확인은 안 됨(단독 소스) — 참고로 채택.",
+   "status": "verified"
+  },
+  "metric_139": {
+   "label": "바디프랜드 연결 영업이익",
+   "value": "241",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 영업이익, 2022년(전년比 -65%)",
+   "series_id": "bodyfriend_operating_profit",
+   "series_key": "2022",
+   "verification_note": "ziksir·zdnet 원문 WebFetch 직접 확인 — 241억·-65% YoY 일치. collector가 채택한 서울거래 수치(458억)와 상충 — discrepancy 참조, 뉴스 공시 인용 직접 확인분을 채택.",
+   "status": "verified"
+  },
+  "metric_140": {
+   "label": "바디프랜드 연결 영업이익",
+   "value": "167",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 영업이익, 2023년",
+   "series_id": "bodyfriend_operating_profit",
+   "series_key": "2023",
+   "verification_note": "서울거래 원문 WebFetch 직접 확인 일치",
+   "status": "verified"
+  },
+  "metric_141": {
+   "label": "바디프랜드 연결 영업이익",
+   "value": "226",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 영업이익, 2024년(전년比 +34.6%)",
+   "series_id": "bodyfriend_operating_profit",
+   "series_key": "2024",
+   "verification_note": "newswire·4th.kr·서울거래 원문 WebFetch 직접 확인 일치(뉴스 225억, 서울거래 226억 — 반올림 차이)",
+   "status": "verified"
+  },
+  "metric_142": {
+   "label": "바디프랜드 연결 당기순이익",
+   "value": "389",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 당기순이익, 2022년",
+   "series_id": "bodyfriend_net_income",
+   "series_key": "2022",
+   "verification_note": "ziksir 원문 WebFetch 직접 확인 일치 — 매출·영업이익은 뉴스/서울거래 두 세트가 상충했지만 당기순이익만은 양쪽 소스 모두 389억으로 일치.",
+   "status": "verified"
+  },
+  "metric_143": {
+   "label": "바디프랜드 연결 당기순이익",
+   "value": "-63",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 당기순이익, 2023년(적자전환)",
+   "series_id": "bodyfriend_net_income",
+   "series_key": "2023",
+   "verification_note": "서울거래 원문 WebFetch 직접 확인 일치. 뉴스 교차확인 없음(단독 소스).",
+   "status": "verified"
+  },
+  "metric_144": {
+   "label": "바디프랜드 연결 당기순이익",
+   "value": "-76",
+   "unit": "억원",
+   "source_ids": [
+    "src_103"
+   ],
+   "scope": "㈜바디프랜드 연결기준 당기순이익, 2024년(적자 지속)",
+   "series_id": "bodyfriend_net_income",
+   "series_key": "2024",
+   "verification_note": "서울거래 원문 WebFetch 직접 확인 일치. 뉴스 교차확인 없음(단독 소스).",
+   "status": "verified"
+  },
+  "metric_145": {
+   "label": "코지마(복정제형) 매출액",
+   "value": "172",
+   "unit": "억원",
+   "source_ids": [
+    "src_104"
+   ],
+   "scope": "㈜복정제형(코지마) 매출액, 2016년",
+   "series_id": "kojima_revenue",
+   "series_key": "2016",
+   "verification_note": "ziksir 원문 WebFetch 직접 확인 일치",
+   "status": "verified"
+  },
+  "metric_146": {
+   "label": "코지마(복정제형) 매출액",
+   "value": "481",
+   "unit": "억원",
+   "source_ids": [
+    "src_104"
+   ],
+   "scope": "㈜복정제형(코지마) 매출액, 2017년",
+   "series_id": "kojima_revenue",
+   "series_key": "2017",
+   "verification_note": "ziksir 원문 WebFetch 직접 확인 일치",
+   "status": "verified"
+  },
+  "metric_147": {
+   "label": "코지마(복정제형) 매출액",
+   "value": "888",
+   "unit": "억원",
+   "source_ids": [
+    "src_104"
+   ],
+   "scope": "㈜복정제형(코지마) 매출액, 2018년",
+   "series_id": "kojima_revenue",
+   "series_key": "2018",
+   "verification_note": "ziksir 원문 WebFetch 직접 확인 일치",
+   "status": "verified"
+  },
+  "metric_148": {
+   "label": "코지마(복정제형) 매출액(역산 추정)",
+   "value": "1074.5",
+   "unit": "억원",
+   "source_ids": [
+    "src_104"
+   ],
+   "scope": "㈜복정제형(코지마) 매출액 추정, 2019년 — 원문의 '2018년 대비 21% 증가' 서술에서 역산(888×1.21)",
+   "verification_note": "원문에 절대값 없음, %서술 기반 파생 추정치 — series_id 미부여(파생 metric은 series에 넣지 않음, verifier.md 원칙). 원문 표현 '약 1,076억'과 근접해 신뢰도 보통.",
+   "status": "downgraded"
+  },
+  "metric_149": {
+   "label": "코지마(복정제형) 매출액",
+   "value": "1555",
+   "unit": "억원",
+   "source_ids": [
+    "src_104"
+   ],
+   "scope": "㈜복정제형(코지마) 매출액, 2021년(전년比 +4.86%)",
+   "series_id": "kojima_revenue",
+   "series_key": "2021",
+   "verification_note": "ziksir 원문 WebFetch 직접 확인 일치",
+   "status": "verified"
+  },
+  "metric_150": {
+   "label": "코지마(복정제형) 총매출(제품+상품)",
+   "value": "647",
+   "unit": "억원",
+   "source_ids": [
+    "src_104"
+   ],
+   "scope": "㈜복정제형(코지마) 매출액, 2024년 — 제품 513억+상품 134억 합산. 2016~2021 시계열과 매출 정의(연결 총매출 vs 제품+상품 세부) 동일 여부 미확인 — series 연속성 주장 금지.",
+   "series_id": "kojima_revenue_v2_product_goods_basis",
+   "series_key": "2024",
+   "verification_note": "신아일보 원문 WebFetch 직접 확인 — 제품 513억(+28% YoY)·상품 134억(-63% YoY) 정확히 일치. 2016~2021 series(kojima_revenue)와 집계 기준이 다를 수 있어 별도 series로 분리(verifier.md 시계열 계약 — 기준 변경 시 series 분리).",
+   "status": "verified"
+  },
+  "metric_151": {
+   "label": "국내 안마의자 시장규모(업계 추정)",
+   "value": "3500",
+   "unit": "억원",
+   "source_ids": [
+    "src_105"
+   ],
+   "scope": "국내 안마의자 시장 규모 업계 추정, 2015년. Tier-C 업계 추정 — 정부 통계 아님, 정부 1차 통계(khidi_medical_device_market series)와 병렬 비교 금지.",
+   "series_id": "massage_chair_market_industry_estimate",
+   "series_key": "2015",
+   "verification_note": "원문 매체(ajunews 등) 계열 서술과 부합, newstomato 원문 WebFetch로 2023년 지점 직접 확인. Tier-C 참조용.",
+   "status": "downgraded"
+  },
+  "metric_152": {
+   "label": "국내 안마의자 시장규모(업계 추정)",
+   "value": "10000",
+   "unit": "억원",
+   "source_ids": [
+    "src_105"
+   ],
+   "scope": "국내 안마의자 시장 규모 업계 추정, 2021년('1조원 넘어선 것으로 추정'). Tier-C 업계 추정.",
+   "series_id": "massage_chair_market_industry_estimate",
+   "series_key": "2021",
+   "verification_note": "업계 추정 반복 인용 — 원출처 리서치사 불명. Tier-C 참조용.",
+   "status": "downgraded"
+  },
+  "metric_153": {
+   "label": "국내 안마의자 시장규모(업계 추정)",
+   "value": "15000",
+   "unit": "억원",
+   "source_ids": [
+    "src_105"
+   ],
+   "scope": "국내 안마의자 시장 규모 업계 전망치, 2022년(실현 여부 미확인 — 2023년 실적 추정이 오히려 하향 조정됨). Tier-C 업계 추정.",
+   "series_id": "massage_chair_market_industry_estimate",
+   "series_key": "2022",
+   "verification_note": "전망치이자 미실현 가능성 있는 수치 — 과열 전망 정황으로 analyst B4 Inversion 렌즈 대상. Tier-C 참조용.",
+   "status": "downgraded"
+  },
+  "metric_154": {
+   "label": "국내 안마의자 시장규모(업계 추정, 프로스트앤설리번)",
+   "value": "9583",
+   "unit": "억원",
+   "source_ids": [
+    "src_105"
+   ],
+   "scope": "국내 안마의자 시장 규모, 2023년(프로스트앤설리번 인용, 세계 시장 6조8,421억원과 병기). Tier-C 업계 추정.",
+   "series_id": "massage_chair_market_industry_estimate",
+   "series_key": "2023",
+   "verification_note": "newstomato 원문 WebFetch 직접 확인 — 국내 9,583억·세계 6조8,421억·프로스트앤설리번 인용 전부 정확히 일치. Tier-C 참조용, 정부 1차 통계와 병렬 비교 금지.",
+   "status": "downgraded"
+  },
+  "metric_155": {
+   "label": "바디프랜드 매출 정점 대비 낙폭",
+   "value": "-26.1",
+   "unit": "%",
+   "derivation": "delta_pct",
+   "derived_from": [
+    "metric_134",
+    "metric_137"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "(4369-5913)/5913 = -0.26112. 두 원천 모두 verified.",
+   "period": "2021~2024"
+  },
+  "metric_156": {
+   "label": "바디프랜드 영업이익률 2021",
+   "value": "11.6",
+   "unit": "%",
+   "derivation": "share",
+   "derived_from": [
+    "metric_138",
+    "metric_134"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "685/5913 = 0.11585. metric_138은 서울거래 단독 소스(verified·참고 채택) — 이 파생치도 같은 단서 승계.",
+   "period": "2021"
+  },
+  "metric_157": {
+   "label": "바디프랜드 영업이익률 2024",
+   "value": "5.2",
+   "unit": "%",
+   "derivation": "share",
+   "derived_from": [
+    "metric_141",
+    "metric_137"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "226/4369 = 0.05173. 두 원천 모두 복수 소스 verified.",
+   "period": "2024"
+  },
+  "metric_158": {
+   "label": "세라젬 매출 CAGR 2018~2022",
+   "value": "27.7",
+   "unit": "%/년",
+   "derivation": "cagr",
+   "derived_from": [
+    "metric_127",
+    "metric_129"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "(7501/2823)^(1/4)-1 = 0.27674. 4년 구간(끝점-시작점 연차 4). 원문 서술 '5년 성장률 165.68%'((7501-2823)/2823=1.6571)와 동일 구간의 다른 표현 — 원문은 누적 성장률, 본 파생은 연평균.",
+   "period": "2018~2022"
+  },
+  "metric_160": {
+   "label": "코지마 매출 CAGR 2016~2021",
+   "value": "55.3",
+   "unit": "%/년",
+   "derivation": "cagr",
+   "derived_from": [
+    "metric_145",
+    "metric_149"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "(1555/172)^(1/5)-1 = 0.55325. 5년 구간. 2019·2020 중간점 결측이나 CAGR은 끝점 계산이라 무관 — 단 '매년 55% 성장' 서술로 오용 금지.",
+   "period": "2016~2021"
+  },
+  "metric_162": {
+   "label": "안마의자 업계 전망-실적추정 격차",
+   "value": "-36.1",
+   "unit": "%",
+   "derivation": "delta_pct",
+   "derived_from": [
+    "metric_153",
+    "metric_154"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "(9583-15000)/15000 = -0.36113. ⚠️ Tier-C series 내부 비교 전용 — 정부 통계와 병렬 배치 금지, 절대 규모 인용 금지, '전망 하향' 방향 신호로만.",
+   "period": "2022(전망)~2023(추정)"
+  },
+  "metric_163": {
+   "label": "의료기기 시장규모 정점 대비 2024",
+   "value": "-11.2",
+   "unit": "%",
+   "derivation": "delta_pct",
+   "derived_from": [
+    "metric_117",
+    "metric_119"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "(10544424-11878168)/11878168 = -0.11227. 안마기 미분리 산업 전체 — 배경 방향 인용 전용.",
+   "period": "2022~2024"
+  },
+  "metric_164": {
+   "label": "의료기기 시장규모 CAGR 2018~2022",
+   "value": "14.9",
+   "unit": "%/년",
+   "derivation": "cagr",
+   "derived_from": [
+    "metric_113",
+    "metric_117"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "(11878168/6817874)^(1/4)-1 = 0.14887. 원문 CAGR('18~'24) 7.54%와 구간이 다름(원문=전체 6년, 본 파생=정점까지 4년) — 특수기 vs 조정기 대비용. 배경 전용.",
+   "period": "2018~2022"
+  },
+  "metric_159": {
+   "label": "세라젬 영업이익률 2024",
+   "value": "0.4",
+   "unit": "%",
+   "derivation": "share",
+   "derived_from": [
+    "metric_069",
+    "metric_007"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "22/5460*100",
+   "period": "2024"
+  },
+  "metric_161": {
+   "label": "코지마 매출 증가율 2024→2025",
+   "value": "13.8",
+   "unit": "%",
+   "derivation": "delta_pct",
+   "derived_from": [
+    "metric_150",
+    "metric_083"
+   ],
+   "source_ids": [],
+   "status": "derived",
+   "formula_note": "(736-647)/647*100",
+   "period": "2024~2025"
+  }
+ },
+ "verified_items": [
+  {
+   "source_id": "src_001",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "의료기기 해당여부 판단 = '구조·기능을 검사·대체·변형할 목적'인지(의료기기법 제2조) — 광고·표시 문구가 법적 분류를 좌우(대법원 2010.4.29. 2008도7688)",
+    "전자파·자력으로 신체 구조·기능에 영향을 주는 기구는 명칭과 무관하게 의료기기 해당 가능(대법원 1993.3.12. 92도811) — 마사지기류가 표시 문구에 따라 의료기기로 전환될 수 있는 판례적 근거"
+   ]
+  },
+  {
+   "source_id": "src_002",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "의료기기로 허가된 개인용저주파자극기·의료용진동기·사지압박순환장치 등은 '(의료용)(저주파)마사지(기), 안마(기), 안마의자, 지압기' 병기 가능 — 단 의료기기 표시 동반 및 오인 우려 없어야 함",
+    "'악세사리·가전·뷰티용품·스포츠용품' 등 공산품 암시 표현은 의료기기 광고에서 사용 불가. 광고 위반 판단은 문구 단독이 아니라 맥락·전체 인상 기준"
+   ]
+  },
+  {
+   "source_id": "src_003",
+   "metric_ids": [
+    "metric_089",
+    "metric_090",
+    "metric_091",
+    "metric_092"
+   ],
+   "key_claims_verified": [
+    "위해사례 262건(2015-17), 안마의자 비중 56.5% — 정부 1차 통계 확인",
+    "시장규모 시계열은 2018년 전망치 기준 — 2025년 언론 추정치와 시점 혼동 금지(discrepancy 기록)"
+   ]
+  },
+  {
+   "source_id": "src_004",
+   "metric_ids": [
+    "metric_093",
+    "metric_094",
+    "metric_095"
+   ],
+   "key_claims_verified": [
+    "렌탈 상담 1,851건, 품질·A/S불만 46.6% 최다 — 대형 렌탈 브랜드 중심, CLO 등 소형 구매형은 조사 대상 밖 가능성 명시"
+   ]
+  },
+  {
+   "source_id": "src_005",
+   "metric_ids": [
+    "metric_096"
+   ],
+   "key_claims_verified": [
+    "시트형 안마기 9개 제품 전수 KC 60335-1 안전기준 적합 — 안전성은 업계 표준선, 차별화 요소 아니라는 반대신호로 해석 가능"
+   ]
+  },
+  {
+   "source_id": "src_006",
+   "metric_ids": [
+    "metric_097",
+    "metric_098"
+   ],
+   "key_claims_verified": [
+    "말레이시아법인 신규 카테고리(매트리스·에어컨 등) 20%+ 외형성장 — 안마의자·매트리스 헬스케어가전이 해외 성장 동력으로 명시(정성)",
+    "비렉스(안마의자) 세그먼트 단독 매출은 이 리포트로 분리 불가 — 전사 실적 안에서만 참조"
+   ]
+  },
+  {
+   "source_id": "src_007",
+   "metric_ids": [
+    "metric_099",
+    "metric_100"
+   ],
+   "key_claims_verified": [
+    "비렉스(매트리스+안마의자) 국내 M/S 확대 지속 서술 — 정량 점유율 수치는 없음(정성 신호로만 전달)"
+   ]
+  },
+  {
+   "source_id": "src_008",
+   "metric_ids": [
+    "metric_101",
+    "metric_102"
+   ],
+   "key_claims_verified": [
+    "1차 치료군(빈도·시간 다양화) 간 12주·26주 모두 유의차 없음",
+    "부스터 마사지 효과는 12주 유의, 26주 유의성 소실 — 지속 효과 근거 부재(반대신호)"
+   ]
+  },
+  {
+   "source_id": "src_009",
+   "metric_ids": [
+    "metric_103",
+    "metric_104"
+   ],
+   "key_claims_verified": [
+    "단회 적용은 근력·순발력·유연성 급성 증가, 다회 적용은 통증 경험 감소와 연관 — 단, 13개 연구 전부 방법론 한계로 근거 수준 제한적(반대신호 병기 필수)",
+    "일반 마사지건(타건형) 리뷰 — CLO 넥앤프로(주무름형)·메디소닉(갈바닉)과 작동 원리 다름, 직접 적용 금지"
+   ]
+  },
+  {
+   "source_id": "src_037",
+   "metric_ids": [
+    "metric_006",
+    "metric_007",
+    "metric_008"
+   ],
+   "key_claims_verified": [
+    "세라젬+바디프랜드 공시 합산 약 1조원으로 안마의자 시장 1조 하한 간접 지지",
+    "시장규모 1조~1.5조 언론 추정 — 공식 통계 아니나 공시 수치로 하한 뒷받침"
+   ]
+  },
+  {
+   "source_id": "src_014",
+   "metric_ids": [
+    "metric_009"
+   ],
+   "key_claims_verified": [
+    "렌털 모델 기반 코웨이 진입 + 바디프랜드 체험 라운지 반격 구도"
+   ]
+  },
+  {
+   "source_id": "src_016",
+   "metric_ids": [
+    "metric_011"
+   ],
+   "key_claims_verified": [
+    "코지마 안마의자 매출 2025 H1 약 36% 증가 (자사 기준)"
+   ]
+  },
+  {
+   "source_id": "src_017",
+   "metric_ids": [
+    "metric_010"
+   ],
+   "key_claims_verified": [
+    "코지마 소형 마사지기 자사 매출 비중 40% — 전체 시장 외삽 불가"
+   ]
+  },
+  {
+   "source_id": "src_018",
+   "metric_ids": [
+    "metric_012"
+   ],
+   "key_claims_verified": [
+    "코지마 안마의자 매출 2025년 약 33% 증가 (자사 기준)"
+   ]
+  },
+  {
+   "source_id": "src_019",
+   "metric_ids": [
+    "metric_013",
+    "metric_014",
+    "metric_015",
+    "metric_016"
+   ],
+   "key_claims_verified": [
+    "안마용품 브랜드 온라인 트렌드지수 순위: 풀리오>세라젬>바디프랜드>클럭>오아 (2024.4 스냅샷, 판매량 아님)"
+   ]
+  },
+  {
+   "source_id": "src_020",
+   "metric_ids": [
+    "metric_017",
+    "metric_018",
+    "metric_019"
+   ],
+   "key_claims_verified": [
+    "CLO 메디소닉 가격·공식 스토어 리뷰수 1차 관찰 확인"
+   ]
+  },
+  {
+   "source_id": "src_021",
+   "metric_ids": [
+    "metric_020",
+    "metric_021"
+   ],
+   "key_claims_verified": [
+    "CLO 핸드휴 2026.02.08 가격 스냅샷 확인"
+   ]
+  },
+  {
+   "source_id": "src_023",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "CLO 스토어 인기검색어 순위: 넥앤프로>에어코즈>메디소닉>바디킬>핸드휴 (2026-07-05 관찰)",
+    "CLO 두 축 — 헬스케어(마사지)+뷰티케어 확인"
+   ]
+  },
+  {
+   "source_id": "src_024",
+   "metric_ids": [
+    "metric_024"
+   ],
+   "key_claims_verified": [
+    "바디프랜드 자사 설문 마사지 건강관리 2위 확인 (COI 라벨)"
+   ]
+  },
+  {
+   "source_id": "src_025",
+   "metric_ids": [
+    "metric_024",
+    "metric_025",
+    "metric_026"
+   ],
+   "key_claims_verified": [
+    "src_015와 동일 설문 순환 인용 확인 — 목어깨 부위 니즈 41.3% (구성 수치 검산 일치)"
+   ]
+  },
+  {
+   "source_id": "src_026",
+   "metric_ids": [
+    "metric_022",
+    "metric_023"
+   ],
+   "key_claims_verified": [
+    "가정의 달 선물 마사지체어 1위 41.8% — COI, n=500"
+   ]
+  },
+  {
+   "source_id": "src_027",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "전세대 안마 가전 선물 수요 확산 맥락 — 수치는 src_017 재인용, 독립 수치 없음"
+   ]
+  },
+  {
+   "source_id": "src_028",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "의견선도력 인플루언서 구매의도 긍정 효과 통계적 유의(p<0.05). 마사지기 직접 적용 해석 주의."
+   ]
+  },
+  {
+   "source_id": "src_029",
+   "metric_ids": [
+    "metric_027",
+    "metric_028"
+   ],
+   "key_claims_verified": [
+    "라이브커머스 채널 고성장 — CJ온스타일 92.4% 성장 (마사지기 특화 아님)"
+   ]
+  },
+  {
+   "source_id": "src_030",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "인플루언서 라방 1시간 30억원 사례 — 뷰티·리빙 카테고리 중심"
+   ]
+  },
+  {
+   "source_id": "src_031",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "무허가 중국산 의료기기 규제 적발 사례 — 마사지기 간접 규제 리스크"
+   ]
+  },
+  {
+   "source_id": "src_032",
+   "metric_ids": [
+    "metric_029"
+   ],
+   "key_claims_verified": [
+    "식약처 의료기기 위반 291건 — 해외직구 불법 광고 압도적"
+   ]
+  },
+  {
+   "source_id": "src_033",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "저주파자극기 인접 규제 리스크. EMS 마사지기 광고 제약 시그널."
+   ]
+  },
+  {
+   "source_id": "src_034",
+   "metric_ids": [
+    "metric_030"
+   ],
+   "key_claims_verified": [
+    "해외직구 의료기기 불법광고 1,009건 적발 2025 Q2"
+   ]
+  },
+  {
+   "source_id": "src_035",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "저주파 패드형 세그먼트 — CLO(물리적 주무름형)와 다른 카테고리 확인"
+   ]
+  },
+  {
+   "source_id": "src_036",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "소비자원 마사지건 안전인증 비교 시험. CLO 미포함. 규제 맥락."
+   ]
+  },
+  {
+   "source_id": "src_040",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "EMS=공산품/TENS=의료기기 분류 기준 — WebSearch 요약 수준. 1차 원문 확인 권고."
+   ]
+  },
+  {
+   "source_id": "src_012",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "한국 전기 마사지기 세그먼트 분류(목·어깨/발/전신/휴대용/안마의자) 구조 확인. 정성 정보만."
+   ]
+  },
+  {
+   "source_id": "src_015",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "코지마 2024 소형 베스트: 다리 리에너·코지스툴·코지코어. 합리미엄 트렌드 어법 확인."
+   ]
+  },
+  {
+   "source_id": "src_041",
+   "metric_ids": [
+    "metric_035",
+    "metric_036",
+    "metric_037",
+    "metric_038"
+   ],
+   "key_claims_verified": [
+    "클럭 미니 마사지기 라인 4종 가격 확인(49,900~89,900원)",
+    "'리뷰(294,583)' 표기는 승격 제외 — 자릿수 이상치로 판매량 누적 카운터 가능성, 라벨 재정의 필요(downgraded_items 참조)"
+   ]
+  },
+  {
+   "source_id": "src_042",
+   "metric_ids": [
+    "metric_039",
+    "metric_040",
+    "metric_041",
+    "metric_042",
+    "metric_043",
+    "metric_044"
+   ],
+   "key_claims_verified": [
+    "브레오 3개 제품(릴렉서 N2·NP1·NP2 air) 가격·리뷰수 다나와 교차 관찰",
+    "최근 출시(NP2 air)일수록 저가·리뷰 축적 적음 — 라인업 저가화 정황"
+   ]
+  },
+  {
+   "source_id": "src_043",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "마이누 브랜드 실체 확인 실패 — 플레이어 맵 제외 대상"
+   ]
+  },
+  {
+   "source_id": "src_044",
+   "metric_ids": [
+    "metric_045",
+    "metric_046",
+    "metric_047",
+    "metric_048",
+    "metric_049"
+   ],
+   "key_claims_verified": [
+    "OA 목/어깨 라인업 14개 중 대표 4개 가격 확인, 저가 구간(3~9만원대) 포진 확인"
+   ]
+  },
+  {
+   "source_id": "src_045",
+   "metric_ids": [
+    "metric_050",
+    "metric_051",
+    "metric_052",
+    "metric_053",
+    "metric_054",
+    "metric_055"
+   ],
+   "key_claims_verified": [
+    "코지마 소형 목/어깨 라인 3개 제품 가격·리뷰수 다나와 관찰",
+    "코지마 소형 라인 가격대(10~16만원)가 클럭(5~9만원)·브레오(13~29만원) 사이 포지셔닝"
+   ]
+  },
+  {
+   "source_id": "src_046",
+   "metric_ids": [
+    "metric_056",
+    "metric_057",
+    "metric_058"
+   ],
+   "key_claims_verified": [
+    "CLO 넥앤프로 가격 재확인(소비자가 140,000원/판매가 84,200원)",
+    "리뷰수 이중 표기(1,222 vs 6,066) 확인 — 하한만 보수적 승격, 상한 미승격"
+   ]
+  },
+  {
+   "source_id": "src_047",
+   "metric_ids": [
+    "metric_057",
+    "metric_059",
+    "metric_060",
+    "metric_061",
+    "metric_062",
+    "metric_063",
+    "metric_064"
+   ],
+   "key_claims_verified": [
+    "CLO 베스트셀러 6종 가격 전수 확인",
+    "핸드휴가 CLO 단품 중 리뷰 절대량 최대(하한 기준) — 넥앤프로보다 손 마사지기 리뷰 축적 앞섬",
+    "CLO 홈페이지 SNS 채널 링크 부재 확인 — 클럭 대비 채널 운영 공백(정성 시그널, metric 아님)",
+    "'유명인 광고 대신 제품력' 자사 포지셔닝 카피 확인(정성)"
+   ]
+  },
+  {
+   "source_id": "src_048",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "CLO 공식 인스타그램·네이버쇼핑라이브 편성 특정 실패 — '부재 증명 아님' 조건부 기록"
+   ]
+  },
+  {
+   "source_id": "src_049",
+   "metric_ids": [],
+   "key_claims_verified": []
+  },
+  {
+   "source_id": "src_050",
+   "metric_ids": [
+    "metric_065",
+    "metric_066",
+    "metric_067",
+    "metric_068"
+   ],
+   "key_claims_verified": [
+    "코웨이 BEREX 브랜드(안마베드·안마의자) 판매 호조가 2024년 매출 4조원 돌파의 주요 동인 중 하나",
+    "코웨이는 렌탈 채널로 안마의자 시장에 진출한 대형 플레이어 — src_005(뉴스1 기사)의 '렌탈 모델 진입장벽 낮춤' 서술과 정합"
+   ]
+  },
+  {
+   "source_id": "src_051",
+   "metric_ids": [
+    "metric_069"
+   ],
+   "key_claims_verified": [
+    "바디프랜드·세라젬 모두 비상장 — DART 정기공시(사업보고서) 대상 아님. 조사 대상 3사 중 코웨이만 상장사",
+    "세라젬은 2028년 목표 IPO 3수 도전 중(과거 2회 자진 철회)"
+   ]
+  },
+  {
+   "source_id": "src_052",
+   "metric_ids": [],
+   "key_claims_verified": []
+  },
+  {
+   "source_id": "src_054",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "코지마는 GS샵(m.gsshop.com) 공식 브랜드관(jbpBrandCd=1000003350) 보유 — URL 직접 확인",
+    "코지마는 CLO·OA·브레오와 달리 대형 홈쇼핑사 공식 브랜드관을 운영 — 유통 채널 규모 한 단계 위 시그널(src_006~009 대형 안마의자 겸영과 정합)"
+   ]
+  },
+  {
+   "source_id": "src_053",
+   "metric_ids": [],
+   "key_claims_verified": []
+  },
+  {
+   "source_id": "src_055",
+   "metric_ids": [
+    "metric_070",
+    "metric_071",
+    "metric_072",
+    "metric_073",
+    "metric_074"
+   ],
+   "key_claims_verified": [
+    "제스파는 9개 하위 세그먼트(의자형·매트형·공기압·쿠션형·목어깨·다리·핸디형·눈·물리치료)의 풀카탈로그 구조 — CLO(2개 라인)·클럭(4개 라인)보다 넓음. 플레이어 맵에 '풀카탈로그형' 세그먼트로 별도 표기 권고",
+    "제스파 공식 채널 4개(네이버 브랜드스토어·인스타그램·페이스북·유튜브) 모두 URL 직접 확인",
+    "휴플러스는 마사지건(타건형) 카테고리 리뷰 볼륨 상위권 — CLO 넥앤프로(주무름형)와 다른 하위 유형"
+   ]
+  },
+  {
+   "source_id": "src_056",
+   "metric_ids": [
+    "metric_075",
+    "metric_076",
+    "metric_077",
+    "metric_078",
+    "metric_088"
+   ],
+   "key_claims_verified": [
+    "클럭 2018년 7월 출시 3개월 70만개·1년 300만개 판매 — 2018~2019년 당시 실적으로만 인용, 2026 현재 성과 아님",
+    "모회사 에코마케팅 대표 인터뷰 기반 COI — 실패·정체 국면 서술 없음, 낙관 편향 가능",
+    "'다이어트/근육강화' 대신 '휴대용 안마기'로 리포지셔닝한 마케팅 전략 서술은 정성 신호로 analyst 전달"
+   ]
+  },
+  {
+   "source_id": "src_057",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "클럭이 2024년에도 구독자 128만 크리에이터와 인플루언서 협업 마케팅을 지속 — 실행 사실만 확인, 성과 수치 없음"
+   ]
+  },
+  {
+   "source_id": "src_059",
+   "metric_ids": [
+    "metric_079",
+    "metric_080",
+    "metric_081",
+    "metric_082"
+   ],
+   "key_claims_verified": [
+    "코지마 2024년 공시 기준 제품 매출 513억원(+28%), 상품 매출 134억원(-63%) — 자체개발 중심 체질 전환",
+    "감사보고서·공시 기반 독립 취재(Tier-A) — src_049(자체발표 33%↑)보다 우선 승격 대상"
+   ]
+  },
+  {
+   "source_id": "src_060",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "GS샵·신세계라이브쇼핑 홈쇼핑 편성이 무형상품→뷰티/패션/건기식으로 구조 재편 중 — 안마의자·마사지기 카테고리 구체 편성 데이터는 없어 코지마 개별 신호로 쓰지 않음, 업계 맥락 참고용"
+   ]
+  },
+  {
+   "source_id": "src_062",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "브레오 베트남 하노이 첫 플래그십 매장 오픈 — 한국 내 공식몰 접속 불가(src_044)와 대비되는 채널 투자 격차 관찰 신호(대조용, 한국 시장 직접 증거 아님)"
+   ]
+  },
+  {
+   "source_id": "src_063",
+   "metric_ids": [],
+   "key_claims_verified": [
+    "브레오 한국 판매가 오픈마켓(11번가/신세계몰)·구매대행 채널에 분산 — 코지마·제스파 홈쇼핑 전속, 클럭 D2C 자사몰과 대비되는 유통 패턴 관찰(정성 신호, 가격은 downgrade 처리)"
+   ]
+  },
+  {
+   "source_id": "src_064",
+   "metric_ids": [
+    "metric_083",
+    "metric_084",
+    "metric_085",
+    "metric_086"
+   ],
+   "key_claims_verified": [
+    "코지마(복정제형) 2025년 감사보고서 기준 매출 736억원, 영업이익 6억원 — src_050(2024년 647억원)과 교차 확인, 증가 방향은 일치하나 증가율 수치는 원문 서술과 완전 일치하지 않아 discrepancy 기록",
+    "바디프랜드 해외실적 2023년 115억→2025년 450억원(4배 증가) — 2026년 목표 800억원은 전망치라 미승격"
+   ]
+  },
+  {
+   "source_id": "src_065",
+   "metric_ids": [
+    "metric_087"
+   ],
+   "key_claims_verified": [
+    "오아 물적분할 후 존속회사 2025년 매출 831.4억원 — 그룹 전체 전자기기 도소매 매출, 마사지기 단독 아님 조건 필수"
+   ]
+  },
+  {
+   "source_id": "src_066",
+   "metric_ids": [
+    "metric_105",
+    "metric_106",
+    "metric_107"
+   ],
+   "key_claims_verified": [
+    "파나소닉은 국내 고급형(700만원 이상) 안마의자 세그먼트에서 점유율 50%로 강자 — 소형/핸디형 마사지기 시장의 경쟁자가 아님",
+    "소형/핸디형(목·어깨) 파나소닉 제품의 한국 정식판매 근거 없음"
+   ]
+  },
+  {
+   "source_id": "src_067",
+   "metric_ids": [
+    "metric_108",
+    "metric_109"
+   ],
+   "key_claims_verified": [
+    "코웨이는 비렉스(매트리스+안마의자)를 통합 공시하며 안마의자 단독 매출은 비공개 확정 — 침대만 분리공시(3,654억)"
+   ]
+  },
+  {
+   "source_id": "src_068",
+   "metric_ids": [
+    "metric_110"
+   ],
+   "key_claims_verified": [
+    "안마기기(안마의자+소형 통합) 시장규모는 업계 추정 1.6조~2조 — 소형 단독 추정치는 존재하지 않음"
+   ]
+  },
+  {
+   "source_id": "src_069",
+   "metric_ids": [
+    "metric_111",
+    "metric_112"
+   ],
+   "key_claims_verified": [
+    "소형 마사지기 개별 브랜드(스파알·풀리오)는 단편 실적으로 볼 때 무시 못 할 규모"
+   ]
+  },
+  {
+   "source_id": "src_101",
+   "metric_ids": [
+    "metric_113",
+    "metric_114",
+    "metric_115",
+    "metric_116",
+    "metric_117",
+    "metric_118",
+    "metric_119",
+    "metric_120",
+    "metric_121",
+    "metric_122",
+    "metric_123",
+    "metric_124",
+    "metric_125",
+    "metric_126"
+   ],
+   "key_claims_verified": [
+    "국내 의료기기 시장규모 2018년 6,817,874백만원 → 2024년 10,544,424백만원, CAGR('18~'24) 7.54% — khidi.or.kr 원문 표 전체 grep 대조로 7개 연도 전부 일치",
+    "2022년 11,878,168백만원 정점 후 2023·2024 연속 소폭 하락 — 단조 성장 아님, 원문 확인",
+    "안마기 세부 품목 미분리 산업 전체 통계 — 배경 추세로만 인용 가능(품목 시장 대체 불가)"
+   ]
+  },
+  {
+   "source_id": "src_102",
+   "metric_ids": [
+    "metric_127",
+    "metric_128",
+    "metric_129"
+   ],
+   "key_claims_verified": [
+    "세라젬 연결 매출액 2018년 2,823억 → 2021년 6,670억 → 2022년 7,501억(정점), 5년 성장률 165.68% — econovill 원문 WebFetch 직접 확인 일치"
+   ]
+  },
+  {
+   "source_id": "src_103",
+   "metric_ids": [
+    "metric_134",
+    "metric_135",
+    "metric_136",
+    "metric_137",
+    "metric_138",
+    "metric_139",
+    "metric_140",
+    "metric_141",
+    "metric_142",
+    "metric_143",
+    "metric_144"
+   ],
+   "key_claims_verified": [
+    "바디프랜드 연결 매출액 2021년 5,913억(정점) → 2022년 5,220억(-12%) → 2023년 4,197억 → 2024년 4,369억(+4.1%) — 뉴스+서울거래 원문 교차 확인(단, 2022년 수치는 collector 원안 5,437억에서 5,220억으로 정정)",
+    "2024년 영업이익 226억(전년比 +34.6%) — 매출 반등폭보다 이익 개선폭이 큼, 원문 확인",
+    "당기순이익 2022년 389억 흑자 → 2023년 -63억 적자전환 → 2024년 -76억 적자 지속 — 원문 확인"
+   ]
+  },
+  {
+   "source_id": "src_104",
+   "metric_ids": [
+    "metric_145",
+    "metric_146",
+    "metric_147",
+    "metric_149",
+    "metric_150"
+   ],
+   "key_claims_verified": [
+    "코지마(복정제형) 매출액 2016년 172억 → 2018년 888억 → 2021년 1,555억(+4.86% YoY) — ziksir 원문 WebFetch 직접 확인 일치",
+    "2024년 매출 구성 제품 513억(+28% YoY)·상품 134억(-63% YoY), 총 647억 — 신아일보 원문 확인. 2016~2021 시계열과 집계 기준 상이 가능성 있어 series 분리."
+   ]
+  },
+  {
+   "source_id": "src_105",
+   "metric_ids": [
+    "metric_151",
+    "metric_152",
+    "metric_153",
+    "metric_154"
+   ],
+   "key_claims_verified": [
+    "국내 안마의자 시장 규모 업계 추정 2015년 3,500억 → 2021년 1조 → 2022년 전망 1.5조 → 2023년 9,583억(프로스트앤설리번, 하향 조정) — newstomato 원문 WebFetch 직접 확인 일치. Tier-C 참조용, 정부 통계 아님."
+   ]
+  }
+ ],
+ "downgraded_items": [
+  {
+   "source_id": "src_004",
+   "reason": "국내 렌탈시장 규모(2020년 40조원, KT경제연구소 인용)는 가전 전반 렌탈 시장 전체 수치 — 안마기기 비중 별도 미제시. 안마기기 시장 맥락으로 metric 승격 불가, 보조 참조만."
+  },
+  {
+   "source_id": "src_010",
+   "reason": "페이월로 원문 미확인, 방법론·표본 미공개, 유료 리서치사 낙관 편향 가능. metric_001·002 downgraded 상태 유지. 시장 상한선 보조 참조로만."
+  },
+  {
+   "source_id": "src_011",
+   "reason": "페이월, 방법론 미공개, 기계번역 요약 수준. metric_003·004 downgraded. 안마의자 세그먼트 범위 한정."
+  },
+  {
+   "source_id": "src_013",
+   "reason": "글로벌 수치 — 한국 착지 불가. metric_005 downgraded(보조 맥락만)."
+  },
+  {
+   "source_id": "src_022",
+   "reason": "Tier-C. 2024년 5월 핫딜 임시 가격 — 현재 가격 아님. 하한 참고용에 한정."
+  },
+  {
+   "source_id": "src_038",
+   "reason": "리서치사명 미상 기사 인용. metric_031·032 downgraded. 뷰티 디바이스 시장 맥락 참조만."
+  },
+  {
+   "source_id": "src_041",
+   "reason": "'리뷰(294,583)' 표기가 다나와·타 브랜드 리뷰수 관례(수십~수백 단위) 대비 자릿수 이상치. 판매량 누적 카운터일 가능성 높음 — 리뷰수 metric으로 승격 불가. 라벨 재정의 전까지 미등록."
+  },
+  {
+   "source_id": "src_046",
+   "reason": "CLO 넥앤프로 리뷰수 이중 표기(1,222 vs 6,066) — 정의 불명. 낮은 값(1,222)만 참고 신호로 제한 승격(metric_058), 상한(6,066)은 미승격."
+  },
+  {
+   "source_id": "src_047",
+   "reason": "베스트셀러 6종 전체에서 동일한 리뷰수 이중 표기 패턴 재현. 핸드휴만 보수적 하한(4,192)으로 제한 승격(metric_061), 나머지 5종(에어코즈·실속·극락·가성비세트) 리뷰수는 하한값도 승격 보류 — 가격만 등록. 상한값 전부 미승격."
+  },
+  {
+   "source_id": "src_049",
+   "reason": "Instagram 원문 로그인 게이트로 직접 열람 실패, 검색엔진 스니펫 대체 확인(Tier-C). 팔로워 12K·게시물 46건은 단일 미검증 스니펫 — 경쟁사 비교 불가(전 브랜드 미확인)이므로 보조 신호로만 downgrade."
+  },
+  {
+   "source_id": "src_052",
+   "reason": "Instagram 원문 로그인 게이트로 직접 열람 실패, 검색엔진 스니펫 대체 확인(Tier-C). 팔로워 7,318명·게시물 307건은 단일 미검증 스니펫 — 클럭(src_040, downgraded)과 동일 조건이므로 동일하게 downgrade. 경쟁사 비교 불가."
+  },
+  {
+   "source_id": "src_054",
+   "reason": "인스타그램 팔로워 9,643명은 검색 스니펫 기반, 원문 직접 열람 실패 — 클럭(src_040)·OA(src_043)와 동일 조건이므로 동일하게 downgrade(일관성). GS샵 브랜드관 존재(URL 직접 확인)는 metric 아닌 claim으로 verified_items에 등록."
+  },
+  {
+   "source_id": "src_058",
+   "reason": "코지마 자체 발표(보도자료) 기반 '매출 33%↑' — 독립 검증 없음. 공시 기반 src_050(제품 매출 28%↑)이 있어 자체발표 수치는 병기용 보조 신호로 downgrade. metric_registry 미등록, verified_items에 병기 조건으로만 기록."
+  },
+  {
+   "source_id": "src_061",
+   "reason": "제스파 '시장점유율 3위'·연매출 500억원 모두 대표이사 인터뷰 발언(자사 발표) — 공시·감사보고서 등 독립 출처 대조 안 됨. metric_registry 미등록. analyst에게는 '자사 발표 기준, 독립 검증 안 됨' 조건부로만 전달."
+  },
+  {
+   "source_id": "src_063",
+   "reason": "브레오 NP1 11번가 가격(237,120원) 단일 시점 관찰 — 프로모션가일 수 있음, 채널 구조 관찰용 정성 신호로만 downgrade. metric_registry 미등록."
+  },
+  {
+   "source_id": "src_102",
+   "metric_ids": [
+    "metric_130",
+    "metric_131",
+    "metric_132",
+    "metric_133"
+   ],
+   "reason": "2023년 매출(5,847억)은 1차 근거 mk.co.kr 원문 WebFetch 접근 실패(사이트 차단)로 미확인 상태 — 보조 신호로 강등. 2017·2019·2020년(KIS Rating 리포트 단독 출처)은 PDF 원문 미열람 + 뉴스 교차확인 불가 — 보조 신호로 강등."
+  },
+  {
+   "source_id": "src_102",
+   "metric_ids": [],
+   "reason": "세라젬 영업이익 시계열(2020~2023, collector 원안)은 2022년 '전년比 45.2% 감소' 서술과 동일 시점 매출 급증(+12.4%)이 문맥상 모순 — 재확인 전까지 metric_registry 미등록. collector의 limitations에도 명시된 문제로, verifier가 원문 추가 대조 없이는 구조화 보류."
+  }
+ ],
+ "rejected_items": [
+  {
+   "source_id": "src_039",
+   "reason": "스니펫 기반 수집, 본문 URL 열람 미확인. '2조원' 수치의 기준 연도·원출처 미상. 구조화 불가 — metric_registry 승격 불가."
+  },
+  {
+   "source_id": "src_043",
+   "reason": "마이누(Mynu) 브랜드 실체를 다나와·웹 검색 어디서도 특정 못함(zombie_flag=true). 플레이어 맵에서 제외 — 브랜드 데이터 없음."
+  },
+  {
+   "source_id": "src_048",
+   "reason": "CLO 마케팅 채널(인스타그램/네이버쇼핑라이브) 특정 실패 — 채널 부재의 증명 아님, 구조화 가능한 수치 없음."
+  },
+  {
+   "source_id": "src_103",
+   "reason": "바디프랜드 2020년 매출액(5,557억)·영업이익(522억)·당기순이익(405억) — collector가 서울거래 비상장 페이지를 근거로 제시했으나, verifier가 해당 페이지를 WebFetch로 직접 재확인한 결과 2021~2025년 5개년만 제공되고 2020년 데이터는 존재하지 않음. 근거 불명 수치로 판단해 metric_registry에서 제외."
+  },
+  {
+   "source_id": "src_104",
+   "reason": "코지마(복정제형) 2020년 매출액(848억) — collector가 '직썰 기사 내 추정 표기'로 제시했으나, 원문 재확인 결과 2020년 절대값은 기사에 없고 2021년 '전년比 +4.86%' 서술로 역산하면 약 1,482.9억이 되어 848억과 약 2배 격차. 수학적으로 모순되는 수치로 판단해 제외. 2019년 gap은 %서술 역산으로 파생 추정치(metric_148, downgraded) 채움 — 2020년은 역산 근거 자체가 없어 완전 제외."
+  }
+ ],
+ "discrepancies": [
+  {
+   "discrepancy_id": "disc_011",
+   "topic": "국내 안마의자 시장규모 시계열 — 2018년 전망치(src_003) vs 2025년 언론 추정(src_037/구 src_028)",
+   "values": [
+    {
+     "source_id": "src_003",
+     "value": "200억원(2007)→3,500억원(2015)→6,000억원(2017)→7,000억원(2018 전망)",
+     "scope": "한국소비자원 2018년 발간 보고서. 2018년 수치는 실적이 아니라 '전망치'."
+    },
+    {
+     "source_id": "src_037",
+     "value": "1조~1조5,000억원(2025 추정)",
+     "scope": "뉴스투데이 2025년 기사, 복수 언론 인용 추정치. 세라젬+바디프랜드 공시 합산(9,829억원)이 1조 하한을 간접 지지(4차 metric_033)."
+    }
+   ],
+   "resolution": "두 수치는 상충이 아니라 8년 시차의 서로 다른 시점 관측치 — 2007~2018 200억→7,000억(30배 성장) 시계열에 2025년 1조~1.5조를 그대로 이어 붙이면 안 됨(집계 기준·방법론도 다를 수 있음, 둘 다 공식 통계 아닌 업계 추정/언론 추정). analyst는 반드시 '2018년 전망치' vs '2025년 추정치'를 별개 시점으로 라벨링해 인용하고, 시계열 연속성을 주장하지 말 것. 7,000억원(src_003)은 2018년 시점의 전망 수치임을 slide에도 명시 필수."
+  },
+  {
+   "discrepancy_id": "disc_012",
+   "topic": "마사지 효능 근거 — PMC RCT(전문 시술) vs PMC SLR(퍼커시브 기기)는 서로 다른 연구·다른 개입방식",
+   "values": [
+    {
+     "source_id": "src_008",
+     "value": "RR=1.56(12주, P=0.018) → RR=1.22(26주, 유의성 소실)",
+     "scope": "만성 목통증 환자 대상 RCT. 개입 = 전문 마사지 치료사의 60분 도수 마사지 시술. 기기 아님."
+    },
+    {
+     "source_id": "src_009",
+     "value": "13개 연구·255명, 근력·순발력·유연성 급성 개선 + 통증 경험 감소 연관",
+     "scope": "SLR(체계적 문헌고찰). 개입 = 퍼커시브 테라피(마사지건, 타건형 기기). 13개 연구 전부 방법론적 한계 보유."
+    }
+   ],
+   "resolution": "두 수치를 합쳐 'CLO 마사지기 효능 근거'로 서술하면 이중 오류: (1) 두 연구는 서로 다른 개입 방식(도수 마사지 시술 vs 타건형 기기)을 다룬 별개 연구, (2) CLO 넥앤프로(주무름형)·메디소닉(갈바닉)은 이 SLR이 다룬 타건형(percussive) 기기와도 작동 원리가 다름. analyst 전달 시 반드시 (a) RCT는 '마사지라는 개입 방식'의 임상근거(기기 근거 아님, 26주 유의성 소실 병기), (b) SLR은 '타건형 마사지건'의 제한적 근거(방법론 한계 병기, CLO 직접 적용 불가)로 분리 서술."
+  },
+  {
+   "discrepancy_id": "disc_001",
+   "topic": "한국 마사지기기 시장규모 불일치",
+   "values": [
+    {
+     "source_id": "src_010",
+     "value": "13.7억 달러(약 1.9조원)",
+     "scope": "한국 전체 마사지기기(안마의자+소형 전체), 2026 추정"
+    },
+    {
+     "source_id": "src_011",
+     "value": "2억2781만 달러(약 3090억원)",
+     "scope": "한국 안마의자(massage chair)만, 2025 추정"
+    },
+    {
+     "source_id": "src_037",
+     "value": "1조~1.5조원",
+     "scope": "한국 안마의자+안마베드, 2025 언론 추정"
+    }
+   ],
+   "resolution": "집계 범위 차이가 주원인: src_001은 마사지기기 전체(광범위), src_002는 안마의자 의자형만(좁음), src_028은 안마의자+베드(중간). 세 수치 모두 원출처 방법론 불투명해 단독 채택 불가. 채택 기준: src_028의 언론 추정 1조~1.5조를 하한 간접 지지(세라젬+바디프랜드 공시 합산 약 9,829억원)와 함께 범위로 제시. 상한 1.9조(Morgan Reed)는 전체 마사지기기 포함 최대치로 별도 맥락 제공. analyst에게 범위 표기 권고."
+  },
+  {
+   "discrepancy_id": "disc_002",
+   "topic": "코지마 안마의자 매출 증가율 측정 기간 차이",
+   "values": [
+    {
+     "source_id": "src_016",
+     "value": "약 36%",
+     "scope": "2025 H1 vs 2024 H1 (상반기)"
+    },
+    {
+     "source_id": "src_018",
+     "value": "약 33%",
+     "scope": "2025 연간 vs 2024 연간"
+    }
+   ],
+   "resolution": "측정 기간 다름(상반기 vs 연간). 수치 충돌 아님 — 별도 metric으로 유지. 인용 시 기간 명시 필수."
+  },
+  {
+   "discrepancy_id": "disc_003",
+   "topic": "안마기기 구매 동인 조사 대표성 한계",
+   "values": [
+    {
+     "source_id": "src_024",
+     "scope": "바디프랜드 안마의자 구매자 n=1,000"
+    },
+    {
+     "source_id": "src_025",
+     "scope": "동일 설문 순환 인용"
+    },
+    {
+     "source_id": "src_026",
+     "scope": "바디프랜드×오픈서베이, n=500, 마사지체어 과대 대표"
+    }
+   ],
+   "resolution": "소형 마사지기 소비자 대표 독립 조사 부재. 모든 설문이 바디프랜드 COI. 구매 동인 수치는 '안마의자 구매자 편향' 조건 필수 표기. gap_005 Loop A 요청 병행."
+  },
+  {
+   "discrepancy_id": "disc_004",
+   "topic": "CLO 공식 스토어 리뷰수 동일 페이지 이중 표기",
+   "values": [
+    {
+     "source_id": "src_046",
+     "value": "1,222건(카테고리 리스트 요약)",
+     "scope": "넥앤프로, 2026-07-05 관찰"
+    },
+    {
+     "source_id": "src_046",
+     "value": "6,066건(홈 배너)",
+     "scope": "넥앤프로, 동일 페이지·동일 시점"
+    },
+    {
+     "source_id": "src_047",
+     "value": "핸드휴 4,192건 vs 5,091건 등 6종 전체 동일 패턴",
+     "scope": "베스트셀러 6종, 2026-07-05 관찰"
+    }
+   ],
+   "resolution": "동일 제품에 페이지 위치별 서로 다른 카운터 존재 — 노출 카운터 vs 작성 리뷰수 등 정의 차이로 추정되나 원문에 설명 없음. 임의 채택 금지. 낮은 값만 '하한'으로 제한 승격(metric_058, metric_061), 나머지 제품은 가격만 등록하고 리뷰수 미승격. analyst에게 '리뷰 정확 수치' 대신 '리뷰 다수 축적' 식 정성 표현 권고."
+  },
+  {
+   "discrepancy_id": "disc_005",
+   "topic": "클럭 미니 마사지기S '리뷰(294,583)' 자릿수 이상치",
+   "values": [
+    {
+     "source_id": "src_041",
+     "value": "294,583(클럭 공식몰 표기)",
+     "scope": "클럭 미니 마사지기S, 2026-07-05"
+    },
+    {
+     "source_id": "src_045",
+     "value": "11~86건(코지마 다나와 동종 카테고리)",
+     "scope": "비교 참조 — 동일 소형 목/어깨·마사지기 카테고리 타 브랜드 리뷰수 규모"
+    }
+   ],
+   "resolution": "동종 카테고리 타 브랜드 리뷰수(수십 단위)와 3~4자릿수 차이 — '리뷰수'가 아니라 누적 판매/평점 집계일 가능성 높음. metric_registry 미승격. analyst에게는 '클럭 자사 표기 그대로 인용 시 라벨 불명 표기 필수' 조건으로 전달."
+  },
+  {
+   "discrepancy_id": "disc_006",
+   "topic": "세라젬 수익성 서술 충돌 — 매출 1위 vs 영업이익 급감",
+   "values": [
+    {
+     "source_id": "src_037",
+     "value": "매출 5,460억원(2024), '4년 연속 업계 1위'",
+     "scope": "언론 기사, 매출 기준 긍정 서술"
+    },
+    {
+     "source_id": "src_051",
+     "value": "영업이익 22억원(2024), 2022년 506억원 대비 95.7% 급감",
+     "scope": "검색 스니펫 기반, 원문 미확인"
+    }
+   ],
+   "resolution": "매출 1위와 수익성 급감이 동시에 참일 수 있음(외형 성장·수익성 훼손) — 상충이 아니라 다른 지표. 단, metric_069는 원문 미열람 스니펫이라 신뢰도 낮음. analyst 전달 시 '세라젬 매출 1위' 단독 인용 금지, 영업이익 악화 조건 병기 권고. verifier 재확인(원문 열람) 필요 — recrawl 후보."
+  },
+  {
+   "discrepancy_id": "disc_007",
+   "topic": "휴플러스 커브건 PRO C20 리뷰수 다나와 표기 상한('999+')",
+   "values": [
+    {
+     "source_id": "src_055",
+     "value": "999+(다나와 표기 상한)",
+     "scope": "실제 리뷰수는 999건 이상이나 정확한 값 불명"
+    }
+   ],
+   "resolution": "다나와 플랫폼이 리뷰수 3자리 이상을 '999+'로 절사 표기 — 정확한 수치 구조화 불가. metric_registry 미승격. analyst에게는 '999건 이상' 정성 표현으로만 전달 가능."
+  },
+  {
+   "discrepancy_id": "disc_008",
+   "topic": "코지마 매출 증가율 — 자체발표(전체 매출) vs 공시(제품 매출만)",
+   "values": [
+    {
+     "source_id": "src_058",
+     "value": "33%↑",
+     "scope": "코지마 자체 발표, 2025년 전체 매출 증가율(전년 대비)"
+    },
+    {
+     "source_id": "src_059",
+     "value": "28%↑(제품 매출) / -63%(상품 매출)",
+     "scope": "2024년 공시 기준, 제품/상품 매출 별도 — 전체 매출 합산 증가율 아님"
+    }
+   ],
+   "resolution": "측정 대상 자체가 다름(전체 매출 vs 제품/상품 분리) + 연도도 다름(2025 자체발표 vs 2024 공시). 자체발표(33%)는 독립 검증 없는 보조 신호로 downgrade, 공시 기반(28%/제품매출)을 우선 승격. 인용 시 반드시 '제품 매출 기준(공시)'과 '전체 매출 기준(자체 발표)'을 구분 명시할 것. 두 수치를 하나의 '코지마 성장률'로 합쳐서 쓰지 말 것."
+  },
+  {
+   "discrepancy_id": "disc_009",
+   "topic": "코지마 736억원(2025, 아주경제) vs 647억원(2024, 신아일보 제품+상품 합산) 증가율 불일치",
+   "values": [
+    {
+     "source_id": "src_064",
+     "value": "736억원(2025)",
+     "scope": "아주경제, 감사보고서 인용 — 기사 서술은 전년 대비 8.4%↑"
+    },
+    {
+     "source_id": "src_059",
+     "value": "647억원(2024, 제품513+상품134)",
+     "scope": "신아일보, 공시 기준 제품+상품 합산"
+    }
+   ],
+   "resolution": "736/647 = 약 13.8% 증가로 계산되나 아주경제 기사는 '8.4%↑'로 서술 — 두 매체의 집계 범위(연결 vs 별도, 또는 계정과목 포함 범위)가 다를 가능성. 두 수치 모두 유지하되 '전년 대비 증가율'은 아주경제 원문의 8.4%를 그대로 인용하고 매출 절대값(736억원)만 metric으로 승격, 자체 계산 증가율(13.8%)은 만들지 않음. verifier 재확인 권고(recrawl 후보는 아님 — 이미 두 출처 다 확보, 집계 범위 차이로 결론)."
+  },
+  {
+   "discrepancy_id": "disc_010",
+   "topic": "클럭 2019년 성과 수치의 시점 오독 리스크",
+   "values": [
+    {
+     "source_id": "src_056",
+     "value": "70만개(3개월)/300만개(1년)/분기영업이익 30억+/주가 2배",
+     "scope": "2018년 7월 출시~2019년 8월까지, 2019년 시점 기사"
+    },
+    {
+     "source_id": "src_019",
+     "value": "트렌드지수 4위(969pt)",
+     "scope": "2024년 4월 5주차 온라인 버즈 스냅샷"
+    }
+   ],
+   "resolution": "두 수치는 상충이 아니라 5년 시점 격차(2019 판매 실적 vs 2024 온라인 버즈 순위) — 같은 시계열로 이어 붙여 '클럭이 여전히 압도적 1위'로 서술하면 오독. src_047 수치는 반드시 'basis: 2018~2019년 출시 초기 성과' 라벨을 달아 인용하고, 2026 현재 시장 위치 서술에는 src_010(2024)·src_026(2024, 저주파 패드형 경쟁)을 사용할 것."
+  },
+  {
+   "discrepancy_id": "disc_013",
+   "topic": "안마의자/안마기기 시장규모 — 2021년 안마의자 단독 9,000억(한국일보, src_066) vs 2024년 안마기기 통합 1.6조~2조(이코노미스트, src_068)",
+   "values": [
+    {
+     "source_id": "src_066",
+     "value": "약 9,000억원(2021 추정)",
+     "scope": "국내 안마의자 시장 단독. 한국일보 2022년 기사 인용, 발행 주체·방법론 불명."
+    },
+    {
+     "source_id": "src_068",
+     "value": "1.6조~2조원(2024 업계 추정)",
+     "scope": "안마의자+소형 마사지기 통합. 이코노미스트 2024년 기사, 방법론·표본 미공개 업계 추정."
+    }
+   ],
+   "resolution": "두 수치는 (1) 대상 범위가 다르다 — 전자는 안마의자 단독, 후자는 안마의자+소형 통합, (2) 시점이 3년 차이(2021 vs 2024), (3) 둘 다 공식 통계가 아닌 언론·업계 추정치로 방법론이 다를 수 있다. '9,000억(2021) → 1.6~2조(2024)로 3년 만에 거의 2배 성장'처럼 시계열로 직결해 서술 금지. analyst는 두 수치를 '안마의자 단독(2021)'과 '안마기기 통합(2024)'으로 범위를 명확히 분리 라벨링하고, 소형 마사지기 단독 시장규모는 어느 자료에도 존재하지 않음을 병기할 것(개별 브랜드 단편 metric_111/112만 참조 가능)."
+  },
+  {
+   "discrepancy_id": "disc_r4_001",
+   "topic": "바디프랜드 2022년 매출·영업이익 — 서울거래 비상장(collector 원안) vs 뉴스 공시 인용(ziksir·zdnet, verifier 원문 재확인)",
+   "values": [
+    {
+     "source_id": "src_103 (서울거래 비상장 페이지)",
+     "value": "매출 5,437억 / 영업이익 458억",
+     "scope": "collector가 01_evidence_pool에 기재한 원안. verifier가 서울거래 페이지를 직접 WebFetch로 재확인했으나 이 페이지 자체가 최신 데이터로 갱신됐을 가능성 있음."
+    },
+    {
+     "source_id": "src_103 (ziksir·zdnet, 2023년 4월 발행 기사)",
+     "value": "매출 5,220억(-12% YoY) / 영업이익 241억(-65% YoY)",
+     "scope": "2022년 실적 발표 시점 공시를 직접 인용한 기사 2건에서 동일 수치 확인."
+    }
+   ],
+   "resolution": "당기순이익(389억)만 두 소스 일치, 매출·영업이익은 12~90% 격차 — 연결/별도 기준 차이 또는 확정치/잠정치 차이로 추정되나 어느 원문에도 기준 명시가 없어 단정 불가. verifier는 원문 직접 확인이 2건(뉴스)으로 더 많은 뉴스 인용치를 metric_registry에 채택하고, 서울거래 수치는 discrepancy로만 남긴다. analyst는 2022년 지점을 인용할 때 반드시 이 불일치를 각주로 명시할 것."
+  },
+  {
+   "discrepancy_id": "disc_r4_002",
+   "topic": "코지마(복정제형) 매출 정의 — 2016~2021 시계열(총매출 추정) vs 2024 세부(제품+상품 합산)",
+   "values": [
+    {
+     "source_id": "src_104 (2016~2021, ziksir)",
+     "value": "2021년 1,555억(총매출로 서술)",
+     "scope": "기사가 '매출액'으로만 서술, 세부 계정 구분 없음."
+    },
+    {
+     "source_id": "src_104 (2024, 신아일보)",
+     "value": "제품 513억+상품 134억=647억",
+     "scope": "제품/상품 세부 항목 합산."
+    }
+   ],
+   "resolution": "2024년 총액(647억)이 2021년(1,555억)보다 낮게 계산되는 것은 매출 하락이 아니라 집계 기준(연결 총매출 vs 제품+상품 세부 항목) 차이일 가능성이 커 series를 kojima_revenue(2016~2021)와 kojima_revenue_v2_product_goods_basis(2024)로 분리했다. analyst는 두 series를 하나의 연속 성장/하락 곡선으로 절대 이어붙이지 말 것."
+  }
+ ],
+ "recrawl_requests": [
+  {
+   "source_id": "src_051",
+   "target": "세라젬 2024년 영업이익 22억원(전년대비 95.7%↓) 원문 기사",
+   "reason": "검색 스니펫만 확인, 원문 직접 열람 실패. Tier-A/B 승격 위해 원문 확인 필요."
+  },
+  {
+   "source_id": "src_061",
+   "target": "제스파 국내 안마의자 시장점유율 3위·연매출 500억원 — 공시/감사보고서 또는 독립 리서치 교차 확인",
+   "reason": "대표이사 인터뷰 발언만 존재, 독립 출처 없음. Tier-A/B 승격 위해 공시 자료 확인 필요."
+  },
+  {
+   "source_id": "src_102",
+   "target": "https://www.mk.co.kr/news/business/10988564",
+   "reason": "세라젬 2023년 매출 5,847억(-22.1% YoY)의 1차 근거 기사 — verifier WebFetch가 사이트 차단으로 실패. 제대리(Gemini) 경유 재시도 또는 사람이 직접 접속해 확인 필요(feedback_x_article_via_jedaerii.md 패턴과 동일한 paywall/차단 케이스)."
+  }
+ ]
+}

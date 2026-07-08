@@ -1,0 +1,452 @@
+{
+ "archetype": "overview",
+ "archetype_rationale": "R4 판(20260707_clo_report_r4)의 재현 실증이라 아키타입 결정 조건은 동일하다 — 최근 2 run(clo_market·clo_v5)=dossier 회피, bluf는 DAG '결론 선두 금지'와 충돌, chronicle은 섹션 축이 시대가 아니라 주제라 부적합 → overview 유지. 이 run의 고유 변수는 아키타입이 아니라 R5 논증 도식 선택 룰(page-planner.md '논증 도식 선택 룰')의 자발 적용 여부다. 시각 문법은 tone=report(차트 주인공·title_band)가 아키타입보다 우선.",
+ "r5_liveproof_note": "이 05는 R4와 동일한 03_insights·04_dag에서 spec 손편집 없이 page-planner 룰만 재적용해 다시 짠 판이다. 재현 목적이므로 시계열 차트 페이지(국면·손익·전망·코지마·내부데이터)는 R4와 동일하게 둔다 — tone=report의 '시계열 있는 주장은 차트 주인공에 우선 배치'가 그대로 지배하고, 논증 도식은 시계열을 밀어내지 않는다. 변한 것은 R4에서 '시계열 없는 주장 = 텍스트/표 페이지'로 압축했던 세 자리다. 논증 도식 선택 룰을 그 자리들에 적용하니 다음이 자발 선택됐다: ① node_07 플레이어 포지셔닝 → two_by_two(genre-market-research 필수 산출 '포지셔닝 축 = 가격 × 소구 유형'과 정합) ② node_09 규제 구조 → causal_chain(광고 효능 표방 → 의료기기 판정 기준 작동 → 재분류·심의 리스크 → 시연 경로) ③ node_12 조정기 결론 → pyramid(집중+시연 주장을 I·II·III부 3기둥이 떠받침). tradeoff는 선택하지 않았다 — 이 덱의 자세(overview·market-research)에 질적 양자택일(저울) 구조가 없고, 가장 가까운 후보(성장 편승 vs 집중+시연)는 pyramid 결론의 '오답' 콜아웃이, 코지마 유통 vs 자체제품은 정량 구성비(disc_r4_002로 곡선 잇기 금지)가 이미 더 정확히 담는다. 구조 없는 페이지에 저울을 장식으로 넣지 않는다(룰 준수).",
+ "meta_directives": {
+  "tone": "report",
+  "page_chrome": "title_band",
+  "note": "designer는 deck_spec meta에 \"tone\":\"report\"·\"page_chrome\":\"title_band\"를 명시 — 게이트 REPORT_TONE_COMPOSITION·REPORT_TONE_DATA_THIN 검사. 02_verified.json은 계승(v51 src_001~069·metric_001~112)+델타(R4 src_101~105·metric_113~164) 병합본. 논증 도식 3종(two_by_two·causal_chain·pyramid)은 DESIGN_R5 §2 스키마 준수, 슬롯 최소(pyramid 근거≥2·causal_chain 노드≥3·two_by_two 아이템≥3) 충족."
+ },
+ "pages": [
+  {
+   "page_id": "p01",
+   "parent_node_id": "thesis",
+   "message": "안마기기 시장은 2021~22년 정점을 지나 낮은 자리에 머물러 있다 — 이 국면에서 CLO의 다음 판단은 성장 편승 확장이 아니라 이익 라인 집중·시연 창구·내부 데이터 결합이다.",
+   "short_title": "CLO 시장 리포트 — 정점 지난 시장에서의 다음 판단",
+   "role": "cover",
+   "layout": "cover",
+   "required_insight_ids": [],
+   "evidence_ids": [],
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "density": "low",
+   "design_constraints": [
+    "표지 — 수치·기관명 없음. 내부 검토용 표기.",
+    "부제 톤(report): '시장 국면·경쟁 손익·규제 좌표 위의 CLO — 2026-07' — 마케팅 수사·감탄 금지."
+   ]
+  },
+  {
+   "page_id": "p02",
+   "parent_node_id": "thesis",
+   "message": "리포트는 네 부로 간다 — I 시장(전제 점검) → II 경쟁(바뀐 규칙) → III 소구(말할 수 있는 것) → IV 판단(그래서 무엇을 하나).",
+   "short_title": "목차",
+   "role": "setup",
+   "layout": "index",
+   "required_insight_ids": [],
+   "evidence_ids": [],
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "density": "low",
+   "design_constraints": [
+    "제목은 표준 '목차' 고정(eyebrow 'Contents' 허용) — 창의적·대화체 제목 금지.",
+    "overview 자세: 목차 항목 = 4개 파트 + 파트별 한 줄."
+   ]
+  },
+  {
+   "page_id": "p03",
+   "parent_node_id": "node_01_market_split",
+   "message": "I부 — 시장이 어떻게 갈리고, 어디로 가는 중인지 전제부터 점검한다.",
+   "short_title": "I. 시장 — 전제 점검",
+   "role": "setup",
+   "layout": "divider",
+   "required_insight_ids": [],
+   "evidence_ids": [],
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "density": "low",
+   "design_constraints": [
+    "간지는 한 줄 미리보기만 — part_index 1/4 · part_label 'I. 시장 — 전제 점검'.",
+    "하위 목차 프리뷰 bullets: ['시장은 둘로 갈린다 — CLO는 강자 없는 소형에 섰다', \"'성장 시장' 전제는 실적이 기각했다\", '배경 산업 통계도 같은 방향이다', \"'유망 시장' 전망은 반복해서 부풀려져 왔다\"]"
+   ]
+  },
+  {
+   "page_id": "p04",
+   "parent_node_id": "node_01_market_split",
+   "message": "안마기기 시장은 강자가 있는 안마의자(고급형 절반 = 파나소닉, 볼륨 1·2위 = 세라젬·바디프랜드)와 강자가 없는 소형으로 갈리고, CLO는 강자 없는 소형에 세 종류를 걸쳐 저가로 들어온 자리다 — 판 크기는 통합 1.6~2조 추정의 감까지이며, 정말 물어야 할 것은 크기가 아니라 방향이다.",
+   "short_title": "시장은 둘로 갈린다 — CLO는 강자 없는 소형에 섰다",
+   "role": "setup",
+   "layout": "content",
+   "genre_artifact": "taxonomy",
+   "required_insight_ids": ["insight_001", "insight_013", "insight_011", "insight_007"],
+   "evidence_ids": ["insight_001", "insight_013", "insight_011", "insight_007"],
+   "allowed_source_ids": ["src_012", "src_055", "src_047", "src_023", "src_066", "src_037", "src_067", "src_050", "src_002", "src_003", "src_068", "src_069"],
+   "allowed_metric_ids": ["metric_056", "metric_059", "metric_017", "metric_060", "metric_105", "metric_007", "metric_008", "metric_010", "metric_006", "metric_033", "metric_034", "metric_110", "metric_111", "metric_112"],
+   "density": "high",
+   "design_constraints": [
+    "node_02_size 병합 페이지 — 분류 트리가 주인공, 시장 크기 감(1.6~2조·브랜드 단편 실적)은 보조 스탯 블록 1개로.",
+    "분류 트리(taxonomy): 대형 거치형(강자 有) vs 소형(강자 無, 여섯 유형) — CLO를 소형 세 유형 위에 표시.",
+    "각주: 여섯 유형 분류 = 관찰 합성(업계 공인 표준 아님) · 파나소닉 50% = 2022년 시점 · 1.6~2조 = 방법론 미공개 업계 추정(상한 참조선).",
+    "안마의자 강자를 CLO 직접 경쟁자로 배치 금지 — 세그먼트가 다르다.",
+    "So-what 한 줄: 출발 전제는 '무주공산'이 아니라 '강자 있는 큰 시장 바로 아래 낀 자리' — 다음 질문은 방향이다.",
+    "R5 검토: 분류 트리(taxonomy)는 논증 도식 4종과 별개 층 — 논증 도식으로 대체하지 않는다."
+   ]
+  },
+  {
+   "page_id": "p05",
+   "parent_node_id": "node_03_phase",
+   "message": "'성장 시장' 전제는 대형 브랜드 공시 실적이 기각했다 — 세라젬은 2018년 2,823억에서 2022년 7,501억으로 정점을 찍었고, 바디프랜드는 2021년 5,913억 정점 후 2024년에도 정점 대비 -26.1%에 있다. 독립인 두 회사가 같은 정점-조정 곡선을 그린다 — 개별 사정이 아니라 수요 국면이다.",
+   "short_title": "'성장 시장' 전제는 실적이 기각했다 — 정점은 2021~22년",
+   "role": "diagnosis",
+   "layout": "content",
+   "required_insight_ids": ["insight_014"],
+   "evidence_ids": ["insight_014"],
+   "allowed_source_ids": ["src_102", "src_103"],
+   "allowed_metric_ids": ["metric_127", "metric_128", "metric_129", "metric_130", "metric_134", "metric_135", "metric_136", "metric_137", "metric_155", "metric_158"],
+   "density": "medium",
+   "design_constraints": [
+    "차트 주인공 페이지(R4 리포트 계약): viz 1개 + 보조 최대 2 — split·사이드 인용 금지. 판단 문장 제목 + 풀사이즈 차트.",
+    "viz = multi_line(세라젬·바디프랜드 연도별 매출) + 2021~22 정점 이벤트 밴드 + 바디프랜드 끝점 -26.1%(metric_155) + 세라젬 CAGR 27.7%(metric_158).",
+    "세라젬 2023(metric_130)=downgraded, 점선·각주 '원문 미확인 보도, 방향 보조'.",
+    "각주(disc_r4_001): 바디프랜드 2022 매출 출처 상충(5,220억 채택).",
+    "코지마·khidi 집계 기준 다른 series 병렬 금지.",
+    "R5 검토: 시계열 추세 판정 = time-series가 주인공(report-tone 우선). 논증 도식 선택 안 함 — 정점-조정 곡선을 pyramid/causal로 바꾸면 추세 정보가 사라진다."
+   ]
+  },
+  {
+   "page_id": "p06",
+   "parent_node_id": "node_03_phase",
+   "message": "배경 산업 통계도 같은 방향이다 — 국내 의료기기 시장규모(안마기 미분리 전체)는 2022년 11.88조 정점 후 2년 연속 감소해 정점 대비 -11.2%에 있다. 방향 참고까지만 — 안마기기 수요 지표로는 쓸 수 없다.",
+   "short_title": "배경 산업 통계도 같은 방향이다 — 2022 정점 후 2년 연속 감소",
+   "role": "diagnosis",
+   "layout": "content",
+   "required_insight_ids": ["insight_014"],
+   "evidence_ids": ["insight_014"],
+   "allowed_source_ids": ["src_101"],
+   "allowed_metric_ids": ["metric_113", "metric_114", "metric_115", "metric_116", "metric_117", "metric_118", "metric_119", "metric_163", "metric_164"],
+   "density": "low",
+   "design_constraints": [
+    "차트 주인공: viz = rising_columns(khidi 의료기기 시장규모 7점, 2018~2024) + 2022 정점 밴드 + 정점 대비 -11.2%(metric_163).",
+    "치명 각주(하단 고정): 의료기기 산업 전체(안마기 미분리) — 방향 참고 전용, 안마기기 시장 규모로 인용 금지.",
+    "용어 footnote: CAGR = 연평균 성장률.",
+    "R5 검토: 시계열 — 논증 도식 대상 아님."
+   ]
+  },
+  {
+   "page_id": "p07",
+   "parent_node_id": "node_04_forecast",
+   "message": "'유망 시장' 전망은 반복해서 부풀려져 왔다 — 2022년의 '1.5조 전망'은 이듬해 9,583억 추정으로 -36.1% 깎였고, 원출처 불명의 같은 추정을 여러 매체가 재인용하며 낙관이 재생산된다. 수요 판단의 근거는 전망 기사가 아니라 공시와 자사 데이터다.",
+   "short_title": "'유망 시장' 전망은 반복해서 부풀려져 왔다",
+   "role": "mechanism",
+   "layout": "content",
+   "required_insight_ids": ["insight_017"],
+   "evidence_ids": ["insight_017"],
+   "allowed_source_ids": ["src_105", "src_003"],
+   "allowed_metric_ids": ["metric_151", "metric_152", "metric_153", "metric_154", "metric_162", "metric_091", "metric_092"],
+   "density": "medium",
+   "design_constraints": [
+    "차트 주인공: viz = annotated 시계열(업계 추정 4점: 2015 3,500억 → 2021 1조 → 2022 전망 1.5조 → 2023 추정 9,583억) + 전망/추정 구분 + gap -36.1%(metric_162).",
+    "치명 단서(하단 고정): 전부 Tier-C 추정 — 절대 규모 인용 금지, '전망이 깎였다' 방향 신호로만. 정부 통계와 같은 축 병렬 금지.",
+    "'실적' 단어 금지 — 9,583억도 '실적 추정'.",
+    "보조 노트: 순환 인용 구조 한 줄 + 2018 '10년 30배' 서사. 이 장은 전망 신뢰도 반증이지 수요 반증 아님.",
+    "R5 검토: causal_chain 후보로 검토했으나(전망 과대 → 순환 인용 → 낙관 재생산) 이 페이지의 주장은 '전망 시계열이 실제로 깎여 왔다'는 정량 대조가 본체다 — annotated 시계열이 주인공, 순환 인용 메커니즘은 보조 노트로 충분. causal_chain으로 승격하면 시계열 대조가 약해진다. 선택 안 함."
+   ]
+  },
+  {
+   "page_id": "p08",
+   "parent_node_id": "node_05_profit",
+   "message": "II부 — 조정 국면에서 경쟁의 규칙이 어떻게 바뀌었는지 손익과 판 구도로 본다.",
+   "short_title": "II. 경쟁 — 바뀐 규칙",
+   "role": "setup",
+   "layout": "divider",
+   "required_insight_ids": [],
+   "evidence_ids": [],
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "density": "low",
+   "design_constraints": [
+    "간지 한 줄 미리보기 — part_index 2/4 · part_label 'II. 경쟁 — 바뀐 규칙'.",
+    "하위 프리뷰 bullets: ['매출이 26% 빠지는 동안 이익은 67% 무너졌다', '대형 3사 영업이익률 0.4~5%', '코지마는 5년 새 9배 컸던 회사다', '그 코지마가 유통을 버리고 자체 제품으로 갈아탔다', '소형 판엔 리더가 없다 — CLO는 자리는 넓고 창구는 얇다']"
+   ]
+  },
+  {
+   "page_id": "p09",
+   "parent_node_id": "node_05_profit",
+   "message": "경쟁의 게임은 외형에서 이익 방어로 바뀌었다 — 바디프랜드는 매출이 26% 빠지는 동안 영업이익이 67% 무너졌다(685억→226억, 이익률 11.6%→5.2%). 매출 낙폭을 크게 웃도는 이익 붕괴는 렌탈·직영 체험 매장·광고비 고정비가 하락 국면에 그대로 노출된 결과로 읽힌다.",
+   "short_title": "매출이 26% 빠지는 동안 이익은 67% 무너졌다",
+   "role": "diagnosis",
+   "layout": "content",
+   "required_insight_ids": ["insight_015"],
+   "evidence_ids": ["insight_015"],
+   "allowed_source_ids": ["src_103"],
+   "allowed_metric_ids": ["metric_134", "metric_135", "metric_136", "metric_137", "metric_138", "metric_139", "metric_140", "metric_141", "metric_155", "metric_156", "metric_157"],
+   "density": "medium",
+   "design_constraints": [
+    "차트 주인공: viz = multi_line 지수화(2021=100) 바디프랜드 매출 vs 영업이익 4개년 — 낙폭 비대칭. 끝점 콜아웃 -26%(metric_155)·-67% + 이익률 11.6%→5.2%(metric_156·157).",
+    "각주: 2021 영업이익(metric_138)=단독 소스 · 2022=disc_r4_001 상충.",
+    "고정비 해석은 정황('~로 읽힌다') 톤. 보조 노트: 2024 +34.6%는 구조조정 작동 신호.",
+    "CLO 함의는 결론(p18)에서 — 이 장은 진단만.",
+    "R5 검토: 매출-이익 낙폭 비대칭이 핵심 정량 정보 → 시계열 주인공 유지. causal(고정비→레버리지 역작동)은 note로 족함. 논증 도식 선택 안 함."
+   ]
+  },
+  {
+   "page_id": "p10",
+   "parent_node_id": "node_05_profit",
+   "message": "이익의 바닥 — 바디프랜드 영업이익은 685억에서 226억까지 내려왔고 순이익은 2년 연속 적자(-63억→-76억)다. 세라젬 2024 영업이익 22억(이익률 0.4%)·코지마 2025 6억 — 대형 3사 모두 영업이익률 0.4~5%대다. CLO의 가격·프로모션 결정은 '대형사가 못 버는 시장'을 전제로 한다.",
+   "short_title": "대형 3사 영업이익률 0.4~5% — 순이익은 적자까지",
+   "role": "diagnosis",
+   "layout": "content",
+   "required_insight_ids": ["insight_015"],
+   "evidence_ids": ["insight_015"],
+   "allowed_source_ids": ["src_103", "src_051", "src_064", "src_014", "src_037"],
+   "allowed_metric_ids": ["metric_138", "metric_139", "metric_140", "metric_141", "metric_142", "metric_143", "metric_144", "metric_156", "metric_157", "metric_069", "metric_007", "metric_159", "metric_084"],
+   "density": "medium",
+   "design_constraints": [
+    "차트 주인공: viz = rising_columns(바디프랜드 영업이익 4점 685→241→167→226) + 이익률 콜아웃.",
+    "보조 1 = 3사 이익 스탯(세라젬 22억·0.4% metric_069·159 / 코지마 6억 metric_084) — 단일점, 세라젬 이익 곡선 금지.",
+    "보조 2 = 순이익 적자 노트(389억→-63억→-76억 metric_142~144) — 텍스트만.",
+    "R5 검토: 정량 이익 시계열 — 논증 도식 대상 아님."
+   ]
+  },
+  {
+   "page_id": "p11",
+   "parent_node_id": "node_06_kojima",
+   "message": "조정기 대응의 실례가 바로 옆 체급에 있다 — 코지마(복정제형)는 2016년 172억에서 2021년 1,555억까지 5년 만에 9배(연평균 55.3%) 컸던 회사다. 그 고성장기의 끝에서 이 회사가 무엇을 골랐는지가 다음 장이다.",
+   "short_title": "코지마는 5년 새 9배 컸던 회사다",
+   "role": "diagnosis",
+   "layout": "content",
+   "required_insight_ids": ["insight_016"],
+   "evidence_ids": ["insight_016"],
+   "allowed_source_ids": ["src_104"],
+   "allowed_metric_ids": ["metric_145", "metric_146", "metric_147", "metric_149", "metric_160"],
+   "density": "low",
+   "design_constraints": [
+    "차트 주인공: viz = rising_columns(코지마 매출 4점 2016 172 → 2017 481 → 2018 888 → 2021 1,555) + CAGR 55.3%(metric_160). 2019·2020 결측 그대로.",
+    "'매년 55% 성장' 서술 금지 — CAGR은 끝점 계산.",
+    "★disc_r4_002: 2024 이후 수치 배치 절대 금지.",
+    "R5 검토: 시계열 — 논증 도식 대상 아님."
+   ]
+  },
+  {
+   "page_id": "p12",
+   "parent_node_id": "node_06_kojima",
+   "message": "그 코지마가 외형을 감수하고 장사의 구성을 갈아탔다 — 2024년 공시에서 자체 개발 제품 매출 513억 +28% vs 단순 유통 상품 134억 -63%, 2025년 736억(+13.8%)으로 다시 크는 방향을 확인했다. 단 영업이익 6억 — 방향은 확인, 손익 성과는 아직이다.",
+   "short_title": "그 코지마가 유통을 버리고 자체 제품으로 갈아탔다",
+   "role": "mechanism",
+   "layout": "content",
+   "required_insight_ids": ["insight_016"],
+   "evidence_ids": ["insight_016"],
+   "allowed_source_ids": ["src_104", "src_064", "src_059"],
+   "allowed_metric_ids": ["metric_150", "metric_083", "metric_161", "metric_079", "metric_080", "metric_081", "metric_082", "metric_084"],
+   "density": "medium",
+   "design_constraints": [
+    "차트 주인공: viz = 구성 대비 columns(2024 제품 513억 +28% vs 상품 134억 -63%) + 2025 총액 736억 +13.8%(metric_161) — 구성 재편이 주인공.",
+    "★disc_r4_002: 앞장 시계열과 하나의 곡선으로 잇기 금지. 감소 폭 주장 금지.",
+    "보조 노트: 영업이익 6억 — '성공한 전환' 서사 금지. So-what = 'CLO 참고 방향 = 집중'.",
+    "R5 검토: tradeoff 후보로 검토(유통 vs 자체제품). 그러나 이 대비는 정량 구성비(513 vs 134)가 본체이고 disc_r4_002가 곡선 잇기를 금지한 제약 위의 서사라, 질적 저울(tradeoff)이 아니라 정량 columns가 정확하다. tradeoff 선택 안 함."
+   ]
+  },
+  {
+   "page_id": "p13",
+   "parent_node_id": "node_07_players",
+   "message": "소형 판엔 아직 리더가 없다 — 진입가(저가↔고가)와 라인업 유형 폭(집중↔멀티) 두 축 위에 플레이어를 찍으면 CLO는 '저가 진입 × 최광 폭' 사분면에 홀로 있다. 강자가 채운 사분면(브레오=고가 집중, 클럭=저가 집중)과 달리 CLO의 자리는 비어 있는 좌표다.",
+   "short_title": "소형 판엔 리더가 없다 — CLO의 좌표는 비어 있다",
+   "role": "diagnosis",
+   "layout": "content",
+   "required_insight_ids": ["insight_002", "insight_003"],
+   "evidence_ids": ["insight_002", "insight_003"],
+   "allowed_source_ids": ["src_055", "src_041", "src_042", "src_044", "src_045", "src_046", "src_047", "src_054"],
+   "allowed_metric_ids": ["metric_070", "metric_072", "metric_050", "metric_017", "metric_036", "metric_043", "metric_049", "metric_056"],
+   "density": "medium",
+   "design_constraints": [
+    "★R5 논증 도식 자발 선택 = two_by_two(포지셔닝 맵). 선택 근거: genre-market-research 필수 산출 '가격대 스펙트럼 + 포지셔닝 축(가격 × 소구 유형 2축)에 전 플레이어와 대상 브랜드를 함께 찍는다'(SKILL.md §3)와 정확히 정합. node_07의 주장 자체가 좌표 주장('저가 진입 × 최광 폭 자리에 강자 없음')이라 논증 구조가 spec에 실재 → 장식 아님.",
+    "차트 주인공: viz = two_by_two. x_axis={low:'저가 진입', high:'고가 진입'}, y_axis={low:'단일 유형 집중', high:'멀티 유형·최광 폭'}. 아이템 ≥3(7개 브랜드) — 오아·클럭·CLO(emphasis)·코지마·브레오·휴플러스·제스파.",
+    "축은 논증의 실제 변수(진입가·유형 폭). 좌표는 정성 배치(진입가 사다리 순위 + 관찰된 폭)로, swot_quad 선례처럼 metric_id 없이 배치 — 화면에 raw 숫자 노출 없음(C6).",
+    "각주(치명): 축 기준 = 단품 최저 진입가(2026-07 관찰)·자사몰 라인업 폭 — 판매·점유 통계 아님. 좌표는 상대 위치 표기이지 측정치 아님. 제스파·휴플러스는 옆 종목(마사지건·전 부위)이라 직접 경쟁면 참고로만.",
+    "So-what 한 줄: CLO의 자리는 비어 있는 사분면 — 이 좌표를 지키느냐 채우느냐가 다음 판(신뢰 창구)의 질문이다.",
+    "node_07의 신뢰 창구(node_08) 세부는 다음 장 비교표로 분리 — 이 장은 좌표 주장에 집중."
+   ]
+  },
+  {
+   "page_id": "p14",
+   "parent_node_id": "node_07_players",
+   "message": "좌표를 표로 풀면 CLO는 저가로 들어와 가장 넓게 벌린 자리인데(6.9만~24.9만), 경쟁사들이 하나씩 가진 '믿게 만드는 창구'(클럭 콘텐츠·코지마 홈쇼핑·제스파 4채널)만 CLO가 얇다 — 공백은 제품이 아니라 창구다.",
+   "short_title": "자리는 넓은데 믿게 만드는 창구가 얇다",
+   "role": "diagnosis",
+   "layout": "content",
+   "genre_artifact": "player_table",
+   "required_insight_ids": ["insight_002", "insight_003", "insight_009", "insight_006"],
+   "evidence_ids": ["insight_002", "insight_003", "insight_009", "insight_006"],
+   "allowed_source_ids": ["src_055", "src_041", "src_042", "src_044", "src_045", "src_046", "src_047", "src_054", "src_019", "src_028", "src_029", "src_030", "src_048", "src_056", "src_057", "src_060", "src_061", "src_062", "src_064"],
+   "allowed_metric_ids": ["metric_070", "metric_071", "metric_072", "metric_073", "metric_035", "metric_039", "metric_045", "metric_050", "metric_056", "metric_049", "metric_036", "metric_017", "metric_054", "metric_043", "metric_057", "metric_059", "metric_060", "metric_062", "metric_063", "metric_064", "metric_047", "metric_048", "metric_075", "metric_076", "metric_077", "metric_016", "metric_079", "metric_081", "metric_083", "metric_010", "metric_040", "metric_042", "metric_044", "metric_046", "metric_058", "metric_061", "metric_027", "metric_028"],
+   "density": "high",
+   "design_constraints": [
+    "플레이어 비교표 1개가 주인공(genre 필수·C8 player_table): 7개 브랜드 × (진입가 / 라인업 폭 / 유형 / 신뢰 창구 / 관찰 성과). 창구는 표의 열로 통합.",
+    "★소제목에 '기준: 단품 최저 진입가(2026-07 관찰)' 명시. CLO 행 강조.",
+    "각주(치명): 순위 기준 = 다나와 노출·자사몰 라인업·리뷰 볼륨(판매·점유 아님) · 제스파 = 자체 발표 · 클럭 300만개 = 2018~19년 · CLO 'SNS 없음' = 홈 링크 부재+계정 확인 실패까지.",
+    "창구→매출 인과 금지. CLO 리뷰 축적(넥앤프로 1,222건·핸드휴 4,192건+)은 반대 신호로 병기.",
+    "So-what: 이길 상대 = 클럭·오아·브레오, 배울 상대 = 코지마·제스파 — 공백은 제품이 아니라 창구다.",
+    "R5 참고: 앞 장 two_by_two(좌표)와 이 장 비교표(세부)는 genre-market-research가 둘 다 요구하는 짝(포지셔닝 맵 + 플레이어 테이블). R4는 한 표에 압축했으나 R5는 좌표 주장을 two_by_two로 분리해 논증 구조를 드러냄."
+   ]
+  },
+  {
+   "page_id": "p15",
+   "parent_node_id": "node_09_regulation",
+   "message": "III부 — 효과를 말로 팔 수 없는 이유(규제·임상)와 말 대신 남는 경로.",
+   "short_title": "III. 소구 — 말할 수 있는 것",
+   "role": "setup",
+   "layout": "divider",
+   "required_insight_ids": [],
+   "evidence_ids": [],
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "density": "low",
+   "design_constraints": [
+    "간지 한 줄 미리보기 — part_index 3/4 · part_label 'III. 소구 — 말할 수 있는 것'.",
+    "하위 프리뷰 bullets: ['효능을 말할 문은 규제와 임상 양쪽에서 좁다 — 남은 길은 시연이다']"
+   ]
+  },
+  {
+   "page_id": "p16",
+   "parent_node_id": "node_09_regulation",
+   "message": "효능을 세게 말할 문은 규정이 좁혀 놓았다 — 공산품 마사지기가 광고에서 효능을 표방하는 순간, 그 광고 문구 자체가 의료기기 판정 기준이 되어 재분류·심의 리스크를 자초한다(2025 위반 광고 291건 적발 환경). 임상 근거도 '마사지 일반'까지만이라 편이 아니다 — 남는 합법 경로는 시연·타인 발화다.",
+   "short_title": "효능을 말할 문은 규제와 임상 양쪽에서 좁다",
+   "role": "mechanism",
+   "layout": "content",
+   "required_insight_ids": ["insight_005", "insight_010", "insight_004"],
+   "evidence_ids": ["insight_005", "insight_010", "insight_004"],
+   "allowed_source_ids": ["src_001", "src_002", "src_032", "src_033", "src_034", "src_040", "src_047", "src_008", "src_009", "src_024", "src_025", "src_026"],
+   "allowed_metric_ids": ["metric_029", "metric_030", "metric_101", "metric_102", "metric_103", "metric_104", "metric_024", "metric_025", "metric_026", "metric_022"],
+   "density": "medium",
+   "design_constraints": [
+    "★R5 논증 도식 자발 선택 = causal_chain(규제 인과 사슬). 선택 근거: node_09 insight_005의 논증이 '공산품 마사지기가 광고에서 효능 표방 → 의료기기 판정 기준(광고 표방 효능·효과)이 작동 → 의료기기 재분류·광고 심의 리스크 → 합법 경로는 시연·타인 발화'라는 A→B→C→D 인과 서사다. arrow_flow와 달리 링크마다 근거(대법원 판례 기준·적발 291건)가 붙는다 → causal_chain 정합. 노드 4개 ≥3 슬롯 충족.",
+    "차트 주인공: viz = causal_chain 4노드. 링크 근거 캡션: 2번째 노드 evidence='의료기기 여부를 가르는 판례 기준이 다름 아닌 광고 표방 효능·효과'(src_001), 3번째 evidence='2025 온라인 위반 광고 291건 적발'(metric_029·030).",
+    "임상(node_10)은 보조 노트 1개로 병치 — '임상 근거는 마사지 일반(치료사 시술·12주 개선·26주 소멸)까지, CLO 기기 방식 직접 근거 없음'. 규제 사슬과 같은 결론(말 대신 체험)을 두 번째로 가리키는 독립 이유.",
+    "닫는 콜아웃: '두 겹이 같은 결론 — 임상 언어로 주장하지 말고 체험으로 전달하라'.",
+    "각주(치명): 판단 근거 지침서 = 2015 발간·법적 효력 없는 실무 기준·CLO 적용은 유추 · 적발 291건 중 285건 = 해외직구 무허가(정식 브랜드 겨냥 아님) · 임상시험 = 치료사 손 시술(기기 아님)·문헌 정리 = 타건형 한정.",
+    "용어 footnote: 의료기기 등급·EMS·갈바닉. 노출면: EMS·갈바닉 라인이 CLO의 규제 노출면.",
+    "★팩토리 티 방지: causal_chain 노드 텍스트는 본문 요약이지 복붙이 아님 — 각 노드는 상태 전이의 한 단계(원인/결과)로 압축, 근거 캡션은 판례·적발 수치로 본문과 다름."
+   ]
+  },
+  {
+   "page_id": "p17",
+   "parent_node_id": "node_12_playbook",
+   "message": "IV부 — 그래서 무엇을 하나: 조정기 문법, 판단 갱신 트리거, 가장 싼 다음 한 수.",
+   "short_title": "IV. 판단 — 그래서 무엇을 하나",
+   "role": "setup",
+   "layout": "divider",
+   "required_insight_ids": [],
+   "evidence_ids": [],
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "density": "low",
+   "design_constraints": [
+    "간지 한 줄 미리보기 — part_index 4/4 · part_label 'IV. 판단 — 그래서 무엇을 하나'.",
+    "하위 프리뷰 bullets: ['조정기의 CLO 문법 — 이익 라인으로 집중하고, 시연으로 연다', '판단을 바꿀 신호 3개를 미리 정해 둔다', '가장 싼 다음 한 수 — 내부 판매 추이를 겹친다']"
+   ]
+  },
+  {
+   "page_id": "p18",
+   "parent_node_id": "node_12_playbook",
+   "message": "조정기의 CLO 문법 = 집중 + 시연. 이 결론은 세 기둥이 떠받친다 — 시장은 정점을 지났고(I부), 게임은 이익 방어로 바뀌었고(II부), 효과를 말로 팔 길은 규제·임상 양쪽에서 좁다(III부). 이번 분기 결정 둘: ① 라인별 손익을 갈라 이익 나는 라인을 확정한다 ② 목·어깨 대표 제품으로 라이브 시연 파일럿을 연다. 몸집 경쟁 편승·전망 기반 확장·효능 문구 강화는 이 국면의 오답이다.",
+   "short_title": "조정기의 CLO 문법 — 이익 라인으로 집중하고, 시연으로 연다",
+   "role": "action",
+   "layout": "content",
+   "required_insight_ids": ["insight_008", "insight_006"],
+   "evidence_ids": ["insight_008", "insight_006"],
+   "allowed_source_ids": ["src_047", "src_055", "src_019", "src_029", "src_001", "src_002", "src_008", "src_009", "src_054", "src_048", "src_028", "src_030"],
+   "allowed_metric_ids": ["metric_056", "metric_017", "metric_035", "metric_039", "metric_029", "metric_027", "metric_028"],
+   "density": "medium",
+   "design_constraints": [
+    "★R5 논증 도식 자발 선택 = pyramid(결론 피라미드). 선택 근거: node_12 결론('집중+시연')이 I·II·III부 세 진단을 근거 층으로 딛고 선 주장이다 — 주장 1 + 근거 겹 ≥2(3기둥). 밀도 2겹 룰(핵심 주장 페이지)의 시각 짝. 논증 구조가 spec에 실재.",
+    "차트 주인공: viz = pyramid. series = [{role:claim, label:'조정기 CLO 문법 = 이익 라인 집중 + 시연 창구'}, {role:evidence, label:'시장은 정점을 지나 낮은 자리에 머문다 (I부)'}, {role:evidence, label:'경쟁은 외형에서 이익 방어로 바뀌었다 (II부)'}, {role:evidence, label:'효능은 규제·임상 양쪽에서 말로 팔 수 없다 (III부)'}]. 근거 층 3개 ≥2 충족. 근거는 정성 종합이라 metric_id 없이(pyramid 허용).",
+    "★단정적 권고 2개를 pyramid 아래 콜아웃/불릿으로 준다 — 빈 워크시트·빈칸 금지: ① 라인별 손익 분리 → 이익 라인 확정(집중) ② 목·어깨 대표 제품 라이브 시연 파일럿(시연). 오답 목록 명시: 몸집 경쟁 편승·전망 기사 기반 확장·효능 문구 강화.",
+    "counter 병기: 조건부 제언(성공 증거 아님) · CLO 저광고 노선이 의도된 전략일 가능성 한 줄.",
+    "★팩토리 티 방지: pyramid 근거 층은 앞 3개 부의 종합(재사용)이지 이 페이지 본문의 복붙이 아니다 — 결론 장의 본질이 종합이므로 슬롯=부별 판정 한 줄, 본문=권고. 슬롯≠권고 텍스트.",
+    "'월요일에 시작' 류 클리셰 금지."
+   ]
+  },
+  {
+   "page_id": "p19",
+   "parent_node_id": "node_13_triggers",
+   "message": "판단을 바꿀 신호 3개를 미리 정해 둔다 — ① 바디프랜드 2개년 연속 성장 확인 시 '조정→회복' 갱신·확장 투자 검토 개시 ② 세라젬 DART 확정치 열람 시 조정 깊이·2022 상충 해소 ③ 식약처 적발 목록에 국내 정식 브랜드 등장 시 EMS·메디소닉 광고 카피 전수 재점검. 이 리포트의 수명은 다음 감사보고서 시즌까지다.",
+   "short_title": "판단을 바꿀 신호 3개를 미리 정해 둔다",
+   "role": "action",
+   "layout": "content",
+   "required_insight_ids": ["insight_018"],
+   "evidence_ids": ["insight_018"],
+   "allowed_source_ids": ["src_103", "src_102", "src_032", "src_034"],
+   "allowed_metric_ids": ["metric_137", "metric_130", "metric_029", "metric_030"],
+   "density": "medium",
+   "design_constraints": [
+    "트리거 표 1개(3행): 신호(관측 지표) → 판단 갱신 → 묶인 행동 — 표가 주인공.",
+    "각주: 감사보고서 = 연 1회 후행성 · 코웨이 분기 공시는 렌탈 전사 실적이라 방향 참고만 · '적발 없음 = 안전' 아님.",
+    "트리거 ①은 '확장 투자 검토'에만 묶는다 — 일상 운영 판단은 묶지 않음.",
+    "빈 체크리스트 금지 — 3행 전부 채워진 단정 문장.",
+    "R5 검토: 신호→행동 표는 3열 대응이 본체 — text_table이 정확. causal/pyramid 아님, tradeoff 아님(양자택일 아니라 조건부 행동 매핑). 논증 도식 선택 안 함."
+   ]
+  },
+  {
+   "page_id": "p20",
+   "parent_node_id": "node_14_internal_data",
+   "message": "가장 싼 다음 한 수 = 내부 판매 추이를 이 시장 흐름 위에 겹치는 것 — 경쟁사들은 연도별 실적 곡선으로 국면 위에 놓이는데 CLO는 지금 시점의 가격·리뷰·라인업뿐이라, 'CLO가 시장을 거슬러 크는 중인가'는 바깥 데이터로 판정할 수 없다. 자사몰 월별 매출·판매량을 이 좌표에 얹는 것이 추가 외부 조사보다 우선한다.",
+   "short_title": "가장 싼 다음 한 수 — 내부 판매 추이를 이 흐름 위에 겹친다",
+   "role": "action",
+   "layout": "content",
+   "required_insight_ids": ["insight_019"],
+   "evidence_ids": ["insight_019"],
+   "allowed_source_ids": ["src_046", "src_047", "src_020", "src_021", "src_102", "src_103", "src_104"],
+   "allowed_metric_ids": ["metric_127", "metric_128", "metric_129", "metric_134", "metric_135", "metric_136", "metric_137", "metric_145", "metric_146", "metric_147", "metric_149", "metric_057", "metric_058", "metric_061", "metric_019", "metric_020"],
+   "density": "medium",
+   "design_constraints": [
+    "차트 주인공: viz = 스몰멀티플(4패널): 세라젬·바디프랜드·코지마 연도별 매출 미니 곡선 3패널 + CLO 패널은 빈 좌표('?') — 데이터 공백 자체를 시각화.",
+    "코지마 패널 2016~2021만(disc_r4_002). 세라젬 verified 3점 중심.",
+    "★리뷰수 2개 시점(40건→4,192건) 성장 곡선 승격 금지.",
+    "'CLO만 불투명' 프레임 금지 — 비공시 소형 공통 조건, 단 대상이 CLO라 공백 비용 최대.",
+    "닫는 한 줄: 1번 후속 액션은 조사가 아니라 결합.",
+    "R5 검토: 데이터 공백의 시각화 = 시계열 스몰멀티플이 주인공(빈 패널이 논증). 논증 도식 대상 아님."
+   ]
+  },
+  {
+   "page_id": "p21",
+   "parent_node_id": "thesis",
+   "message": "이 리포트가 실제 인용한 전체 출처 — 기관·리포트명 정리.",
+   "short_title": "출처",
+   "role": "setup",
+   "layout": "source_appendix",
+   "required_insight_ids": [],
+   "evidence_ids": [],
+   "allowed_source_ids": ["src_001", "src_002", "src_003", "src_008", "src_009", "src_012", "src_014", "src_019", "src_020", "src_021", "src_023", "src_024", "src_025", "src_026", "src_028", "src_029", "src_030", "src_032", "src_033", "src_034", "src_037", "src_040", "src_041", "src_042", "src_044", "src_045", "src_046", "src_047", "src_048", "src_050", "src_051", "src_054", "src_055", "src_056", "src_057", "src_059", "src_060", "src_061", "src_062", "src_064", "src_066", "src_067", "src_068", "src_069", "src_101", "src_102", "src_103", "src_104", "src_105"],
+   "allowed_metric_ids": [],
+   "density": "high",
+   "design_constraints": [
+    "렌더가 source_registry(계승 v51 + R4 델타 병합)에서 기관·리포트명 주입.",
+    "검증 메타(overlap 점수·derivation_type·downgraded 라벨) 노출 금지.",
+    "분량 넘치면 2장 분할 허용."
+   ]
+  },
+  {
+   "page_id": "p22",
+   "parent_node_id": "thesis",
+   "message": "감사합니다 — 내부 검토용. 문의 창구를 표지와 같은 톤으로.",
+   "short_title": "감사합니다",
+   "role": "outro",
+   "layout": "outro",
+   "required_insight_ids": [],
+   "evidence_ids": [],
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "density": "low",
+   "design_constraints": ["표지 톤 미러링 — 수치·출처 없음."]
+  }
+ ],
+ "stage_log_patch": [
+  {
+   "stage": "page-planner",
+   "run_id": "20260708_r5_liveproof",
+   "timestamp": "2026-07-08",
+   "action": "R5 논증 도식 선택 룰 실증 재판짜기. R4와 동일 03_insights·04_dag 입력, spec 손편집 없음. 22장(본문 14 + 크롬 8). 시계열 차트 주인공 페이지(p05·06·07·09·10·11·12·20)는 R4와 동일 유지 — tone=report의 '시계열 주장 우선 배치'가 논증 도식보다 우선하고, 논증 도식은 시계열을 밀어내지 않는다."
+  },
+  {
+   "stage": "page-planner",
+   "run_id": "20260708_r5_liveproof",
+   "timestamp": "2026-07-08",
+   "action": "논증 도식 3종 자발 선택 (구조 실재 페이지에서만): p13 two_by_two(node_07 좌표 주장 — genre 필수 포지셔닝 축), p16 causal_chain(node_09 규제 인과 4노드), p18 pyramid(node_12 결론 + 3기둥 근거). R4 대비 diff: R4 p13(node_07+08 단일 player_table)을 p13 two_by_two + p14 player_table으로 분리(포지셔닝 맵과 비교표는 genre가 둘 다 요구) / R4 p15(규제·임상 2단 텍스트)→ p16 causal_chain 주인공+임상 note / R4 p17(cards 결론)→ p18 pyramid 주인공+권고. 페이지 수 21→22(two_by_two 분리로 +1)."
+  },
+  {
+   "stage": "page-planner",
+   "run_id": "20260708_r5_liveproof",
+   "timestamp": "2026-07-08",
+   "action": "tradeoff 미선택(정직한 음성 결과). 이 덱 자세(overview·market-research)에 질적 양자택일(저울) 구조 부재. 최근접 후보 2개는 이미 더 정확한 형식이 담음 — 성장 편승 vs 집중+시연은 pyramid 결론의 오답 콜아웃, 코지마 유통 vs 자체제품은 정량 columns(disc_r4_002 곡선 잇기 금지). 구조 없는 페이지에 저울을 장식으로 넣지 않는다(룰 명시 준수). 닫음 = 결론(p18)→제언(p19 트리거·p20 내부데이터)→출처(p21)→outro(p22) 두 박자 유지. spine_check로 제목 척추 자가 점검 예정."
+  }
+ ]
+}

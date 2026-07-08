@@ -1,0 +1,1489 @@
+{
+ "archetype": "overview",
+ "theme": "data_mono",
+ "cover_layout": "corner",
+ "meta": {
+  "tone": "report",
+  "page_chrome": "title_band",
+  "section_nav": "chips",
+  "short_title": "CLO 시장 리포트"
+ },
+ "pages": [
+  {
+   "page_id": "p01",
+   "short_title": "CLO 시장 리포트 — 정점 지난 시장에서의 다음 판단",
+   "layout": "cover",
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "content": [
+    {
+     "type": "eyebrow",
+     "text": "내부 검토용 · CLO 브랜드/마케팅 · 2026-07"
+    },
+    {
+     "type": "headline",
+     "text": "정점 지난 시장에서의 ==다음 판단=="
+    },
+    {
+     "type": "body",
+     "text": "시장 국면 · 경쟁 손익 · 규제 — 그 위에 선 CLO. 성장 편승 확장이 아니라 이익 라인 집중·시연 창구·내부 데이터 결합"
+    }
+   ]
+  },
+  {
+   "page_id": "p02",
+   "short_title": "목차",
+   "layout": "index",
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "content": [
+    {
+     "type": "eyebrow",
+     "text": "Contents"
+    },
+    {
+     "type": "bullets",
+     "items": [
+      "I. 시장 — '성장 시장' 전제부터 실적으로 점검한다",
+      "II. 경쟁 — 게임은 외형에서 이익 방어로 바뀌었다",
+      "III. 소구 — 효능은 말이 아니라 체험으로 전달한다",
+      "IV. 판단 — 집중·시연·트리거, 그리고 내부 데이터 결합"
+     ]
+    }
+   ]
+  },
+  {
+   "page_id": "p03",
+   "short_title": "I. 시장 — 전제 점검",
+   "layout": "divider",
+   "part_index": 1,
+   "part_count": 4,
+   "part_label": "시장 — 전제 점검",
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "content": [
+    {
+     "type": "headline",
+     "text": "'성장 시장'이라는 전제부터 실적으로 점검한다"
+    },
+    {
+     "type": "bullets",
+     "items": [
+      "시장은 둘로 갈린다 — CLO는 강자 없는 소형에 섰다",
+      "'성장 시장' 전제는 실적이 기각했다",
+      "배경 산업 통계도 같은 방향이다",
+      "'유망 시장' 전망은 반복해서 부풀려져 왔다"
+     ]
+    }
+   ]
+  },
+  {
+   "page_id": "p04",
+   "short_title": "시장은 둘로 갈린다 — CLO는 강자 없는 소형에 섰다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_012",
+    "src_055",
+    "src_047",
+    "src_023",
+    "src_066",
+    "src_037",
+    "src_067",
+    "src_050",
+    "src_002",
+    "src_003",
+    "src_068",
+    "src_069"
+   ],
+   "allowed_metric_ids": [
+    "metric_056",
+    "metric_059",
+    "metric_017",
+    "metric_060",
+    "metric_105",
+    "metric_007",
+    "metric_008",
+    "metric_010",
+    "metric_006",
+    "metric_033",
+    "metric_034",
+    "metric_110",
+    "metric_111",
+    "metric_112"
+   ],
+   "content": [
+    {
+     "type": "eyebrow",
+     "text": "분류 — 대형 거치형(강자 있음) vs 소형(강자 없음, 여섯 유형)"
+    },
+    {
+     "type": "text_table",
+     "columns": [
+      "세그먼트",
+      "구도",
+      "CLO"
+     ],
+     "rows": [
+      [
+       "안마의자 (대형 거치형)",
+       "강자 있음 — 고급형 절반은 파나소닉, 볼륨 상위는 세라젬·바디프랜드",
+       "미진입 — 직접 경쟁 아님"
+      ],
+      [
+       "소형 — 목어깨 주무름형",
+       "오아·코지마·브레오가 나뉘어 있음, 리더 없음",
+       "판매 — 넥앤프로"
+      ],
+      [
+       "소형 — 종아리 EMS·저주파형",
+       "클럭 집중",
+       "판매 — 에어코즈"
+      ],
+      [
+       "소형 — 뷰티 갈바닉·고주파형",
+       "전업 강자 없음",
+       "판매 — 메디소닉"
+      ],
+      [
+       "소형 — 괄사·타건·풀카탈로그형",
+       "코지마 일부 · 휴플러스 · 제스파",
+       "미판매"
+      ]
+     ]
+    },
+    {
+     "type": "footnote",
+     "term": "여섯 유형 분류",
+     "def": "직접 관찰 합성 — 업계 공인 표준 아님"
+    },
+    {
+     "type": "footnote",
+     "term": "파나소닉 점유",
+     "def": "고급형 세그먼트 한정, 2022년 시점 보도 기준"
+    },
+    {
+     "type": "footnote",
+     "term": "통합 시장 추정",
+     "def": "방법론 미공개 업계 추정 — 상한 참조선으로만"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_012"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_055"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_023"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_066"
+    },
+    {
+     "type": "note",
+     "text": "출발 전제는 '주인 없는 빈 땅'이 아니라 ==강자들이 버티는 큰 시장 바로 아래에 끼어 있는 위치==다 — 다음 질문은 판의 크기가 아니라 방향이다."
+    }
+   ]
+  },
+  {
+   "page_id": "p05",
+   "short_title": "'성장 시장' 전제는 실적이 기각했다 — 정점은 2021~22년",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_102",
+    "src_103"
+   ],
+   "allowed_metric_ids": [
+    "metric_127",
+    "metric_128",
+    "metric_129",
+    "metric_130",
+    "metric_134",
+    "metric_135",
+    "metric_136",
+    "metric_137",
+    "metric_155",
+    "metric_158"
+   ],
+   "content": [
+    {
+     "type": "viz",
+     "chart": "multi_line",
+     "size": "hero",
+     "title": "세라젬 연 매출 — 급상승 뒤 정점, 그리고 조정",
+     "source_caption": "on",
+     "series": [
+      {
+       "label": "2018",
+       "metric_id": "metric_127",
+       "role": "highlight"
+      },
+      {
+       "label": "2021",
+       "metric_id": "metric_128",
+       "role": "highlight"
+      },
+      {
+       "label": "2022 정점",
+       "metric_id": "metric_129",
+       "role": "highlight"
+      },
+      {
+       "label": "2023",
+       "metric_id": "metric_130",
+       "role": "highlight"
+      }
+     ],
+     "annotations": [
+      {
+       "kind": "event_band",
+       "label": "특수기 — 정점 구간",
+       "from_key": "2021",
+       "to_key": "2022 정점"
+      }
+     ]
+    },
+    {
+     "type": "footnote",
+     "term": "단서",
+     "def": "마지막 지점(2023)은 원문 미확인 보도(방향 보조) · 독립사 바디프랜드도 정점 뒤 같은 조정 곡선(다음 부에서 상세) — 개별 사정이 아니라 수요 국면"
+    }
+   ]
+  },
+  {
+   "page_id": "p06",
+   "short_title": "산업 전반 통계도 흐름을 시사한다 — 정점 뒤 두 해 연속 감소 (방향 참고)",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_101"
+   ],
+   "allowed_metric_ids": [
+    "metric_113",
+    "metric_114",
+    "metric_115",
+    "metric_116",
+    "metric_117",
+    "metric_118",
+    "metric_119",
+    "metric_163",
+    "metric_164"
+   ],
+   "content": [
+    {
+     "type": "viz",
+     "chart": "quarterly_bars",
+     "size": "hero",
+     "title": "국내 의료기기 시장규모 — 산업 전체 배경 추세",
+     "source_caption": "on",
+     "series": [
+      {
+       "label": "2018",
+       "metric_id": "metric_113"
+      },
+      {
+       "label": "2019",
+       "metric_id": "metric_114"
+      },
+      {
+       "label": "2020",
+       "metric_id": "metric_115"
+      },
+      {
+       "label": "2021",
+       "metric_id": "metric_116"
+      },
+      {
+       "label": "2022 정점",
+       "metric_id": "metric_117",
+       "role": "highlight"
+      },
+      {
+       "label": "2023",
+       "metric_id": "metric_118"
+      },
+      {
+       "label": "2024",
+       "metric_id": "metric_119",
+       "role": "negative"
+      }
+     ],
+     "annotations": [
+      {
+       "kind": "event_band",
+       "label": "두 해 연속 감소",
+       "from_key": "2023",
+       "to_key": "2024"
+      }
+     ]
+    },
+    {
+     "type": "footnote",
+     "term": "집계 범위",
+     "def": "의료기기 산업 전체(안마기 품목 미분리) 통계 — 방향 참고 전용, 안마기기 시장 규모로 인용 금지 · 막대 값 단위는 백만원"
+    }
+   ]
+  },
+  {
+   "page_id": "p07",
+   "short_title": "'유망 시장' 전망은 반복해서 부풀려져 왔다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_105",
+    "src_003"
+   ],
+   "allowed_metric_ids": [
+    "metric_151",
+    "metric_152",
+    "metric_153",
+    "metric_154",
+    "metric_162",
+    "metric_091",
+    "metric_092"
+   ],
+   "content": [
+    {
+     "type": "viz",
+     "chart": "rising_columns",
+     "size": "hero",
+     "title": "안마의자 시장규모 업계 추정 — 전망이 앞서가고 이듬해 추정이 끌어내린다",
+     "source_caption": "on",
+     "delta": false,
+     "series": [
+      {
+       "label": "2015 추정",
+       "metric_id": "metric_151"
+      },
+      {
+       "label": "2021 추정",
+       "metric_id": "metric_152"
+      },
+      {
+       "label": "2022 전망(미실현)",
+       "metric_id": "metric_153",
+       "role": "highlight"
+      },
+      {
+       "label": "2023 추정(하향)",
+       "metric_id": "metric_154",
+       "role": "negative"
+      }
+     ],
+     "annotations": [
+      {
+       "kind": "event_band",
+       "label": "전망 → 하향",
+       "from_key": "2022 전망(미실현)",
+       "to_key": "2023 추정(하향)"
+      }
+     ]
+    },
+    {
+     "type": "footnote",
+     "term": "치명 단서",
+     "def": "전부 업계 추정(재인용 반복) — 절대 규모 인용 금지·정부 통계와 병렬 금지 · 2015→2021→2022(전망)→2023(추정) · 전망 부풀림의 문제이지 수요의 문제가 아님"
+    }
+   ]
+  },
+  {
+   "page_id": "p08",
+   "short_title": "II. 경쟁 — 바뀐 규칙",
+   "layout": "divider",
+   "part_index": 2,
+   "part_count": 4,
+   "part_label": "경쟁 — 바뀐 규칙",
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "content": [
+    {
+     "type": "headline",
+     "text": "조정 국면 — 게임은 외형에서 이익 방어로 바뀌었다"
+    },
+    {
+     "type": "bullets",
+     "items": [
+      "매출보다 이익이 먼저, 더 깊게 무너졌다",
+      "대형사도 못 버는 판 — 순이익은 적자까지",
+      "코지마 — 다섯 해 만에 아홉 배 컸던 회사",
+      "그 코지마가 유통을 버리고 자체 제품으로 갈아탔다",
+      "소형 판엔 리더가 없다 — 자리는 넓고 창구는 얇다"
+     ]
+    }
+   ]
+  },
+  {
+   "page_id": "p09",
+   "short_title": "매출이 빠지는 동안 이익은 더 깊게 무너졌다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_103"
+   ],
+   "allowed_metric_ids": [
+    "metric_134",
+    "metric_135",
+    "metric_136",
+    "metric_137",
+    "metric_138",
+    "metric_139",
+    "metric_140",
+    "metric_141",
+    "metric_155",
+    "metric_156",
+    "metric_157"
+   ],
+   "content": [
+    {
+     "type": "viz",
+     "chart": "multi_line",
+     "size": "hero",
+     "title": "바디프랜드 연 매출 — 정점에서 조정으로",
+     "source_caption": "on",
+     "series": [
+      {
+       "label": "2021 정점",
+       "metric_id": "metric_134",
+       "role": "highlight"
+      },
+      {
+       "label": "2022",
+       "metric_id": "metric_135",
+       "role": "highlight"
+      },
+      {
+       "label": "2023 바닥",
+       "metric_id": "metric_136",
+       "role": "highlight"
+      },
+      {
+       "label": "2024 반등",
+       "metric_id": "metric_137",
+       "role": "highlight"
+      }
+     ],
+     "annotations": [
+      {
+       "kind": "event_band",
+       "label": "정점 → 조정",
+       "from_key": "2021 정점",
+       "to_key": "2022"
+      }
+     ]
+    },
+    {
+     "type": "metrics",
+     "tone": "neutral",
+     "metric_ids": [
+      "metric_156",
+      "metric_157"
+     ]
+    },
+    {
+     "type": "footnote",
+     "term": "구간·단서",
+     "def": "매출 낙폭보다 이익 붕괴가 가파름(하단 카드) — 렌탈·직영·광고 고정비 노출로 읽힘(단정 아님) · 정점 이듬해 수치는 출처 상충 — 공시 인용 채택"
+    }
+   ]
+  },
+  {
+   "page_id": "p10",
+   "short_title": "대형사도 못 버는 판 — 영업이익은 바닥, 순이익은 적자",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_103",
+    "src_051",
+    "src_064",
+    "src_014",
+    "src_037"
+   ],
+   "allowed_metric_ids": [
+    "metric_138",
+    "metric_139",
+    "metric_140",
+    "metric_141",
+    "metric_142",
+    "metric_143",
+    "metric_144",
+    "metric_156",
+    "metric_157",
+    "metric_069",
+    "metric_007",
+    "metric_159",
+    "metric_084"
+   ],
+   "content": [
+    {
+     "type": "viz",
+     "chart": "rising_columns",
+     "size": "hero",
+     "title": "바디프랜드 영업이익 — 무너진 뒤 낮은 반등",
+     "source_caption": "on",
+     "delta": false,
+     "series": [
+      {
+       "label": "2021 정점",
+       "metric_id": "metric_138",
+       "role": "highlight"
+      },
+      {
+       "label": "2022 급감",
+       "metric_id": "metric_139"
+      },
+      {
+       "label": "2023 바닥",
+       "metric_id": "metric_140"
+      },
+      {
+       "label": "2024 반등",
+       "metric_id": "metric_141"
+      }
+     ],
+     "annotations": [
+      {
+       "kind": "event_band",
+       "label": "이익 붕괴 구간",
+       "from_key": "2022 급감",
+       "to_key": "2023 바닥"
+      }
+     ]
+    },
+    {
+     "type": "metric",
+     "metric_id": "metric_159",
+     "tone": "neutral",
+     "label": "세라젬 영업이익률 (2024)"
+    },
+    {
+     "type": "metric",
+     "metric_id": "metric_084",
+     "tone": "neutral",
+     "label": "코지마 영업이익 (2025)"
+    },
+    {
+     "type": "footnote",
+     "term": "단서",
+     "def": "당기순이익은 흑자 → 적자 전환 뒤 두 해 연속 적자 · 세라젬·코지마도 이익 바닥권(하단 카드) — CLO 가격·프로모션은 '대형사가 못 버는 시장' 전제 · 끝 해 반등 = 구조조정 작동 신호"
+    }
+   ]
+  },
+  {
+   "page_id": "p11",
+   "short_title": "코지마는 다섯 해 만에 아홉 배 컸던 회사다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_104"
+   ],
+   "allowed_metric_ids": [
+    "metric_145",
+    "metric_146",
+    "metric_147",
+    "metric_149",
+    "metric_160"
+   ],
+   "content": [
+    {
+     "type": "viz",
+     "chart": "rising_columns",
+     "size": "hero",
+     "title": "코지마(복정제형) 매출 — 고성장기의 궤적",
+     "source_caption": "on",
+     "delta": false,
+     "series": [
+      {
+       "label": "2016",
+       "metric_id": "metric_145"
+      },
+      {
+       "label": "2017",
+       "metric_id": "metric_146"
+      },
+      {
+       "label": "2018",
+       "metric_id": "metric_147"
+      },
+      {
+       "label": "2021 정점",
+       "metric_id": "metric_149",
+       "role": "highlight"
+      }
+     ],
+     "annotations": [
+      {
+       "kind": "callout",
+       "metric_id": "metric_160",
+       "anchor_series": 2,
+       "shape": "ellipse"
+      }
+     ]
+    },
+    {
+     "type": "footnote",
+     "term": "이후 연도",
+     "def": "집계 기준이 달라(제품+상품 세부 합산) 이 곡선에 잇지 않는다 — 이후의 증감은 이 자료로는 판단할 수 없다 · 사이 두 해(2019·2020)는 원문에 없어 빈 채로 두었다"
+    },
+    {
+     "type": "note",
+     "text": "연평균 성장률(말풍선)은 두 점 계산 — '매년 그 속도로 컸다'가 아니다. 이 성장의 끝에서 무엇을 골랐는지가 다음 장이다."
+    }
+   ]
+  },
+  {
+   "page_id": "p12",
+   "short_title": "그 코지마가 유통을 버리고 자체 제품으로 갈아탔다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_104",
+    "src_064",
+    "src_059"
+   ],
+   "allowed_metric_ids": [
+    "metric_150",
+    "metric_083",
+    "metric_161",
+    "metric_079",
+    "metric_080",
+    "metric_081",
+    "metric_082",
+    "metric_084"
+   ],
+   "content": [
+    {
+     "type": "viz",
+     "chart": "mirror_bars",
+     "size": "hero",
+     "title": "코지마 매출 구성 재편 — 유통에서 자체 제품으로",
+     "source_caption": "on",
+     "series": [
+      {
+       "label": "단순 유통 상품 — 줄어드는 쪽",
+       "metric_id": "metric_080",
+       "role": "left"
+      },
+      {
+       "label": "자체 개발 제품 — 커지는 쪽",
+       "metric_id": "metric_079",
+       "role": "right"
+      }
+     ]
+    },
+    {
+     "type": "metrics",
+     "tone": "neutral",
+     "metric_ids": [
+      "metric_082",
+      "metric_081"
+     ]
+    },
+    {
+     "type": "footnote",
+     "term": "단서",
+     "def": "제품·상품 = 공시 계정 구분(자체 개발 vs 단순 유통) · 옛 시계열과 집계가 달라 잇지 않음 · 이듬해 총매출 재성장 방향 확인(기준 동일성 원문 미명시) · 상품 급감은 채널 상실 결과일 수도(전략 단정 금지) — '성공한 전환' 아님·영업이익 아직 얇음, CLO 참고 방향은 집중"
+    }
+   ]
+  },
+  {
+   "page_id": "p13",
+   "short_title": "소형 판엔 리더가 없다 — CLO가 설 자리가 비어 있다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_055",
+    "src_041",
+    "src_042",
+    "src_044",
+    "src_045",
+    "src_046",
+    "src_047",
+    "src_054"
+   ],
+   "allowed_metric_ids": [
+    "metric_070",
+    "metric_072",
+    "metric_050",
+    "metric_017",
+    "metric_036",
+    "metric_043",
+    "metric_049",
+    "metric_056"
+   ],
+   "content": [
+    {
+     "type": "eyebrow",
+     "text": "축 기준: 단품 최저 진입가 · 자사몰 라인업 폭 (2026-07 관찰) — 판매·점유 통계 아님"
+    },
+    {
+     "type": "viz",
+     "chart": "two_by_two",
+     "title": "소형 마사지기 — 누가 어디에 있나 (가격 × 제품 폭)",
+     "x_axis": {
+      "low": "낮은 가격대",
+      "high": "높은 가격대"
+     },
+     "y_axis": {
+      "low": "한 제품에 집중",
+      "high": "여러 제품으로 넓게"
+     },
+     "series": [
+      {
+       "label": "오아",
+       "x": 0.12,
+       "y": 0.28
+      },
+      {
+       "label": "클럭",
+       "x": 0.3,
+       "y": 0.2
+      },
+      {
+       "label": "CLO",
+       "x": 0.42,
+       "y": 0.88,
+       "emphasis": true
+      },
+      {
+       "label": "코지마",
+       "x": 0.66,
+       "y": 0.55
+      },
+      {
+       "label": "브레오",
+       "x": 0.8,
+       "y": 0.3
+      },
+      {
+       "label": "휴플러스",
+       "x": 0.58,
+       "y": 0.18
+      },
+      {
+       "label": "제스파",
+       "x": 0.62,
+       "y": 0.72
+      }
+     ]
+    },
+    {
+     "type": "note",
+     "text": "CLO의 자리는 '중저가 × 여러 제품' 칸 — 강자가 채운 칸(브레오=높은 가격대·한 제품 집중, 클럭=낮은 가격대·한 제품 집중)과 달리 비어 있는 ==자리==다. 이 자리를 지키느냐 채우느냐가 다음 장(신뢰 창구)의 질문이다."
+    },
+    {
+     "type": "footnote",
+     "term": "자리",
+     "def": "상대 위치 표기이지 측정치 아님 — 진입가 사다리 순위와 관찰된 라인업 폭으로 배치. 제스파·휴플러스는 옆 종목(전 부위·마사지건)이라 직접 경쟁면 참고로만"
+    }
+   ]
+  },
+  {
+   "page_id": "p14",
+   "short_title": "자리는 넓은데 믿게 만드는 창구가 얇다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_055",
+    "src_041",
+    "src_042",
+    "src_044",
+    "src_045",
+    "src_046",
+    "src_047",
+    "src_054",
+    "src_019",
+    "src_028",
+    "src_029",
+    "src_030",
+    "src_048",
+    "src_056",
+    "src_057",
+    "src_060",
+    "src_061",
+    "src_062",
+    "src_064"
+   ],
+   "allowed_metric_ids": [
+    "metric_070",
+    "metric_071",
+    "metric_072",
+    "metric_073",
+    "metric_035",
+    "metric_039",
+    "metric_045",
+    "metric_050",
+    "metric_056",
+    "metric_049",
+    "metric_036",
+    "metric_017",
+    "metric_054",
+    "metric_043",
+    "metric_057",
+    "metric_059",
+    "metric_060",
+    "metric_062",
+    "metric_063",
+    "metric_064",
+    "metric_047",
+    "metric_048",
+    "metric_075",
+    "metric_076",
+    "metric_077",
+    "metric_016",
+    "metric_079",
+    "metric_081",
+    "metric_083",
+    "metric_010",
+    "metric_040",
+    "metric_042",
+    "metric_044",
+    "metric_046",
+    "metric_058",
+    "metric_061",
+    "metric_027",
+    "metric_028"
+   ],
+   "content": [
+    {
+     "type": "eyebrow",
+     "text": "기준: 단품 최저 진입가 · 2026-07 관찰 — 판매·점유 통계 아님"
+    },
+    {
+     "type": "viz",
+     "chart": "fin_table",
+     "title": "소형 마사지기 플레이어 비교 — 진입가 사다리 위의 자리",
+     "source_caption": "on",
+     "columns": [
+      "단품 최저 진입가",
+      "주력 유형·폭",
+      "신뢰 창구"
+     ],
+     "series": [
+      {
+       "label": "오아",
+       "cells": [
+        {
+         "metric_id": "metric_049"
+        },
+        {
+         "text": "목어깨 단품 여럿"
+        },
+        {
+         "text": "자사몰 — 얇음"
+        }
+       ]
+      },
+      {
+       "label": "클럭",
+       "cells": [
+        {
+         "metric_id": "metric_036"
+        },
+        {
+         "text": "종아리 EMS 집중"
+        },
+        {
+         "text": "콘텐츠 커머스 결합"
+        }
+       ]
+      },
+      {
+       "label": "CLO",
+       "row_role": "group",
+       "cells": [
+        {
+         "metric_id": "metric_017"
+        },
+        {
+         "text": "세 유형 — 폭 최광"
+        },
+        {
+         "text": "자사몰뿐·SNS 없음"
+        }
+       ]
+      },
+      {
+       "label": "휴플러스",
+       "cells": [
+        {
+         "metric_id": "metric_072"
+        },
+        {
+         "text": "마사지건 — 옆 종목"
+        },
+        {
+         "text": "다나와 상위 노출"
+        }
+       ]
+      },
+      {
+       "label": "코지마",
+       "cells": [
+        {
+         "metric_id": "metric_050"
+        },
+        {
+         "text": "목어깨 겸업 라인"
+        },
+        {
+         "text": "홈쇼핑·다나와"
+        }
+       ]
+      },
+      {
+       "label": "제스파",
+       "cells": [
+        {
+         "metric_id": "metric_070"
+        },
+        {
+         "text": "전 부위 — 옆 종목"
+        },
+        {
+         "text": "스토어·SNS 다수"
+        }
+       ]
+      },
+      {
+       "label": "브레오",
+       "cells": [
+        {
+         "metric_id": "metric_043"
+        },
+        {
+         "text": "고급 목어깨 집중"
+        },
+        {
+         "text": "다나와·유통"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "note",
+     "text": "이길 상대는 클럭·오아·브레오, 배울 상대는 코지마·제스파 — 공백은 제품이 아니라 ==창구==다. 다만 창구가 얇다고 매출이 낮다고 단정할 수는 없고, CLO 자사몰에 리뷰가 쌓이고 있다는 반대 방향 신호도 있다."
+    },
+    {
+     "type": "footnote",
+     "term": "표 기준",
+     "def": "다나와 노출·자사몰 라인업·리뷰 관찰 — 판매량·점유율 통계 아님 · 제스파 수치는 자체 발표 · 클럭 대량 판매 이력은 출시 초기 옛 시점 · CLO 'SNS 없음'은 홈 링크 부재+계정 확인 실패 관찰(부재의 증명 아님)"
+    }
+   ]
+  },
+  {
+   "page_id": "p15",
+   "short_title": "III. 소구 — 말할 수 있는 것",
+   "layout": "divider",
+   "part_index": 3,
+   "part_count": 4,
+   "part_label": "소구 — 말할 수 있는 것",
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "content": [
+    {
+     "type": "headline",
+     "text": "효과를 말로 팔 수 없는 이유, 말 대신 남는 경로"
+    },
+    {
+     "type": "bullets",
+     "items": [
+      "효능을 말할 문은 규제와 임상 양쪽에서 좁다"
+     ]
+    }
+   ]
+  },
+  {
+   "page_id": "p16",
+   "short_title": "효능을 말할 문은 규제와 임상 양쪽에서 좁다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_001",
+    "src_002",
+    "src_032",
+    "src_033",
+    "src_034",
+    "src_040",
+    "src_047",
+    "src_008",
+    "src_009",
+    "src_024",
+    "src_025",
+    "src_026"
+   ],
+   "allowed_metric_ids": [
+    "metric_029",
+    "metric_030",
+    "metric_101",
+    "metric_102",
+    "metric_103",
+    "metric_104",
+    "metric_024",
+    "metric_025",
+    "metric_026",
+    "metric_022"
+   ],
+   "content": [
+    {
+     "type": "eyebrow",
+     "text": "규제의 인과 — 왜 효능을 세게 말할수록 문이 좁아지나"
+    },
+    {
+     "type": "viz",
+     "chart": "causal_chain",
+     "title": "효능 표방이 규제를 부르는 사슬",
+     "series": [
+      {
+       "label": "공산품 마사지기가 광고에서 효능을 내세움"
+      },
+      {
+       "label": "의료기기 판정 기준이 작동",
+       "evidence": "의료기기 여부를 가르는 판례 기준이 다름 아닌 '광고에서 표방하는 효능·효과'"
+      },
+      {
+       "label": "의료기기 재분류·광고 적발 위험을 자초",
+       "evidence": "온라인 위반 광고가 일상적으로 적발되는 환경",
+       "metric_id": "metric_029"
+      },
+      {
+       "label": "합법 경로는 시연과 남의 입(후기)로 좁혀진다"
+      }
+     ]
+    },
+    {
+     "type": "note",
+     "text": "임상 근거도 편이 아니다 — '치료사 손 시술 마사지 일반'까지만(석 달 시점 개선·반년 시점엔 소멸), 기기 문헌 정리는 타건형 한정이라 CLO가 걸친 주무름형·갈바닉의 직접 근거는 확인되지 않았다. 규제와 임상이 같은 결론을 두 번 가리킨다."
+    },
+    {
+     "type": "callout",
+     "emphasis": true,
+     "text": "두 겹이 같은 결론 — ==임상 언어로 주장하지 말고, 체험으로 전달하라=="
+    },
+    {
+     "type": "footnote",
+     "term": "판단 기준 지침서",
+     "def": "정부 실무 기준 문서(법적 효력 없음) — CLO 개별 제품 적용은 유추"
+    },
+    {
+     "type": "footnote",
+     "term": "적발 구성",
+     "def": "적발 다수가 해외직구 무허가 — 정식 국내 브랜드를 직접 겨냥한 것은 아니나, 광고 문구가 분류를 좌우하는 구조는 정식 브랜드에도 유효"
+    },
+    {
+     "type": "footnote",
+     "term": "EMS·갈바닉",
+     "def": "전기 자극·미세 전류 방식 — 의료기기 경계에 가까운 CLO의 규제 노출 라인"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_001"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_032"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_008"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_009"
+    }
+   ]
+  },
+  {
+   "page_id": "p17",
+   "short_title": "IV. 판단 — 그래서 무엇을 하나",
+   "layout": "divider",
+   "part_index": 4,
+   "part_count": 4,
+   "part_label": "판단 — 그래서 무엇을 하나",
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "content": [
+    {
+     "type": "headline",
+     "text": "지금 갈 길, 판단을 바꿀 신호, 비용이 가장 낮은 다음 한 수"
+    },
+    {
+     "type": "bullets",
+     "items": [
+      "지금 CLO가 갈 길 — 이익 나는 제품에 집중하고, 시연으로 보여준다",
+      "판단을 바꿀 신호를 미리 정해 둔다",
+      "비용이 가장 낮은 다음 한 수 — 내부 판매 추이를 겹친다"
+     ]
+    }
+   ]
+  },
+  {
+   "page_id": "p18",
+   "short_title": "지금 CLO가 갈 길 — 이익 나는 제품에 집중하고, 시연으로 보여준다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_047",
+    "src_055",
+    "src_019",
+    "src_029",
+    "src_001",
+    "src_002",
+    "src_008",
+    "src_009",
+    "src_054",
+    "src_048",
+    "src_028",
+    "src_030"
+   ],
+   "allowed_metric_ids": [
+    "metric_056",
+    "metric_017",
+    "metric_035",
+    "metric_039",
+    "metric_029",
+    "metric_027",
+    "metric_028"
+   ],
+   "content": [
+    {
+     "type": "viz",
+     "chart": "pyramid",
+     "title": "세 진단이 하나의 결론을 떠받친다",
+     "series": [
+      {
+       "role": "claim",
+       "label": "CLO의 길 = 이익 나는 제품에 집중 + 시연으로 보여주기"
+      },
+      {
+       "role": "evidence",
+       "label": "시장은 정점을 지나 낮은 자리에 머문다 (I부)"
+      },
+      {
+       "role": "evidence",
+       "label": "경쟁은 덩치 키우기에서 이익 지키기로 바뀌었다 (II부)"
+      },
+      {
+       "role": "evidence",
+       "label": "효능은 규제·임상 양쪽에서 말로 팔 수 없다 (III부)"
+      }
+     ]
+    },
+    {
+     "type": "bullets",
+     "items": [
+      "첫째 — 라인별 손익을 갈라 이익 나는 라인을 확정한다(집중). 덩치는 목표가 아니다",
+      "둘째 — 목·어깨 대표 제품으로 라이브 시연 파일럿을 연다(시연). 임상 언어가 아니라 체험 언어로"
+     ]
+    },
+    {
+     "type": "callout",
+     "text": "하지 않는다 — 몸집 경쟁 편승 · 전망 기사 기반 확장 · 효능 문구 강화"
+    },
+    {
+     "type": "footnote",
+     "term": "단서",
+     "def": "라이브 근거는 일반 채널(마사지기 특화 아님)이라 조건부 제언이지 성공 증거가 아니다 — 저광고 노선이 의도된 전략일 가능성도 열어 둔다"
+    }
+   ]
+  },
+  {
+   "page_id": "p19",
+   "short_title": "판단을 바꿀 신호 셋을 미리 정해 둔다",
+   "layout": "stack",
+   "allowed_source_ids": [
+    "src_103",
+    "src_102",
+    "src_032",
+    "src_034"
+   ],
+   "allowed_metric_ids": [
+    "metric_137",
+    "metric_130",
+    "metric_029",
+    "metric_030"
+   ],
+   "content": [
+    {
+     "type": "eyebrow",
+     "text": "판단 갱신 트리거 — 미리 정해 두는 세 신호"
+    },
+    {
+     "type": "text_table",
+     "columns": [
+      "신호 (관측 지표)",
+      "판단 갱신",
+      "묶인 행동"
+     ],
+     "rows": [
+      [
+       "바디프랜드 두 해 연속 성장 확인 (다음 감사보고서)",
+       "'조정 국면' → '회복 진입'으로 갱신",
+       "확장 투자 검토 개시 — 일상 운영 판단은 묶지 않는다"
+      ],
+      [
+       "세라젬 DART 확정치 열람",
+       "조정 깊이 확정 · 정점 이듬해 출처 상충 해소",
+       "I부 시장 국면 수치 갱신"
+      ],
+      [
+       "식약처 적발 목록에 국내 정식 브랜드 등장",
+       "'단속은 직구 위주' 전제 폐기",
+       "EMS·메디소닉 광고 카피 전수 재점검"
+      ]
+     ]
+    },
+    {
+     "type": "footnote",
+     "term": "감사보고서",
+     "def": "연 1회 후행 지표 — 그 사이 분기 공시(렌탈 대기업)는 전사 실적이라 방향 참고만"
+    },
+    {
+     "type": "footnote",
+     "term": "적발 없음",
+     "def": "안전의 증명이 아니다 — 광고 문구가 분류를 좌우하는 법적 구조는 이미 유효"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_103"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_102"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_032"
+    },
+    {
+     "type": "note",
+     "text": "이 판단의 유효기간은 다음 감사보고서 시즌까지다 — 신호가 오기 전에는 결론(집중·시연)을 유지한다."
+    }
+   ]
+  },
+  {
+   "page_id": "p20",
+   "short_title": "비용이 가장 낮은 다음 한 수 — 내부 판매 추이를 이 흐름 위에 겹친다",
+   "layout": "statement",
+   "allowed_source_ids": [
+    "src_046",
+    "src_047",
+    "src_020",
+    "src_021",
+    "src_102",
+    "src_103",
+    "src_104"
+   ],
+   "allowed_metric_ids": [
+    "metric_127",
+    "metric_128",
+    "metric_129",
+    "metric_134",
+    "metric_135",
+    "metric_136",
+    "metric_137",
+    "metric_145",
+    "metric_146",
+    "metric_147",
+    "metric_149",
+    "metric_057",
+    "metric_058",
+    "metric_061",
+    "metric_019",
+    "metric_020"
+   ],
+   "content": [
+    {
+     "type": "viz",
+     "chart": "fin_table",
+     "size": "hero",
+     "title": "경쟁사는 곡선으로 국면 위에 놓인다 — CLO 칸은 비어 있다",
+     "source_caption": "on",
+     "columns": [
+      "정점 해 매출",
+      "최근 공시 해",
+      "이 흐름 위에 놓이나"
+     ],
+     "series": [
+      {
+       "label": "세라젬",
+       "cells": [
+        {
+         "metric_id": "metric_129"
+        },
+        {
+         "text": "보도 추정만 (미확인)"
+        },
+        {
+         "text": "놓인다 — 조정 방향"
+        }
+       ]
+      },
+      {
+       "label": "바디프랜드",
+       "cells": [
+        {
+         "metric_id": "metric_134"
+        },
+        {
+         "metric_id": "metric_137"
+        },
+        {
+         "text": "놓인다 — 공시 연속"
+        }
+       ]
+      },
+      {
+       "label": "코지마",
+       "cells": [
+        {
+         "metric_id": "metric_149"
+        },
+        {
+         "text": "집계 기준 변경"
+        },
+        {
+         "text": "옛 구간까지만"
+        }
+       ]
+      },
+      {
+       "label": "CLO",
+       "row_role": "group",
+       "cells": [
+        {
+         "text": "—"
+        },
+        {
+         "text": "—"
+        },
+        {
+         "text": "가격·리뷰 관찰뿐 — 월별 내부 판매 결합 필요"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "note",
+     "text": "자사몰 리뷰 수는 집계 기준이 달라 성장 곡선을 대신하지 못한다. 다음 한 수는 ==결합== — 자사몰 월별 매출·판매량을 이 흐름 위에 얹으면 확장이냐 수성이냐의 근거가 선다."
+    }
+   ]
+  },
+  {
+   "page_id": "p21",
+   "short_title": "출처",
+   "layout": "source_appendix",
+   "allowed_source_ids": [
+    "src_012",
+    "src_055",
+    "src_023",
+    "src_066",
+    "src_102",
+    "src_101",
+    "src_105",
+    "src_103",
+    "src_051",
+    "src_037",
+    "src_064",
+    "src_104",
+    "src_059",
+    "src_044",
+    "src_041",
+    "src_020",
+    "src_045",
+    "src_042",
+    "src_001",
+    "src_032",
+    "src_008",
+    "src_009"
+   ],
+   "allowed_metric_ids": [],
+   "content": [
+    {
+     "type": "headline",
+     "text": "출처 (1/3)"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_001"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_002"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_003"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_008"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_009"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_012"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_014"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_019"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_020"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_021"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_023"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_024"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_025"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_026"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_028"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_029"
+    },
+    {
+     "type": "citation",
+     "src_id": "src_030"
+    }
+   ]
+  },
+  {
+   "page_id": "p22",
+   "short_title": "감사합니다",
+   "layout": "outro",
+   "allowed_source_ids": [],
+   "allowed_metric_ids": [],
+   "content": [
+    {
+     "type": "headline",
+     "text": "감사합니다"
+    },
+    {
+     "type": "body",
+     "text": "내부 검토용 · CLO 브랜드/마케팅 — 문의는 브랜드팀 채널로"
+    }
+   ]
+  }
+ ],
+ "r5_liveproof": "R4 06_deck_spec에서 시계열 차트 페이지는 그대로 유지, 논증 구조가 실재하는 3자리에 R5 논증 도식 자발 적용: p13 two_by_two(포지셔닝)·p16 causal_chain(규제 인과)·p18 pyramid(결론 3기둥). tradeoff 미선택(구조 부재)."
+}
