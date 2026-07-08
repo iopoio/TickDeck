@@ -2947,6 +2947,302 @@ def _svg_swot_quad(
     return _svg_shell("swot_quad", title, note, y0 + grid_h + 20, "".join(body), page_id)
 
 
+# ══ R5 논증 어휘(2026-07-08, DESIGN_R5_argument_diagrams.md) ══
+# 페이지의 논증 구조가 모양을 결정하는 4종(피라미드·인과사슬·2×2 포지셔닝·저울 대비).
+# 공통 규율: 화려한 기하학 금지 — 정렬·여백·절제된 색(accent 1개 tint)만 쓴다.
+
+
+def _raw_series_items(block: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """_viz_series가 나르지 않는 구조 필드(evidence·x·y·side 등)를 원본 series에서 읽는다."""
+    raw = (block or {}).get("series")
+    return [item for item in raw if isinstance(item, dict)] if isinstance(raw, list) else []
+
+
+def _svg_pyramid(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 주장(claim) 1 + 근거(evidence) 2~4단 — 아래로 갈수록 넓어지는 사다리꼴 스택. "위가 좁고
+    # 아래가 넓다" = 근거가 주장을 떠받친다는 시각 문법(밀도 2겹 룰의 시각 짝). metric_id가
+    # 붙은 근거는 _viz_series가 이미 값을 해석해 둔다 — role만 그대로 통과시켜 읽는다.
+    claim = next((item for item in series if item.get("role") == "claim"), series[0])
+    evidence = [item for item in series if item.get("role") == "evidence" and item is not claim]
+    if len(evidence) < 2:
+        evidence = [item for item in series if item is not claim]
+    layers = [claim, *evidence]
+    n = len(layers)
+    row_h, row_gap = 88, 4
+    y0 = CHART_TITLE_GAP - 6
+    cx = 500.0
+    min_w, max_w = 260.0, 860.0
+    step = (max_w - min_w) / max(1, n - 1)
+    body = []
+    for i, item in enumerate(layers):
+        top_w = min_w if i == 0 else min_w + step * (i - 1)
+        bottom_w = min_w + step * i
+        y_top = y0 + (row_h + row_gap) * i
+        y_bottom = y_top + row_h
+        is_claim = i == 0
+        fill = accent if is_claim else f"color-mix(in srgb, {accent} 12%, transparent)"
+        text_fill = "#FFFFFF" if is_claim else "#1F2733"
+        points = (
+            f"{cx - top_w / 2:.1f},{y_top:.1f} {cx + top_w / 2:.1f},{y_top:.1f} "
+            f"{cx + bottom_w / 2:.1f},{y_bottom:.1f} {cx - bottom_w / 2:.1f},{y_bottom:.1f}"
+        )
+        lines = _wrap_text(str(item["label"]), max(10, int(bottom_w / 13)))[:2]
+        label_y = y_top + 36 if item["value"] else (y_top + row_h / 2 + 6)
+        label_html = "".join(
+            f'<tspan x="{cx}" dy="{0 if li == 0 else 22}">{_escape(line)}</tspan>' for li, line in enumerate(lines)
+        )
+        value_html = ""
+        if item["value"]:
+            value_html = (
+                f'<text x="{cx}" y="{y_bottom - 14:.1f}" text-anchor="middle" font-size="18" font-weight="900" '
+                f'fill="{"#FFFFFF" if is_claim else accent}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>'
+            )
+        body.append(
+            f"""
+            <g data-metric-id="{_escape(item["metric_id"])}">
+              <polygon points="{points}" fill="{fill}"/>
+              <text x="{cx}" y="{label_y:.1f}" text-anchor="middle" font-size="16" font-weight="800" fill="{text_fill}">{label_html}</text>
+              {value_html}
+            </g>"""
+        )
+    height = y0 + (row_h + row_gap) * n + (28 if note else 8)
+    return _svg_shell("pyramid", title, note, int(height), "".join(body), page_id)
+
+
+def _svg_causal_chain(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # A→B→C 인과 사슬. flow(가는 화살표 + 알약 노드)와 같은 문법을 쓰되, 각 링크 아래 근거
+    # 캡션을 붙인다 — "왜 이어지는가"가 화살표 밑에 박힌다(arrow_flow와의 차이). 노드 라벨은
+    # 인과 서술문이라 flow보다 길다 — 반드시 wrap한다(7/8 실측: 4노드째 미wrap 시 캔버스 밖 잘림).
+    nodes = series[:6]
+    raw_nodes = _raw_series_items(block)
+    n = len(nodes)
+    arrow_id = f"arrow-{_class_name(page_id)}-causal"
+    node_w, node_h_min = 190.0, 74.0
+    node_half = node_w / 2
+    x0, total_w = 100.0, 800.0
+    step = total_w / max(1, n - 1)
+    node_cy = CHART_TITLE_GAP + 50
+    max_label_chars = max(8, int(node_w / 15))
+    row_line_h = 20
+    body = [
+        f"""
+        <defs>
+          <marker id="{arrow_id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="{accent}"/>
+          </marker>
+        </defs>"""
+    ]
+    max_caption_lines = 0
+    caption_top = node_cy + node_h_min / 2 + 26
+    for index in range(n - 1):
+        x1 = x0 + step * index
+        x2 = x0 + step * (index + 1)
+        raw_item = raw_nodes[index] if index < len(raw_nodes) else {}
+        caption = str(raw_item.get("evidence", "")).strip()
+        body.append(
+            f'<line x1="{x1 + node_half + 8:.1f}" y1="{node_cy}" x2="{x2 - node_half - 8:.1f}" y2="{node_cy}" stroke="{accent}" stroke-width="3" marker-end="url(#{arrow_id})"/>'
+        )
+        if caption:
+            mid_x = (x1 + x2) / 2
+            lines = _wrap_text(caption, max(8, int((step - 24) / 13)))[:2]
+            max_caption_lines = max(max_caption_lines, len(lines))
+            caption_html = "".join(
+                f'<tspan x="{mid_x:.1f}" dy="{0 if li == 0 else 18}">{_escape(line)}</tspan>' for li, line in enumerate(lines)
+            )
+            body.append(f'<text x="{mid_x:.1f}" y="{caption_top}" text-anchor="middle" class="visual-note" font-size="14">{caption_html}</text>')
+    for index, item in enumerate(nodes):
+        x = x0 + step * index
+        fill = accent if _is_highlight(item, index, nodes) else f"color-mix(in srgb, {accent} 14%, transparent)"
+        text_fill = "#FFFFFF" if fill == accent else "#1F2733"
+        label_lines = _wrap_text(str(item["label"]), max_label_chars)[:2]
+        block_rows = len(label_lines) + (1 if item["value"] else 0)
+        node_h = max(node_h_min, block_rows * row_line_h + 34)
+        first_y = node_cy - (block_rows - 1) * row_line_h / 2 + 5
+        label_html = "".join(
+            f'<tspan x="{x:.1f}" dy="{0 if li == 0 else row_line_h}">{_escape(line)}</tspan>' for li, line in enumerate(label_lines)
+        )
+        value_html = ""
+        if item["value"]:
+            value_y = first_y + len(label_lines) * row_line_h + 2
+            value_html = (
+                f'<text x="{x:.1f}" y="{value_y:.1f}" text-anchor="middle" fill="{text_fill}" font-size="16" font-weight="900" '
+                f'data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>'
+            )
+        body.append(
+            f"""
+            <g data-metric-id="{_escape(item["metric_id"])}">
+              <rect x="{x - node_half:.1f}" y="{node_cy - node_h / 2:.1f}" width="{node_w:.1f}" height="{node_h:.1f}" rx="{node_h / 2:.1f}" fill="{fill}"/>
+              <text x="{x:.1f}" y="{first_y:.1f}" text-anchor="middle" fill="{text_fill}" font-size="15" font-weight="900">{label_html}</text>
+              {value_html}
+            </g>"""
+        )
+    height = caption_top + (max_caption_lines * 18 + 14 if max_caption_lines else -8) + (28 if note else 0)
+    return _svg_shell("causal_chain", title, note, int(height), "".join(body), page_id)
+
+
+def _svg_two_by_two(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 축 2개 + 아이템 좌표 배치(포지셔닝 맵). swot_quad와 차이: 축 라벨이 자유 변수고 아이템이
+    # (x,y) 좌표를 갖는다 — series item에 x/y/emphasis가 있어 _viz_series 일반 변환을 안 타므로
+    # (swot_quad 선례와 동일) 원본 block.series를 직접 읽는다.
+    items = _raw_series_items(block)[:8]
+    x_axis = (block or {}).get("x_axis") if isinstance((block or {}).get("x_axis"), dict) else {}
+    y_axis = (block or {}).get("y_axis") if isinstance((block or {}).get("y_axis"), dict) else {}
+    plot_x0, plot_y0 = 120.0, CHART_TITLE_GAP + 4
+    plot_w, plot_h = 720.0, 340.0
+    body = [
+        f'<rect x="{plot_x0}" y="{plot_y0}" width="{plot_w}" height="{plot_h}" fill="color-mix(in srgb, var(--ink) 4%, transparent)"/>',
+        f'<line x1="{plot_x0 + plot_w / 2}" y1="{plot_y0}" x2="{plot_x0 + plot_w / 2}" y2="{plot_y0 + plot_h}" stroke="var(--line)" stroke-width="2"/>',
+        f'<line x1="{plot_x0}" y1="{plot_y0 + plot_h / 2}" x2="{plot_x0 + plot_w}" y2="{plot_y0 + plot_h / 2}" stroke="var(--line)" stroke-width="2"/>',
+        f'<rect x="{plot_x0}" y="{plot_y0}" width="{plot_w}" height="{plot_h}" fill="none" stroke="var(--line)" stroke-width="1.5"/>',
+    ]
+    x_low = str(x_axis.get("low", "")).strip()
+    x_high = str(x_axis.get("high", "")).strip()
+    y_low = str(y_axis.get("low", "")).strip()
+    y_high = str(y_axis.get("high", "")).strip()
+    if x_low:
+        body.append(f'<text x="{plot_x0}" y="{plot_y0 + plot_h + 26}" text-anchor="start" class="visual-note">{_escape(x_low)}</text>')
+    if x_high:
+        body.append(f'<text x="{plot_x0 + plot_w}" y="{plot_y0 + plot_h + 26}" text-anchor="end" class="visual-note">{_escape(x_high)}</text>')
+    if y_low:
+        body.append(f'<text x="{plot_x0 - 14}" y="{plot_y0 + plot_h}" text-anchor="end" class="visual-note">{_escape(y_low)}</text>')
+    if y_high:
+        body.append(f'<text x="{plot_x0 - 14}" y="{plot_y0 + 8}" text-anchor="end" class="visual-note">{_escape(y_high)}</text>')
+    for item in items:
+        label = str(item.get("label", "")).strip()
+        fx = min(1.0, max(0.0, float(item.get("x", 0.5))))
+        fy = min(1.0, max(0.0, float(item.get("y", 0.5))))
+        emphasis = bool(item.get("emphasis"))
+        px = plot_x0 + plot_w * fx
+        py = plot_y0 + plot_h - plot_h * fy
+        radius = 12 if emphasis else 8
+        fill = accent if emphasis else "color-mix(in srgb, var(--ink) 45%, transparent)"
+        anchor, lx = ("end", px - 18) if fx > 0.78 else ("start", px + 18)
+        weight = "800" if emphasis else "600"
+        body.append(
+            f"""
+            <g>
+              <circle cx="{px:.1f}" cy="{py:.1f}" r="{radius}" fill="{fill}" stroke="#FFFFFF" stroke-width="2"/>
+              <text x="{lx:.1f}" y="{py + 5:.1f}" text-anchor="{anchor}" font-size="15" font-weight="{weight}" fill="#1F2733">{_escape(label)}</text>
+            </g>"""
+        )
+    height = plot_y0 + plot_h + 46 + (28 if note else 0)
+    return _svg_shell("two_by_two", title, note, int(height), "".join(body), page_id)
+
+
+def _svg_tradeoff(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    # 좌우 저울(득실 대비) — mirror_bars와 달리 수치 비교가 아니라 질적 대비. 반송 1R(7/8
+    # 육안 검수): 단순 2단 불릿 목록이라 "도식"이 아니라 "스타일 입힌 글"로 읽힘. 좌우를 tint
+    # 패널로 묶고(swot_quad 관례) 중앙 세로 스파인을 도식의 등뼈로 세운다. block.emphasis
+    # ("left"|"right")가 있으면 그쪽 패널만 accent, 없으면 기존 관례대로 좌=accent 약함/우=중립.
+    raw_items = _raw_series_items(block)
+    left_title = str((block or {}).get("left_title", "")).strip()
+    right_title = str((block or {}).get("right_title", "")).strip()
+    emphasis = str((block or {}).get("emphasis", "")).strip()
+    left_items = [item for item, raw in zip(series, raw_items) if str(raw.get("side", "")).strip() == "left"]
+    right_items = [item for item, raw in zip(series, raw_items) if str(raw.get("side", "")).strip() == "right"]
+
+    col_w, gap, pad_x = 460.0, 40.0, 26.0
+    left_x, right_x = 0.0, col_w + gap
+    cx = col_w + gap / 2
+    panel_top = CHART_TITLE_GAP - 8
+    title_h, row_h, bottom_pad = 64, 88, 40
+    content_top = panel_top + title_h
+    row_count = max(len(left_items), len(right_items), 1)
+    # 다른 3종(pyramid/causal_chain/two_by_two)의 도식 존재감에 맞춘 최소 내용 높이 —
+    # 항목이 2개뿐이어도 캔버스 하단이 비지 않게(반송 사유 #3: 하단 40% 공백).
+    content_h = max(row_count * row_h, 280.0)
+    panel_bottom = content_top + content_h + bottom_pad
+    panel_h = panel_bottom - panel_top
+    row_block_top = content_top + (content_h - row_count * row_h) / 2
+
+    spine_top, spine_bottom = panel_top - 6, panel_bottom + 6
+    spine_mid = (spine_top + spine_bottom) / 2
+    body = [
+        f'<line x1="{cx}" y1="{spine_top}" x2="{cx}" y2="{spine_bottom}" stroke="var(--line)" stroke-width="3"/>',
+        f'<circle cx="{cx}" cy="{spine_mid}" r="23" fill="var(--card)" stroke="{accent}" stroke-width="2.5"/>',
+        f'<text x="{cx}" y="{spine_mid + 5}" text-anchor="middle" font-size="15" font-weight="900" fill="{accent}">VS</text>',
+    ]
+
+    for side, col_x, col_items, side_title in (
+        ("left", left_x, left_items, left_title),
+        ("right", right_x, right_items, right_title),
+    ):
+        is_emphasis = side == emphasis if emphasis else side == "left"
+        color = accent if is_emphasis else "color-mix(in srgb, var(--ink) 62%, transparent)"
+        panel_fill = (
+            f"color-mix(in srgb, {accent} 16%, transparent)"
+            if is_emphasis
+            else "color-mix(in srgb, var(--ink) 5%, transparent)"
+        )
+        body.append(f'<rect x="{col_x}" y="{panel_top}" width="{col_w}" height="{panel_h}" rx="14" fill="{panel_fill}"/>')
+        if is_emphasis:
+            body.append(f'<rect x="{col_x}" y="{panel_top}" width="{col_w}" height="5" rx="2.5" fill="{accent}"/>')
+        if side_title:
+            body.append(
+                f'<text x="{col_x + pad_x}" y="{panel_top + 36}" font-size="20" font-weight="900" fill="{color}">{_escape(side_title)}</text>'
+            )
+        for row_index, item in enumerate(col_items):
+            row_center = row_block_top + row_index * row_h + row_h / 2
+            has_value = bool(item["value"])
+            chip_w = min(150.0, max(64.0, 16 + 11 * len(str(item["value"])))) if has_value else 0.0
+            label_max_px = col_w - pad_x * 2 - 18 - (chip_w + 14 if has_value else 0)
+            lines = _wrap_text(str(item["label"]), max(8, int(label_max_px / 10.2)))[:2]
+            text_x = col_x + pad_x + 16
+            first_y = row_center - (len(lines) - 1) * 10 + 5
+            text_html = "".join(
+                f'<tspan x="{text_x:.1f}" dy="{0 if li == 0 else 20}">{_escape(line)}</tspan>' for li, line in enumerate(lines)
+            )
+            chip_html = ""
+            if has_value:
+                chip_x2 = col_x + col_w - pad_x
+                chip_x1 = chip_x2 - chip_w
+                chip_y1 = row_center - 14
+                chip_html = (
+                    f'<rect x="{chip_x1:.1f}" y="{chip_y1:.1f}" width="{chip_w:.1f}" height="28" rx="14" '
+                    f'fill="color-mix(in srgb, {color} 16%, transparent)"/>'
+                    f'<text x="{(chip_x1 + chip_w / 2):.1f}" y="{row_center + 5:.1f}" text-anchor="middle" '
+                    f'font-size="15" font-weight="900" fill="{color}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>'
+                )
+            body.append(
+                f'<g data-metric-id="{_escape(item["metric_id"])}">'
+                f'<circle cx="{col_x + pad_x + 4:.1f}" cy="{first_y - 5}" r="3.5" fill="{color}"/>'
+                f'<text x="{text_x:.1f}" y="{first_y:.1f}" font-size="16" font-weight="600" fill="#1F2733">{text_html}</text>'
+                f"{chip_html}"
+                "</g>"
+            )
+
+    height = panel_bottom + 8 + (28 if note else 0)
+    return _svg_shell("tradeoff", title, note, int(height), "".join(body), page_id)
+
+
 def _viz_annotation_layer(
     block: dict[str, Any] | None,
     points: list[dict[str, Any]],
@@ -3147,6 +3443,10 @@ _CHART_RENDERERS = {
     "pictogram": _svg_pictogram,
     "gauge": _svg_gauge,
     "swot_quad": _svg_swot_quad,
+    "pyramid": _svg_pyramid,
+    "causal_chain": _svg_causal_chain,
+    "two_by_two": _svg_two_by_two,
+    "tradeoff": _svg_tradeoff,
 }
 
 

@@ -1119,6 +1119,242 @@ class HarnessContractTests(unittest.TestCase):
         violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
         self.assertTrue(any("swot_quad item contains raw number" in str(v) for v in violations))
 
+    # ── R5 논증 어휘(2026-07-08 DESIGN_R5_argument_diagrams.md) — pyramid/causal_chain/
+    #    two_by_two/tradeoff. 4종 각각 정상 렌더 1 + 슬롯 미달 위반 1.
+
+    def test_c6_accepts_pyramid_with_two_evidence_layers_and_renders(self):
+        self.assertIn("pyramid", contract_checks_module.SUPPORTED_VIZ_CHART_TYPES)
+        content = [
+            {
+                "type": "viz",
+                "chart": "pyramid",
+                "title": "실행 역량이 우위를 가른다",
+                "series": [
+                    {"role": "claim", "label": "조직적 실행 역량이 M&A 성패를 가른다"},
+                    {"role": "evidence", "label": "카브아웃 실행 준비도", "metric_id": "metric_click_drop"},
+                    {"role": "evidence", "label": "통합 체계 관리 우선순위"},
+                ],
+            }
+        ]
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=["metric_click_drop"],
+                    content=content,
+                )
+            ]
+        }
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Pyramid Fixture")
+        self.assertIn("<svg", html)
+        self.assertIn('data-metric-id="metric_click_drop"', html)
+        self.assertIn("47%", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_c6_rejects_pyramid_with_fewer_than_two_evidence_layers(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=[],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "pyramid",
+                            "series": [
+                                {"role": "claim", "label": "주장"},
+                                {"role": "evidence", "label": "근거 하나뿐"},
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertTrue(any("ARG_DIAGRAM_THIN" in str(v) and "pyramid" in str(v) for v in violations))
+
+    def test_c6_accepts_causal_chain_with_three_nodes_and_renders(self):
+        content = [
+            {
+                "type": "viz",
+                "chart": "causal_chain",
+                "title": "인과 사슬",
+                "series": [
+                    {"label": "검색 요약 확대"},
+                    {"label": "클릭 감소", "evidence": "요약이 클릭을 대체", "metric_id": "metric_click_drop"},
+                    {"label": "측정 체계 전환"},
+                ],
+            }
+        ]
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=["metric_click_drop"],
+                    content=content,
+                )
+            ]
+        }
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Causal Chain Fixture")
+        self.assertIn("<svg", html)
+        self.assertIn('data-metric-id="metric_click_drop"', html)
+        self.assertIn("47%", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_c6_rejects_causal_chain_with_fewer_than_three_nodes(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=[],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "causal_chain",
+                            "series": [{"label": "A"}, {"label": "B"}],
+                        }
+                    ],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertTrue(any("ARG_DIAGRAM_THIN" in str(v) and "causal_chain" in str(v) for v in violations))
+
+    def test_c6_accepts_two_by_two_with_three_items_and_renders(self):
+        content = [
+            {
+                "type": "viz",
+                "chart": "two_by_two",
+                "title": "포지셔닝 맵",
+                "x_axis": {"low": "저가", "high": "고가"},
+                "y_axis": {"low": "로컬", "high": "글로벌"},
+                "series": [
+                    {"label": "플레이어 A", "x": 0.2, "y": 0.8},
+                    {"label": "플레이어 B", "x": 0.6, "y": 0.3, "emphasis": True},
+                    {"label": "플레이어 C", "x": 0.9, "y": 0.1},
+                ],
+            }
+        ]
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=[],
+                    content=content,
+                )
+            ]
+        }
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Two By Two Fixture")
+        self.assertIn("<svg", html)
+        self.assertIn("플레이어 A", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_c6_rejects_two_by_two_with_fewer_than_three_items(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=[],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "two_by_two",
+                            "x_axis": {"low": "저가", "high": "고가"},
+                            "y_axis": {"low": "로컬", "high": "글로벌"},
+                            "series": [
+                                {"label": "플레이어 A", "x": 0.2, "y": 0.8},
+                                {"label": "플레이어 B", "x": 0.6, "y": 0.3},
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertTrue(any("ARG_DIAGRAM_THIN" in str(v) and "two_by_two" in str(v) for v in violations))
+
+    def test_c6_rejects_two_by_two_item_xy_out_of_range(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=[],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "two_by_two",
+                            "x_axis": {"low": "저가", "high": "고가"},
+                            "y_axis": {"low": "로컬", "high": "글로벌"},
+                            "series": [
+                                {"label": "플레이어 A", "x": 0.2, "y": 0.8},
+                                {"label": "플레이어 B", "x": 1.4, "y": 0.3},
+                                {"label": "플레이어 C", "x": 0.5, "y": 0.5},
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertTrue(any("two_by_two item x must be a number within 0..1" in str(v) for v in violations))
+
+    def test_c6_accepts_tradeoff_with_both_sides_and_renders(self):
+        content = [
+            {
+                "type": "viz",
+                "chart": "tradeoff",
+                "title": "빌드 vs 매수",
+                "left_title": "자체 구축",
+                "right_title": "인수",
+                "series": [
+                    {"side": "left", "label": "속도 통제"},
+                    {"side": "right", "label": "즉시 확보", "metric_id": "metric_click_drop"},
+                ],
+            }
+        ]
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=["metric_click_drop"],
+                    content=content,
+                )
+            ]
+        }
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Tradeoff Fixture")
+        self.assertIn("<svg", html)
+        self.assertIn('data-metric-id="metric_click_drop"', html)
+        self.assertIn("47%", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_c6_rejects_tradeoff_missing_one_side(self):
+        invalid = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                    allowed_metric_ids=[],
+                    content=[
+                        {
+                            "type": "viz",
+                            "chart": "tradeoff",
+                            "left_title": "자체 구축",
+                            "right_title": "인수",
+                            "series": [
+                                {"side": "left", "label": "속도 통제"},
+                                {"side": "left", "label": "문화 적합성"},
+                            ],
+                        }
+                    ],
+                )
+            ]
+        }
+        violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
+        self.assertTrue(any("ARG_DIAGRAM_THIN" in str(v) and "tradeoff" in str(v) for v in violations))
+
     def test_c6_rejects_unsupported_layouts(self):
         invalid = {
             "pages": [

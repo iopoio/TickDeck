@@ -86,6 +86,11 @@ SUPPORTED_VIZ_CHART_TYPES = frozenset(
         "swot_quad",         # 2×2 정성 사분면 — metric_id 없이 series[].items 텍스트만 허용
         "quarterly_bars",    # IR 분기 막대 — 마지막/비교 분기 액센트, 나머지 뮤트
         "fin_table",         # IR 재무 표 — 행 계층·현재 열 아웃라인·음수 의미색
+        # 2026-07-08 R5 논증 어휘(DESIGN_R5_argument_diagrams.md — 주장·인과·포지셔닝·양자택일 도식):
+        "pyramid",       # 주장 1 + 근거 2~4단 사다리꼴 스택
+        "causal_chain",  # A→B→C 인과 사슬 — 링크(화살표)마다 근거 캡션 슬롯
+        "two_by_two",    # 축 2개(x_axis/y_axis) 위 아이템 좌표 배치 포지셔닝 맵
+        "tradeoff",      # 좌우 저울 — 수치가 아닌 질적 득실 대비
     }
 )
 SUPPORTED_VIZ_SERIES_ROLES = frozenset(
@@ -99,8 +104,20 @@ SUPPORTED_VIZ_SERIES_ROLES = frozenset(
         "negative",
         "positive",
         "brand",
+        # R5 pyramid: claim=꼭대기 주장 1개, evidence=근거 층.
+        "claim",
+        "evidence",
     }
 )
+# 정성 도식(수치 슬롯이 선택)은 metric_id 없이 series item이 허용된다 — swot_quad 선례를
+# R5 논증 4종에도 그대로 적용(claim/축 좌표/좌우 대비는 본질적으로 텍스트·좌표이지 지표가 아님).
+VIZ_CHARTS_WITHOUT_REQUIRED_METRIC = frozenset({"swot_quad", "fin_table", "pyramid", "causal_chain", "two_by_two", "tradeoff"})
+# 논증 도식 남발 방지 게이트(DESIGN_R5 §3) — 슬롯 최소 개수 미달 시 위반.
+ARG_DIAGRAM_MIN_SLOTS = {
+    "pyramid": 2,       # evidence 층 ≥2
+    "causal_chain": 3,  # 노드 ≥3
+    "two_by_two": 3,    # 아이템 ≥3
+}
 SUPPORTED_PAGE_CHROMES = frozenset({"", "running_head", "title_band"})
 SUPPORTED_VIZ_SOURCE_CAPTIONS = frozenset({"", "on", "off"})
 SUPPORTED_VIZ_TITLE_STYLES = frozenset({"", "band"})
@@ -1029,7 +1046,7 @@ def _validate_viz_block(
         role = str(item.get("role", "")).strip()
         if role not in SUPPORTED_VIZ_SERIES_ROLES:
             violations.append(ContractViolation("C6", f"unsupported viz series role: {role}", f"{item_path}.role"))
-        if chart not in {"swot_quad", "fin_table"} and not str(item.get("metric_id", "")).strip():
+        if chart not in VIZ_CHARTS_WITHOUT_REQUIRED_METRIC and not str(item.get("metric_id", "")).strip():
             violations.append(ContractViolation("C6", "viz series item must include metric_id", f"{item_path}.metric_id"))
         label = item.get("label")
         # 연도(2018·2024 등)는 데이터 값이 아니라 축 키 — rendered authority 검사와 동일 면제(R4 시계열 계약·연도 키).
@@ -1065,9 +1082,59 @@ def _validate_viz_block(
                     text = cell.get("text")
                     if isinstance(text, str) and RAW_NUMBER_PATTERN.search(text):
                         violations.append(ContractViolation("C6", "fin_table text cell contains raw number", f"{cell_path}.text"))
+        if chart == "two_by_two":
+            for axis_field in ("x", "y"):
+                axis_value = item.get(axis_field)
+                if not isinstance(axis_value, (int, float)) or not 0 <= axis_value <= 1:
+                    violations.append(
+                        ContractViolation("C6", f"two_by_two item {axis_field} must be a number within 0..1", f"{item_path}.{axis_field}")
+                    )
+        if chart == "tradeoff":
+            side = str(item.get("side", "")).strip()
+            if side not in {"left", "right"}:
+                violations.append(ContractViolation("C6", f"tradeoff item side must be left or right, got: {side}", f"{item_path}.side"))
         for field in ("value", "unit", "values", "data"):
             if field in item:
                 violations.append(ContractViolation("C6", f"viz series must not include direct {field}", f"{item_path}.{field}"))
+
+    # R5 남발 방지 게이트(DESIGN_R5 §3): 빈약한 논증 도식이 페이지 주인공이 되는 것 방지.
+    if chart == "pyramid":
+        evidence_count = sum(1 for item in series if isinstance(item, dict) and str(item.get("role", "")).strip() == "evidence")
+        if evidence_count < ARG_DIAGRAM_MIN_SLOTS["pyramid"]:
+            violations.append(
+                ContractViolation(
+                    "C6",
+                    f"ARG_DIAGRAM_THIN: pyramid must include at least {ARG_DIAGRAM_MIN_SLOTS['pyramid']} evidence items (got {evidence_count})",
+                    f"{path}.series",
+                )
+            )
+    if chart == "causal_chain" and len(series) < ARG_DIAGRAM_MIN_SLOTS["causal_chain"]:
+        violations.append(
+            ContractViolation(
+                "C6",
+                f"ARG_DIAGRAM_THIN: causal_chain must include at least {ARG_DIAGRAM_MIN_SLOTS['causal_chain']} nodes (got {len(series)})",
+                f"{path}.series",
+            )
+        )
+    if chart == "two_by_two" and len(series) < ARG_DIAGRAM_MIN_SLOTS["two_by_two"]:
+        violations.append(
+            ContractViolation(
+                "C6",
+                f"ARG_DIAGRAM_THIN: two_by_two must include at least {ARG_DIAGRAM_MIN_SLOTS['two_by_two']} items (got {len(series)})",
+                f"{path}.series",
+            )
+        )
+    if chart == "tradeoff":
+        left_count = sum(1 for item in series if isinstance(item, dict) and str(item.get("side", "")).strip() == "left")
+        right_count = sum(1 for item in series if isinstance(item, dict) and str(item.get("side", "")).strip() == "right")
+        if left_count < 1 or right_count < 1:
+            violations.append(
+                ContractViolation(
+                    "C6",
+                    f"ARG_DIAGRAM_THIN: tradeoff must include at least 1 item per side (left={left_count}, right={right_count})",
+                    f"{path}.series",
+                )
+            )
 
     return violations
 
