@@ -59,9 +59,10 @@ python .claude/skills/deck-harness/scripts/render_deck.py \
 2. 2층 총괄 게이트(내용/스토리 완성 후·디자인 전): 클차장이 "제대로된·잘 읽히는 보고서인가"를 통째 판정한다.
 3. 3층 외부 리뷰(최종 직전 1회·**skip 금지 — 미수행이면 done 불가, 07_qa_report에 `external_review_layer3` 기록 의무**): 코덱스 + 제미나이 교차 후 클차장이 트리아지한다. 둘 다 그대로 받지 않는다(기각 사유도 기록).
    - **"최종"의 정의 = 사용자에게 전달하는 그 판** (run당 1회가 아니다 — 7/6 후추님 지적). 대폭 개정(논지 변경·페이지 절반 이상 재작성·장르 재지정)이 있으면 **개정 최종본으로 재실행**한다. 이전 판 리뷰 기록은 개정본에 대한 리뷰가 아니다. 소폭 수정(문구·1~2페이지)만 기존 기록+개정 명기로 갈음 가능.
-   - 입력: deck.html에서 페이지별 텍스트 추출 + 냉정 리뷰 프롬프트(논리 비약·어색한 한국어·제목/부제 관계·흐름 단절, 페이지 명시, 최대 10건).
+   - 입력 (7/8 R7 — spec 단계로 이동): **06_deck_spec.json에서 페이지별 제목·클레임·수치 텍스트 추출** (`external_review.py --stage spec`, 기본값) + 냉정 리뷰 프롬프트(논리 비약·어색한 한국어·제목/부제 관계·흐름 단절, 페이지 명시, 최대 10건). 리뷰 지적 반영 → 렌더는 한 번만. 렌더 후 HTML 입력 모드는 플래그로 보존(레거시).
    - 코덱스: `codex exec --skip-git-repo-check "$(cat review_input.txt)"`
    - 제미나이: `Think/.venv/bin/python Think/.claude/scripts/gemini_call_wrapper.py --prompt "..." --no-cache` (시스템 python엔 google-genai 없음 — Think/.venv가 wrapper 전용 venv, 7/3 복구)
+3b. 3b층 전 수치 팩트체크(7/8 R7 신설 — **납품·쇼케이스 런 의무**·데모 면제): 06 확정 후 `factcheck_dump.py`로 수치 대조표(08_factcheck_table.json) 생성 → `fact-checker` 에이전트가 전 수치를 원문 재열람으로 대조(08_factcheck.json). mismatch ≥1 = verifier 반송·통과 금지. unreachable = [미검증] 각주 또는 수치 제거 전까지 통과 금지. verifier는 수집 시점 검증, 이건 최종본 기준 재대조 — 변환 4단(insights→dag→plan→spec)에서 생긴 어긋남을 잡는다.
 4. 4층 시각 QA(디자인 후): **렌더가 자동 생성한 `<output>.pdf`를 필수 입력으로 받는다** — `render_deck.py`가 끝나며 `capture_deck.sh`를 호출해 HTML 쓸 때 PDF가 자동 생성된다(규율 아닌 코드 강제). 클차장/`qa-reviewer`가 이 PDF를 *직접 Read로 읽고* 잘림·겹침·밀도·차트 렌더·그레이아웃 강조·깨짐을 판정해 `07_qa_report.json`에 `visual_verdict`(본 슬라이드·발견·pass/fail)를 기록한다. **밀도·단조·닫는 장·제목 기호 잔재 4개 판정(qa-reviewer.md 필수 항목·7/2)도 visual_verdict에 포함해야 한다** — "틀린 것"만 잡고 "부족한 것"을 통과시키던 구멍의 판정 게이트. **이 시각 판정 기록 없이는 done 불가**(보고서/덱 전달 금지). "안 보고 됐다" 차단의 코드/배선 버전.
 
 원칙:
@@ -78,6 +79,7 @@ python .claude/skills/deck-harness/scripts/render_deck.py \
 - `page-planner`: page-level meaning design and page source/metric allowlists.
 - `designer`: layout/fit/deck_spec only. No fact, metric, citation, HTML authority.
 - `qa-reviewer`: C1~C6 contract scan and cold review.
+- `fact-checker`: 최종 deck_spec 전 수치의 원문 재대조 (납품·쇼케이스 의무·R7).
 
 ## Genre Routing
 - Trend report: load `genre-trend-report`; trend means state transition, not static statistics.
