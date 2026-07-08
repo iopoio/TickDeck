@@ -766,6 +766,10 @@ def _render_source_appendix_page(
     palette: dict[str, str],
     deck_cited_source_ids: list[str],
 ) -> str:
+    """2단+compact 기준 페이지당 수용량 실측(7/8, r5_liveproof 49출처로 이분탐색):
+    짧은 출처(publisher+title 합산 <60자, 대부분 1줄)는 최대 ~43행/페이지.
+    긴 인용(다출처 병기·영문 논문명 등 80자↑)은 8~9행만 넘어도 넘침 — page-planner는
+    행수만이 아니라 출처 텍스트 길이 합산으로 페이지를 나눠야 한다."""
     # 전체 출처 모음 appendix(writing-standard: 정의=페이지하단 / 출처=끝 정리). outro 바로 앞.
     # 각 행을 data-src-id로 감싸 기관·리포트명의 연도 숫자가 C6 authorized context에 들게 한다.
     page_id = str(page.get("page_id", f"p{page_number:02d}"))
@@ -774,12 +778,21 @@ def _render_source_appendix_page(
     src_ids = _as_list(page.get("allowed_source_ids")) or deck_cited_source_ids
     # 출처가 많으면(>10행) 행 간격·폰트를 압축 — 14출처 덱에서 appendix가 넘치던 근본 결함(7/2).
     compact = " appendix-compact" if len(src_ids) > 10 else ""
+    # 8행 초과 → 2단(CSS multi-column, 좌열 상→하 채운 뒤 우열로 자연 흐름 — grid-auto-flow보다
+    # column-count가 더 짧고 정확: 소스 순서를 그대로 보존한다). 짧은 출처를 앞으로 몰아 배치 밀도↑(후추님 7/8).
+    two_col = " appendix-2col" if len(src_ids) > 8 else ""
     rows = []
     seed_src_ids = [
         src_id
         for src_id in src_ids
         if str(_require_source(src_id, page_id, registry).get("provenance") or "research").strip().lower() == "seed"
     ]
+
+    def _source_len(src_id: str) -> int:
+        source = _require_source(src_id, page_id, registry)
+        publisher = str(source.get("publisher") or src_id)
+        title = str(source.get("title") or "")
+        return len(publisher) + len(title)
 
     def append_source_row(src_id: str) -> None:
         source = _require_source(src_id, page_id, registry)
@@ -799,6 +812,9 @@ def _render_source_appendix_page(
     if seed_src_ids:
         seed_src_id_set = set(seed_src_ids)
         research_src_ids = [src_id for src_id in src_ids if src_id not in seed_src_id_set]
+        # 섹션(seed 먼저 순서 유지) 내부만 짧은순 정렬 — 짧은 출처를 앞으로 몰아 2단 밀도를 높인다(후추님 7/8).
+        seed_src_ids = sorted(seed_src_ids, key=_source_len)
+        research_src_ids = sorted(research_src_ids, key=_source_len)
         rows.append(f'<div class="eyebrow appendix-section-heading">제공하신 자료 ({len(seed_src_ids)}건)</div>')
         for src_id in seed_src_ids:
             append_source_row(src_id)
@@ -806,7 +822,7 @@ def _render_source_appendix_page(
         for src_id in research_src_ids:
             append_source_row(src_id)
     else:
-        for src_id in src_ids:
+        for src_id in sorted(src_ids, key=_source_len):
             append_source_row(src_id)
     motif_html = _slide_motif_html("source_appendix", page_number, palette)
     return f"""
@@ -817,7 +833,7 @@ def _render_source_appendix_page(
     <h1>{_escape(title_text)}</h1>
     <div class="verified-badge">모든 수치 출처 연결 검증 · 출처 {len(src_ids)}곳</div>
   </header>
-  <main class="body layout-body appendix-body{compact}"><section class="appendix-list">{"".join(rows)}</section></main>
+  <main class="body layout-body appendix-body{compact}{two_col}"><section class="appendix-list">{"".join(rows)}</section></main>
   <footer class="slide-foot">
     <span class="foot-side"></span>
     {_copyright_html()}
@@ -4441,19 +4457,27 @@ h1 {{
 }}
 /* 출처 appendix: 넘버·구분선 없이 "기관 — 리포트명" 한 줄 플랫 리스트(후추님 7/2). data-src-id로 C6 authorized. */
 .appendix-list {{ display: flex; flex-direction: column; gap: 10px; width: min(100%, 1090px); }}
+/* 출처는 감사 대상이라 ellipsis로 자르지 않는다 — 길면 줄바꿈(후추님 7/8. 이전엔 nowrap+ellipsis로
+   긴 인용 publisher/title이 통째로 잘렸다 — 2단 미만 행수 페이지에서도 재현되던 근본 결함). */
 .appendix-row {{
   display: flex;
   gap: 14px;
-  align-items: baseline;
-  white-space: nowrap;
-  overflow: hidden;
+  align-items: flex-start;
 }}
 /* 다출처(>10행) 압축 모드 — 행 간격·폰트 축소로 한 장에 수용. */
 .appendix-compact.appendix-body .appendix-list {{ gap: 7px; }}
 .appendix-compact .appendix-pub {{ font-size: 13.5px; }}
 .appendix-compact .appendix-title {{ font-size: 13px; }}
-.appendix-pub {{ flex: none; font-size: 15px; font-weight: 700; color: var(--ink); }}
-.appendix-title {{ min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: var(--muted); }}
+/* flex:none(축소 불가)이던 pub이 좁은 2단 칼럼에서 줄바꿈 대신 칼럼 폭을 밀어 가로 초과를 냈다(7/8 실측,
+   FIT_HOVERFLOW) — 축소 허용 + overflow-wrap으로 pub·title 모두 칼럼 폭 안에서 줄바꿈하게 고정. */
+.appendix-pub {{ flex: 0 1 auto; min-width: 0; overflow-wrap: anywhere; font-size: 15px; font-weight: 700; color: var(--ink); }}
+.appendix-title {{ min-width: 0; overflow-wrap: anywhere; font-size: 14px; color: var(--muted); }}
+/* 8행 초과 2단 — CSS multi-column: 소스 순서 그대로 좌열 상→하 채운 뒤 우열로 흐름(네이티브, JS/grid 계산 불필요).
+   appendix-compact와 공존. .appendix-list 기본값은 display:flex — multicol(columns)은 flex 컨테이너엔
+   미적용(스펙상 무효화)이라 2단 모드에서는 display:block으로 되돌려야 실제로 2열로 갈라진다(7/8 실측 발견). */
+.appendix-2col .appendix-list {{ display: block; columns: 2; column-gap: 40px; }}
+.appendix-2col .appendix-row {{ break-inside: avoid; }}
+.appendix-2col .appendix-section-heading {{ break-after: avoid; break-inside: avoid; }}
 .appendix-link {{ color: inherit; text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--muted) 40%, transparent); }}
 .verified-badge {{ display: inline-block; margin-top: 8px; padding: 4px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }}
 /* split 외곽: 부제 전폭 + 그 아래 2단 그리드(후추님 7/2 — 부제는 제목 아래 일반 양식과 통일). */
