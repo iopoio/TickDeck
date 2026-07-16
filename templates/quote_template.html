@@ -1,0 +1,144 @@
+<!doctype html>
+<!--
+  시즌드(TickDeck) 견적서 템플릿
+  ────────────────────────────────────────────────────────
+  사용법:
+   1) 이 파일을 복사해 프로젝트별로 편집한다. [대괄호] 부분만 채우면 된다.
+   2) 공급자(시즌드) 정보는 고정 — 바뀔 때만 수정.
+   3) 항목 <tr> 을 필요한 만큼 복제/삭제. 금액은 크몽 공개가(PREMIUM 790,000 등)에서
+      PRICING_STANDARD.md 규칙으로 산출. 항목 합 = 정가(총 합계)와 일치시킬 것.
+   4) PDF 렌더:
+        CHROME=$(ls /opt/pw-browsers/chromium-*/chrome-linux/chrome | head -1)
+        "$CHROME" --headless --no-sandbox --disable-gpu --no-pdf-header-footer \
+          --print-to-pdf=quote.pdf "file://$PWD/quote_template.html"
+      (한글은 나눔/Noto CJK 폰트 필요: apt-get install -y fonts-nanum fonts-noto-cjk)
+  ────────────────────────────────────────────────────────
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"NanumBarunGothic","Noto Sans CJK KR","NanumGothic",sans-serif;
+         color:#1a1a1a; font-size:11px; line-height:1.5; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .title { font-size:26px; font-weight:800; letter-spacing:-.5px; margin-bottom:18px; }
+  .datebox { font-size:11px; margin-bottom:22px; }
+  .datebox .lbl { font-weight:700; margin-right:10px; }
+  .datebox .val { border:1px solid #d8d8d8; border-radius:5px; padding:5px 12px; color:#333; }
+  .parties { display:flex; gap:40px; margin-bottom:24px; }
+  .party { flex:1; }
+  .party h3 { font-size:13px; font-weight:800; margin-bottom:8px; }
+  .party .row { display:flex; font-size:10.5px; margin-bottom:3px; color:#333; }
+  .party .row .k { width:74px; color:#8a8a8a; flex:none; }
+  table { width:100%; border-collapse:collapse; margin-bottom:4px; }
+  thead th { background:#1a1a1a; color:#fff; font-size:11px; font-weight:600; padding:10px 12px; text-align:left; }
+  thead th.num { text-align:right; }
+  tbody td { padding:11px 12px; border-bottom:1px solid #ececec; font-size:11px; }
+  tbody td.num { text-align:right; }
+  tbody td.center { text-align:center; }
+  .desc { color:#555; font-size:9.5px; margin-top:3px; }
+  .incl { display:flex; gap:8px; align-items:flex-start; margin-top:12px; padding:10px 14px;
+          background:#f5f6f8; border-radius:6px; font-size:10px; color:#333; line-height:1.5; }
+  .incl .tag { font-weight:800; color:#1a1a1a; flex:none; }
+  .bottom { display:flex; gap:32px; margin-top:22px; }
+  .notes { flex:1.35; }
+  .notes h4 { font-size:12px; font-weight:800; margin-bottom:9px; }
+  .notes ol { padding-left:16px; }
+  .notes li { font-size:9.7px; color:#444; margin-bottom:5px; line-height:1.5; }
+  .totals { flex:1; }
+  .totals .line { display:flex; justify-content:space-between; align-items:center;
+                  padding:9px 4px; border-bottom:1px solid #ececec; font-size:11px; }
+  .totals .line .k { color:#666; }
+  .totals .line .v { font-weight:600; }
+  .totals .discount .v { color:#c0392b; }
+  .totals .final { background:#1a1a1a; color:#fff; border:none; border-radius:6px;
+                   padding:14px 14px; margin-top:8px; font-size:13px; font-weight:800; }
+  .totals .final .v { font-size:16px; }
+  .foot { margin-top:26px; font-size:9px; color:#9a9a9a; text-align:center; }
+</style>
+</head>
+<body>
+  <div class="title">[프로젝트명] 견적서</div>
+  <div class="datebox"><span class="lbl">견적일자</span><span class="val">[YYYY년 MM월 DD일]</span></div>
+
+  <div class="parties">
+    <!-- 공급자: 시즌드 고정 정보 (바뀔 때만 수정) -->
+    <div class="party">
+      <h3>공급자</h3>
+      <div class="row"><span class="k">상호</span><span>시즌드</span></div>
+      <div class="row"><span class="k">대표</span><span>채영화</span></div>
+      <div class="row"><span class="k">사업자번호</span><span>890-19-01928</span></div>
+      <div class="row"><span class="k">업종</span><span>정보통신업 / 컴퓨터 프로그래밍 서비스업</span></div>
+      <div class="row"><span class="k">소재지</span><span>서울특별시 관악구 남부순환로244가길 12 (봉천동, 일형빌라)</span></div>
+      <div class="row"><span class="k">이메일</span><span>chaejenn@gmail.com</span></div>
+    </div>
+    <!-- 수신자: 프로젝트별로 채움 -->
+    <div class="party">
+      <h3>수신자</h3>
+      <div class="row"><span class="k">상호</span><span>[수신자 상호]</span></div>
+      <div class="row"><span class="k">법인명</span><span>[법인명 / 담당자]</span></div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:48%">항목</th>
+        <th class="num" style="width:18%">단가</th>
+        <th class="center" style="width:8%">수량</th>
+        <th class="center" style="width:8%">단위</th>
+        <th class="num" style="width:18%">금액</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 항목 행: 필요한 만큼 복제/삭제. 합 = 총 합계(정가)와 일치. -->
+      <tr>
+        <td>[항목명]</td>
+        <td class="num">[단가]</td>
+        <td class="center">1</td>
+        <td class="center">식</td>
+        <td class="num">[금액]</td>
+      </tr>
+      <tr>
+        <td>[항목명]</td>
+        <td class="num">[단가]</td>
+        <td class="center">1</td>
+        <td class="center">식</td>
+        <td class="num">[금액]</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="incl">
+    <span class="tag">포함</span>
+    <span>원본 편집 파일(PPTX) 제공 · 상업적 이용 가능 — 납품물은 대표님께서 자유롭게 사용·수정하실 수 있습니다.</span>
+  </div>
+
+  <div class="bottom">
+    <div class="notes">
+      <h4>참고사항</h4>
+      <ol>
+        <li>[작업 성격 한 줄 — 예: 본 견적은 전면 리빌딩 작업이며, 단순 첨삭이 아닌 재구성입니다.]</li>
+        <li>기준가는 크몽 공개가(PREMIUM 등) 정가이며, 최종가는 적용된 할인을 반영한 금액입니다.</li>
+        <li>[자료 의존 항목 — 예: 재무 페이지는 의뢰자 제공 실수치 기준으로 정합화하며, 미제공 시 범위에서 제외됩니다.]</li>
+        <li>일정은 기초자료 수령 시점을 기준으로 확정되며, 자료 없이는 착수가 불가합니다.</li>
+        <li>[할인 조건 — 예: 첫 의뢰 할인은 완성 자료를 후기 및 리댁트 포트폴리오(민감 정보 제외)로 활용하는 조건입니다.]</li>
+        <li>대금 지급은 계약금 40% / 중도금 30% / 잔금 30%를 원칙으로 합니다.</li>
+        <li>본 견적서는 견적일로부터 30일간 유효합니다.</li>
+      </ol>
+    </div>
+    <div class="totals">
+      <div class="line"><span class="k">총 합계</span><span class="v">[정가] 원</span></div>
+      <div class="line discount"><span class="k">[할인 항목]</span><span class="v">− [금액] 원</span></div>
+      <div class="line discount"><span class="k">[할인 항목]</span><span class="v">− [금액] 원</span></div>
+      <div class="line"><span class="k">공급가액</span><span class="v">[공급가액] 원</span></div>
+      <div class="line"><span class="k">VAT</span><span class="v">별도</span></div>
+      <div class="final line" style="border:none;"><span>최종 견적</span><span class="v">[최종가] 원</span></div>
+      <div style="font-size:8.5px;color:#9a9a9a;margin-top:7px;">※ 크몽 결제 기준 금액. 세금계산서 발행 시 VAT 10% 별도.</div>
+    </div>
+  </div>
+
+  <div class="foot">본 견적서는 협의에 따라 범위·금액이 조정될 수 있습니다. · 시즌드 (TickDeck)</div>
+</body>
+</html>
