@@ -7,6 +7,7 @@
 - 렌더 = `.claude/skills/deck-harness/scripts/render_deck.py`(PALETTES·차트 SVG·레이아웃)
 - 작성 기준 = `.claude/skills/deck-harness/references/writing-standard.md`
 - 장르 = `.claude/skills/genre-trend-report/SKILL.md` 등 · 에이전트 = `.claude/agents/`
+- 재료 서랍 = `.claude/research/` — kimi_ppt_guide · **investor_intel_피칭덱_재료**(7/17 흡수·장래 피칭 장르용·수신자 조사→핏 게이트→맞춤 훅) 등
 
 ## 세 하네스 구분 (혼동 금지)
 - **A 공용** `Think/tools/deck_harness/` — 여러 프로젝트 공용 렌더. **안 건드림.**
