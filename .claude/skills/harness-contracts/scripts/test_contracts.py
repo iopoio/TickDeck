@@ -1915,7 +1915,8 @@ class HarnessContractTests(unittest.TestCase):
         self.assertNotIn('<a class="appendix-link"', appendix_html)
         self.assertIn('Pew &amp; Partners 2026', appendix_html)
         self.assertIn('<span class="appendix-title" data-src-id="src_b">IAB Report</span>', appendix_html)
-        self.assertIn("모든 수치 출처 연결 검증 · 출처 2곳", appendix_html)
+        # 7/22 후추님: 검증 배지("모든 수치 출처 연결 검증 · 출처 N곳") 제거 — 독자용 아님. 부재를 검증.
+        self.assertNotIn("모든 수치 출처 연결 검증", appendix_html)
         self.assertEqual(validate_c6_content_authority(appendix_spec, appendix_registry, appendix_html), [])
 
     def test_render_deck_telemetry_absent_by_default(self):

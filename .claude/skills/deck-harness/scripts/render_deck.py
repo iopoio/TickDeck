@@ -284,6 +284,30 @@ PALETTES["pop_dark"] = {
     "t4": "#8A2BE8",
     "t5": "#F5F2EC",
 }
+PALETTES["navy_glow"] = {
+    # 드리블 2026-07 배치 묶음 흡수(후추님 7/23 "컬러조합이라도 이번에 업데이트한거로") —
+    # 배치 내 최다 반복 색군인 딥네이비 다크(17_clever·19_xpend·11_credivance·27_exploration·30_software).
+    # 페리윙클 블루 1액센트 + 라벤더 보조 + 글로우. theme="dark_premium" 별칭 = 다크 CSS 전부 상속(breeze 패턴).
+    "theme": "dark_premium",
+    "c60": "#0D1220",
+    "c30": "#161D31",
+    "accent": "#6E8BFF",
+    "accent2": "#B49BF2",
+    "ink": "#EEF1FB",
+    "muted": "#98A2C0",
+    "line": "rgba(238,241,251,.14)",
+    "grid_line": "transparent",
+    "slide_bg": "radial-gradient(circle at 85% 15%, rgba(110,139,255,.10) 0, transparent 45%), #0D1220",
+    "slide_bg_size": "auto",
+    "body_bg": "#090D18",
+    "card": "rgba(255,255,255,.05)",
+    "radius": "14px",
+    "t1": "#6E8BFF",
+    "t2": "#B49BF2",
+    "t3": "#4A5578",
+    "t4": "#2C3352",
+    "t5": "#EEF1FB",
+}
 PALETTES["minimal_typo"] = {
     # 파일럿 4(레퍼런스 흡수 1라운드·_grammar/minimal_typo.md 8/8 실측) — 미니멀 타이포 시스템.
     # B형(웜 에디토리얼 방언)만 채택: 오프화이트 웜 바탕·단일 뮤트 액센트(플럼)·헤드:본문 극단
@@ -617,6 +641,8 @@ def _render_page(
             rendered_pairs,
             section_nav,
             section_items or [],
+            page_id,
+            registry,
         )
     motif_html = _slide_motif_html(layout, page_number, palette)
     running_head_enabled = (
@@ -704,7 +730,8 @@ def _render_cover_page(
     credit_html = _cover_credit_html()
     # 표지 변형(덱 간 차별화·후추님 7/2 "레이아웃이 너무 유사"): "dark" = 잉크 파생 다크 히어로
     # (간지와 같은 파생 문법·다크 북엔드). 미지정 = 기존 라이트. 색 축(장식) — 뼈대와 독립.
-    variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" else ""
+    # 전면 다크 시스템에선 무시(7/23 navy_glow 실측 — ink가 밝은색이라 cover-dark가 밝은 배경을 만듦).
+    variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" and palette["theme"] != "dark_premium" else ""
     # 표지 뼈대 축(구조·엔바토 흡수 3라운드 7/3 — XBUQSG2·7FE9Y7G 관찰): "center"(기본, 수직 중앙
     # 락업) | "corner"(하단 앵커 — 텍스트가 화면 하단 1/3에, 더 다큐먼트/브랜드북 느낌).
     # 색 축(cover_variant)과 직교 — 조합 자유(예: corner+dark). 후추님 7/3 "뼈대를 세트로" 요청.
@@ -714,9 +741,13 @@ def _render_cover_page(
     # 세로 책등 라벨: 표지 오른쪽 여백에 회전된 짧은 단어 — 브랜드북 스파인 문법(AWQHGT7·7HAH9XQ 관찰).
     spine = str(page.get("spine_label", "")).strip()
     spine_html = f'<p class="cover-spine">{_escape(spine)}</p>' if spine else ""
+    # 표지 글로우 오브(드리블 2026-07·솔리드 도형은 7/23 기각) — "glow"만. cover_variant와 직교(장식 축).
+    shape = str(page.get("cover_shape", "")).lower()
+    shape_html = f'<div class="cover-shape cover-shape-{_escape(shape)}" aria-hidden="true"></div>' if shape == "glow" else ""
     return f"""
 <section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide{variant}{skeleton}" data-page-id="{_escape(page_id)}">
   {sheen_html}
+  {shape_html}
   {credit_html}
   {spine_html}
   <main class="cover-body">
@@ -748,10 +779,14 @@ def _render_outro_page(
     eyebrow_html = f'<p class="cover-eyebrow">{_escape(eyebrow)}</p>' if eyebrow else ""
     contact_html = _presenter_contact_html()
     # 다크 북엔드 미러링 — outro도 cover_variant:"dark"를 읽는다(7/3 tech_v2 designer 발견 구멍).
-    variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" else ""
+    # 전면 다크 시스템에선 무시(표지와 동일 가드·7/23).
+    variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" and palette["theme"] != "dark_premium" else ""
+    shape = str(page.get("cover_shape", "")).lower()
+    shape_html = f'<div class="cover-shape cover-shape-{_escape(shape)}" aria-hidden="true"></div>' if shape == "glow" else ""
     # eyebrow를 감사 인사 바로 위에 붙여 한 묶음(상단~중상단), 연락처는 하단(후추님 6/30).
     return f"""
 <section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide layout-outro outro-slide{variant}" data-page-id="{_escape(page_id)}">
+  {shape_html}
   <div class="outro-main">{eyebrow_html}<h1>{_escape(title)}</h1></div>
   <div class="outro-contact-zone">{contact_html}</div>
 </section>""".strip()
@@ -773,14 +808,16 @@ def _render_source_appendix_page(
     # 전체 출처 모음 appendix(writing-standard: 정의=페이지하단 / 출처=끝 정리). outro 바로 앞.
     # 각 행을 data-src-id로 감싸 기관·리포트명의 연도 숫자가 C6 authorized context에 들게 한다.
     page_id = str(page.get("page_id", f"p{page_number:02d}"))
-    eyebrow_text = _first_block_text(content, {"eyebrow"}) or "출처"
+    # 7/23 수정: eyebrow 기본값이 h1과 똑같이 "출처"라 같은 단어가 줄바꿈만 하고 반복되던 결함
+    # (customer-zero "출처가 두번 나온다") — 명시 지정 없으면 eyebrow 자체를 비운다.
+    eyebrow_text = _first_block_text(content, {"eyebrow"})
     title_text = _page_title_text(page, content, "source_appendix") or "출처"
     src_ids = _as_list(page.get("allowed_source_ids")) or deck_cited_source_ids
     # 출처가 많으면(>10행) 행 간격·폰트를 압축 — 14출처 덱에서 appendix가 넘치던 근본 결함(7/2).
     compact = " appendix-compact" if len(src_ids) > 10 else ""
-    # 8행 초과 → 2단(CSS multi-column, 좌열 상→하 채운 뒤 우열로 자연 흐름 — grid-auto-flow보다
-    # column-count가 더 짧고 정확: 소스 순서를 그대로 보존한다). 짧은 출처를 앞으로 몰아 배치 밀도↑(후추님 7/8).
-    two_col = " appendix-2col" if len(src_ids) > 8 else ""
+    # 7/23 후추님 명시: 출처는 2단 대신 세로 1열로 쭉 나열 — 2단 자동전환 폐기.
+    # 넘치면 compact(위 len>10 분기)로 흡수, 그래도 넘치면 FIT 체크가 잡아 page-planner 분리.
+    two_col = ""
     rows = []
     seed_src_ids = [
         src_id
@@ -829,9 +866,8 @@ def _render_source_appendix_page(
 <section class="slide theme-{_class_name(palette["theme"])} layout-source_appendix" data-page-id="{_escape(page_id)}">
   {motif_html}
   <header class="slide-head">
-    <div class="eyebrow">{_escape(eyebrow_text)}</div>
+    {f'<div class="eyebrow">{_escape(eyebrow_text)}</div>' if eyebrow_text else ""}
     <h1>{_escape(title_text)}</h1>
-    <div class="verified-badge">모든 수치 출처 연결 검증 · 출처 {len(src_ids)}곳</div>
   </header>
   <main class="body layout-body appendix-body{compact}{two_col}"><section class="appendix-list">{"".join(rows)}</section></main>
   <footer class="slide-foot">
@@ -913,6 +949,8 @@ def _render_layout_body(
     rendered_pairs: list[tuple[Any, str]] | None = None,
     section_nav: str = "",
     section_items: list[dict[str, Any]] | None = None,
+    page_id: str = "",
+    registry: dict[str, dict[str, Any]] | None = None,
 ) -> str:
     if layout == "split":
         return _render_split(body_parts, page)
@@ -949,7 +987,7 @@ def _render_layout_body(
     if layout == "divider":
         return _render_divider(page, content, page_number, section_nav, section_items or [])
     if layout == "closing":
-        return _render_closing(content)
+        return _render_closing(content, page_id, registry or {})
     body_class = "body body-grid" if layout in {"stat_grid", "metric_grid", "cards"} else "body"
     # 저밀도 페이지(블록 ≤3)는 세로 중앙 정렬 — 하단 40%가 '남은 공간'으로 읽히던 문제(7/2).
     # ponytail: 블록 수 휴리스틱. 4+ 블록 페이지가 여전히 비면 렌더 높이 실측으로 교체.
@@ -1038,9 +1076,34 @@ def _render_stack(body_parts: list[str]) -> str:
     # 배선이 빠져 note가 행 안에 끼어 세로를 밀던 결함(7/5 레버1 e2e p05 실측).
     note_row, body_parts = _extract_note_row(body_parts)
     top, rest = body_parts[0], body_parts[1:]
-    # 하단 가로 배열: 지표 카드와 note 박스가 나란할 때 키를 맞춘다(후추님 7/4 p07 "우측 박스 높이=좌측").
-    # stretch는 이미 걸려 있으나 metric-grid 안의 카드가 안 늘어나 빈 공간이 생겼다 → 카드 자체를 100%로.
-    row = f'<div class="stack-row">{"".join(rest)}</div>' if rest else ""
+    # 7/23 근본수정 (customer-zero p08·p15 실측 — 본문 문단이 차트/숫자 옆으로 붙어 split처럼
+    # 읽히던 재발 버그): rest를 통째로 한 줄에 몰아넣지 않는다. metric-card/metric-grid류(나란히
+    # 둬도 자연스러운 숫자 카드)만 한 행으로 묶고, body/viz/callout 등 그 외 블록은 각자 전폭
+    # 한 줄로 뺀다 — "주 비주얼 상단 + 보조 지표 카드 열"이라는 stack의 원래 의도를 지키면서,
+    # 문단 텍스트가 옆으로 밀리는 사고만 막는다.
+    def _is_row_compatible(html_part: str) -> bool:
+        # metric-card/grid·viz(visual-card)는 서로 나란해도 되는 "숫자·차트" 계열 —
+        # 문단(body/callout/note)만 줄바꿈 대상이라 여기엔 안 넣는다.
+        stripped = html_part.lstrip()
+        return (
+            stripped.startswith('<article class="metric-card')
+            or stripped.startswith('<div class="metric-grid')
+            or stripped.startswith('<aside class="visual-card')
+        )
+
+    segments: list[str] = []
+    buffer: list[str] = []
+    for part in rest:
+        if _is_row_compatible(part):
+            buffer.append(part)
+            continue
+        if buffer:
+            segments.append(f'<div class="stack-row">{"".join(buffer)}</div>')
+            buffer = []
+        segments.append(part)
+    if buffer:
+        segments.append(f'<div class="stack-row">{"".join(buffer)}</div>')
+    row = "".join(segments)
     return f'<main class="body layout-body stack-outer">{lead}{top}{row}{note_row}</main>'
 
 
@@ -1259,16 +1322,18 @@ def _render_split_status(rendered_pairs: list[tuple[Any, str]] | None) -> str:
 
 def _render_scenario_cards(rendered_pairs: list[tuple[Any, str]] | None) -> str:
     # 시그니처(dark/pop 권장): headline이 카드를 열고 뒤따르는 body/metric류가 그 카드에 속한다.
+    # muted(7/23 추가·customer-zero 지적): 카드 개수가 제목의 "N개 시나리오"와 안 맞을 때(예: 시나리오
+    # 3장 + 관찰지표 1장인데 제목은 "세 시나리오") 관찰지표 카드를 시각적으로 구분 — 시나리오로 오인 방지.
     cards: list[dict[str, Any]] = []
     for block, html_part in (rendered_pairs or []):
         bt = _block_type(block)
         if bt in {"headline", "title"}:
-            cards.append({"title": html_part, "parts": []})
+            cards.append({"title": html_part, "parts": [], "muted": bool(block.get("muted"))})
             continue
         if bt not in {"body", "text", "summary", "bullets", "list", "callout", "note", "metric", "metrics", "metric_grid", "stat_grid"}:
             continue
         if not cards:
-            cards.append({"title": "", "parts": []})
+            cards.append({"title": "", "parts": [], "muted": False})
         cards[-1]["parts"].append(html_part)
     # 마지막 카드가 홀로 남는 줄에 걸리면(예: 4+1 종합) 좁은 카드 하나가 어색하다 — 전폭으로 눕혀
     # 종합/결론에 무게를 준다(후추님 7/4 p13 "종합은 하단 전폭 길게가 낫다"). 5장 이상일 때만.
@@ -1276,6 +1341,8 @@ def _render_scenario_cards(rendered_pairs: list[tuple[Any, str]] | None) -> str:
     parts_html = []
     for idx, card in enumerate(cards):
         cls = "scenario-card"
+        if card.get("muted"):
+            cls += " scenario-card-muted"
         if wide_last and idx == len(cards) - 1:
             cls += " scenario-card-wide"
         parts_html.append(
@@ -1356,6 +1423,8 @@ def _render_divider(
         f'<span class="{"is-active" if index == part_index else ""}" aria-hidden="true"></span>'
         for index in range(1, part_count + 1)
     )
+    # 필형 키커(TY-kicker 드리블 재확증 — eyebrow_chip 레버를 간지 PART 라벨에도 개방)
+    kicker_chip = " eyebrow-chip" if page.get("eyebrow_chip") else ""
     subtitle_html = f'<p class="divider-subtitle">{_escape(subtitle)}</p>' if subtitle else ""
     # 간지 하위 목차 프리뷰(author-style §5 — 후추님 정본 2덱 시그니처): bullets/list 블록이
     # 있으면 "이 파트에서 볼 것"을 짧은 리스트로. 청중이 파트 시작마다 지도를 다시 받는다.
@@ -1385,7 +1454,7 @@ def _render_divider(
         return f"""
 <main class="body layout-body divider-body divider-quiet">
   {section_nav_html}
-  <p class="eyebrow divider-part">{_escape(part_label)}</p>
+  <p class="eyebrow divider-part{kicker_chip}">{_escape(part_label)}</p>
   <div class="divider-quiet-num" aria-hidden="true">{part_index:02d}</div>
   <h2 class="divider-title">{title_html}</h2>
   {subtitle_html}
@@ -1398,7 +1467,7 @@ def _render_divider(
   {section_nav_html}
   {ghost_html}
   <div class="divider-progress" aria-label="part progress">{progress}</div>
-  <p class="eyebrow divider-part">PART {part_index} · {_escape(part_label)}</p>
+  <p class="eyebrow divider-part{kicker_chip}">PART {part_index} · {_escape(part_label)}</p>
   <h2 class="divider-title">{title_html}</h2>
   {subtitle_html}
   {items_html}
@@ -1469,17 +1538,17 @@ def _render_metric_commentary(
     return f'<main class="body layout-body metric-commentary-body rows-{len(row_html)}">{"".join(row_html)}</main>'
 
 
-def _render_closing(content: list[Any]) -> str:
+def _render_closing(content: list[Any], page_id: str, registry: dict[str, dict[str, Any]]) -> str:
     rows = "".join(
         f"""
         <article class="closing-point">
           <div class="closing-label">{_escape(item["label"])}</div>
-          <div class="closing-copy">{_escape(item["copy"])}</div>
+          <div class="closing-copy">{_rich_with_metrics(item["copy"], page_id, registry)}</div>
         </article>"""
         for item in _closing_items(content)
     )
     callout = _first_block_text(content, {"callout", "note"})
-    callout_html = f'<p class="closing-callout">{_escape(callout)}</p>' if callout else ""
+    callout_html = f'<p class="closing-callout">{_rich_with_metrics(callout, page_id, registry)}</p>' if callout else ""
     points_html = f'<section class="closing-points">{rows}</section>' if rows else ""
     return f'<main class="body layout-body closing-body">{points_html}{callout_html}</main>'
 
@@ -1707,16 +1776,16 @@ def _render_block(
     if block_type == "eyebrow":
         return f'<div class="eyebrow block-eyebrow">{_escape(str(block.get("text", "")))}</div>', []
     if block_type in {"headline", "title"}:
-        return f'<h2 class="block-title">{_rich(str(block.get("text", "")))}</h2>', []
+        return f'<h2 class="block-title">{_rich_with_metrics(str(block.get("text", "")), page_id, registry)}</h2>', []
     if block_type in {"body", "text", "summary"}:
-        return f'<p class="body-text">{_rich(str(block.get("text", "")))}</p>', []
+        return f'<p class="body-text">{_rich_with_metrics(str(block.get("text", "")), page_id, registry)}</p>', []
     if block_type in {"callout", "note"}:
         # emphasis:true면 펀치라인용으로 크게(제언·맺음 등). 기본은 일반 callout.
         # note-row 마커(7/3 후추님): split 계열이 이 조각을 하단 전폭 한 줄로 빼낼 수 있게 식별.
         cls = "callout callout-lead" if block.get("emphasis") else "callout"
         if block_type == "note":
             cls += " note-row"
-        return f'<aside class="{cls}">{_rich(str(block.get("text", "")))}</aside>', []
+        return f'<aside class="{cls}">{_rich_with_metrics(str(block.get("text", "")), page_id, registry)}</aside>', []
     if block_type in {"citation", "source"}:
         src_id = str(block.get("src_id", block.get("source_id", ""))).strip()
         if src_id:
@@ -1740,7 +1809,7 @@ def _render_block(
     if block_type == "viz":
         return _render_viz(block, page_id, registry, palette), []
     if block_type == "text_table":
-        return _render_text_table(block, page_id), []
+        return _render_text_table(block, page_id, registry), []
     if block_type in {"bullets", "list"}:
         items = block.get("items", [])
         if not isinstance(items, list):
@@ -1749,10 +1818,10 @@ def _render_block(
         source_ids: list[str] = []
         for item in items:
             if isinstance(item, dict):
-                rendered_items.append(f"<li>{_escape(str(item.get('text', '')))}</li>")
+                rendered_items.append(f"<li>{_rich_with_metrics(str(item.get('text', '')), page_id, registry)}</li>")
                 source_ids.extend(_as_list(item.get("source_ids", item.get("src_ids", []))))
             else:
-                rendered_items.append(f"<li>{_escape(str(item))}</li>")
+                rendered_items.append(f"<li>{_rich_with_metrics(str(item), page_id, registry)}</li>")
         for src_id in source_ids:
             _require_source(src_id, page_id, registry)
         return f'<ul class="bullet-list">{"".join(rendered_items)}</ul>', source_ids
@@ -1760,7 +1829,7 @@ def _render_block(
     raise ValueError(f"{page_id}: unsupported content block type: {block_type}")
 
 
-def _render_text_table(block: dict[str, Any], page_id: str) -> str:
+def _render_text_table(block: dict[str, Any], page_id: str, registry: dict[str, dict[str, Any]]) -> str:
     columns = block.get("columns")
     rows = block.get("rows")
     if not isinstance(columns, list) or not 2 <= len(columns) <= 6:
@@ -1781,7 +1850,7 @@ def _render_text_table(block: dict[str, Any], page_id: str) -> str:
         if len(row) != column_count:
             raise ValueError(f"{page_id}: text_table row {row_index} must match column count")
         row_class = ' class="text-table-highlight"' if row_index == highlight_index else ""
-        cell_html = "".join(f"<td>{_rich(str(cell))}</td>" for cell in row)
+        cell_html = "".join(f"<td>{_rich_with_metrics(str(cell), page_id, registry)}</td>" for cell in row)
         body_rows.append(f"<tr{row_class}>{cell_html}</tr>")
 
     # 6행 이상은 자동 압축(appendix-compact 선례·7/6) — 셀 패딩·폰트 축소로 한 장 수용.
@@ -1859,7 +1928,7 @@ def _render_viz(
         raise ValueError(f"{page_id}: unsupported viz chart type: {chart}")
     series = _viz_series(block, page_id, registry)
     title = str(block.get("title", "")).strip()
-    note = str(block.get("note", "")).strip()
+    note = _resolve_metric_tokens(str(block.get("note", "")).strip(), page_id, registry)
     accent = _viz_accent(block, palette)
     renderer = _CHART_RENDERERS.get(chart)
     if renderer is None:
@@ -2092,7 +2161,7 @@ def _svg_before_after(
         bar_y = top + 26
         width = _scale_metric_width(item, scale_base, bar_full)
         highlight = _is_highlight(item, index, rows)
-        color = _series_color(item, index, rows, accent, "#B0A491")  # 비강조 막대 진슬레이트(트랙과 구분)
+        color = _series_color(item, index, rows, accent)  # 비강조 막대 = muted(팔레트 파생 — 웜 하드코딩 제거 7/23)
         value_x = min(980, width + 22)
         value_class = _value_class(item, color == accent)
         # 델타는 값 바로 옆 tspan — 떨어뜨려 놓으면 어느 막대의 변화량인지 붕 뜬다(7/2 데모 QA).
@@ -2249,7 +2318,7 @@ def _svg_gap_map(
         if is_benchmark:
             color, opacity = "#1F2733", ' fill-opacity=".14"'
         else:
-            color, opacity = _series_color(item, index, rows, accent, "#B0A491"), ""  # 비강조 막대: 진슬레이트(트랙과 구분·후추님 6/30)
+            color, opacity = _series_color(item, index, rows, accent), ""  # 비강조 막대 = muted(팔레트 파생·후추님 6/30 구분 원칙 유지)
         value_class = _value_class(item, is_highlight)
         body.append(
             f"""
@@ -2484,7 +2553,7 @@ def _svg_mirror_bars(
                 f"""
                 <g data-metric-id="{_escape(item["metric_id"])}">
                   <text x="{spine - 22 - width:.1f}" y="{top + 12}" text-anchor="end" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
-                  <rect x="{spine - 10 - width:.1f}" y="{bar_y}" width="{width:.1f}" height="22" rx="11" fill="#B0A491"/>
+                  <rect x="{spine - 10 - width:.1f}" y="{bar_y}" width="{width:.1f}" height="22" rx="11" fill="var(--muted)"/>
                   <text x="{spine - 22 - width:.1f}" y="{bar_y + 17}" text-anchor="end" class="visual-value" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
                 </g>"""
             )
@@ -2851,9 +2920,14 @@ def _svg_multi_line(
         lanes[lane].append(item)
     hero = str((block or {}).get("size", "")).strip() == "hero"
     # hero = 와이드 viewBox(1400): 가로 잉크 전폭 + 세로 스케일 복원, 렌더 높이는 안 부풂 (7/7 2R 테마 폭 상한 충돌 근본 풀이)
-    y0, h, x0, w = CHART_TITLE_GAP, (225 if hero else 150), (70 if hero else 80), (1260 if hero else 860)
+    # 7/23 후추님 지정: 차트 세로를 키워 점 사이 간격 자체를 벌린다 (150→210 / hero 225→270)
+    y0, h, x0, w = CHART_TITLE_GAP, (270 if hero else 210), (70 if hero else 80), (1260 if hero else 860)
     numbers = [i["number"] for lane in lanes.values() for i in lane if i["number"] is not None]
+    # 7/23 수정: 이전엔 number/vmax만 써서 음수(예: -30%)가 프레임 밖으로 좌표가 튐(y가 수천 단위로 이탈).
+    # min-max 정규화로 교체 — 부호와 무관하게 0~1 범위 안에 항상 들어오게 한다.
     vmax = max(numbers) if numbers else 1
+    vmin = min(numbers) if numbers else 0
+    vrange = (vmax - vmin) or 1
     body = [f'<line x1="{x0}" y1="{y0 + h}" x2="{x0 + w}" y2="{y0 + h}" stroke="var(--line)" stroke-width="2"/>']
     coord_by_metric_id: dict[str, tuple[float, float]] = {}
     key_positions: dict[str, tuple[float, float, float]] = {}
@@ -2864,9 +2938,11 @@ def _svg_multi_line(
         step = w / max(1, len(pts) - 1) if len(pts) > 1 else 0
         coords = []
         for i, item in enumerate(pts):
-            frac = (item["number"] / vmax) if (item["number"] is not None and vmax) else 0.5
+            frac = ((item["number"] - vmin) / vrange) if item["number"] is not None else 0.5
             x = x0 + (step * i if len(pts) > 1 else w / 2)
-            y = y0 + h - h * 0.82 * frac
+            # 7/23: 최저점을 baseline에서 0.12h 띄운다 — 아래쪽 라벨("아래 선 값은 점 아래")이
+            # 들어갈 공간 확보 (customer-zero 실물 그림 지정: -30%가 점 아래·연도는 그보다 더 아래)
+            y = y0 + h - h * (0.12 + 0.70 * frac)
             coords.append((x, y, item))
             coord_by_metric_id[item["metric_id"]] = (x, y)
             key_positions[item["label"]] = (x, x - 20, x + 20)
@@ -2880,13 +2956,16 @@ def _svg_multi_line(
         for x, y, item in coords:
             body.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="6" fill="{color}"/>')
             if item["value"] and item["metric_id"] not in endpoint_owned:
-                # 라벨은 상대 계열 반대쪽으로 (7/7 p17) + 같은 x 클러스터 세로 겹침 해소는 아래 일괄 pass (7/7 v2 p04 — 3계열 수렴 실측)
+                # 7/23 최종(customer-zero 지정): 위 선 값 = 점 위 / 아래 선 값 = 점 아래. 같은 x의
+                # 두 점을 기준으로 서로 반대쪽에 두면 겹칠 일이 없다 — 여기에 축 라벨은 더 아래로(+40),
+                # 차트 세로도 키워(h 210) 점 간격 자체를 벌린다. 셋이 한 세트인 처방.
                 others = [oy for ln, ocs in lane_coords.items() if ln != lane_name for ox, oy, _o in ocs if abs(ox - x) < 1.0]
                 nearest = min(others, key=lambda oy: abs(oy - y)) if others else None
                 label_y = y - 14 if (nearest is None or nearest >= y) else y + 30
                 label_x = min(max(x, 90.0), (w + x0) - 30.0)  # 첫/끝점 라벨 좌우단 잘림 방지
                 pending_labels.append({"x": label_x, "y": label_y, "item": item})
-            body.append(f'<text x="{x:.0f}" y="{y0 + h + 24:.0f}" text-anchor="middle" class="visual-label" font-size="15">{_escape(item["label"])}</text>')
+            # 축 카테고리 라벨을 baseline에서 더 떨어뜨려(24→40) 값 라벨과의 여유를 고정적으로 확보.
+            body.append(f'<text x="{x:.0f}" y="{y0 + h + 40:.0f}" text-anchor="middle" class="visual-label" font-size="15">{_escape(item["label"])}</text>')
     # 같은 x 클러스터(±44px) 안 라벨 최소 세로 간격 22px 강제 — 위에서부터 그리디로 밀어냄
     clusters: dict[int, list[dict[str, Any]]] = {}
     for lab in pending_labels:
@@ -2903,9 +2982,11 @@ def _svg_multi_line(
                 seen_values.add(v)
         group.sort(key=lambda l: l["y"])
         for i in range(1, len(group)):
-            if group[i]["y"] - group[i - 1]["y"] < 22:
-                group[i]["y"] = group[i - 1]["y"] + 22
-        overflow = group[-1]["y"] - (y0 + h + 16)
+            if group[i]["y"] - group[i - 1]["y"] < 30:
+                group[i]["y"] = group[i - 1]["y"] + 30
+        # 7/23 최종: 연도 라벨이 y0+h+40으로 내려갔고 최저점도 baseline에서 띄웠으므로,
+        # 아래쪽 값 라벨은 baseline+14까지 허용 — "아래 선 값은 점 아래" 배치가 살게 한다.
+        overflow = group[-1]["y"] - ((y0 + h) + 14)
         if overflow > 0:  # 축 라벨 침범 시 클러스터 전체를 위로
             for lab in group:
                 lab["y"] -= overflow
@@ -3792,6 +3873,12 @@ def _iter_metric_ids(value: Any):
     elif isinstance(value, list):
         for nested in value:
             yield from _iter_metric_ids(nested)
+    elif isinstance(value, str):
+        # 7/23 fix: {{metric_id}} 인라인 토큰(_rich_with_metrics)도 출처 인용 집계 대상이다 —
+        # 구조화 metric_id 필드만 훑던 기존 로직이 프리텍스트 토큰의 source_ids를 페이지 하단
+        # 출처행에서 누락시키는 버그였음(값은 맞게 렌더되지만 인용이 안 잡힘).
+        for match in _METRIC_TOKEN_PATTERN.finditer(value):
+            yield match.group(1)
 
 
 def _iter_source_ids(value: Any):
@@ -3884,12 +3971,42 @@ def _escape(value: str) -> str:
 
 
 _KEYWORD_PATTERN = re.compile(r"==([^=]+?)==")
+_METRIC_TOKEN_PATTERN = re.compile(r"\{\{([a-zA-Z0-9_]+)\}\}")
 
 
 def _rich(value: str) -> str:
     # 헤드라인 키워드 색전환(백로그 Phase 1·KPMG) — ==키워드== 만 accent로.
     # escape 후 치환이라 안전. 새 사실·수치 창작이 아니라 기존 텍스트의 강조 표시만.
     return _KEYWORD_PATTERN.sub(r'<b class="kw">\1</b>', _escape(value))
+
+
+def _rich_with_metrics(value: str, page_id: str, registry: dict[str, dict[str, Any]]) -> str:
+    # text_table 셀 안에 서사문+수치가 섞일 때(7/22) — {{metric_id}} 토큰만 registry 값으로
+    # 치환하고 data-metric-id로 감싼다. 나머지 텍스트는 _rich와 동일 처리. designer가 숫자를
+    # 손으로 타이핑하는 길을 막아 C6(콘텐츠 권한)를 표 셀에도 그대로 적용(divider-items·title-band와
+    # 같은 "복제 아닌 신규 표현" 계열이라 화이트리스트가 아니라 실제 주입 경로를 낸다).
+    parts: list[str] = []
+    last = 0
+    for match in _METRIC_TOKEN_PATTERN.finditer(value):
+        parts.append(_rich(value[last : match.start()]))
+        metric_id = match.group(1)
+        metric = _require_metric(metric_id, page_id, registry)
+        parts.append(f'<span data-metric-id="{_escape(metric_id)}">{_escape(_format_metric_value(metric))}</span>')
+        last = match.end()
+    parts.append(_rich(value[last:]))
+    return "".join(parts)
+
+
+def _resolve_metric_tokens(value: str, page_id: str, registry: dict[str, dict[str, Any]]) -> str:
+    # 7/23: viz(SVG) title/note는 _svg_shell이 plain text로 escape·줄바꿈해 data-metric-id
+    # span을 못 심는다(HTML _rich_with_metrics와 다른 렌더 경로) — {{m088}} 같은 토큰이 SVG에서
+    # 그대로 미치환 노출되던 버그(customer-zero 실측). 값만 평문 치환하고, C6 authority는
+    # registry 전체값 집합(backed_numbers)이 이 숫자를 이미 알고 있으므로 통과한다.
+    def _sub(match: re.Match[str]) -> str:
+        metric = _require_metric(match.group(1), page_id, registry)
+        return _format_metric_value(metric)
+
+    return _METRIC_TOKEN_PATTERN.sub(_sub, value)
 
 
 def _hex_luminance(color: str) -> float:
@@ -3982,7 +4099,9 @@ section.slide.page-title-band {{ padding-top: 124px; }}
   display: flex;
   align-items: center;
   padding: 0 72px;
-  background: var(--accent);
+  /* 평면 단색바 → 대각 그라디언트(드리블 2026-07 관찰 6건 — 플랫 컬러블록보다 대각/방사 그라디언트가
+     다수. CL-gradient_accent 승격). 치수·높이 불변 — 배경값만 교체. */
+  background: linear-gradient(115deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 78%, black) 100%);
   color: #FFFFFF;
 }}
 .title-band-text {{
@@ -4050,6 +4169,15 @@ section.slide.page-title-band {{ padding-top: 124px; }}
    outro 실측 — PEPPINCH·이름 안 보임). 그라디언트 배경이라 lowc 자동검출도 skip이던 사각. */
 .cover-slide.cover-dark .presenter-company,
 .cover-slide.cover-dark .presenter-name {{ color: #F8FAFC; }}
+/* 표지·아웃트로 글로우 오브(드리블 2026-07 — 17_clever·19_xpend 다크 묶음. 솔리드 실루엣(블롭·다이아몬드)은
+   7/23 후추님 실측 기각("어설퍼") — 글로우로 확정). 텍스트 뒤 z-index 배경 레이어·레이아웃 무관. */
+.cover-shape {{ position: absolute; z-index: 0; pointer-events: none; }}
+.cover-shape-glow {{
+  width: 760px; height: 760px; right: -200px; top: -180px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 52%, transparent) 0%, transparent 66%);
+  opacity: .3;
+}}
+.cover-lockup, .outro-main {{ position: relative; z-index: 1; }}
 .block-eyebrow {{ align-self: flex-start; }}
 h1 {{
   margin: 14px 0 0;
@@ -4108,6 +4236,8 @@ h1 {{
   gap: 20px;
 }}
 .metric-card {{
+  position: relative;
+  overflow: hidden;
   min-height: 170px;
   border: 1px solid var(--line);
   border-top: 3px solid var(--accent);
@@ -4118,6 +4248,20 @@ h1 {{
   flex-direction: column;
   justify-content: space-between;
 }}
+/* CL-gradient_accent(드리블 2026-07 9건 관찰 — 단일 액센트를 블러 글로우로 얹어 평면 카드에 깊이 부여).
+   치수·flow 영향 없는 절대배치 배경 레이어만 추가 — 기존 카드 여백/폭 계산과 무관. */
+.metric-card::before {{
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -30%;
+  width: 65%;
+  height: 140%;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 68%);
+  opacity: .16;
+  pointer-events: none;
+}}
+.metric-card > * {{ position: relative; z-index: 1; }}
 .metric-label {{
   color: var(--muted);
   font-size: 15px;
@@ -5369,9 +5513,10 @@ h1 {{
 .theme-dark-premium .visual-card {{ border-top-color: rgba(255,255,255,.14); }}
 /* 간지: 잉크 파생 그라디언트가 밝은 ink에 오염되지 않게 명시 다크 + 골드 글로우. */
 .theme-dark-premium.layout-divider.slide {{
+  /* 골드 하드코딩 → accent 파생(7/23 navy_glow 별칭 추가로 팔레트 무관하게). 지면 다크도 c60 파생. */
   background:
-    radial-gradient(circle at 84% 24%, rgba(198,161,91,.12) 0, transparent 40%),
-    linear-gradient(140deg, #1A1B1F 0%, #101114 60%, #0A0B0D 100%);
+    radial-gradient(circle at 84% 24%, color-mix(in srgb, var(--accent) 12%, transparent) 0, transparent 40%),
+    linear-gradient(140deg, color-mix(in srgb, var(--c60) 88%, white) 0%, var(--c60) 60%, color-mix(in srgb, var(--c60) 80%, black) 100%);
 }}
 /* 표지·outro도 동일 다크(이 시스템은 전면 다크라 별도 dark variant 불필요). 부제는 눌린 회색. */
 .theme-dark-premium .cover-subtitle {{ color: var(--muted); }}
@@ -5645,6 +5790,13 @@ h1 {{
   border-color: rgba(255,255,255,.1);
   box-shadow: 0 18px 44px rgba(0,0,0,.24);
 }}
+/* muted(7/23): 시나리오가 아닌 카드(관찰지표 등)를 점선 테두리+옅은 배경으로 구분 — customer-zero
+   "카드 4장인데 왜 세 시나리오냐" 지적. 시나리오 카드와 형제처럼 안 보이게 톤을 낮춘다. */
+.scenario-card-muted {{
+  background: var(--c30);
+  border-style: dashed;
+}}
+.scenario-card-muted .block-title {{ color: var(--muted); }}
 
 /* ══ 파일럿 5: pop_dark — 팝 다크(후추님 7/4 스샷 스타일·다색 팝 + 도형 오브제) ══ */
 /* 본문은 눌린 회색(다크 공통 문법) + 헤비 제목. */

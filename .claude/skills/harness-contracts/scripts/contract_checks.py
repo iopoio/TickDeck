@@ -169,6 +169,11 @@ YEAR_RANGE_PREFIX_PATTERN = re.compile(r"(?:19|20)\d{2}\s*[~\-–—]\s*$")
 ENCLOSED_NUMERAL_PATTERN = re.compile(
     "[\u2460-\u249b\u24ea-\u24ff\u2776-\u2793\u3251-\u325f\u32b1-\u32bf]"
 )
+# {{metric_id}} \uc778\ub77c\uc778 \ud1a0\ud070(7/22 \uc2e0\uc124 \u2014 text_table\u00b7callout/note/body \uc140\uc5d0 \uc11c\uc0ac\ubb38+\uc218\uce58\ub97c \uc11e\uc744 \ub54c
+# render_deck.py _rich_with_metrics\uac00 registry \uac12\uc73c\ub85c \uce58\ud658\u00b7data-metric-id\ub85c \uac10\uc2fc\ub2e4). \ub80c\ub354 \uc804
+# \ub2e8\uacc4\uc5d0\uc11c\ub3c4 \uac19\uc740 \ud398\uc774\uc9c0 allowlist\u00b7registry \uc874\uc7ac\ub97c \uac15\uc81c\ud574\uc57c designer\uac00 \ud654\uc774\ud2b8\ub9ac\uc2a4\ud2b8 \ubc16 metric\uc744
+# \ud504\ub9ac\ud14d\uc2a4\ud2b8\uc5d0 \ubc00\ubc18\uc785\ud558\ub294 \uae38\uc744 \ub9c9\ub294\ub2e4(\uad6c\uc870\ud654 metric \ube14\ub85d\uacfc \ub3d9\uc77c\ud55c C6 \ubcf4\ud638).
+METRIC_TOKEN_PATTERN = re.compile(r"\{\{([a-zA-Z0-9_]+)\}\}")
 
 
 @dataclass(frozen=True)
@@ -411,6 +416,17 @@ def validate_c6_content_authority(
                         text_path,
                     )
                 )
+            for token_match in METRIC_TOKEN_PATTERN.finditer(text):
+                metric_id = token_match.group(1)
+                if metric_id not in metric_registry:
+                    violations.append(
+                        ContractViolation("C6", f"unknown metric id referenced: {metric_id}", text_path)
+                    )
+                    continue
+                if metric_id not in allowed_metric_ids:
+                    violations.append(
+                        ContractViolation("C6", f"metric_id not in page allowed_metric_ids: {metric_id}", text_path)
+                    )
 
         for block_type, type_path in _iter_content_block_types(content, f"{page_path}.content"):
             if block_type not in SUPPORTED_CONTENT_BLOCK_TYPES:
@@ -1691,7 +1707,9 @@ class _RenderedAuthorityParser(HTMLParser):
             # 간지 프리뷰(divider-items) = short_title 복제 — 원본(h1)이 면제이므로 복제도 면제(7/3).
             # 각주(footnote-row) = 조사 정의 병기·조건부 캐비앳이 본질이라 숫자 필요(writing-standard 9b·D-12).
             # 단 각주로 본문 통계를 밀반입하는 건 qa-reviewer 판정 대상(designer.md 명시).
-            if classes & {"divider-items", "footnote-row"}:
+            # title-band(-text) = page_chrome:"title_band" 크롬의 aria-hidden 장식용 제목 복제
+            # (동일 title_text를 h1과 함께 배경에 한 번 더 렌더) — divider-items와 동일 근거로 면제(7/22).
+            if classes & {"divider-items", "footnote-row", "title-band", "title-band-text"}:
                 return True
             # 조용한 간지 뼈대(divider_style:"quiet")의 거대 숫자 = 파트 순번(PART N과 동일 성격의
             # 구조 표시) — standard 뼈대의 "eyebrow divider-part"(PART n)와 같은 면제 근거(7/3).

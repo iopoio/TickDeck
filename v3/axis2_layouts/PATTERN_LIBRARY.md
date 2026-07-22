@@ -20,13 +20,13 @@
 
 | ID | 골격 | 설명 | 권장 | 상태 |
 |---|---|---|---|---|
-| PG-statement/split/stack/matrix/stepper/index/cards/timeline/node/hero_metric/closing | 공용 11종 | 전 시스템 공용 | 전체 | ✅ |
+| PG-statement/split/stack/matrix/stepper/index/cards/timeline/node/PG-hero_metric/closing | 공용 11종 | 전 시스템 공용 | 전체 | ✅ |
 | PG-poster | 제목 없는 한 문장 포스터 | 지면 전체가 한 문장 | minimal | ✅ |
 | PG-hero_bleed | 화면 절반 블리드 수치 | 숫자가 페이지 | dark·pop | ✅ |
 | PG-magazine_spread | 다단 조판+전폭 풀쿼트 | 잡지 스프레드 | serif | ✅ |
 | PG-dashboard | 풀페이지 위젯 타일 | 계기판 | mono | ✅ |
 | PG-mosaic_tiles | 크기가변 사진/블록 모자이크(관찰 14+ — magazine 6 + 2R Arabella·Maison·Minimo·Ombar 번호닷·Artista 등 8). 사진 없이 색면 타일로 구현 | 화보 타일 + 선택적 번호닷 | serif·minimal | ✅(7/4 배치2) |
-| PG-running_head | 상단 3점 러닝헤드 프레임(관찰 17+). 좌 kicker(명시적 eyebrow만·내부명 노출 금지)·중 브랜드·우 페이지분수(렌더러 계산) + 하단 PREV/NEXT. 스펙: deck_spec meta `"page_chrome": "running_head"` (본문 페이지만·표지/간지/클로징 제외·기존 페이지번호 억제) | 일하는 덱 프레임 | serif·minimal | ✅(7/4 배치3) |
+| PG-running_head | 상단 3점 러닝헤드 프레임(관찰 17+ + dribbble 재확증 10+ — 대부분 덱이 좌 로고/워드마크 + 하단 페이지수·카피라이트 초경량 크롬을 전 페이지 반복, title_band류 색면 바보다 훨씬 우세). 좌 kicker(명시적 eyebrow만·내부명 노출 금지)·중 브랜드·우 페이지분수(렌더러 계산) + 하단 PREV/NEXT. 스펙: deck_spec meta `"page_chrome": "running_head"` (본문 페이지만·표지/간지/클로징 제외·기존 페이지번호 억제) ⚠ 7/23 실측: 기존 title_band 전제로 짜인 페이지(문단 밀도·카드 높이)를 running_head로 그대로 바꾸면 여백 예산이 달라져 overflow 재발(clo_it_planner p06·11·16·19·20 5장) — 전환 시 컨텐츠 재적합 필요, 사후 테마 스왑 아님 | 일하는 덱 프레임 | serif·minimal | ✅(7/4 배치3) |
 | PG-pricing_cards | 가격/플랜 3열 카드(관찰 13+ — 전 6패밀리 관통). headline이 카드를 열고 후속 블록 착지. 스펙: `"layout": "pricing_cards"` + 페이지 옵션 `"emphasis_style": "invert"\|"offset"\|"scale"\|"border"` (기본 invert — **run마다 다르게 골라 "같은 템플릿" 천장 방지**) | 옵션·시나리오 비교 | 전체 | ✅(7/4 배치3) |
 | PG-nav_chrome | 상단 탭바/햄버거 웹크롬 반복(관찰 8 — report_ops 2 + 2R corporate·minimal·dark 6) | SaaS/상태보고 톤 | mono·pop | ⬜ |
 | PG-split_status | 좌 정성서술 + 우 정량지표칩 상태페이지(관찰 2 — report_ops) | 상태·리스크 보고 | 전체 | ✅(7/4 배치2) |
@@ -38,6 +38,7 @@
 | PG-item_profile | 반복 아이템 카탈로그: 카테고리 필(+메타 칩) → 헤드라인 → 2~4줄 dek → 좌 라벨바+이미지 패널 / 우 틴트 카드(액센트 볼드 미니헤드 + 불릿 2단 • → –) (관찰 — KPMG ces2026 ~30장 **단독**. ⚠ 7/6 배치 15건 재확증 0 — KPMG 다른 발행물 2건에도 없음 → 1건 출처 강등. 구현 비용도 최고(이미지 자산 정책 선결)) | 카탈로그·사례집 | corporate·전체 | ⬜(1건 출처·승격 보류) |
 | PG-prose_page | 문단 에세이 페이지 — 불릿 없이 문단 스택. 변형 3: ①중앙정렬 에세이(BOND trends_ai 5장) ②좌정렬 메모 prose+볼드 리드인(BOND 메모 3건 — 문서 전체가 prose) ③IR 유의사항/Disclaimer(카카오·네이버·삼성 모두 2페이지째) + Activate 테이크어웨이 스택 변형(볼드 런인 리드+헤어라인 룰, act25 001~003) | 서문·맺음·면책 | mono·corporate | ⬜(7건 재확증) |
 | PG-metric_commentary | IR 원자 블록: 지표명 헤딩 + `+X% YoY, ±Y% QoQ` 델타쌍 헤드라인 + (YoY)/(QoQ) 라벨 불릿 + 분기 차트. 페이지당 1~2행 스택 (관찰 12+ — 카카오 016~019 2행형·네이버 003~008 1행형) | 실적·상태 보고 | corporate·전체 | ✅(7/7 R3) |
+| PG-feature_grid_icon | 아이콘 상단 배지 + 볼드 헤드라인 + 1~2줄 설명, 3~4열 균일 카드 그리드(관찰 3 — dribbble_deck_shots_2026-07 01_agritech·07_hirely·16_edtech) | 정성 기능·역량 소개 | 전체 | ⬜(7/23 신규 — 정량 metric-card와 달리 아이콘·정성 설명 전용, 엔진 미구현) |
 
 ## C. 차트·다이어그램 (수치 비교 12종 + 관계·프로세스 4종)
 
@@ -47,7 +48,7 @@
 | ⚠ shift 주의 | 두 점-쌍(회색→강조 도트)이 연결선 약해 다크에서 화살표가 안 보이고 "같은 것 두 번"으로 읽힘(후추님 7/4 반복 지적). 증감 2값이면 **rising_columns/before_after 우선** | designer 회피 | — |
 | CH-hub_cycle | 중심+궤도 순환 허브 | 관계·생태계 | ✅ |
 | CH-arrow_flow | 셰브런 화살표 프로세스 | 인과·단계 | ✅ |
-| CH-timeline_bars | 간트형 계단 타임라인 | 순서·구간 | ✅ |
+| CH-timeline_bars | 간트형 계단 타임라인 — 분기/마일스톤별 막대 높이 오름차순 + 라벨(관찰 재확증 3 — dribbble_deck_shots_2026-07 09_flume·13_show_your_work·24_noxan 로드맵 계단) | 순서·구간 | ✅ |
 | CH-data_table | 액센트 헤더 데이터 표 | 지표 나열 | ✅ |
 | CH-multi_line | 다계열 라인(관찰 8/8 dashboard + 4/5 report_ops) — role baseline/highlight로 선 분리 | 시계열 비교 | ✅(7/4 승격) |
 | CH-progress_bar | 목표 대비 진척 막대: 트랙+채움 %(관찰 3 — report_ops·number=0~100 해석) | OKR/상태 진척 | ✅(7/4 승격) |
@@ -57,6 +58,7 @@
 | CH-kpi_delta_card | 숫자+델타+미니추세 KPI 블록(관찰 11+ — dashboard 8 + report_ops 3 + 2R 델타스택·타깃블록) | 계기판 단위 | ⬜(델타·숫자블록은 ✅ — 미니추세 스파크라인만 백로그) |
 | CH-puzzle/gear/polygon | 퍼즐·기어·다각형 인포그래픽(pop 스샷 관찰) | 구성요소·맞물림 은유 | ⬜ |
 | CH-swot_quad | 2×2 SWOT/정성 사분면 — 중앙 십자축·highlight 사분면 틴트(관찰 4). 스펙: viz `"chart": "swot_quad"`, series 4개 = 사분면(`label`+`items` 문자열 배열·숫자 금지), metric_id 예외 유일 차트 | 전략·경쟁분석 | ✅(7/4 배치3) |
+| CH-nested_circle | 중첩/겹침 원 다이어그램 — TAM/SAM/SOM 동심원 또는 그룹 값 벤다이어그램형, 라벨은 리더라인으로 옆에 배치(관찰 3 — dribbble_deck_shots_2026-07 03_board·20_holographik·27_exploration) | 시장규모·그룹핑 비교 | ⬜(7/23 신규) |
 | CH-annotated_trend | 성장 서사 라인차트 주석 레이어 4종: 성장률 타원 콜아웃("+X%/Year")·보조 추세 화살표·끝점 굵은 수치·**이벤트 구간 세로 음영 밴드+상단 라벨**(usa_inc WWII·COVID / a16z "ICO boom" 에포크 밴드 흡수). 기존 multi_line 확장 (관찰 20+ — BOND 4/4 아이템·2015까지 10년 연속 + Activate/a16z 10) ⚠ 구현 선결: C6 계약상 title/note raw number 금지 — 파생값(성장률) metric 체계 설계 먼저 (7/6 코과장 리뷰) | 추세에 서사 싣기 | ✅(7/7 R3 — annotations 4종·파생 metric 계약·endpoint 이중라벨 수술) |
 | CH-chart_card_grid | 차트 카드 그리드(2×2·3×2·세로 스택) — 카드별 미니 헤더밴드 (관찰 10+장 — BOND 3/4 아이템: our_new_world 007·015~017 / ai_education 004·007~009 / usa_inc 002·004·022) ⚠ 코너 번호닷+"Details on Page N"은 trends_ai 1건 고유 장식으로 분리 — 그리드만 등재 | 익제큐티브 서머리 | ⬜ |
 | CH-quarterly_bars | 분기 시계열 막대: 데이터 라벨 온바(축눈금 생략)·마지막/비교 분기만 액센트 나머지 뮤트·옵션 축절단 `≈`. 기존 rising_columns 확장 (관찰 20+ — 카카오 014~019·025 / 네이버 003~009 / 삼성 005~010 = **IR 3사 관통**) | 실적 시계열 | ✅(7/6 R1) |
@@ -78,6 +80,7 @@
 | DC-outline_number | 대형 아웃라인 숫자 오브제(관찰 6+ — 2R 코너 거대 페이지숫자 용례 추가 확증) | ✅(mono 간지) |
 | DC-side_wordmark | 지면 좌/우 세로 회전 대형 워드마크(관찰 6). 스펙: 페이지 `"decor": "side_wordmark"` (+`section_label` 있으면 그 텍스트, 없으면 덱 short title — designer 자유 텍스트 금지·고스트 톤 자동) | ✅(7/4 배치3) |
 | DC-photo_frame | 기하 마스크/라운드 사진 프레임(관찰 다수) | ⬜(사진 자산 정책 미정) |
+| DC-cover_glow_orb | 표지·아웃트로 다크 배경 위 대형 글로우 오브(radial 블러 — 솔리드 실루엣 아님). 관찰 6의 솔리드 블롭/다이아몬드는 **7/23 후추님 실측 기각("어설퍼")** — 글로우 변형만 채택 | ✅(7/23 — `page.cover_shape: "glow"` 단일 옵션, blob/diamond 코드 삭제. clo_it_planner_evolution 적용) |
 
 ## E. 컬러·타이포 규칙 (패밀리 공통 문법에서 승격된 원칙)
 
@@ -87,8 +90,8 @@
 | CL-multi_pop | 다색 팝 t램프 순환 — pop 계열만 예외 허용 | pop 스샷 | ✅(pop 한정) |
 | CL-muted_body_on_dark | 다크 본문은 순백 금지·60~75% 회색 (6/8) | _grammar/dark | ✅ |
 | TY-extreme_ratio | 헤드:본문 극단 크기비 (미니멀 8/8) | _grammar/minimal | ✅(minimal) |
-| TY-kicker | 초소형 자간 키커 라벨 (5/8+ · report_ops 다수) | _grammar | ✅ |
-| CL-gradient_accent | 그라디언트 액센트를 지배색으로 (관찰 4 — report_ops 2 + 2R Inside 무지개 웨이브·corporate 마젠타→퍼플 풀블리드) | inbox 실측 | ⬜(creative/dark 한정 승격 후보) |
+| TY-kicker | 초소형 자간 키커 라벨. 필/뱃지형 변형(eyebrow-chip)도 다수 재확증(관찰 5 — dribbble_deck_shots_2026-07 04_swipee·09_flume·17_clever·19_xpend·25_axo — 컬러 배경 필 안에 카테고리 태그) | _grammar · dribbble 2026-07 | ✅(필형은 기존 eyebrow-chip 레버로 이미 구현·designer 선택 시 적극 활용 권장) |
+| CL-gradient_accent | 그라디언트 액센트를 지배색으로 (관찰 4 + dribbble 9 = 13+ — report_ops 2 + 2R Inside 무지개 웨이브·corporate 마젠타→퍼플 풀블리드 + dribbble_deck_shots_2026-07 04_swipee·06_quantum·07_hirely·09_flume·17_clever·19_xpend·25_axo 외. 평면 컬러블록보다 대각/방사 그라디언트가 다수 — "평면=구식, 그라디언트/글로우=고급" 인상의 핵심 레버) | inbox 실측 + dribbble 2026-07 | ✅(7/23 구현 — `.metric-card::before` 방사 글로우 + `.title-band` 대각 그라디언트, render_deck.py. 치수 불변·전 시스템 공용) |
 | TY-source_infra | 출처 다층 체계: ① 차트 제목 안 "– 기간, per 출처" ② 하단 Note:/Source: 마이크로 캡션 ③ 번호 각주 1)2)3)·※사진 출처 분리(IR) ④ **데이터 성격 배지**(Activate "FORECAST" 배지·자체조사 스탬프·파트너 로고 박스 — 예측/실측/외부를 시각 구분). 실전 신뢰 문법의 핵 — 템플릿 46건 관찰 0 ⚠ 구현 선결: deck_spec `source`가 페이지 레벨 배열(viz/series 1:1 아님) → 스키마 확장 필요 + 현 source-row CSS가 한 줄 clip(nowrap+hidden, render_deck.py ~3038) — overflow 정책 먼저 (7/6 리뷰 실측) | **17/17 전 실전 아이템** — BOND 2015부터 10년 무결점·Activate 4층·KPMG 하우스·IR 3사 | ✅(7/7 R2 — viz 단위 캡션 자동 생성·short_name/period·칩 공존. 각주/배지 층은 R3+) |
 | CL-semantic_color | 색 = 의미 고정: 액센트 1색 = 주인공, 빨강 = 악화·음수 전용(또는 괄호), 초록 = 상승·개선. 장식 다색 금지. 추가 룰 2: **브랜드/체인색 = 시리즈색 예외**(a16z 비트코인 주황·Activate 인스타 보라 — 덱 전체 불변) · 잉크는 비교 대상에만(마지막 분기·비교쌍만 액센트, 나머지 뮤트). 구현: series role `negative`/`positive`/`brand` — 코과장 평가 최저비용 | BOND 3/4(2015엔 약함 = 최근 10년 문법)·Activate/a16z 12+·IR 3사·KPMG — 5발행처 관통 | ✅(7/6 R1 — series role negative/positive/brand) |
 | TY-headline_highlight | 헤드라인 핵심 구절에만 솔리드 형광 마커 색면(섹션 액센트색 연동·목차 색칩과 색 코딩). `<mark>` 스타일 1개 — 구현 최저비용·효과 최대급 | a16z 9관찰 (004~052) — 1발행물 출처라 재확증 대기 | ⬜(1건 출처) |
@@ -112,6 +115,27 @@
 - 미등재 기록 (1건 출처 — 다음 수집 배치 재확증 대상): DC-pixel_block(a16z)·CH-redline_edit(usa_inc 업데이트판 문법)·PG-results_outlook(삼성 좌Results/우Outlook)·CH-ranked_leaderboard(KPMG 오토)·PG-boxed_section_label(BOND 메모 간지)·PG-perspective_sidebar(Activate 의견 박스 — KPMG 틴트 카드와 병합 시 3+)·PG-contacts_closing(KPMG 하우스)·히트 열 테이블(a16z 008)
 
 주의(추출 에이전트 반대신호 — 숨기지 않음): corporate/data 다수가 "부품 카탈로그"라 choropleth/funnel/gauge 관찰수는 부품 존재이지 페이지 문법 아님(과대 계상 주의). pricing/running_head 외 신규 후보 관찰수는 00 컨택트시트 의존도 높음 → 승격 확정 전 본문 슬라이드 추가 실측 권장.
+
+## 2026-07-23 드리블 컬렉션 배치 (30장 — 후추님 "레이아웃도 최대한 많이 확인해서 규칙 저장해")
+
+수집 = `TickDeck/.claude/research/dribbble_deck_shots_2026-07/`(01~30 + manifest.json). 클차장이 30장 전량 직접 열람(팔레트+레이아웃 DNA 동시 추출 — 묶음 판단은 위임하지 않음, 후추님 "많은 게 정답이 아니라 묶음이 어울리는 것" 원칙).
+
+- **승격(⬜→✅, 실구현)**: CL-gradient_accent — `render_deck.py`에 `.metric-card::before` 방사 글로우 + `.title-band` 대각 그라디언트 추가(치수 불변·전 테마 공용). IT기획자 리포트(clo_it_planner_evolution)에 적용해 시각 확인 완료.
+- **신규 등재(⬜ 백로그)**: PG-feature_grid_icon·CH-nested_circle·DC-cover_blob_shape (관찰 3~6, 상세는 각 표 참조).
+- **기존 항목 재확증·관찰수 갱신**: PG-running_head·CH-timeline_bars·TY-kicker(필형).
+- **반대신호(숨기지 않음)**: running_head를 title_band 전제로 짜인 기존 페이지에 그대로 스왑하면 overflow 재발(5장 실측) — 크롬 스타일 전환은 콘텐츠 밀도 재적합을 동반해야 함, 사후 테마 교체로 안 됨.
+- 1~2건 관찰 개별 버릇(빈티지 콜라주 13_show_your_work 등)은 원칙대로 미등재.
+
+### 왜 "3회 이상"만 등재하나 (후추님 질의 — 정직한 답)
+
+기존 라이브러리 규칙("관찰 1~2건은 개별 버릇, 등재 X" — 6/28 이전부터 있던 원칙, 이번에 새로 만든 기준 아님)을 그대로 적용한 것. 근거: 관찰 1~2건으로는 "여러 사람이 수렴한 진짜 문법"과 "그 디자이너 한 명의 우연한 선택"을 구별 못 한다 — 3회+(특히 서로 무관한 출처)면 우연이 아닐 확률이 올라간다는 약한 통계적 프록시.
+
+**단, 이번 드리블 배치엔 이 기준이 평소보다 약하다는 걸 숨기지 않는다**: BOND·Activate·KPMG·IR 3사 같은 기존 코퍼스는 "실제 발행 문서가 몇 년째 반복하는 하우스 스타일"이라 3회는 꽤 강한 신호였다. 반면 드리블은 판매용 템플릿 마켓 — 디자이너 각자가 "이번엔 남들과 다르게" 튀려고 만든 포트폴리오 조각들이라, 3장에서 같은 모티프가 보이는 건 "2026년 지금 드리블에서 유행 중인 것"일 수도 있고 "여러 산업이 수렴한 문법"일 수도 있다 — 이 배치만으론 둘을 못 가른다. 그래서 신규 항목은 전부 ✅(엔진 구현) 아닌 ⬜(백로그)로 두거나, 구현한 것도 "관찰 N" 표기로 근거 강도를 그대로 노출해뒀다 — 실전 리포트 문법(§ 하단 "실전 리포트 문법" 섹션)만큼의 권위는 아직 없다는 뜻.
+
+### 묶음(Bundle) 기록 — 원자 패턴이 아니라 "같이 나온 조합"으로도 남긴다
+
+묶음 정본은 `v3/axis2_layouts/BUNDLES.json`이다. 신뢰 등급은 단일 출처 참고용 `observed_1` → 독립 출처 2개 이상 또는 실전 run과 후추님 승인을 거친 `reconfirmed` → 확정 취향인 `house` 순이다.
+원자 상세 정본은 이 문서에 유지하며, ⬜ 원자를 참조한 묶음은 designer 기존 규칙에 따라 사용할 수 없다.
 
 ## 실전 리포트 문법 (2026-07-06 — pdf_report 17건 실측. "일하는 덱" vs "팔려는 덱")
 
