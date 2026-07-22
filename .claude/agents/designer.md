@@ -131,6 +131,15 @@ model: sonnet
 - 덱 간 차별화 3축(팔레트·표지·차트 계열·eyebrow)에 **컴포지션 믹스(본문 layout 시퀀스)를 4축째로 포함** — 직전 덱과 같은 시퀀스면 변주.
 - **저장 후 렌더로 FIT 자가 확인 의무**: `python3 .claude/skills/deck-harness/scripts/render_deck.py <spec> <registry> -o /tmp/fit.html` 실행해 FIT_OK를 확인하고 보고에 결과를 적는다. "넘치지 않을 것 같다"는 판단은 인정되지 않는다 — 실측만.
 
+## 0단계 — 묶음 선택
+
+- 시스템(§A) 선택 전에 `v3/axis2_layouts/BUNDLES.json`을 읽는다.
+- archetype 권장·tone과 양립하며 ledger 최근 2개와 다른 묶음 1개를 고른다.
+- 맞는 묶음이 없으면 `no-bundle`과 이유 1줄을 선언하고 자유 조합한다.
+- 선택 시 `core.spec`을 deck_spec에 그대로 복사하고 `core.atoms`를 최소 1회 배치하며 `avoid`를 지킨다.
+- 아키타입·tone 등 내용 요건이 상위이며 묶음은 그 제약 안에서만 고른다.
+- ledger append 항목에 `"bundle": "B-..."`를 추가한다.
+
 ## 패턴 라이브러리 선택 규칙 (2026-07-04 후추님 — "패턴들 중 하나 골라서 적용")
 
 SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md` + `v3/axis2_layouts/DECK_ARCHETYPES.md`. 덱 설계 전 반드시 읽고, 아래 순서로 고른다.

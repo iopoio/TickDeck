@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "grades": "observed_1(출처1·참고용) → reconfirmed(독립출처2+ 또는 실전run+후추님승인) → house(확정취향·locked_taste·재논의금지)",
+  "bundles": {
+    "B-peppinch_house": {
+      "grade": "house",
+      "locked_taste": true,
+      "evidence": [".claude/MAP.md#덱-디자인-확정-취향"],
+      "mood": "오렌지 한 색을 중심으로 다크 북엔드와 크림 본문을 잇는 따뜻한 비즈니스 톤",
+      "core": {
+        "theme": "peppinch",
+        "spec": { "cover_variant": "dark" },
+        "atoms": ["CL-single_accent"]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": ["CL-multi_pop", "세리프 헤드", "테크풍 배경 도형", "레드 액센트"]
+    },
+    "B-navy_glow": {
+      "grade": "observed_1",
+      "evidence": [
+        ".claude/research/dribbble_deck_shots_2026-07/17_clever-pitch-deck.jpg",
+        ".claude/research/dribbble_deck_shots_2026-07/19_xpend-pitch-deck.png",
+        ".claude/research/dribbble_deck_shots_2026-07/11_credivance-pitch-deck.png",
+        ".claude/research/dribbble_deck_shots_2026-07/27_exploration-slide-design.png",
+        ".claude/research/dribbble_deck_shots_2026-07/30_software-dev-presentation.jpg",
+        "clo_it_planner_evolution/2026-07-23 (후추님 최종 승인 대기)"
+      ],
+      "mood": "딥네이비 위 페리윙클 글로우와 필 키커가 만드는 정제된 다크 톤",
+      "core": {
+        "theme": "navy_glow",
+        "spec": { "cover_shape": "glow", "eyebrow_chip": true },
+        "atoms": ["DC-cover_glow_orb", "CL-gradient_accent", "TY-kicker"]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": ["CL-multi_pop", "DC-cover_blob_shape", "솔리드 실루엣", "레드 액센트"]
+    },
+    "B-dark_minimal_pill": {
+      "grade": "observed_1",
+      "evidence": [".claude/research/dribbble_deck_shots_2026-07/19_xpend-pitch-deck.png"],
+      "mood": "은은한 글로우와 필 키커, 무테 카드로 여백을 살린 미니멀 다크",
+      "core": {
+        "theme": "navy_glow",
+        "spec": { "eyebrow_chip": true },
+        "atoms": ["CL-gradient_accent", "TY-kicker", "CL-muted_body_on_dark"]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": ["CL-multi_pop", "두꺼운 카드 테두리", "고채도 다색", "과밀 그리드"]
+    },
+    "B-dark_glow_stat": {
+      "grade": "observed_1",
+      "evidence": [".claude/research/dribbble_deck_shots_2026-07/17_clever-pitch-deck.jpg"],
+      "mood": "강한 글로우 오브와 거대 수치 하나에 시선을 모으는 다크 히어로",
+      "core": {
+        "theme": "navy_glow",
+        "spec": { "cover_shape": "glow" },
+        "atoms": ["DC-cover_glow_orb", "CL-gradient_accent", "PG-hero_metric"]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": ["CL-multi_pop", "한 페이지 복수 주지표", "솔리드 실루엣", "장식 텍스트 과다"]
+    },
+    "B-warm_neo_brutal": {
+      "grade": "observed_1",
+      "evidence": [
+        ".claude/research/dribbble_deck_shots_2026-07/01_agritech-pitch-deck.png",
+        ".claude/research/dribbble_deck_shots_2026-07/16_edtech-saas-pitch.png"
+      ],
+      "mood": "크림 바탕에 라임 또는 오렌지 플랫 블록을 얹은 따뜻한 네오 브루탈",
+      "core": {
+        "theme": "peppinch",
+        "spec": {},
+        "atoms": ["PG-feature_grid_icon"]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": ["CL-gradient_accent", "다색 팝 혼합", "글로우 오브", "PG-feature_grid_icon은 ⬜라 현재 사용 금지"]
+    },
+    "B-cover_split_shape": {
+      "grade": "observed_1",
+      "evidence": [
+        ".claude/research/dribbble_deck_shots_2026-07/03_board-pitch-deck.png",
+        ".claude/research/dribbble_deck_shots_2026-07/24_noxan-company-deck.png",
+        "clo_it_planner_evolution/2026-07-23 (솔리드 실루엣 후추님 기각: 어설퍼)"
+      ],
+      "mood": "대각 분할과 절제된 워드마크 조합의 관찰 기록이며 솔리드 도형은 기각됨",
+      "core": {
+        "theme": "editorial",
+        "spec": {},
+        "atoms": ["CL-single_accent"]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": ["DC-cover_blob_shape", "cover_shape=blob", "cover_shape=diamond", "솔리드 실루엣"]
+    }
+  }
+}
