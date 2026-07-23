@@ -254,6 +254,31 @@
         "CL-multi_pop"
       ],
       "note": "다크 일변도 교정 반례 — 프리미엄 브랜드 공식 스타일이 순백. 사진 슬롯(제품 부분컷)은 자산 정책 선결"
+    },
+    "B-taetea_split_rail": {
+      "grade": "observed_1",
+      "evidence": [
+        "HWA_복구_2026-07/문서_정리/PDF/f2095040_TAETEA_GROUP_PROPOSAL.pdf (NEXTCULTURE 제작 37p — 외부 제작물, 후추님 7/23 '잘 만든 건 참고해' 지시로 등재)"
+      ],
+      "mood": "블랙 텍스처 표지에서 시작해 좌측 화이트 레일이 항상성을 잡고 우측 패널이 케이스마다 수신자 브랜드색으로 갈아입는 포트폴리오 리듬",
+      "core": {
+        "theme": "dark_premium",
+        "spec": {},
+        "atoms": [
+          "CL-client_brand_accent",
+          "PG-fixed_left_rail",
+          "PG-case_pair_rhythm",
+          "TY-quote_bullet_list",
+          "ST-example_stamp"
+        ]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": [
+        "CL-multi_pop",
+        "자기(에이전시) 색 강요 — 케이스 색은 수신자 브랜드가 정한다",
+        "레일 폭 흔들기(항상성이 정체성)"
+      ],
+      "note": "핵심 = 한 덱 안에서 페이지마다 팔레트가 바뀌는데 좌측 레일 고정으로 통일감 유지 — client_brand_accent의 극단 실증(관찰 6→10). 참조 원자 전부 ⬜라 designer 사용 불가·백로그"
     }
   }
 }
