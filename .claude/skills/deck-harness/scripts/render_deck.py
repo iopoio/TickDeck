@@ -1879,7 +1879,8 @@ def _render_text_table(block: dict[str, Any], page_id: str, registry: dict[str, 
         body_rows.append(f"<tr{row_class}>{cell_html}</tr>")
 
     # 6행 이상은 자동 압축(appendix-compact 선례·7/6) — 셀 패딩·폰트 축소로 한 장 수용.
-    compact = " text-table-compact" if len(rows) >= 6 else ""
+    # 9행 이상은 고밀도 티어(7/23 — 10행 표+무크롬 조합 27px 초과 실측).
+    compact = " text-table-compact text-table-dense" if len(rows) >= 9 else (" text-table-compact" if len(rows) >= 6 else "")
     return f"""
 <div class="text-table{compact}">
   {title_html}
@@ -3008,10 +3009,13 @@ def _svg_multi_line(
     pending_labels: list[dict[str, Any]] = []
     for lane_name, coords in lane_coords.items():
         color = _series_color(lanes[lane_name][0], 0, lanes[lane_name], accent) if lane_name != "baseline" else "var(--muted)"
+        # 기준선은 점선+옅게 — 색만으로는 팔레트에 따라 강조선과 명도가 비슷해질 수 있음(forest 실측·후추님 7/23).
+        dash = ' stroke-dasharray="7 6" stroke-opacity=".62"' if lane_name == "baseline" else ""
+        dot_op = ' fill-opacity=".62"' if lane_name == "baseline" else ""
         path = " ".join(f"{'M' if i == 0 else 'L'}{x:.0f},{y:.0f}" for i, (x, y, _) in enumerate(coords))
-        body.append(f'<path d="{path}" fill="none" stroke="{color}" stroke-width="4" stroke-linejoin="round"/>')
+        body.append(f'<path d="{path}" fill="none" stroke="{color}" stroke-width="4" stroke-linejoin="round"{dash}/>')
         for x, y, item in coords:
-            body.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="6" fill="{color}"/>')
+            body.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="6" fill="{color}"{dot_op}/>')
             if item["value"] and item["metric_id"] not in endpoint_owned:
                 # 7/23 최종(customer-zero 지정): 위 선 값 = 점 위 / 아래 선 값 = 점 아래. 같은 x의
                 # 두 점을 기준으로 서로 반대쪽에 두면 겹칠 일이 없다 — 여기에 축 라벨은 더 아래로(+40),
@@ -3058,7 +3062,7 @@ def _svg_multi_line(
         points.append({"x": coord[0], "y": coord[1], "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
     body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, y0 - 12, y0 + h))
     # x축 라벨(y0+h+24)과 shell note(height-10)가 겹치지 않게 높이 여유(+70) — 스모크 실측.
-    return _svg_shell("multi_line", title, note, y0 + h + 70, "".join(body), page_id, width=(1400 if hero else 1000))
+    return _svg_shell("multi_line", title, note, y0 + h + 86, "".join(body), page_id, width=(1400 if hero else 1000))
 
 
 def _svg_progress_bar(
@@ -4029,12 +4033,15 @@ def _escape(value: str) -> str:
 
 _KEYWORD_PATTERN = re.compile(r"==([^=]+?)==")
 _METRIC_TOKEN_PATTERN = re.compile(r"\{\{([a-zA-Z0-9_]+)\}\}")
+_BOLD_PATTERN = re.compile(r"\*\*(.+?)\*\*")
 
 
 def _rich(value: str) -> str:
     # 헤드라인 키워드 색전환(백로그 Phase 1·KPMG) — ==키워드== 만 accent로.
+    # **볼드** = TY-bold_lead_bullet(BOND 리드인 문법) 정식 지원(7/23 — p20 리드: 설명 형식).
     # escape 후 치환이라 안전. 새 사실·수치 창작이 아니라 기존 텍스트의 강조 표시만.
-    return _KEYWORD_PATTERN.sub(r'<b class="kw">\1</b>', _escape(value))
+    out = _KEYWORD_PATTERN.sub(r'<b class="kw">\1</b>', _escape(value))
+    return _BOLD_PATTERN.sub(r'<strong>\1</strong>', out)
 
 
 def _rich_with_metrics(value: str, page_id: str, registry: dict[str, dict[str, Any]]) -> str:
@@ -4051,7 +4058,8 @@ def _rich_with_metrics(value: str, page_id: str, registry: dict[str, dict[str, A
         parts.append(f'<span data-metric-id="{_escape(metric_id)}">{_escape(_format_metric_value(metric))}</span>')
         last = match.end()
     parts.append(_rich(value[last:]))
-    return "".join(parts)
+    # 볼드 쌍이 {{토큰}}을 사이에 두면 조각 단위 _rich에선 못 만난다 — 합친 결과에 한 번 더(7/23).
+    return _BOLD_PATTERN.sub(r'<strong>\1</strong>', "".join(parts))
 
 
 def _resolve_metric_tokens(value: str, page_id: str, registry: dict[str, dict[str, Any]]) -> str:
@@ -4430,6 +4438,7 @@ h1 {{
 /* 6행 이상 자동 압축(7/6) — 행 패딩·폰트 축소. */
 .text-table-compact td, .text-table-compact th {{ padding: 7px 12px !important; font-size: 13.5px !important; }}
 .text-table-compact .text-table-title {{ padding: 8px 12px 6px; font-size: 13px; }}
+.text-table-dense td, .text-table-dense th {{ padding: 5px 12px !important; font-size: 13px !important; }}
 .text-table tbody tr.text-table-highlight td {{
   background: color-mix(in srgb, var(--accent) 10%, transparent);
 }}
@@ -4584,6 +4593,8 @@ h1 {{
 .cover-slide.cover-bandskel h1,
 .cover-slide.cover-bandskel .cover-subtitle {{ color: #F8FAFC; }}
 .cover-slide.cover-bandskel .cover-eyebrow {{ color: color-mix(in srgb, var(--accent) 65%, #FFFFFF); }}
+.cover-slide.cover-bandskel h1 .kw,
+.cover-slide.cover-keynote h1 .kw {{ color: color-mix(in srgb, var(--accent) 38%, #FFFFFF); }}
 .cover-slide.cover-bandskel .slide-motif,
 .cover-slide.cover-bandskel .axis-strip {{ display: none; }}
 /* "keynote" 표지(A7 아우디 흡수 7/23): 전면 잉크·중앙 정렬 미니멀 — 무장식 블랙 */
@@ -5846,7 +5857,7 @@ h1 {{
   display: grid;
   grid-template-columns: minmax(0, 1fr) max-content;
   gap: 18px;
-  align-items: baseline;
+  align-items: center;  /* 라벨·수치 세로 중앙 정렬 — baseline이면 라벨이 아래로 처짐(후추님 7/23) */
 }}
 .status-chip .metric-label {{ font-size: 13px; line-height: 1.35; }}
 .status-chip .metric-value {{ font-size: 30px; line-height: 1; }}
