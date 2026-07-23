@@ -230,6 +230,30 @@
         "색면 title_band"
       ],
       "note": "dark_premium(골드 1액센트·depth 카드)과 구별점 = 장식 0·중앙 정렬·단어 색강조 2색. 발표(스크린)용 톤 — 문서형 리포트엔 부적합"
+    },
+    "B-audi_white_premium": {
+      "grade": "observed_1",
+      "evidence": [
+        "브랜드_템플릿_모음/Audi template__Audi templates (아우디 템플릿)PPT-Templates with title 16_9_VdT.pptx (아우디 본사 공식 배포 순정 템플릿)"
+      ],
+      "mood": "순백 지면 위 제품 부분 클로즈업과 블랙 타이포, 레드는 불릿과 로고에만 남긴 화이트 프리미엄",
+      "core": {
+        "theme": "minimal_typo",
+        "spec": {},
+        "atoms": [
+          "CL-micro_accent",
+          "TY-underline_title",
+          "PG-running_head"
+        ]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": [
+        "다크 배경",
+        "글로우·그라디언트",
+        "액센트 대면적 사용(레드는 마이크로만)",
+        "CL-multi_pop"
+      ],
+      "note": "다크 일변도 교정 반례 — 프리미엄 브랜드 공식 스타일이 순백. 사진 슬롯(제품 부분컷)은 자산 정책 선결"
     }
   }
 }
