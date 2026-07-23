@@ -735,7 +735,12 @@ def _render_cover_page(
     # 표지 뼈대 축(구조·엔바토 흡수 3라운드 7/3 — XBUQSG2·7FE9Y7G 관찰): "center"(기본, 수직 중앙
     # 락업) | "corner"(하단 앵커 — 텍스트가 화면 하단 1/3에, 더 다큐먼트/브랜드북 느낌).
     # 색 축(cover_variant)과 직교 — 조합 자유(예: corner+dark). 후추님 7/3 "뼈대를 세트로" 요청.
-    skeleton = " cover-corner" if str(page.get("cover_layout", "")).lower() == "corner" else ""
+    # "ruled" = TY-underline_title 표지 골격(시스루 하우스 양식 흡수 7/23): 백지·블랙 볼드 좌정렬
+    # 타이틀 + 풀폭 언더라인 + 메타 줄. 장식(밴드 티커·블롭) 전부 억제 — 언더라인이 유일한 그래픽.
+    cover_layout = str(page.get("cover_layout", "")).lower()
+    skeleton = " cover-corner" if cover_layout == "corner" else (" cover-ruled" if cover_layout == "ruled" else "")
+    if cover_layout == "ruled":
+        decor_html = ""
     # 광택 대각 오버레이(엔바토 흡수 3라운드 7/3 — 브랜드 가이드 표지 다수 관찰): 순수 CSS, 이미지 없음.
     sheen_html = '<div class="cover-sheen" aria-hidden="true"></div>' if page.get("cover_sheen") else ""
     # 세로 책등 라벨: 표지 오른쪽 여백에 회전된 짧은 단어 — 브랜드북 스파인 문법(AWQHGT7·7HAH9XQ 관찰).
@@ -781,6 +786,8 @@ def _render_outro_page(
     # 다크 북엔드 미러링 — outro도 cover_variant:"dark"를 읽는다(7/3 tech_v2 designer 발견 구멍).
     # 전면 다크 시스템에선 무시(표지와 동일 가드·7/23).
     variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" and palette["theme"] != "dark_premium" else ""
+    if str(page.get("cover_layout", "")).lower() == "ruled":
+        variant += " cover-ruled"
     shape = str(page.get("cover_shape", "")).lower()
     shape_html = f'<div class="cover-shape cover-shape-{_escape(shape)}" aria-hidden="true"></div>' if shape == "glow" else ""
     # eyebrow를 감사 인사 바로 위에 붙여 한 묶음(상단~중상단), 연락처는 하단(후추님 6/30).
@@ -4499,6 +4506,23 @@ h1 {{
   line-height: 1.06;
   letter-spacing: 0;
 }}
+/* TY-underline_title 표지 골격(cover_layout:"ruled") — 시스루 하우스 양식 흡수(7/23):
+   백지·좌정렬 블랙 볼드 타이틀 + 풀폭 언더라인 + 뮤트 부제. 밴드 티커·모티프 억제 —
+   언더라인 하나가 유일한 그래픽. outro도 같은 클래스를 읽는다. */
+.cover-slide.cover-ruled .cover-lockup,
+.outro-slide.cover-ruled .outro-main {{ width: 100%; max-width: 100%; }}
+.cover-slide.cover-ruled h1 {{
+  color: var(--ink);
+  width: 100%;
+  padding-bottom: 26px;
+  border-bottom: 4px solid var(--ink);
+  font-weight: 800;
+}}
+.cover-slide.cover-ruled .cover-eyebrow {{ color: var(--ink); letter-spacing: .22em; }}
+.cover-slide.cover-ruled .cover-subtitle {{ color: var(--muted); }}
+.cover-slide.cover-ruled .slide-motif,
+.cover-slide.cover-ruled .axis-strip,
+.cover-slide.cover-ruled .cover-sheen {{ display: none; }}
 .cover-subtitle {{
   margin: 24px 0 0;
   color: var(--ink);
