@@ -5,15 +5,26 @@
     "B-peppinch_house": {
       "grade": "house",
       "locked_taste": true,
-      "evidence": [".claude/MAP.md#덱-디자인-확정-취향"],
+      "evidence": [
+        ".claude/MAP.md#덱-디자인-확정-취향"
+      ],
       "mood": "오렌지 한 색을 중심으로 다크 북엔드와 크림 본문을 잇는 따뜻한 비즈니스 톤",
       "core": {
         "theme": "peppinch",
-        "spec": { "cover_variant": "dark" },
-        "atoms": ["CL-single_accent"]
+        "spec": {
+          "cover_variant": "dark"
+        },
+        "atoms": [
+          "CL-single_accent"
+        ]
       },
       "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
-      "avoid": ["CL-multi_pop", "세리프 헤드", "테크풍 배경 도형", "레드 액센트"]
+      "avoid": [
+        "CL-multi_pop",
+        "세리프 헤드",
+        "테크풍 배경 도형",
+        "레드 액센트"
+      ]
     },
     "B-navy_glow": {
       "grade": "observed_1",
@@ -28,35 +39,73 @@
       "mood": "딥네이비 위 페리윙클 글로우와 필 키커가 만드는 정제된 다크 톤",
       "core": {
         "theme": "navy_glow",
-        "spec": { "cover_shape": "glow", "eyebrow_chip": true },
-        "atoms": ["DC-cover_glow_orb", "CL-gradient_accent", "TY-kicker"]
+        "spec": {
+          "cover_shape": "glow",
+          "eyebrow_chip": true
+        },
+        "atoms": [
+          "DC-cover_glow_orb",
+          "CL-gradient_accent",
+          "TY-kicker"
+        ]
       },
       "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
-      "avoid": ["CL-multi_pop", "DC-cover_blob_shape", "솔리드 실루엣", "레드 액센트"]
+      "avoid": [
+        "CL-multi_pop",
+        "DC-cover_blob_shape",
+        "솔리드 실루엣",
+        "레드 액센트"
+      ]
     },
     "B-dark_minimal_pill": {
       "grade": "observed_1",
-      "evidence": [".claude/research/dribbble_deck_shots_2026-07/19_xpend-pitch-deck.png"],
+      "evidence": [
+        ".claude/research/dribbble_deck_shots_2026-07/19_xpend-pitch-deck.png"
+      ],
       "mood": "은은한 글로우와 필 키커, 무테 카드로 여백을 살린 미니멀 다크",
       "core": {
         "theme": "navy_glow",
-        "spec": { "eyebrow_chip": true },
-        "atoms": ["CL-gradient_accent", "TY-kicker", "CL-muted_body_on_dark"]
+        "spec": {
+          "eyebrow_chip": true
+        },
+        "atoms": [
+          "CL-gradient_accent",
+          "TY-kicker",
+          "CL-muted_body_on_dark"
+        ]
       },
       "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
-      "avoid": ["CL-multi_pop", "두꺼운 카드 테두리", "고채도 다색", "과밀 그리드"]
+      "avoid": [
+        "CL-multi_pop",
+        "두꺼운 카드 테두리",
+        "고채도 다색",
+        "과밀 그리드"
+      ]
     },
     "B-dark_glow_stat": {
       "grade": "observed_1",
-      "evidence": [".claude/research/dribbble_deck_shots_2026-07/17_clever-pitch-deck.jpg"],
+      "evidence": [
+        ".claude/research/dribbble_deck_shots_2026-07/17_clever-pitch-deck.jpg"
+      ],
       "mood": "강한 글로우 오브와 거대 수치 하나에 시선을 모으는 다크 히어로",
       "core": {
         "theme": "navy_glow",
-        "spec": { "cover_shape": "glow" },
-        "atoms": ["DC-cover_glow_orb", "CL-gradient_accent", "PG-hero_metric"]
+        "spec": {
+          "cover_shape": "glow"
+        },
+        "atoms": [
+          "DC-cover_glow_orb",
+          "CL-gradient_accent",
+          "PG-hero_metric"
+        ]
       },
       "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
-      "avoid": ["CL-multi_pop", "한 페이지 복수 주지표", "솔리드 실루엣", "장식 텍스트 과다"]
+      "avoid": [
+        "CL-multi_pop",
+        "한 페이지 복수 주지표",
+        "솔리드 실루엣",
+        "장식 텍스트 과다"
+      ]
     },
     "B-warm_neo_brutal": {
       "grade": "observed_1",
@@ -68,10 +117,17 @@
       "core": {
         "theme": "peppinch",
         "spec": {},
-        "atoms": ["PG-feature_grid_icon"]
+        "atoms": [
+          "PG-feature_grid_icon"
+        ]
       },
       "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
-      "avoid": ["CL-gradient_accent", "다색 팝 혼합", "글로우 오브", "PG-feature_grid_icon은 ⬜라 현재 사용 금지"]
+      "avoid": [
+        "CL-gradient_accent",
+        "다색 팝 혼합",
+        "글로우 오브",
+        "PG-feature_grid_icon은 ⬜라 현재 사용 금지"
+      ]
     },
     "B-cover_split_shape": {
       "grade": "observed_1",
@@ -84,10 +140,71 @@
       "core": {
         "theme": "editorial",
         "spec": {},
-        "atoms": ["CL-single_accent"]
+        "atoms": [
+          "CL-single_accent"
+        ]
       },
       "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
-      "avoid": ["DC-cover_blob_shape", "cover_shape=blob", "cover_shape=diamond", "솔리드 실루엣"]
+      "avoid": [
+        "DC-cover_blob_shape",
+        "cover_shape=blob",
+        "cover_shape=diamond",
+        "솔리드 실루엣"
+      ]
+    },
+    "B-premium_photo_overlay": {
+      "grade": "reconfirmed",
+      "evidence": [
+        "GMS_2018-21/_원본_PPT_보관/BMW 교육소개자료 Ver 3.26.pptx",
+        "GMS_2018-21/_원본_PPT_보관/20190924 현대자동차_final.pptx",
+        "GMS_2018-21/롯데푸드(주)_롯데푸드홈페이지 구축 제안서_넥스트컬쳐_인쇄 Full.pptx",
+        "본인 저작·실납품 3건+ (2018~2021) — 독립 출처 3이라 reconfirmed"
+      ],
+      "mood": "풀블리드 제품 사진 위 다크 딤과 백색 타이포, 수신자 브랜드색 1액센트의 프리미엄 납품 제안 문법",
+      "core": {
+        "theme": "dark_premium",
+        "spec": {},
+        "atoms": [
+          "CL-client_brand_accent",
+          "PG-photo_cover_dim",
+          "CL-single_accent",
+          "CH-spec_table"
+        ]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": [
+        "CL-multi_pop",
+        "자기(에이전시) 브랜드색 강요",
+        "장식 도형 — 사진이 유일한 장식"
+      ],
+      "note": "사진 자산 정책 미정이라 현 엔진으론 사진 슬롯 미구현 — 색·타이포·수신자 액센트 문법만 차용 가능"
+    },
+    "B-agency_minimal_white": {
+      "grade": "reconfirmed",
+      "evidence": [
+        "GMS_2018-21/리커버/시스루/_원본_PPT_보관/시스루 양식 v.2.0.pptx (하우스 템플릿)",
+        "GMS_2018-21/리커버/시스루/_원본_PPT_보관/페이센스_what we do.pptx",
+        "본인 실무 하우스 양식 — 독립 문서 2건"
+      ],
+      "mood": "백지에 블랙 볼드 좌정렬 타이틀과 풀폭 언더라인, 브랜드색 워드마크 하나만 포인트로 남긴 실무 미니멀",
+      "core": {
+        "theme": "minimal_typo",
+        "spec": {
+          "page_chrome": "running_head"
+        },
+        "atoms": [
+          "TY-underline_title",
+          "TY-extreme_ratio",
+          "CL-single_accent"
+        ]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": [
+        "CL-gradient_accent",
+        "글로우 오브",
+        "색면 title_band",
+        "장식 다색"
+      ]
     }
   }
 }

@@ -63,6 +63,10 @@ customer-zero 실독 리뷰에서 자동 게이트(C1~C9)가 못 잡는 렌더 �
 - **재확인**: 이 리포트가 쓰던 `--theme` 미지정 시 root `deck_spec.theme`가 우선 적용됨(CLI `--theme`는 override) — 테마 실험 전에 deck_spec 루트 확인할 것.
 - **함정 기록**: `page_chrome: "title_band" → "running_head"` 전환은 기존 승인된 콘텐츠 밀도 그대로면 overflow 재발(5장 실측) — 크롬 스타일은 사후 테마 스왑 대상이 아니라 콘텐츠 재적합을 동반해야 하는 결정.
 
+## 7/23 GMS 아카이브 흡수 배치 1 (후추님 본인 저작 — 근거 최상급)
+
+USB 2개 구출 완료: NO NAME 브랜드 PPT 14/40(잔여 26 대기) + GMS 2018_21 선별 197건(`~/Documents/이전회사_제안서_아카이브_2026-07/GMS_2018-21/`). 대표 7덱 열람 → PATTERN_LIBRARY "GMS 아카이브 배치 1" 섹션 + BUNDLES.json 묶음 2건(B-premium_photo_overlay·B-agency_minimal_white — **본인 실납품이라 reconfirmed 등급 즉시 부여**). 핵심 발견 = **CL-client_brand_accent**(수신자 브랜드색 차용·3사 10년 관통) — TickDeck에 없던 납품 장르 문법. ⚠ 리커버 최상위 67건(NXC 시절)은 USB 원본부터 파손 — 복구 불가 확인(해시 대조). 배치 2 잔여 = 시스루 HYBE/엔터 26건·GMS 잔여·NO NAME 26건.
+
 ## 관련 전역 메모리 (상세는 이관 중)
 [[project_tickdeck_harness_v4]]·[[feedback_deck_design_peppinch_taste]]·[[project_deck_platform_tickdeck]]·[[project_tickdeck_showcase_plan]]·[[feedback_ai_deck_tooling]]·[[klcha_recurring_patterns]](#8 증식·코딩위임·뿌리고치기).
 
