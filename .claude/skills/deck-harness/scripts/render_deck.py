@@ -2608,32 +2608,60 @@ def _svg_rising_columns(
     rows = series[:5]
     max_value = _max_metric_number(rows)
     # 높이는 테마 서체가 커도(기본 24px 부제) 720px 슬라이드에 안 넘치는 값 — peppinch(20px)만 통과하던 걸 보정(7/2).
-    hero = str((block or {}).get("size", "")).strip() == "hero"
-    base_y = CHART_TITLE_GAP + (265 if hero else 176)
-    max_h = 215 if hero else 148
+    size = str((block or {}).get("size", "")).strip()
+    hero = size == "hero"
+    compact = size == "compact"  # 밀도 레버 3단(hero/기본/compact) — 표와 한 페이지 동거용(7/23)
+    base_y = CHART_TITLE_GAP + (265 if hero else (108 if compact else 176))
+    max_h = 215 if hero else (90 if compact else 148)
     area_x, area_w = (70, 1260) if hero else (80, 840)
     col_w = min(140, area_w / max(1, len(rows)) * 0.56)
     step = area_w / max(1, len(rows))
     delta_text = _delta_annotation([rows[0], rows[-1]]) if len(rows) >= 2 and (block or {}).get("delta", True) else ""
+    # 음수 존재 시 0 기준선 분기형(diverging) — 양수는 기준선 위, 음수는 아래로. abs()만 쓰면
+    # -65%가 가장 높이 솟아 하락 데이터가 우상향으로 읽히는 의미 왜곡(후추님 7/23 실독 지적).
+    # 양수 전용 시리즈는 기존 산식 그대로(zero_y=base_y) — 기존 덱 무회귀.
+    signed = [item["number"] if isinstance(item.get("number"), (int, float)) else 0.0 for item in rows]
+    has_neg = any(n < 0 for n in signed)
+    up_max = max([n for n in signed if n > 0], default=0.0)
+    down_max = max([-n for n in signed if n < 0], default=0.0)
+    span = up_max + down_max
+    if has_neg and span:
+        zero_y = base_y - max_h * (down_max / span)
+        scale = max_h / span
+        label_y = base_y + 56  # 음수 값 라벨(막대 아래)과 안 겹치게 카테고리 행을 한 칸 내림
+    else:
+        zero_y = base_y
+        scale = (max_h / max_value) if max_value else 0.0
+        label_y = base_y + 26
     body = []
+    if has_neg:
+        body.append(
+            f'<line x1="{area_x}" y1="{zero_y:.1f}" x2="{area_x + area_w}" y2="{zero_y:.1f}" stroke="var(--line, rgba(0,0,0,.25))" stroke-width="1.5"/>'
+        )
     tops: list[tuple[float, float]] = []
     points: list[dict[str, Any]] = []
     key_positions: dict[str, tuple[float, float, float]] = {}
     for index, item in enumerate(rows):
-        number = abs(item["number"]) if isinstance(item.get("number"), (int, float)) else 0.0
-        h = max(10.0, (number / max_value) * max_h) if max_value else 10.0
+        n = signed[index]
+        h = max(10.0, abs(n) * scale) if scale else 10.0
         x = area_x + step * index + (step - col_w) / 2
-        y = base_y - h
-        tops.append((x + col_w / 2, y))
+        if n < 0:
+            y = zero_y
+            tip_y = zero_y + h
+        else:
+            y = zero_y - h
+            tip_y = y
+        tops.append((x + col_w / 2, tip_y))
         cx = x + col_w / 2
-        points.append({"x": cx, "y": y, "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
+        points.append({"x": cx, "y": tip_y, "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
         key_positions[item["label"]] = (cx, x, x + col_w)
         is_last = index == len(rows) - 1
         opacity = 0.34 + (0.66 * index / max(1, len(rows) - 1))
         fill = _series_color(item, index, rows, accent)
         value_class = _value_class(item, is_last)
+        value_y = (tip_y + 30) if n < 0 else (tip_y - 12)
         value_text = (
-            f'<text x="{x + col_w / 2:.1f}" y="{y - 12:.1f}" text-anchor="middle" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>'
+            f'<text x="{x + col_w / 2:.1f}" y="{value_y:.1f}" text-anchor="middle" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>'
             if item["metric_id"] not in _endpoint_suppressed_metric_ids(block, rows)
             else ""
         )
@@ -2642,9 +2670,12 @@ def _svg_rising_columns(
             <g data-metric-id="{_escape(item["metric_id"])}">
               <rect x="{x:.1f}" y="{y:.1f}" width="{col_w:.1f}" height="{h:.1f}" rx="6" fill="{fill}" fill-opacity="{opacity:.2f}"/>
               {value_text}
-              <text x="{x + col_w / 2:.1f}" y="{base_y + 26}" text-anchor="middle" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+              <text x="{x + col_w / 2:.1f}" y="{label_y}" text-anchor="middle" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
             </g>"""
         )
+    # 분기형에선 ×N 멀티플라이어 브래킷 억제 — 위/아래로 갈린 막대에 브래킷을 걸면 방향 서사가 다시 섞인다.
+    if has_neg:
+        delta_text = ""
     if delta_text and len(tops) >= 2:
         (x1, y1), (x2, y2) = tops[0], tops[-1]
         bracket_y = min(y1, y2) - 54
@@ -2657,7 +2688,8 @@ def _svg_rising_columns(
             </g>"""
         )
     body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, CHART_TITLE_GAP - 12, base_y))
-    return _svg_shell("rising-columns", title, note, base_y + 44 + (28 if note else 0), "".join(body), page_id, width=(1400 if hero else 1000))
+    shell_h = (base_y + 74 if has_neg else base_y + 44) + (28 if note else 0)
+    return _svg_shell("rising-columns", title, note, shell_h, "".join(body), page_id, width=(1400 if hero else 1000))
 
 
 def _svg_quarterly_bars(
