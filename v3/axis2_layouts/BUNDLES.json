@@ -279,6 +279,32 @@
         "레일 폭 흔들기(항상성이 정체성)"
       ],
       "note": "핵심 = 한 덱 안에서 페이지마다 팔레트가 바뀌는데 좌측 레일 고정으로 통일감 유지 — client_brand_accent의 극단 실증(관찰 6→10). 참조 원자 전부 ⬜라 designer 사용 불가·백로그"
+    },
+    "B-teal_ux_analysis": {
+      "grade": "observed_1",
+      "evidence": [
+        "HWA_복구_2026-07/문서_정리/PPTX/f3312768.pptx (환전지갑 하나멤버스 구축 제안·eWIDEPLUS 2018·84p — 후추님 7/23 '폰트 빼고 전체적으로 좋네, 흡수해줘')"
+      ],
+      "mood": "티얼 한 색과 블랙만으로 상단 밴드·원 노드·헤더 필을 잇고, 경쟁사 해부 프레임을 페이지마다 반복하는 UX 리서치 제안 문법",
+      "core": {
+        "theme": "editorial",
+        "spec": {
+          "page_chrome": "running_head"
+        },
+        "atoms": [
+          "CL-single_accent",
+          "AR-ux_benchmark",
+          "PG-persona_journey",
+          "CH-phone_flow_map"
+        ]
+      },
+      "flex": "차트·본문 layout·간지 = 내용이 고름(기존 §B/§C 규칙 위임)",
+      "avoid": [
+        "CL-multi_pop",
+        "손글씨체(원본 폰트 소실 fallback — 취향 아님)",
+        "장식 도형 — 분석 프레임 반복이 정체성"
+      ],
+      "note": "가치는 색이 아니라 방법론 골격: 같은 해부 프레임을 경쟁 4사에 반복 적용해 비교 가능성을 만든다. 브레드크럼 러닝헤드(섹션>서브 + 우측 장|페이지) + 듀얼 로고 푸터(좌 클라이언트/우 제안사) 크롬 포함. 참조 원자 ⬜라 designer 사용 불가·백로그"
     }
   }
 }
