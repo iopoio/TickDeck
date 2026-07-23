@@ -1,0 +1,18 @@
+{
+  "pages": [{
+    "page_id": "gantt_grid",
+    "short_title": "Grid Gantt",
+    "layout": "statement",
+    "allowed_source_ids": [],
+    "allowed_metric_ids": [],
+    "content": [{
+      "type": "viz",
+      "chart": "gantt",
+      "title": "Delivery Schedule",
+      "series": [
+        {"label": "Discovery", "start": "2026-08", "end": "2026-09"},
+        {"label": "Build", "start": "2026-09", "end": "2026-11"}
+      ]
+    }]
+  }]
+}

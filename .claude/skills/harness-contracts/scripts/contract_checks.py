@@ -72,11 +72,13 @@ SUPPORTED_VIZ_CHART_TYPES = frozenset(
         "rising_columns",
         # 2026-07-03 엔바토 흡수 3라운드: 픽토그램(도트채움)·게이지(반원) — 4곳·3곳 교차검증
         "pictogram",
+        "pictograph",
         "gauge",
         # 2026-07-04 다이어그램 어휘(후추님 — 관계·순환·프로세스·표 인포그래픽 공백 지적):
         "hub_cycle",       # 중심+궤도 노드 순환 허브 (series[0]=중심·값 선택)
         "arrow_flow",      # 두꺼운 셰브런 프로세스 (단계가 화살표 도형·값 선택)
         "timeline_bars",   # 간트형 계단 타임라인 (값 선택)
+        "gantt",           # 월 그리드 일정 + milestone-only 축
         "data_table",      # 액센트 헤더 + 줄무늬 데이터 표 (값=registry)
         # 2026-07-04 승격 라운드(PATTERN_LIBRARY ⬜→✅·report_ops 정체성):
         "multi_line",        # 다계열 라인 — role baseline/highlight로 선 분리
@@ -111,7 +113,7 @@ SUPPORTED_VIZ_SERIES_ROLES = frozenset(
 )
 # 정성 도식(수치 슬롯이 선택)은 metric_id 없이 series item이 허용된다 — swot_quad 선례를
 # R5 논증 4종에도 그대로 적용(claim/축 좌표/좌우 대비는 본질적으로 텍스트·좌표이지 지표가 아님).
-VIZ_CHARTS_WITHOUT_REQUIRED_METRIC = frozenset({"swot_quad", "fin_table", "pyramid", "causal_chain", "two_by_two", "tradeoff"})
+VIZ_CHARTS_WITHOUT_REQUIRED_METRIC = frozenset({"swot_quad", "fin_table", "pyramid", "causal_chain", "two_by_two", "tradeoff", "gantt", "pictograph"})
 # 논증 도식 남발 방지 게이트(DESIGN_R5 §3) — 슬롯 최소 개수 미달 시 위반.
 ARG_DIAGRAM_MIN_SLOTS = {
     "pyramid": 2,       # evidence 층 ≥2
@@ -1041,6 +1043,18 @@ def _validate_viz_block(
         if isinstance(text, str) and RAW_NUMBER_PATTERN.search(text):
             violations.append(ContractViolation("C6", f"viz {field} contains raw number", f"{path}.{field}"))
 
+    axis_labels = block.get("axis_labels")
+    if axis_labels is not None:
+        if chart != "swot_quad" or not isinstance(axis_labels, dict):
+            violations.append(ContractViolation("C6", "axis_labels is only supported as an object on swot_quad", f"{path}.axis_labels"))
+        else:
+            for axis in ("x", "y"):
+                labels = axis_labels.get(axis)
+                if not isinstance(labels, list) or len(labels) != 2 or not all(isinstance(label, str) and label.strip() for label in labels):
+                    violations.append(ContractViolation("C6", f"swot_quad axis_labels.{axis} must include two text labels", f"{path}.axis_labels.{axis}"))
+                elif any(RAW_NUMBER_PATTERN.search(label) for label in labels):
+                    violations.append(ContractViolation("C6", f"swot_quad axis_labels.{axis} contains raw number", f"{path}.axis_labels.{axis}"))
+
     for field in ("value", "unit", "values", "data"):
         if field in block:
             violations.append(ContractViolation("C6", f"viz block must not include direct {field}", f"{path}.{field}"))
@@ -1065,6 +1079,8 @@ def _validate_viz_block(
         if chart not in VIZ_CHARTS_WITHOUT_REQUIRED_METRIC and not str(item.get("metric_id", "")).strip():
             violations.append(ContractViolation("C6", "viz series item must include metric_id", f"{item_path}.metric_id"))
         label = item.get("label")
+        if chart in {"gantt", "pictograph"} and not str(label or "").strip():
+            violations.append(ContractViolation("C6", f"{chart} series item must include label", f"{item_path}.label"))
         # 연도(2018·2024 등)는 데이터 값이 아니라 축 키 — rendered authority 검사와 동일 면제(R4 시계열 계약·연도 키).
         if isinstance(label, str) and RAW_NUMBER_PATTERN.search(FOUR_DIGIT_YEAR_PATTERN.sub("", label)):
             violations.append(ContractViolation("C6", "viz label contains raw number", f"{item_path}.label"))
@@ -1079,6 +1095,30 @@ def _validate_viz_block(
                         violations.append(ContractViolation("C6", "swot_quad item must be text", text_path))
                     elif RAW_NUMBER_PATTERN.search(text):
                         violations.append(ContractViolation("C6", "swot_quad item contains raw number", text_path))
+        if chart == "gantt":
+            start = item.get("start")
+            end = item.get("end")
+            month_pattern = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
+            if not isinstance(start, str) or not month_pattern.fullmatch(start):
+                violations.append(ContractViolation("C6", "gantt series item start must use YYYY-MM", f"{item_path}.start"))
+            if not isinstance(end, str) or not month_pattern.fullmatch(end):
+                violations.append(ContractViolation("C6", "gantt series item end must use YYYY-MM", f"{item_path}.end"))
+            if isinstance(start, str) and isinstance(end, str) and month_pattern.fullmatch(start) and month_pattern.fullmatch(end) and end < start:
+                violations.append(ContractViolation("C6", "gantt series item end must not precede start", f"{item_path}.end"))
+            lane = item.get("lane")
+            if lane is not None and (not isinstance(lane, int) or isinstance(lane, bool) or not 0 <= lane <= 7):
+                violations.append(ContractViolation("C6", "gantt series item lane must be within 0..7", f"{item_path}.lane"))
+        if chart == "pictograph":
+            total = item.get("total")
+            filled = item.get("filled")
+            if not isinstance(total, int) or isinstance(total, bool) or total < 1:
+                violations.append(ContractViolation("C6", "pictograph total must be a positive integer", f"{item_path}.total"))
+            elif total > 20:
+                violations.append(ContractViolation("C6", "pictograph total must be at most 20", f"{item_path}.total"))
+            if not isinstance(filled, int) or isinstance(filled, bool) or filled < 0:
+                violations.append(ContractViolation("C6", "pictograph filled must be a non-negative integer", f"{item_path}.filled"))
+            elif isinstance(total, int) and not isinstance(total, bool) and filled > total:
+                violations.append(ContractViolation("C6", "pictograph filled must not exceed total", f"{item_path}.filled"))
         if chart == "fin_table":
             cells = item.get("cells")
             if not isinstance(cells, list) or not cells:
@@ -1114,7 +1154,7 @@ def _validate_viz_block(
                 violations.append(ContractViolation("C6", f"viz series must not include direct {field}", f"{item_path}.{field}"))
 
     # R5 남발 방지 게이트(DESIGN_R5 §3): 빈약한 논증 도식이 페이지 주인공이 되는 것 방지.
-    if chart == "pyramid":
+    if chart == "pyramid" and str(block.get("pyramid_style", "")).strip() != "hierarchy":
         evidence_count = sum(1 for item in series if isinstance(item, dict) and str(item.get("role", "")).strip() == "evidence")
         if evidence_count < ARG_DIAGRAM_MIN_SLOTS["pyramid"]:
             violations.append(
@@ -1124,6 +1164,8 @@ def _validate_viz_block(
                     f"{path}.series",
                 )
             )
+    if chart == "pyramid" and str(block.get("pyramid_style", "")).strip() == "hierarchy" and not 3 <= len(series) <= 5:
+        violations.append(ContractViolation("C6", "hierarchy pyramid must include 3 to 5 layers", f"{path}.series"))
     if chart == "causal_chain" and len(series) < ARG_DIAGRAM_MIN_SLOTS["causal_chain"]:
         violations.append(
             ContractViolation(
@@ -1151,6 +1193,19 @@ def _validate_viz_block(
                     f"{path}.series",
                 )
             )
+    if chart == "gantt":
+        if len(series) > 8:
+            violations.append(ContractViolation("C6", "gantt must include at most 8 series items", f"{path}.series"))
+        valid_months = [
+            int(value[:4]) * 12 + int(value[5:7]) - 1
+            for item in series if isinstance(item, dict)
+            for value in (item.get("start"), item.get("end"))
+            if isinstance(value, str) and re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", value)
+        ]
+        if valid_months and max(valid_months) - min(valid_months) + 1 > 36:
+            violations.append(ContractViolation("C6", "gantt schedule must span at most 36 months", f"{path}.series"))
+    if chart == "pictograph" and len(series) != 1:
+        violations.append(ContractViolation("C6", "pictograph must include exactly one series item", f"{path}.series"))
 
     return violations
 
@@ -1698,6 +1753,7 @@ class _RenderedAuthorityParser(HTMLParser):
                 "verified-badge",
                 "fin-period",
                 "visual-source-caption",
+                "viz-structured-number",
                 "section-nav",
                 "section-nav-item",
                 "section-nav-dot",

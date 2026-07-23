@@ -1,0 +1,18 @@
+{
+  "pages": [{
+    "page_id": "gantt_milestone",
+    "short_title": "Milestone Gantt",
+    "layout": "statement",
+    "allowed_source_ids": [],
+    "allowed_metric_ids": [],
+    "content": [{
+      "type": "viz",
+      "chart": "gantt",
+      "title": "Decision Milestones",
+      "series": [
+        {"label": "Kickoff", "start": "2026-08", "end": "2026-08", "milestone": true},
+        {"label": "Launch", "start": "2026-10", "end": "2026-10", "milestone": true}
+      ]
+    }]
+  }]
+}

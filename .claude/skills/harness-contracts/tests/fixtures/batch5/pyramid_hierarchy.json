@@ -1,0 +1,20 @@
+{
+  "pages": [{
+    "page_id": "pyramid_hierarchy",
+    "short_title": "Hierarchy Pyramid",
+    "layout": "statement",
+    "allowed_source_ids": [],
+    "allowed_metric_ids": [],
+    "content": [{
+      "type": "viz",
+      "chart": "pyramid",
+      "title": "Operating Hierarchy",
+      "pyramid_style": "hierarchy",
+      "series": [
+        {"label": "Direction"},
+        {"label": "Portfolio"},
+        {"label": "Execution"}
+      ]
+    }]
+  }]
+}

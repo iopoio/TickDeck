@@ -1,0 +1,17 @@
+{
+  "sources": {
+    "src_fixture": {
+      "publisher": "TickDeck",
+      "title": "Batch 5 smoke fixture",
+      "url": "https://example.com/tickdeck-batch5"
+    }
+  },
+  "metrics": {
+    "metric_fixture": {
+      "label": "Fixture",
+      "value": "1",
+      "unit": "",
+      "source_ids": ["src_fixture"]
+    }
+  }
+}

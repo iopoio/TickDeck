@@ -1127,6 +1127,106 @@ class HarnessContractTests(unittest.TestCase):
         violations = validate_c6_content_authority(invalid, VALID_CONTENT_REGISTRY, "")
         self.assertTrue(any("swot_quad item contains raw number" in str(v) for v in violations))
 
+    def test_c6_accepts_gantt_and_pictograph_without_metric_ids(self):
+        for chart, series in (
+            (
+                "gantt",
+                [
+                    {"label": "Discovery", "start": "2026-08", "end": "2026-09"},
+                    {"label": "Launch", "start": "2026-10", "end": "2026-10", "milestone": True},
+                ],
+            ),
+            ("pictograph", [{"label": "Adoption", "total": 14, "filled": 9}]),
+        ):
+            with self.subTest(chart=chart):
+                spec = {
+                    "pages": [
+                        dict(
+                            VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                            allowed_metric_ids=[],
+                            content=[{"type": "viz", "chart": chart, "series": series}],
+                        )
+                    ]
+                }
+                self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
+
+    def test_c6_rejects_invalid_gantt_ranges_and_oversized_pictograph(self):
+        invalid_specs = (
+            (
+                "gantt",
+                [{"label": "Discovery", "start": "2026-10", "end": "2026-08"}],
+                "gantt series item end must not precede start",
+            ),
+            (
+                "pictograph",
+                [{"label": "Adoption", "total": 21, "filled": 9}],
+                "pictograph total must be at most 20",
+            ),
+        )
+        for chart, series, message in invalid_specs:
+            with self.subTest(chart=chart):
+                spec = {
+                    "pages": [
+                        dict(
+                            VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                            allowed_metric_ids=[],
+                            content=[{"type": "viz", "chart": chart, "series": series}],
+                        )
+                    ]
+                }
+                violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, "")
+                self.assertTrue(any(message in str(v) for v in violations))
+
+    def test_c6_rejects_missing_labels_for_batch5_qualitative_charts(self):
+        for chart, item in (
+            ("gantt", {"start": "2026-08", "end": "2026-09"}),
+            ("pictograph", {"total": 14, "filled": 9}),
+        ):
+            with self.subTest(chart=chart):
+                spec = {
+                    "pages": [
+                        dict(
+                            VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                            allowed_metric_ids=[],
+                            content=[{"type": "viz", "chart": chart, "series": [item]}],
+                        )
+                    ]
+                }
+                violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, "")
+                self.assertTrue(any(f"{chart} series item must include label" in str(v) for v in violations))
+
+    def test_c6_rejects_gantt_bounds_and_multiple_pictograph_series(self):
+        invalid_specs = (
+            (
+                "gantt",
+                [{"label": "Long plan", "start": "2026-01", "end": "2029-02"}],
+                "gantt schedule must span at most 36 months",
+            ),
+            (
+                "gantt",
+                [{"label": "Hidden lane", "start": "2026-01", "end": "2026-02", "lane": 8}],
+                "gantt series item lane must be within 0..7",
+            ),
+            (
+                "pictograph",
+                [{"label": "A", "total": 4, "filled": 2}, {"label": "B", "total": 4, "filled": 3}],
+                "pictograph must include exactly one series item",
+            ),
+        )
+        for chart, series, message in invalid_specs:
+            with self.subTest(message=message):
+                spec = {
+                    "pages": [
+                        dict(
+                            VALID_DECK_SPEC_WITH_VIZ["pages"][0],
+                            allowed_metric_ids=[],
+                            content=[{"type": "viz", "chart": chart, "series": series}],
+                        )
+                    ]
+                }
+                violations = validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, "")
+                self.assertTrue(any(message in str(v) for v in violations))
+
     # ── R5 논증 어휘(2026-07-08 DESIGN_R5_argument_diagrams.md) — pyramid/causal_chain/
     #    two_by_two/tradeoff. 4종 각각 정상 렌더 1 + 슬롯 미달 위반 1.
 
@@ -2187,6 +2287,94 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("visual-swot-quad", html)
         self.assertIn("swot-cell-highlight", html)
         self.assertIn("Proof library", html)
+        self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_swot_axis_labels_only_when_requested(self):
+        content = {
+            "type": "viz",
+            "chart": "swot_quad",
+            "series": [
+                {"label": "Strengths", "items": ["Proof library"]},
+                {"label": "Weaknesses", "items": ["Small sales surface"]},
+                {"label": "Opportunities", "items": ["Agency bundles"]},
+                {"label": "Threats", "items": ["Platform lock-in"]},
+            ],
+        }
+        plain_spec = {"pages": [dict(VALID_DECK_SPEC_WITH_VIZ["pages"][0], allowed_metric_ids=[], content=[content])]}
+        plain_html = render_deck_module.render_deck(plain_spec, VALID_CONTENT_REGISTRY, title="SWOT Plain")
+        self.assertNotIn("swot-axis-arrow", plain_html)
+
+        axis_content = dict(content, axis_labels={"x": ["Low", "High"], "y": ["High", "Low"]})
+        axis_spec = {"pages": [dict(VALID_DECK_SPEC_WITH_VIZ["pages"][0], allowed_metric_ids=[], content=[axis_content])]}
+        axis_html = render_deck_module.render_deck(axis_spec, VALID_CONTENT_REGISTRY, title="SWOT Axis")
+        self.assertIn("swot-axis-arrow", axis_html)
+        self.assertIn("High", axis_html)
+
+    def test_render_deck_outputs_hierarchy_pyramid_without_changing_argument_mode(self):
+        hierarchy = {
+            "type": "viz",
+            "chart": "pyramid",
+            "pyramid_style": "hierarchy",
+            "series": [
+                {"label": "Direction"},
+                {"label": "Portfolio"},
+                {"label": "Execution"},
+            ],
+        }
+        hierarchy_spec = {"pages": [dict(VALID_DECK_SPEC_WITH_VIZ["pages"][0], allowed_metric_ids=[], content=[hierarchy])]}
+        hierarchy_html = render_deck_module.render_deck(hierarchy_spec, VALID_CONTENT_REGISTRY, title="Hierarchy")
+        self.assertIn("pyramid-hierarchy-rule", hierarchy_html)
+
+        argument = dict(hierarchy)
+        argument.pop("pyramid_style")
+        argument["series"] = [
+            {"role": "claim", "label": "Direction"},
+            {"role": "evidence", "label": "Portfolio"},
+            {"role": "evidence", "label": "Execution"},
+        ]
+        argument_spec = {"pages": [dict(VALID_DECK_SPEC_WITH_VIZ["pages"][0], allowed_metric_ids=[], content=[argument])]}
+        argument_html = render_deck_module.render_deck(argument_spec, VALID_CONTENT_REGISTRY, title="Argument")
+        self.assertNotIn("pyramid-hierarchy-rule", argument_html)
+        self.assertIn("<polygon", argument_html)
+
+    def test_render_deck_outputs_gantt_grid_and_milestone_variants(self):
+        grid = {
+            "type": "viz",
+            "chart": "gantt",
+            "series": [
+                {"label": "Discovery", "start": "2026-08", "end": "2026-09"},
+                {"label": "Build", "start": "2026-09", "end": "2026-11"},
+            ],
+        }
+        milestone = {
+            "type": "viz",
+            "chart": "gantt",
+            "series": [
+                {"label": "Kickoff", "start": "2026-08", "end": "2026-08", "milestone": True},
+                {"label": "Launch", "start": "2026-10", "end": "2026-10", "milestone": True},
+            ],
+        }
+        for content, marker in ((grid, "gantt-grid-bar"), (milestone, "gantt-milestone-diamond")):
+            with self.subTest(marker=marker):
+                spec = {"pages": [dict(VALID_DECK_SPEC_WITH_VIZ["pages"][0], allowed_metric_ids=[], content=[content])]}
+                html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Gantt")
+                self.assertIn(marker, html)
+                self.assertIn("gantt-grid-rule", html)
+                self.assertNotIn('data-metric-id=""', html)
+                self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
+
+    def test_render_deck_outputs_pictograph_people_ratio(self):
+        content = {
+            "type": "viz",
+            "chart": "pictograph",
+            "series": [{"label": "Adoption", "total": 14, "filled": 9}],
+        }
+        spec = {"pages": [dict(VALID_DECK_SPEC_WITH_VIZ["pages"][0], allowed_metric_ids=[], content=[content])]}
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Pictograph")
+        self.assertEqual(html.count('class="pictograph-person'), 14)
+        self.assertIn("9 / 14", html)
+        self.assertIn("viz-structured-number", html)
+        self.assertNotIn('data-metric-id=""', html)
         self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, html), [])
 
     def test_render_deck_outputs_semantic_color_roles(self):

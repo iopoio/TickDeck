@@ -1,0 +1,15 @@
+{
+  "pages": [{
+    "page_id": "pictograph",
+    "short_title": "Pictograph Ratio",
+    "layout": "statement",
+    "allowed_source_ids": [],
+    "allowed_metric_ids": [],
+    "content": [{
+      "type": "viz",
+      "chart": "pictograph",
+      "title": "Adoption",
+      "series": [{"label": "Adopters", "total": 14, "filled": 9}]
+    }]
+  }]
+}

@@ -1,0 +1,21 @@
+{
+  "pages": [{
+    "page_id": "swot_axes",
+    "short_title": "Quadrant Matrix",
+    "layout": "statement",
+    "allowed_source_ids": [],
+    "allowed_metric_ids": [],
+    "content": [{
+      "type": "viz",
+      "chart": "swot_quad",
+      "title": "Positioning Matrix",
+      "axis_labels": {"x": ["Low reach", "High reach"], "y": ["High control", "Low control"]},
+      "series": [
+        {"label": "Strengths", "items": ["Proof library"]},
+        {"label": "Weaknesses", "items": ["Small sales surface"]},
+        {"label": "Opportunities", "items": ["Agency bundles"]},
+        {"label": "Threats", "items": ["Platform lock-in"]}
+      ]
+    }]
+  }]
+}

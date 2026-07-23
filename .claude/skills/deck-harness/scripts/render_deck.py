@@ -2862,6 +2862,97 @@ def _svg_timeline_bars(
     return _svg_shell("timeline_bars", title, note, y0 + row_h * n + 26, "".join(body), page_id)
 
 
+def _svg_gantt(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    rows = _raw_series_items(block)[:8]
+    month_values = [str(item[key]) for item in rows for key in ("start", "end")]
+    month_indexes = [int(value[:4]) * 12 + int(value[5:7]) - 1 for value in month_values]
+    first_month, last_month = min(month_indexes), max(month_indexes)
+    months = list(range(first_month, last_month + 1))
+    label_w, chart_w = 230, 720
+    col_w = chart_w / len(months)
+    y0, header_h, row_h = CHART_TITLE_GAP - 6, 42, 52
+    milestone_only = all(bool(item.get("milestone")) or item.get("start") == item.get("end") for item in rows)
+    body = []
+    for i, month in enumerate(months):
+        year, month_number = divmod(month, 12)
+        x = label_w + i * col_w
+        body.append(f'<rect x="{x:.1f}" y="{y0}" width="{col_w:.1f}" height="{header_h}" fill="color-mix(in srgb, {accent} {16 if i % 2 == 0 else 10}%, transparent)"/>')
+        body.append(f'<text x="{x + col_w / 2:.1f}" y="{y0 + 26}" text-anchor="middle" class="visual-note viz-structured-number">{year}-{month_number + 1:02d}</text>')
+    if milestone_only:
+        axis_y = y0 + header_h + 94
+        for i in range(len(months) + 1):
+            x = label_w + i * col_w
+            body.append(f'<line class="gantt-grid-rule" x1="{x:.1f}" y1="{y0 + header_h}" x2="{x:.1f}" y2="{axis_y + 42}" stroke="var(--line)"/>')
+        body.append(f'<line x1="{label_w}" y1="{axis_y}" x2="{label_w + chart_w}" y2="{axis_y}" stroke="var(--line)" stroke-width="2"/>')
+        for i, item in enumerate(rows):
+            month = int(str(item["start"])[:4]) * 12 + int(str(item["start"])[5:7]) - 1
+            x = label_w + (month - first_month + 0.5) * col_w
+            points = f"{x:.1f},{axis_y - 9} {x + 9:.1f},{axis_y} {x:.1f},{axis_y + 9} {x - 9:.1f},{axis_y}"
+            callout_y = axis_y - 48 if i % 2 == 0 else axis_y + 54
+            body.append(f'<polygon class="gantt-milestone-diamond" points="{points}" fill="{accent}"/>')
+            body.append(f'<line x1="{x:.1f}" y1="{axis_y}" x2="{x:.1f}" y2="{callout_y - (8 if i % 2 == 0 else 18)}" stroke="{accent}" stroke-opacity=".5"/>')
+            body.append(f'<text x="{x:.1f}" y="{callout_y}" text-anchor="middle" class="visual-label" font-size="15">{_escape(str(item.get("label", "")))}</text>')
+        height = axis_y + 90
+    else:
+        max_lane = max((item.get("lane") if isinstance(item.get("lane"), int) else i) for i, item in enumerate(rows))
+        grid_bottom = y0 + header_h + (max_lane + 1) * row_h
+        for i in range(len(months) + 1):
+            x = label_w + i * col_w
+            body.append(f'<line class="gantt-grid-rule" x1="{x:.1f}" y1="{y0 + header_h}" x2="{x:.1f}" y2="{grid_bottom}" stroke="var(--line)"/>')
+        for lane_index in range(max_lane + 2):
+            y = y0 + header_h + lane_index * row_h
+            body.append(f'<line class="gantt-grid-rule" x1="0" y1="{y}" x2="{label_w + chart_w}" y2="{y}" stroke="var(--line)"/>')
+        for i, item in enumerate(rows):
+            lane = item.get("lane")
+            lane_index = lane if isinstance(lane, int) else i
+            y = y0 + header_h + lane_index * row_h
+            start = int(str(item["start"])[:4]) * 12 + int(str(item["start"])[5:7]) - 1
+            end = int(str(item["end"])[:4]) * 12 + int(str(item["end"])[5:7]) - 1
+            x = label_w + (start - first_month) * col_w + 5
+            width = max(4, (end - start + 1) * col_w - 10)
+            body.append(f'<text x="{label_w - 16}" y="{y + 32}" text-anchor="end" class="visual-label" font-size="16">{_escape(str(item.get("label", "")))}</text>')
+            body.append(f'<rect class="gantt-grid-bar" x="{x:.1f}" y="{y + 11}" width="{width:.1f}" height="26" rx="5" fill="color-mix(in srgb, {accent} {max(40, 82 - i * 9)}%, transparent)"/>')
+        height = y0 + header_h + (max_lane + 1) * row_h + 24
+    return _svg_shell("gantt", title, note, int(height), "".join(body), page_id)
+
+
+def _svg_pictograph(
+    series: list[dict[str, Any]],
+    title: str,
+    note: str,
+    accent: str,
+    page_id: str,
+    block: dict[str, Any] | None = None,
+) -> str:
+    item = _raw_series_items(block)[0]
+    total, filled = int(item["total"]), int(item["filled"])
+    cols = min(10, total)
+    icon_w, icon_h = 84, 88
+    y0 = CHART_TITLE_GAP - 4
+    body = []
+    for i in range(total):
+        x = 58 + (i % cols) * icon_w
+        y = y0 + (i // cols) * icon_h
+        fill = accent if i < filled else f"color-mix(in srgb, {accent} 12%, transparent)"
+        body.append(
+            f'<g class="pictograph-person pictograph-person-{"filled" if i < filled else "empty"}" transform="translate({x} {y})" fill="{fill}">'
+            '<circle cx="18" cy="12" r="9"/><path d="M8 27 Q18 20 28 27 L31 53 L24 53 L24 76 L12 76 L12 53 L5 53 Z"/>'
+            "</g>"
+        )
+    rows = math.ceil(total / cols)
+    label_y = y0 + rows * icon_h + 8
+    body.append(f'<text x="58" y="{label_y}" class="visual-label" font-size="18">{_escape(str(item.get("label", "")))}</text>')
+    body.append(f'<text x="942" y="{label_y}" text-anchor="end" class="visual-value-accent viz-structured-number" font-size="24">{filled} / {total}</text>')
+    return _svg_shell("pictograph", title, note, label_y + 36, "".join(body), page_id)
+
+
 def _svg_data_table(
     series: list[dict[str, Any]],
     title: str,
@@ -3188,8 +3279,24 @@ def _svg_swot_quad(
     grid_w = cell_w * 2 + gap
     grid_h = cell_h * 2 + gap
     cross_x, cross_y = x0 + cell_w + gap / 2, y0 + cell_h + gap / 2
-    body.append(f'<line x1="{cross_x}" y1="{y0}" x2="{cross_x}" y2="{y0 + grid_h}" stroke="var(--line)" stroke-width="2"/>')
-    body.append(f'<line x1="{x0}" y1="{cross_y}" x2="{x0 + grid_w}" y2="{cross_y}" stroke="var(--line)" stroke-width="2"/>')
+    axis_labels = (block or {}).get("axis_labels")
+    if isinstance(axis_labels, dict):
+        x_labels = axis_labels.get("x", ["", ""])
+        y_labels = axis_labels.get("y", ["", ""])
+        marker_id = f"swot-axis-{_class_name(page_id)}-{_class_name(accent)}"
+        body.append(
+            f'<defs><marker id="{marker_id}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">'
+            f'<path d="M0,0 L8,4 L0,8 Z" fill="{accent}"/></marker></defs>'
+        )
+        body.append(f'<line class="swot-axis-arrow" x1="{cross_x}" y1="{y0 + grid_h}" x2="{cross_x}" y2="{y0}" stroke="{accent}" stroke-width="2" marker-end="url(#{marker_id})"/>')
+        body.append(f'<line class="swot-axis-arrow" x1="{x0}" y1="{cross_y}" x2="{x0 + grid_w}" y2="{cross_y}" stroke="{accent}" stroke-width="2" marker-end="url(#{marker_id})"/>')
+        body.append(f'<text x="{x0}" y="{cross_y - 10}" class="visual-note">{_escape(str(x_labels[0]))}</text>')
+        body.append(f'<text x="{x0 + grid_w}" y="{cross_y - 10}" text-anchor="end" class="visual-note">{_escape(str(x_labels[1]))}</text>')
+        body.append(f'<text x="{cross_x + 12}" y="{y0 + 16}" class="visual-note">{_escape(str(y_labels[0]))}</text>')
+        body.append(f'<text x="{cross_x + 12}" y="{y0 + grid_h - 10}" class="visual-note">{_escape(str(y_labels[1]))}</text>')
+    else:
+        body.append(f'<line x1="{cross_x}" y1="{y0}" x2="{cross_x}" y2="{y0 + grid_h}" stroke="var(--line)" stroke-width="2"/>')
+        body.append(f'<line x1="{x0}" y1="{cross_y}" x2="{x0 + grid_w}" y2="{cross_y}" stroke="var(--line)" stroke-width="2"/>')
     return _svg_shell("swot_quad", title, note, y0 + grid_h + 20, "".join(body), page_id)
 
 
@@ -3212,6 +3319,27 @@ def _svg_pyramid(
     page_id: str,
     block: dict[str, Any] | None = None,
 ) -> str:
+    if str((block or {}).get("pyramid_style", "")).strip() == "hierarchy":
+        layers = _raw_series_items(block)[:5]
+        n = len(layers)
+        row_h, row_gap = 76, 6
+        y0, cx = CHART_TITLE_GAP - 6, 410.0
+        widths = [340 + i * 110 for i in range(n)]
+        body = []
+        for i, item in enumerate(layers):
+            width = widths[i]
+            x = cx - width / 2
+            y = y0 + i * (row_h + row_gap)
+            fill = accent if i == 0 else f"color-mix(in srgb, {accent} {max(8, 20 - i * 3)}%, transparent)"
+            text_fill = "#FFFFFF" if i == 0 else "var(--ink)"
+            label = str(item.get("label", "")).strip()
+            body.append(f'<rect x="{x:.1f}" y="{y}" width="{width}" height="{row_h}" fill="{fill}"/>')
+            body.append(f'<text x="{cx}" y="{y + row_h / 2 + 6:.1f}" text-anchor="middle" font-size="17" font-weight="800" fill="{text_fill}">{_escape(label)}</text>')
+            rule_x1, rule_x2 = x + width, 850
+            body.append(f'<line class="pyramid-hierarchy-rule" x1="{rule_x1:.1f}" y1="{y + row_h / 2:.1f}" x2="{rule_x2}" y2="{y + row_h / 2:.1f}" stroke="{accent}" stroke-opacity=".45"/>')
+            body.append(f'<text x="{rule_x2 + 14}" y="{y + row_h / 2 + 5:.1f}" class="visual-note">{_escape(label)}</text>')
+        return _svg_shell("pyramid", title, note, y0 + n * (row_h + row_gap) + 20, "".join(body), page_id)
+
     # 주장(claim) 1 + 근거(evidence) 2~4단 — 아래로 갈수록 넓어지는 사다리꼴 스택. "위가 좁고
     # 아래가 넓다" = 근거가 주장을 떠받친다는 시각 문법(밀도 2겹 룰의 시각 짝). metric_id가
     # 붙은 근거는 _viz_series가 이미 값을 해석해 둔다 — role만 그대로 통과시켜 읽는다.
@@ -3675,6 +3803,7 @@ _CHART_RENDERERS = {
     "hub_cycle": _svg_hub_cycle,
     "arrow_flow": _svg_arrow_flow,
     "timeline_bars": _svg_timeline_bars,
+    "gantt": _svg_gantt,
     "data_table": _svg_data_table,
     "fin_table": _svg_fin_table,
     "quarterly_bars": _svg_quarterly_bars,
@@ -3689,6 +3818,7 @@ _CHART_RENDERERS = {
     "mirror_bars": _svg_mirror_bars,
     "rising_columns": _svg_rising_columns,
     "pictogram": _svg_pictogram,
+    "pictograph": _svg_pictograph,
     "gauge": _svg_gauge,
     "swot_quad": _svg_swot_quad,
     "pyramid": _svg_pyramid,
