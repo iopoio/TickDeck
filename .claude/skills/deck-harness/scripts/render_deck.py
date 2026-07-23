@@ -731,7 +731,9 @@ def _render_cover_page(
     # 표지 변형(덱 간 차별화·후추님 7/2 "레이아웃이 너무 유사"): "dark" = 잉크 파생 다크 히어로
     # (간지와 같은 파생 문법·다크 북엔드). 미지정 = 기존 라이트. 색 축(장식) — 뼈대와 독립.
     # 전면 다크 시스템에선 무시(7/23 navy_glow 실측 — ink가 밝은색이라 cover-dark가 밝은 배경을 만듦).
-    variant = " cover-dark" if str(page.get("cover_variant", "")).lower() == "dark" and palette["theme"] != "dark_premium" else ""
+    # "solid" = 그라디언트·장식 없는 잉크 단색 풀블리드(후추님 7/23).
+    _cv = str(page.get("cover_variant", "")).lower()
+    variant = " cover-dark" if _cv == "dark" and palette["theme"] != "dark_premium" else (" cover-solid" if _cv == "solid" else "")
     # 표지 뼈대 축(구조·엔바토 흡수 3라운드 7/3 — XBUQSG2·7FE9Y7G 관찰): "center"(기본, 수직 중앙
     # 락업) | "corner"(하단 앵커 — 텍스트가 화면 하단 1/3에, 더 다큐먼트/브랜드북 느낌).
     # 색 축(cover_variant)과 직교 — 조합 자유(예: corner+dark). 후추님 7/3 "뼈대를 세트로" 요청.
@@ -4234,6 +4236,18 @@ section.slide.page-title-band {{ padding-top: 124px; }}
    outro 실측 — PEPPINCH·이름 안 보임). 그라디언트 배경이라 lowc 자동검출도 skip이던 사각. */
 .cover-slide.cover-dark .presenter-company,
 .cover-slide.cover-dark .presenter-name {{ color: #F8FAFC; }}
+/* 단색 잉크 표지(cover_variant:"solid") — 그라디언트·장식 없는 짙은 단색 풀블리드(후추님 7/23) */
+.cover-slide.cover-solid {{ background: var(--ink); }}
+.cover-slide.cover-solid h1 {{ color: #F8FAFC; }}
+.cover-slide.cover-solid .cover-subtitle {{ color: rgba(248,250,252,.82); }}
+.cover-slide.cover-solid .cover-credit,
+.cover-slide.cover-solid .presenter-email {{ color: rgba(248,250,252,.6); }}
+.cover-slide.cover-solid .presenter-company,
+.cover-slide.cover-solid .presenter-name {{ color: #F8FAFC; }}
+.cover-slide.cover-solid .cover-eyebrow {{ color: color-mix(in srgb, var(--accent) 45%, #FFFFFF); }}
+.cover-slide.cover-solid h1 .kw {{ color: color-mix(in srgb, var(--accent) 38%, #FFFFFF); }}
+.cover-slide.cover-solid .slide-motif,
+.cover-slide.cover-solid .axis-strip {{ display: none; }}
 /* 표지·아웃트로 글로우 오브(드리블 2026-07 — 17_clever·19_xpend 다크 묶음. 솔리드 실루엣(블롭·다이아몬드)은
    7/23 후추님 실측 기각("어설퍼") — 글로우로 확정). 텍스트 뒤 z-index 배경 레이어·레이아웃 무관. */
 .cover-shape {{ position: absolute; z-index: 0; pointer-events: none; }}
