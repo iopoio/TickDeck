@@ -190,6 +190,24 @@ def build_markdown(sections, run, trello):
                 nm, days, n = run
                 md.append(f"- ▶ 실제 런 {n}개 (최근 {nm} · {days}일 전)")
 
+    md.append("## 🚀 만들 것 · 제품 PRD 딸깍 (PRD_PRODUCT)")
+    md.append("### 원칙 (7/25 후추님 결정)")
+    md.append("- 질 = v4 그대로, 낮추지 않음 (차별의 근거)")
+    md.append("- 속도 = 비동기로 출발, 단계별 단축")
+    md.append("- 채택 = 질과 별개 축, Phase 0 신호로 검증 (7/6 교훈)")
+    md.append("### 속도 로드맵 S0~S3")
+    md.append("- 🔵 S0 · 비동기 래핑 (버튼→알림·기존 Celery)")
+    md.append("- 🔵 S1 · 검수루프 제거 → 십몇 분 (여기서 출시 가능)")
+    md.append("- 🔵 S2 · 병렬화 → 몇 분")
+    md.append("- 🔵 S3 · 모델 라우팅·캐싱 (원가·처리량)")
+    md.append("### wedge · 회사 전략기획자의 시장조사 덱")
+    md.append("- B2B·임원 보고급, 후추님 = customer zero")
+    md.append("- 채택 각도 = 완제품 대체 아니라 0→초안 시간 단축")
+    md.append("### Phase 0 진행")
+    md.append("- 🟢 샘플 덱 완성 · 시니어 시장 15장 (7/25~26·실무 문체 교정 반영)")
+    md.append("- 🟢 원가 실측 · 약 146만 토큰, 에이전트 2시간")
+    md.append("- 🔵 마지막 장 실명 정리 + 외부 검수(3층) + 수치 팩트체크")
+    md.append("- 🔵 펩핀치 진열대 베타 게시 → 관심 신호 확인")
     md.append("## 🪦 폐기·은퇴")
     for r in RETIRED:
         md.append(f"### 🪦 {r['label']} · {r['date']}")
@@ -228,8 +246,9 @@ h1{{font-size:22px;font-weight:700}} h1 b{{color:#FF9B3D}}
 .legend{{color:#b8b8c0;font-size:12px;margin-top:8px}}
 .markmap-wrap{{flex:1;width:100%;min-height:0;overflow:hidden}}
 .markmap{{width:100%;height:100%}}
-.markmap-foreign,.markmap-foreign *{{color:#f2f2f6 !important}}
-svg.markmap text{{fill:#f2f2f6 !important}}
+.markmap-foreign,.markmap-foreign *{{color:#f2f2f6 !important;font-size:11px !important;line-height:1.35 !important}}
+svg.markmap text{{fill:#f2f2f6 !important;font-size:11px !important}}
+svg.markmap{{font:300 11px/1.35 -apple-system,"Segoe UI",Roboto,"Apple SD Gothic Neo",sans-serif}}
 .markmap-foreign a{{color:#8ec5ff !important}}
 footer{{padding:8px 24px;color:#5a5a63;font-size:12px;border-top:1px solid #26262c;flex-shrink:0}}
 code{{color:#a0a0aa}}

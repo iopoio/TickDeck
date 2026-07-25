@@ -37,6 +37,14 @@ python3 .claude/skills/deck-harness/scripts/qa_lint.py \
 - `RAW_NUMBER_IN_LABEL`(데이터 값을 텍스트/라벨에)·`EMPTY_SCENARIO_CARD`·`ARCHETYPE_MISSING`은 렌더 전 고친다(고신뢰).
 - `MIXED_SOURCE_CHART`·`LAYOUT_MONOTONY`는 **경고(WARN)** — 미·영 비교처럼 정당한 다출처도 있으니 designer가 체리피킹인지 판단(차단 아님·클차장 7/5 스팟체크: 오탐 ~절반).
 
+7.55. **맞춤법·조사 규칙 검사 (7/26 신설 — 후추님 "완성됐다 생각하면 단어·문장·맞춤법 검사" 지시·"한 명로" 사고 후속):** 렌더 전 + done 선언 전에 실행 의무:
+
+```bash
+python3 .claude/skills/deck-harness/scripts/spellcheck_kr.py _workspace/<run_id>/06_deck_spec.json
+```
+
+조사 오류(으로/로·은/는·이/가·을/를·과/와)를 받침 규칙으로 검출 — sed 치환 부작용·기계 편집 깨짐이 사람 눈 없이 걸린다. WARN은 사람 확인(오탐 있음 — "추이"류 단어·"없는"류 어미를 조사로 오인, 받침 규칙의 한계). 문장 자연스러움·AI 말투 검사는 이게 아니라 7.6 폴리시 + 3층 외부리뷰 몫 — 이 검사가 대체하지 않는다.
+
 7.6. **고티어 문장 폴리시 패스 (7/8 신설 — 납품·쇼케이스 런 한정·경쟁분석 수렴 항목):** 렌더 직전, deck_spec의 **헤드라인·리드(subtitle)·캐비앗(note) 텍스트만** 오퍼스급 이상 1콜로 다듬는다. 논리·수치·ID 참조는 불변(문장 표현만). 프롬프트에 ①`references/writing-standard.md` 적용 규칙 + ②`docs/STYLE_KR_CONSULTING.md`의 실물 예시를 few-shot으로 함께 투입한다(규칙+정본 예시 병행 — GLM 교차 검증 7/8). 데모·내부 런은 생략(비용 절약).
 
 7.7. **핵심 페이지 best-of-N (7/8 신설 — 납품·쇼케이스 런 한정):** 표지·감정 반전(pivot)·클로저 등 덱의 인상을 결정하는 **2~3장만** designer에게 변형 2~3개를 생성시켜 클차장이 선택한다(헤드라인 문안·레이아웃 조합 변주). 계약은 바닥을 올리고 샘플링은 천장을 올린다 — 전 페이지 적용 금지(비용), 핵심 장만.
