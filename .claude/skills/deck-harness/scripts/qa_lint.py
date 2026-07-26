@@ -89,7 +89,13 @@ SEVERITY = {
     "READER_FIRST_CAVEAT": "high",
     "READER_FIRST_SELF_REF": "high",
     "READER_FIRST_JARGON": "high",
+    # absorb 코덱스 배치8 (7/26): placeholder 잔재·혼합 방향 시리즈 — 둘 다 코덱스 실측 사고 유형.
+    "PLACEHOLDER_STRING": "high",
+    "MIXED_DIRECTION_SERIES": "low",
 }
+
+# placeholder 잔재 (고신뢰 토큰만 — 정상 본문에 나올 수 없는 것들)
+_PLACEHOLDER_PATTERN = re.compile(r"\b(?:xxxx+|lorem|ipsum|TBD|TODO|FIXME)\b", re.IGNORECASE)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -205,6 +211,63 @@ def lint_deck(deck_spec: dict[str, Any], registry: dict[str, Any], deck_path: Pa
             )
         )
 
+        defects.extend(_placeholder_defects(content, page_id, f"{page_path}.content"))
+        defects.extend(_mixed_direction_defects(content, page_id, f"{page_path}.content", metric_registry))
+
+    return defects
+
+
+def _placeholder_defects(value: Any, page_id: str, path: str) -> list[dict[str, str]]:
+    # absorb 코덱스 배치8: 최종 산출물에 placeholder 토큰 잔재 = 즉시 결함 (xxxx/lorem/TBD/TODO/FIXME).
+    defects: list[dict[str, str]] = []
+    def walk(node: Any, node_path: str) -> None:
+        if isinstance(node, str):
+            hit = _PLACEHOLDER_PATTERN.search(node)
+            if hit:
+                defects.append(_defect("PLACEHOLDER_STRING", page_id, node_path,
+                                       f"placeholder 잔재 '{hit.group(0)}' — 최종본에 남으면 안 됨"))
+        elif isinstance(node, dict):
+            for k, v in node.items():
+                walk(v, f"{node_path}.{k}")
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, f"{node_path}[{i}]")
+    walk(value, path)
+    return defects
+
+
+def _mixed_direction_defects(
+    value: Any, page_id: str, path: str, metric_registry: dict[str, Any]
+) -> list[dict[str, str]]:
+    # absorb 코덱스 배치8 실측: 양수·음수 지표가 한 차트에 섞이면 0축에서 음수 소실 or 방향 오독.
+    # WARN(low) — before_after 델타 등 정당한 경우가 있어 designer 판단 대상 (차단 아님).
+    defects: list[dict[str, str]] = []
+    for block, block_path in _iter_blocks(value, path):
+        if block.get("type") != "viz":
+            continue
+        series = block.get("series")
+        if not isinstance(series, list):
+            continue
+        signs: set[str] = set()
+        for item in series:
+            if not isinstance(item, dict):
+                continue
+            entry = metric_registry.get(str(item.get("metric_id", "")))
+            if not isinstance(entry, dict):
+                continue
+            try:
+                num = float(str(entry.get("value", "")).replace(",", ""))
+            except (TypeError, ValueError):
+                continue
+            if num > 0:
+                signs.add("+")
+            elif num < 0:
+                signs.add("-")
+        if signs == {"+", "-"}:
+            defects.append(_defect(
+                "MIXED_DIRECTION_SERIES", page_id, block_path,
+                "양수·음수 metric이 한 viz에 혼재 — 음수 소실/방향 오독 위험. 지표 재명명(감소폭 등) 또는 이질 방향은 별도 callout 분리 검토",
+            ))
     return defects
 
 

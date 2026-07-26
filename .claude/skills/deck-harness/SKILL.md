@@ -35,7 +35,7 @@ python3 .claude/skills/deck-harness/scripts/qa_lint.py \
 ```
 
 - `RAW_NUMBER_IN_LABEL`(데이터 값을 텍스트/라벨에)·`EMPTY_SCENARIO_CARD`·`ARCHETYPE_MISSING`은 렌더 전 고친다(고신뢰).
-- `MIXED_SOURCE_CHART`·`LAYOUT_MONOTONY`는 **경고(WARN)** — 미·영 비교처럼 정당한 다출처도 있으니 designer가 체리피킹인지 판단(차단 아님·클차장 7/5 스팟체크: 오탐 ~절반).
+- `PLACEHOLDER_STRING`(xxxx/lorem/TBD/TODO 잔재)은 렌더 전 고친다(고신뢰·absorb 코덱스 배치8). `MIXED_DIRECTION_SERIES`(양수·음수 혼재 viz — 음수 소실/방향 오독 위험)·`MIXED_SOURCE_CHART`·`LAYOUT_MONOTONY`는 **경고(WARN)** — 미·영 비교처럼 정당한 다출처도 있으니 designer가 체리피킹인지 판단(차단 아님·클차장 7/5 스팟체크: 오탐 ~절반).
 
 7.55. **맞춤법·조사 규칙 검사 (7/26 신설 — 후추님 "완성됐다 생각하면 단어·문장·맞춤법 검사" 지시·"한 명로" 사고 후속):** 렌더 전 + done 선언 전에 실행 의무:
 
