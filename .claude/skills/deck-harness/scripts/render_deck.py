@@ -5536,8 +5536,12 @@ h1 {{
 .body:not(.layout-body) > .visual-card.visual-hero,
 .stack-outer > .visual-card.visual-hero {{ width: 100% !important; }} /* 테마별 폭 상한(0,3,0)에 밀리던 것 — hero 의미상 전폭 고정 (7/7 2R) */
 .body:not(.layout-body) > .metric-card {{ max-width: 460px; }}
-/* stack 컴포지션 — 전폭 차트도 세로 비율이 안 터지게 상한. */
-.stack-outer > .visual-card {{ width: min(100%, 760px); }}
+/* stack 컴포지션 — 전폭 차트도 세로 비율이 안 터지게 상한.
+   7/26 후추님 실지적("나누지 말고 아래로 내려라") 후속: split→stack 전환분이 카드 잘림(실측 +16~75px)
+   → 760→640으로 차트 세로 ~50px 절약 + 아래 stack-row 카드 컴팩트(~35px)로 회수. */
+.stack-outer > .visual-card {{ width: min(100%, 640px); }}
+.stack-outer .stack-row .metric-card {{ padding: 10px 20px 8px; }}
+.stack-outer .stack-row .metric-value {{ font-size: 38px; }}
 /* hero 차트 페이지의 보조 카드열은 낮춰 잡는다 — 주인공이 세로 2배를 가져간 뒤 남는 FIT 룸(7/7 R4 실측 +79px). */
 .stack-outer > .visual-hero ~ .stack-row {{ margin-top: 0; }}
 .stack-outer > .visual-hero ~ .stack-row .metric-card {{ padding: 10px 20px 8px; }}

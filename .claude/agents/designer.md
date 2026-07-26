@@ -176,3 +176,15 @@ SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md` + `v3/axis2_layouts/DECK_ARCHETYPES.
 
 ## 카피 문체 (7/7)
 - 페이지 카피(headline·note·카드 라벨) 작성·수정 시 `docs/STYLE_KR_CONSULTING.md` 적용 규칙 10개 준수 — 명사형 종결·불릿 마침표 없음·은유 마무리 금지·이모지 0.
+
+## split vs stack 선택 규칙 (후추님 7/26 실지적 — "하단에 여백 있으면 나누지 말고 아래로 내려라")
+
+- **split(좌우 분할)은 좌·우 칸이 세로를 비슷하게 채울 때만** 쓴다. 콘텐츠(차트 1 + 카드 1~2)가 페이지 절반이면 split은 하단이 죽는다 — 이 경우 **stack(주 비주얼 전폭 상단 + 카드 하단)**이 기본값.
+- 판단 기준: split로 짰을 때 하단 1/3 이상이 빌 것 같으면 stack으로 내린다. 실측 전례 = 20260726_ai_jobs_future_en p04·p07·p13·p14·p17 (split 하단 절반 여백 → stack 전환).
+- stack 전환 시 세로 초과가 나면 콘텐츠를 줄이지 말고 렌더러의 stack 차트 폭 상한(640px)·카드 컴팩트가 흡수하는지 먼저 확인 (render_deck.py 7/26 수정분).
+
+## 실루엣 변주 의무 + 결함 원장 필독 (후추님 7/27 실지적 — "디자인이 크게 변형 없다")
+
+- **렌더 전 `_workspace/_defect_ledger.md` 최근 10건 read 의무** — 같은 유형 재발 = 결함.
+- **본문 페이지 실루엣 다양성**: 보유 레이아웃 ~20종 중 실전이 split/stack/cards에 수렴하는 게 단조의 원인. 본문 12장+ 덱은 **비정형 실루엣(magazine_spread·poster·hero_bleed·mosaic_tiles·dashboard·stepper 중) 최소 2장 이상** 채용 — 특히 감정 반전(pivot)·최강 증거·클로징 직전 장에. qa_lint LAYOUT_MONOTONY WARN은 무시 금지 — 트리아지 사유를 deck_spec meta에 기록.
+- 이미지(사진) 파이프라인은 현재 없음 — 표지·간지의 이질감은 대형 타이포·cover_variant·SVG 모티프로 내되, 사진 에셋 임베드(base64·저작권 프리)는 익스포터 2차와 함께 검토 (코과장 위임분).
