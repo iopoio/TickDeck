@@ -188,3 +188,9 @@ SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md` + `v3/axis2_layouts/DECK_ARCHETYPES.
 - **렌더 전 `_workspace/_defect_ledger.md` 최근 10건 read 의무** — 같은 유형 재발 = 결함.
 - **본문 페이지 실루엣 다양성**: 보유 레이아웃 ~20종 중 실전이 split/stack/cards에 수렴하는 게 단조의 원인. 본문 12장+ 덱은 **비정형 실루엣(magazine_spread·poster·hero_bleed·mosaic_tiles·dashboard·stepper 중) 최소 2장 이상** 채용 — 특히 감정 반전(pivot)·최강 증거·클로징 직전 장에. qa_lint LAYOUT_MONOTONY WARN은 무시 금지 — 트리아지 사유를 deck_spec meta에 기록.
 - 이미지(사진) 파이프라인은 현재 없음 — 표지·간지의 이질감은 대형 타이포·cover_variant·SVG 모티프로 내되, 사진 에셋 임베드(base64·저작권 프리)는 익스포터 2차와 함께 검토 (코과장 위임분).
+
+## 디자인 DNA 묶음 — 렌더 전 필독 의무 2호 (후추님 7/27 — "이번만 좋고 끝날 수 없다")
+
+- **렌더 전 `references/visualization.md`의 "표지·페이지 디자인 DNA 묶음 (2026-07-27)" 섹션 read 의무** — `_defect_ledger.md`와 함께 렌더 전 필독 2종. 하나라도 안 읽고 spec 쓰면 결함.
+- **적용 기록 의무**: 8레버 중 이번 덱에 적용한 번호/뺀 번호+사유를 `deck_spec.meta.design_dna`에 한 줄 기록 (예: `"적용 1·2·4·5·7·8 / 6 제외 — 본문 9장"`). 기록 없으면 qa-reviewer가 반려.
+- 낱개 선택이 아니라 **묶음**이다 — 표지 초대형 타이포·모서리 메타·틴트+카드·톤스케일·모티프·검증 배지를 같이 써야 레퍼런스급 톤이 난다.
