@@ -71,7 +71,7 @@ python .claude/skills/deck-harness/scripts/render_deck.py \
 2. 2층 총괄 게이트(내용/스토리 완성 후·디자인 전): 클차장이 "제대로된·잘 읽히는 보고서인가"를 통째 판정한다.
 3. 3층 외부 리뷰(최종 직전 1회·**skip 금지 — 미수행이면 done 불가, 07_qa_report에 `external_review_layer3` 기록 의무**): 코덱스 + 제미나이 교차 후 클차장이 트리아지한다. 둘 다 그대로 받지 않는다(기각 사유도 기록).
    - **"최종"의 정의 = 사용자에게 전달하는 그 판** (run당 1회가 아니다 — 7/6 후추님 지적). 대폭 개정(논지 변경·페이지 절반 이상 재작성·장르 재지정)이 있으면 **개정 최종본으로 재실행**한다. 이전 판 리뷰 기록은 개정본에 대한 리뷰가 아니다. 소폭 수정(문구·1~2페이지)만 기존 기록+개정 명기로 갈음 가능.
-   - 입력 (7/8 R7 — spec 단계로 이동): **06_deck_spec.json에서 페이지별 제목·클레임·수치 텍스트 추출** (`external_review.py --stage spec`, 기본값) + 냉정 리뷰 프롬프트(논리 비약·어색한 한국어·제목/부제 관계·흐름 단절, 페이지 명시, 최대 10건). 리뷰 지적 반영 → 렌더는 한 번만. 렌더 후 HTML 입력 모드는 플래그로 보존(레거시).
+   - 입력 (7/8 R7 — spec 단계로 이동): **06_deck_spec.json에서 페이지별 제목·클레임·수치 텍스트 추출** (`external_review.py --stage spec`, 기본값) + 냉정 리뷰 프롬프트(논리 비약·어색한 한국어·제목/부제 관계·흐름 단절·문체 은유 변형 검출 렌즈6(7/27), 페이지 명시, 최대 10건). 리뷰 지적 반영 → 렌더는 한 번만. 렌더 후 HTML 입력 모드는 플래그로 보존(레거시).
    - 코덱스: `codex exec --skip-git-repo-check "$(cat review_input.txt)"`
    - 제미나이: `Think/.venv/bin/python Think/.claude/scripts/gemini_call_wrapper.py --prompt "..." --no-cache` (시스템 python엔 google-genai 없음 — Think/.venv가 wrapper 전용 venv, 7/3 복구)
 3b. 3b층 전 수치 팩트체크(7/8 R7 신설 — **납품·쇼케이스 런 의무**·데모 면제): 06 확정 후 `factcheck_dump.py`로 수치 대조표(08_factcheck_table.json) 생성 → `fact-checker` 에이전트가 전 수치를 원문 재열람으로 대조(08_factcheck.json). mismatch ≥1 = verifier 반송·통과 금지. unreachable = [미검증] 각주 또는 수치 제거 전까지 통과 금지. verifier는 수집 시점 검증, 이건 최종본 기준 재대조 — 변환 4단(insights→dag→plan→spec)에서 생긴 어긋남을 잡는다.
@@ -227,3 +227,15 @@ Rules:
 - Rendered page title containing validation metadata terms: must fail C2.
 - Designer-written metric values or manual source labels in rendered HTML: must fail C6.
 - Viz block with raw title/label/note numbers or out-of-allowlist metric ids: must fail C6.
+
+
+## 반복 업그레이드 루프 (후추님 7/27 확정 — "반복할수록 나아지는 방식")
+
+후추님 지적·결함 1건이 나오면 아래 4단을 그 자리에서 완주한다. 문서에 쌓아두기만 하면 위반.
+
+1. **즉시 교정** — 해당 덱 실물 수정 + 재렌더 + 눈 확인 (조립본·PDF 포함)
+2. **정본 등재** — 성격에 따라 `references/writing-standard.md`(문체) / `references/visualization.md`(디자인) / `_workspace/_defect_ledger.md`(결함 사례)
+3. **기계 검출 추가** — 결정론 검사가 가능하면 코드에: `hybrid_audit.py` STYLE_BANNED · `qa_lint.py`(STYLE_BANNED_PHRASE 등) · spellcheck. 게이트에 걸리면 파이프라인 정지
+4. **외부 리뷰 렌즈 갱신** — 리스트가 못 잡는 새 변형은 3층 외부리뷰(코덱스·제미나이) 렌즈가 잡는다 (`external_review.py` 렌즈 6 = 문체)
+
+효과 누적 축: 지적 표현 재발 0(게이트) + 도메인 registry 재사용(2회차 원가↓) + exemplar·스타일 정본 재사용(품질 바닥선↑) + 결함 원장(designer 필독). 실증 3건(7/27): 회색 덱→iframe 조립+조립본 눈검증 의무 / registry 용어→쉬운 한국어 / 은유 문체→게이트+렌즈6.
