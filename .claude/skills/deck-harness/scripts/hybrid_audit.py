@@ -33,16 +33,38 @@ def allowed_set(brief):
         ok.add(n); ok.add(n.replace(',',''))
     return ok
 
+# ─ 문체 게이트 (후추님 7/27 "개발로 무조건 확인하고 거르게") ─
+# SoT = references/writing-standard.md "기계 검출 금지 표현" 절 — 목록 수정은 반드시 양쪽 동시.
+# 은유 동사·압축 명사구: 실무 보고서 톤 위반. 검출 = 게이트 실패(exit 1) → 교정 후 재실행.
+STYLE_BANNED = [
+    "비어 있",   # → 공급이 없다·사실상 한 곳뿐이다
+    "막힌다", "막혀 있",  # → 부족하다·못 미친다·좁다
+    "닿는다", "닿는 길", "못 닿",  # → 접근하다·경로
+    "성장을 끈",  # → 성장 동력은 ~다
+    "걷어낸", "걷어내",  # → 뺀·제외한
+    "몸통", "판독", "덩어리", "실물최대",  # 압축 은유 명사구 (7/26·7/27 후추님 실지적)
+    "계정성 자산",  # → 연금·보험 같은 금융 자산 (7/26)
+]
+
 report = {}
+style_fail = False
 for pf in sorted(run.glob('pages/p*.html')):
     pid = pf.stem
     bf = run / 'briefs' / f'{pid}.json'
     if not bf.exists(): continue
     brief = json.load(open(bf))
     ok = allowed_set(brief)
-    found = NUM.findall(visible_text(pf))
+    text = visible_text(pf)
+    found = NUM.findall(text)
     unknown = sorted({n for n in found if n not in ok and n.replace(',','') not in ok})
-    report[pid] = {'nums_visible': len(found), 'unknown': unknown}
-    flag = '⚠' if unknown else '✓'
-    print(f"{flag} {pid}: {len(found)} nums, unknown={unknown if unknown else '없음'}")
+    style_hits = [w for w in STYLE_BANNED if w in text]
+    if style_hits: style_fail = True
+    report[pid] = {'nums_visible': len(found), 'unknown': unknown, 'style_banned': style_hits}
+    flag = '✗' if style_hits else ('⚠' if unknown else '✓')
+    line = f"{flag} {pid}: {len(found)} nums, unknown={unknown if unknown else '없음'}"
+    if style_hits: line += f" · 문체 위반={style_hits}"
+    print(line)
 json.dump(report, open(run/'qa'/'number_audit.json','w'), ensure_ascii=False, indent=1)
+if style_fail:
+    print("\n✗ 문체 게이트 실패 — writing-standard.md 기준으로 교정 후 재실행")
+    sys.exit(1)

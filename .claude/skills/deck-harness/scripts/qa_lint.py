@@ -91,6 +91,7 @@ SEVERITY = {
     "READER_FIRST_JARGON": "high",
     # absorb 코덱스 배치8 (7/26): placeholder 잔재·혼합 방향 시리즈 — 둘 다 코덱스 실측 사고 유형.
     "PLACEHOLDER_STRING": "high",
+    "STYLE_BANNED_PHRASE": "medium",
     "MIXED_DIRECTION_SERIES": "low",
 }
 
@@ -212,8 +213,33 @@ def lint_deck(deck_spec: dict[str, Any], registry: dict[str, Any], deck_path: Pa
         )
 
         defects.extend(_placeholder_defects(content, page_id, f"{page_path}.content"))
+        defects.extend(_style_banned_defects(content, page_id, f"{page_path}.content"))
         defects.extend(_mixed_direction_defects(content, page_id, f"{page_path}.content", metric_registry))
 
+    return defects
+
+
+# 문체 게이트(후추님 7/27) — SoT = references/writing-standard.md "기계 검출 금지 표현" 절.
+# hybrid_audit.py STYLE_BANNED와 미러 — 목록 수정은 반드시 양쪽 동시.
+_STYLE_BANNED = ["비어 있", "막힌다", "막혀 있", "닿는다", "닿는 길", "못 닿", "성장을 끈",
+                 "걷어낸", "걷어내", "몸통", "판독", "덩어리", "실물최대", "계정성 자산"]
+
+
+def _style_banned_defects(value: Any, page_id: str, path: str) -> list[dict[str, str]]:
+    defects: list[dict[str, str]] = []
+    def walk(node: Any, node_path: str) -> None:
+        if isinstance(node, str):
+            hits = [w for w in _STYLE_BANNED if w in node]
+            if hits:
+                defects.append(_defect("STYLE_BANNED_PHRASE", page_id, node_path,
+                                       f"은유·어색 표현 {hits} — writing-standard 금지 표현 절 참조"))
+        elif isinstance(node, dict):
+            for k, v in node.items():
+                walk(v, f"{node_path}.{k}")
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, f"{node_path}[{i}]")
+    walk(value, path)
     return defects
 
 
