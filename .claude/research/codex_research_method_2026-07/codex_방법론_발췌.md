@@ -1,0 +1,42 @@
+# 코덱스 리서치·덱 제작 방법론 (2026-07-26 자기설명 발췌)
+
+> 출처: 후추님이 코덱스(OpenAI)에 "자료 조사방법·정리방법·덱 구성·디자인 방법 상세히"라고 물어 받은 자기설명 전문에서 발췌. 산출물 = AI_White_Collar 영어 20장 덱 (12분 41초 생성·독립 시각리뷰 1회 포함).
+> 흡수 판정: 아래 [신규] 표시만 우리 SoT에 이식 (collector.md·visualization.md 7/26 append). [기존]은 우리가 이미 보유 — 중복 등재 안 함.
+
+## 1. 조사 설계
+- [기존] 질문을 직무가 아닌 task로 분해 (우리 intake와 동일)
+- [신규] **공통 task 분류 10종**으로 직군 간 비교 가능하게: 정보검색·요약분류·초안작성·변환포맷·분석·아이디어·의사결정·이해관계자조정·품질검증·결과책임
+- [기존] role family 고정 후 조사
+
+## 2. 증거 계층화 — [신규] 우리 Tier(출처 권위 기준)와 다른 **증거 종류×질문 기준 5계층**
+1. 사용 로그·현장실험 — "실제로 쓰이나·인과 효과는" (최우선)
+2. 노동통계·채용공고 — "수요가 실제로 움직였나"
+3. exposure 추정 — "가능성이 얼마나 되나" (노출≠자동화율)
+4. 기업 도입 사례 — [신규 핵심] **효과 분해 의무**: AI 자체 효과 vs template/workflow 표준화 vs 내부 데이터 연결 vs 교육·change management vs vendor self-report를 반드시 구분 (FedEx 77%를 "AI가 77% 대체"로 안 읽음)
+5. 컨설팅 잠재가치 — [신규] **잠재가치 ≠ SW 매출 ≠ 실현 절감액** 3중 구분 명시
+
+## 3. 상충 수치 정리 — [기존/보강] 측정 단계 깔때기
+기술적 노출 → 경제적 유효 → 기업 도입 → 워크플로 통합 → 무인 안정 수행 → 실제 headcount 감소 (단계마다 수치가 작아짐)
+- [신규] **대조군 차분 사고**: "고노출 채용 -7%"만 보지 말고 저노출 -13%와 비교 — 둘 다 줄었으면 원인은 거시. 단독 감소 수치를 AI 효과로 읽는 것 금지
+- [신규] **채용공고 데이터 한계 5종**: 비공개 채용 누락·내부 이동 미포함·macro cycle 혼입·플랫폼 편차·공고 중복
+
+## 4. task map 3단 공통 구조 (AI-led / AI-assisted / Human-led)
+- [기존] 이동 조건 특성이 우리 Verification Gate와 수렴 (검증 저렴·오류비용 낮음·맥락 의존 낮음 → 이동)
+- [신규] **신규 업무는 유행 직함 예측 대신 지속될 task layer 4범주로**: Evaluation(평가셋·실패기준·리뷰정책) / Knowledge(provenance·retrieval·context) / Workflow(routing·exception·escalation) / Governance(privacy·rights·model risk·책임)
+
+## 5~6. 내러티브·슬라이드 원칙
+- [기존] claim 제목·한 장 한 주장·counter-signal 본문 포함·수치에 분모/의미 병기 — 전부 우리 writing-standard와 동일
+
+## 7. 디자인
+- [기존] 강조색 1개 절제·반복 motif 고정·레이아웃 실루엣 변주 — 우리 palettes/archetype과 동일
+- [신규] **negative bar 처방**: 음수 막대는 0축 차트에서 안 보임 → 부호만 뒤집지 말고 **semantic label을 재정의** ("hiring decline" 카테고리화·"reduction in time"으로 지표 재명명) + **방향이 이질적인 지표(METR -19%)는 같은 차트에 안 섞고 별도 callout 분리**
+- [신규] 출처 푸터 실측: 10pt는 프로젝션 가독 미달 → 11.5pt+진한 회색
+- [신규] speaker notes에 [Sources] 블록 이중화 (화면=짧게·노트=전체 provenance) — pptx_export 개선 후보
+
+## 8. QA
+- [기존] fix-and-rerender 1회 이상·독립 리뷰(수정권한 없는 검토자) — 우리 3층·시각QA와 동일
+- [신규] **placeholder 문자열 결정론 검사** (xxxx·lorem·ipsum·TBD·TODO 0건) — qa_lint 추가 후보
+- [신규] 시각 검토 항목에 **"0이 missing data처럼 보이는지"·"값의 방향이 시각적으로 잘못 전달되는지"**
+
+## 9. 한계 명시
+- [기존] 지역·시점·연구설계·분류 한계 명시 — 우리 정직 gap 관례와 동일
