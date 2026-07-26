@@ -194,3 +194,11 @@ SoT = `v3/axis2_layouts/PATTERN_LIBRARY.md` + `v3/axis2_layouts/DECK_ARCHETYPES.
 - **렌더 전 `references/visualization.md`의 "표지·페이지 디자인 DNA 묶음 (2026-07-27)" 섹션 read 의무** — `_defect_ledger.md`와 함께 렌더 전 필독 2종. 하나라도 안 읽고 spec 쓰면 결함.
 - **적용 기록 의무**: 8레버 중 이번 덱에 적용한 번호/뺀 번호+사유를 `deck_spec.meta.design_dna`에 한 줄 기록 (예: `"적용 1·2·4·5·7·8 / 6 제외 — 본문 9장"`). 기록 없으면 qa-reviewer가 반려.
 - 낱개 선택이 아니라 **묶음**이다 — 표지 초대형 타이포·모서리 메타·틴트+카드·톤스케일·모티프·검증 배지를 같이 써야 레퍼런스급 톤이 난다.
+
+## 하이브리드 모드 — v4.5 정식 채택 (7/27 스파이크 실측 후 후추님 결재)
+
+- **흐름**: `scripts/hybrid_brief.py <src_run> <hybrid_run>`(브리프 추출) → 본체가 배치 분할·**페이지별 실루엣 지정**(에이전트끼리 서로 못 보므로 단조 방지는 본체 몫) → 병렬 에이전트가 `pages/pXX.html` 자유 HTML 생성 → 각자 헤드리스 자가 렌더 검증 → 본체 `scripts/hybrid_audit.py`(사후 C6: 가시 수치 전수 registry 대조·플래그 트리아지) + 전장 스크린샷 눈 검증 → `scripts/hybrid_assemble.py`(iframe 격리 뷰어) + 크롬 인쇄 PDF.
+- **스타일 정본**: `references/hybrid-style-base.md` + `references/hybrid_exemplars/` 2장 — 에이전트 필독 의무.
+- **실측 근거** (20260727_senior_hybrid): 15장 · 492k tok · 병렬 11분 · 시각QA 1발 통과 (기존 spec 경로 419k·40분·개정 다회).
+- **pptx 네이티브가 필요한 주문만** 기존 spec→render_deck.py 경로 병행. 기본 납품 = HTML/PDF + 검증 리포트.
+- **조립본·PDF도 눈 검증 의무** — 낱장 검증≠조립 검증 (원장 11번 회색 덱 사고).

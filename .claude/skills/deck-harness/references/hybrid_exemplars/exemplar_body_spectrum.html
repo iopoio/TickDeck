@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>p08 — 중산층 공백 맵</title>
+<style>
+  :root{
+    --orange:#E8590C; --orange-deep:#9E3A05; --t1:#FFEDE0; --t2:#FFD9BF; --t3:#FF9E66;
+    --ink:#201C16; --sub:#6B665E; --bg:#F1F3F6; --card:#FFFFFF; --line:#E4E7EC;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#DDE1E7;display:flex;align-items:center;justify-content:center;min-height:100vh;
+       font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;}
+  .stage{position:relative;width:1280px;height:720px;overflow:hidden;background:var(--bg);color:var(--ink)}
+  .motif{position:absolute;inset:0;pointer-events:none}
+  .head{position:absolute;top:44px;left:64px;right:64px;display:flex;justify-content:space-between;align-items:flex-start}
+  .kicker{display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:800;letter-spacing:0.13em;
+          color:var(--orange);text-transform:uppercase;margin-bottom:14px}
+  .kicker::before{content:"";display:inline-block;width:22px;height:2px;background:var(--orange)}
+  h1{font-size:38px;font-weight:850;letter-spacing:-0.025em;line-height:1.22;max-width:900px}
+  h1 .hl{color:var(--orange)}
+  .pageno{font-size:14px;color:#9A958C;font-weight:700;letter-spacing:0.06em;padding-top:6px}
+  .main{position:absolute;left:64px;top:196px;width:772px;height:420px;background:var(--card);
+        border-radius:20px;box-shadow:0 14px 36px rgba(32,28,22,0.09);padding:34px 36px 26px}
+  .main h2{font-size:16.5px;font-weight:800;letter-spacing:-0.01em}
+  .main .sub{font-size:13px;color:var(--sub);margin-top:5px}
+  .side{position:absolute;right:64px;top:196px;width:352px;display:flex;flex-direction:column;gap:16px}
+  .scard{background:var(--card);border-radius:18px;box-shadow:0 10px 26px rgba(32,28,22,0.08);padding:24px 26px}
+  .scard h3{font-size:15.5px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .scard h3::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--orange);display:inline-block}
+  .scard p{font-size:13.8px;line-height:1.62;color:#3E3A33}
+  .scard p b{color:var(--ink)}
+  .scard p .num{font-weight:800;color:var(--orange-deep)}
+  .note{background:#FBF4EE;border:1px solid #F3DCCB;border-radius:18px;padding:18px 22px;box-shadow:none}
+  .note p{font-size:12.3px;line-height:1.58;color:#7A6A59}
+  .note p b{color:#5C4A37}
+  .vbadge{display:flex;align-items:center;gap:9px;background:#FFF;border:1.5px solid var(--orange);
+          border-radius:999px;padding:9px 18px 9px 12px;align-self:flex-start;box-shadow:0 6px 18px rgba(232,89,12,0.13)}
+  .vbadge .tick{width:19px;height:19px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;flex:none}
+  .vbadge span{font-size:12.8px;font-weight:800;color:var(--orange-deep)}
+  .foot{position:absolute;left:64px;right:64px;bottom:34px;display:flex;justify-content:space-between;font-size:12px;color:#9A958C}
+  .foot b{font-weight:700;color:#7d7870}
+</style>
+</head>
+<body>
+<div class="stage">
+  <svg class="motif" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+    <path d="M -40 660 C 240 700, 420 610, 700 665 S 1140 700, 1320 620"
+          stroke="#E8590C" stroke-opacity="0.18" stroke-width="2" stroke-dasharray="3 9" stroke-linecap="round"/>
+    <path d="M1216 92 l6 7 12-14" stroke="#E8590C" stroke-opacity="0.45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div class="head">
+    <div>
+      <div class="kicker">케어·주거 — 가격 지형</div>
+      <h1>공공 최저가와 민간 프리미엄 사이,<br><span class="hl">190만원 안팎의 중산층이 비어 있다</span></h1>
+    </div>
+    <div class="pageno">08 / 15</div>
+  </div>
+  <div class="main">
+    <h2>케어·주거 월비용 스펙트럼</h2>
+    <div class="sub">월비용 기준 · 만원 — 공백 구간(월 100~250만·삼일PwC 산점 기준)에 선 사업자는 사실상 한 곳</div>
+    <svg width="700" height="312" viewBox="0 0 700 312" fill="none" style="margin-top:8px">
+      <defs>
+        <pattern id="hatch" width="9" height="9" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+          <rect width="9" height="9" fill="#FFEDE0" fill-opacity="0.75"/>
+          <line x1="0" y1="0" x2="0" y2="9" stroke="#E8590C" stroke-opacity="0.22" stroke-width="2.4"/>
+        </pattern>
+      </defs>
+      <rect x="125" y="36" width="160" height="212" rx="12" fill="url(#hatch)"/>
+      <rect x="125" y="36" width="160" height="212" rx="12" stroke="#E8590C" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <text x="205" y="62" text-anchor="middle" font-size="14.5" font-weight="800" fill="#B23E05" letter-spacing="0.05em">중산층 공백</text>
+      <text x="205" y="81" text-anchor="middle" font-size="11.5" font-weight="600" fill="#C77B4C">월 100만~250만 구간</text>
+      <line x1="18" y1="248" x2="682" y2="248" stroke="#D8DCE2" stroke-width="2"/>
+      <text x="18" y="272" font-size="11" fill="#9A958C">0</text>
+      <text x="338" y="272" font-size="11" fill="#9A958C">300만</text>
+      <text x="658" y="272" font-size="11" fill="#9A958C">600만</text>
+      <line x1="52" y1="160" x2="52" y2="248" stroke="#E8B896" stroke-width="2"/>
+      <circle cx="52" cy="248" r="6" fill="#FFD9BF" stroke="#fff" stroke-width="2"/>
+      <text x="30" y="130" font-size="12.5" font-weight="800" fill="#201C16">공공 고령자복지주택</text>
+      <text x="30" y="148" font-size="11.5" fill="#6B665E">정책 최저가 · 소득 자격 필요</text>
+      <line x1="178" y1="196" x2="178" y2="248" stroke="#F3A472" stroke-width="2" stroke-dasharray="4 4"/>
+      <circle cx="178" cy="248" r="6" fill="#FF9E66" stroke="#fff" stroke-width="2"/>
+      <text x="132" y="186" font-size="12.5" font-weight="800" fill="#201C16">도심 요양원 <tspan fill="#9E3A05">150만</tspan></text>
+      <text x="132" y="203" font-size="11.5" fill="#6B665E">요양등급 케어 · 장기요양보험</text>
+      <line x1="221" y1="108" x2="221" y2="248" stroke="#E8590C" stroke-width="3"/>
+      <circle cx="221" cy="248" r="8" fill="#E8590C" stroke="#fff" stroke-width="2.5"/>
+      <rect x="196" y="96" width="186" height="58" rx="12" fill="#E8590C"/>
+      <text x="214" y="121" font-size="13.5" font-weight="800" fill="#FFFFFF">케어닥 케어홈 — 유일</text>
+      <text x="214" y="142" font-size="12" fill="#FFD9BF">월 <tspan font-weight="800" font-size="14" fill="#fff">190만</tspan> · 보증금 1,500만</text>
+      <line x1="658" y1="160" x2="658" y2="248" stroke="#9E3A05" stroke-width="2.5"/>
+      <circle cx="658" cy="248" r="7" fill="#9E3A05" stroke="#fff" stroke-width="2"/>
+      <text x="682" y="130" text-anchor="end" font-size="12.5" font-weight="800" fill="#201C16">프리미엄 실버타운 <tspan fill="#9E3A05">600만</tspan></text>
+      <text x="682" y="148" text-anchor="end" font-size="11.5" fill="#6B665E">보증금 7억 · 대기업 도심형</text>
+      <text x="18" y="296" font-size="11.5" font-weight="700" fill="#B8B2A8">← 자격으로 닫힘</text>
+      <text x="682" y="296" text-anchor="end" font-size="11.5" font-weight="700" fill="#B8B2A8">보증금으로 닫힘 →</text>
+    </svg>
+  </div>
+  <div class="side">
+    <div class="scard">
+      <h3>왜 비어 있나</h3>
+      <p>공공은 <b>소득 자격</b>으로 닫혀 있고, 프리미엄은 <b>보증금 7억</b>으로 닫혀 있다. 중간 소득 가구가 고를 수 있는 선택지는 <span class="num">월 190만 안팎 한 곳</span>뿐이다.</p>
+    </div>
+    <div class="scard note">
+      <p><b>ⓘ 정직 각주</b> — 가격대 수치는 케어닥 자사 비교표 인용으로 원출처가 불명확하다. 공공·컨설팅 통계와 맞아떨어지는 구간에서만 참고했다.</p>
+    </div>
+    <div class="vbadge">
+      <div class="tick"><svg width="11" height="9" viewBox="0 0 12 10"><path d="M1.5 5.2 4.6 8.3 10.5 1.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <span>이 페이지 수치 4/4 — registry 원문 대조 ✓</span>
+    </div>
+  </div>
+  <div class="foot">
+    <div>출처 — <b>㈜케어닥</b> · 보건복지부/한국보건사회연구원(KIHASA)</div>
+    <div>© 2026 Peppinch · All rights reserved</div>
+  </div>
+</div>
+</body>
+</html>
