@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>glm_dark_mint_boardroom — p_body (3 stats)</title>
+<style>
+  :root{--navy:#0A1626;--navy2:#0E1D30;--panel:#142436;--green:#3DD9B3;--gold:#F0C674;
+        --text:#EAF0F7;--muted:#7D92A8;--muted2:#5A6F86;--line:rgba(255,255,255,.08)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#DDE1E7;display:flex;align-items:center;justify-content:center;min-height:100vh;
+       font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;}
+  .stage{position:relative;width:1280px;height:720px;overflow:hidden;background:var(--navy);color:var(--text);
+         padding:64px 80px;display:flex;flex-direction:column;}
+  .chrome-tl{position:absolute;top:36px;left:56px;font-size:12px;letter-spacing:.18em;color:var(--muted2);font-weight:600;text-transform:uppercase}
+  .chrome-tr{position:absolute;top:36px;right:56px;font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:600}
+  .chrome-br{position:absolute;bottom:32px;right:56px;font-size:12px;color:var(--muted2);letter-spacing:.1em}
+  .brand-dot{display:inline-block;width:8px;height:8px;background:var(--green);border-radius:2px;margin-right:10px;vertical-align:1px}
+  .s-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
+  .s-head .left .stag{font-size:11px;letter-spacing:.2em;color:var(--green);font-weight:700;margin-bottom:12px}
+  .s-head .left h3{font-size:38px;font-weight:800;letter-spacing:-.02em;line-height:1.2;max-width:760px}
+  .s-head .right{text-align:right;font-size:12px;color:var(--muted2);letter-spacing:.1em}
+  .s-head .right .src{margin-top:6px;color:var(--muted)}
+  .stats3{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;margin-top:30px}
+  .stat-card{background:linear-gradient(160deg,var(--panel),var(--navy2));border:1px solid var(--line);border-radius:10px;
+             padding:36px 30px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+  .stat-card::before{content:"";position:absolute;top:0;left:0;width:4px;height:60px;background:var(--green)}
+  .stat-card.gold::before{background:var(--gold)}
+  .stat-card .tag{font-size:11px;letter-spacing:.2em;color:var(--muted);font-weight:700;text-transform:uppercase}
+  .stat-card .big{font-size:96px;font-weight:900;line-height:.9;color:var(--green);letter-spacing:-.03em;margin:18px 0 8px}
+  .stat-card.gold .big{color:var(--gold)}
+  .stat-card .big .u{font-size:36px;font-weight:700;margin-left:4px}
+  .stat-card .desc{font-size:16px;color:#C8D4E0;line-height:1.5;font-weight:500}
+  .stat-card .src{font-size:11px;color:var(--muted2);letter-spacing:.06em;margin-top:14px}
+  .stat-card .arrow{font-size:14px;color:var(--gold);font-weight:700;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+  .stat-card .arrow b{font-weight:800}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="chrome-tl"><span class="brand-dot"></span>02 역설 · The Paradox</div>
+  <div class="chrome-tr">EVIDENCE</div>
+  <div class="s-head">
+    <div class="left">
+      <div class="stag">역설 — AI가 흔할수록 사람이 비싸짐</div>
+      <h3>콘텐츠가 무한히 싸지는 시대,<br>가장 비싼 자산은 인간의 신뢰</h3>
+    </div>
+    <div class="right">
+      3 SIGNALS
+      <div class="src">출처: WPP Media · Ogilvy · AMA (2026)</div>
+    </div>
+  </div>
+  <div class="stats3">
+    <div class="stat-card">
+      <div>
+        <div class="tag">진짜/가짜 붕괴</div>
+        <div class="big">65<span class="u">%</span></div>
+        <div class="desc">영국 소비자 중 진짜와 합성 콘텐츠 구분이 어렵다고 응답한 비율.</div>
+      </div>
+      <div class="src">WPP Media · UK Trends 2026</div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="tag">진정성 프리미엄</div>
+        <div class="big">97<span class="u">%</span></div>
+        <div class="desc">'authentic' 이미지가 신뢰에 핵심이라는 동의. 진정성이 곧 프리미엄.</div>
+      </div>
+      <div class="src">Ogilvy Social Lab 2026</div>
+    </div>
+    <div class="stat-card gold">
+      <div>
+        <div class="tag">마지막 차별점</div>
+        <div class="big" style="font-size:54px;line-height:1.1">Proof<br>Design</div>
+        <div class="desc">위조 가능 시대, 신뢰성이 마지막 차별점 — storytelling에서 proof design으로.</div>
+      </div>
+      <div class="arrow">전환 <b>storytelling → proof design</b></div>
+    </div>
+  </div>
+  <div class="chrome-br">07 / 16</div>
+</div>
+</body>
+</html>

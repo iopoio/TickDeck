@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>gallery_midnight_brass — p_cover</title>
+<style>
+  :root{--navy:#0B1E3D;--gold:#C9A86A;--paper:#E8ECEF;--muted:#8A9BB4;--line:#2A3F63}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#DDE1E7;display:flex;align-items:center;justify-content:center;min-height:100vh;
+       font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;}
+  .stage{position:relative;width:1280px;height:720px;overflow:hidden;color:var(--paper);
+         background:linear-gradient(135deg,#0B1E3D 0%,#0E2A24 100%);
+         padding:64px 80px;display:flex;flex-direction:column;}
+  .grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+              linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:80px 80px;}
+  .deco{position:absolute;right:-120px;top:-120px;width:640px;height:640px;border-radius:50%;
+        background:radial-gradient(circle,rgba(201,168,106,.18),transparent 70%);}
+  .content{position:relative;z-index:2;margin-top:auto;}
+  .eyebrow{font-size:13px;color:var(--gold);letter-spacing:.18em;font-weight:700;text-transform:uppercase;margin-bottom:14px;}
+  h1{font-size:64px;font-weight:800;line-height:1.1;letter-spacing:-.02em;}
+  .accent{color:var(--gold)}
+  p{font-size:15px;line-height:1.6;color:#C8D2E0;max-width:640px;margin-top:20px}
+  .meta{display:flex;gap:40px;margin-top:32px;font-size:13px;color:var(--muted);letter-spacing:.1em;}
+  .meta span b{color:var(--paper);display:block;margin-top:4px;font-size:15px;letter-spacing:0;}
+  .footer-bar{position:absolute;bottom:24px;left:80px;font-size:11px;color:var(--muted);letter-spacing:.08em;}
+  .footer-bar strong{color:var(--paper)}
+  .page-num{position:absolute;bottom:24px;right:40px;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="grid-lines"></div>
+  <div class="deco"></div>
+  <div class="content">
+    <div class="eyebrow">2025 Strategic Review · Annual Report</div>
+    <h1>데이터가 그리는<br>다음 해의 <span class="accent">지형도</span></h1>
+    <p>한 해의 성과를 정량화하고, 내년의 방향성을 구조적으로 제시합니다. 의사결정을 위한 단일 진실의 근거.</p>
+    <div class="meta">
+      <span>발표자<b>전략기획팀</b></span>
+      <span>일정<b>2025.01.15</b></span>
+      <span>대상<b>경영위원회</b></span>
+      <span>문서<b>Confidential v3.2</b></span>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>STRATEGY</strong> · Annual Deck</div>
+  <div class="page-num">01 / 30</div>
+</div>
+</body>
+</html>

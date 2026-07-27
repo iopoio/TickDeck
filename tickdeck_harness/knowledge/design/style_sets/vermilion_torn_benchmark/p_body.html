@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>vermilion_torn_benchmark — 데이터 본문 견본</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#DDE1E7; display:flex; align-items:center; justify-content:center;
+    min-height:100vh;
+    font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  }
+  .stage {
+    width:1280px; height:720px; position:relative; overflow:hidden;
+    background:#FBF3EB; color:#141414;
+  }
+  .kicker {
+    position:absolute; top:36px; left:56px;
+    font-size:12px; font-weight:700; color:#F9581D; letter-spacing:0.02em;
+  }
+  .pageno {
+    position:absolute; top:36px; right:56px;
+    font-size:11px; font-weight:600; color:#9B9B9B;
+  }
+  h1 {
+    position:absolute; top:58px; left:56px; right:200px;
+    font-size:32px; font-weight:800; letter-spacing:-0.02em; line-height:1.3;
+  }
+  .badge {
+    display:inline-block; background:#141414; color:#fff;
+    font-size:13px; font-weight:700; padding:5px 12px 6px; margin-bottom:18px;
+  }
+  /* 좌: 세로 바 차트 */
+  .chart { position:absolute; top:150px; left:56px; width:560px; }
+  .bars {
+    display:flex; align-items:flex-end; gap:34px; height:260px;
+    padding:0 8px; border-bottom:2px solid #141414;
+  }
+  .bar { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; }
+  .bar .val { font-size:15px; font-weight:800; margin-bottom:6px; }
+  .bar .col { width:100%; background:#141414; }
+  .bar.hot .col { background:#F9581D; }
+  .bar.hot .val { color:#F9581D; }
+  .xlabels { display:flex; gap:34px; padding:0 8px; margin-top:8px; }
+  .xlabels div { flex:1; text-align:center; font-size:11.5px; color:#9B9B9B; line-height:1.35; }
+  /* 우: 테이블 */
+  .tablewrap { position:absolute; top:150px; right:56px; width:540px; }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th {
+    background:#141414; color:#fff; font-weight:700; text-align:left;
+    padding:10px 14px;
+  }
+  th:last-child, td:last-child { text-align:right; }
+  td { padding:10px 14px; border-bottom:1px solid #E5DED6; background:#fff; }
+  tr.hot td { background:#FCE8DB; font-weight:800; }
+  tr.hot td:last-child { color:#F9581D; }
+  .bracket {
+    margin-top:12px; text-align:right;
+    font-size:15px; font-weight:800; color:#F9581D;
+  }
+  /* 하단 해설 2단 */
+  .notes {
+    position:absolute; left:56px; right:56px; bottom:64px;
+    display:flex; gap:44px;
+  }
+  .notes p { flex:1; font-size:13.5px; line-height:1.7; color:#333; }
+  .notes b { font-weight:800; color:#141414; }
+  .hl { background:#FBDCC5; padding:1px 3px; }
+  .footer {
+    position:absolute; left:56px; right:56px; bottom:26px;
+    display:flex; justify-content:space-between;
+    font-size:11px; color:#9B9B9B; font-weight:600;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="kicker">1-1. 소속 챕터 경로가 들어가는 자리</div>
+    <div class="pageno">07 / 15</div>
+    <h1>질문형 헤드라인이 들어가는 자리 — 핵심 수치는 제목에 그대로 담을까?</h1>
+
+    <div class="chart">
+      <div class="badge">왼쪽 차트 라벨 자리</div>
+      <div class="bars">
+        <div class="bar"><div class="val">6%</div><div class="col" style="height:24px"></div></div>
+        <div class="bar hot"><div class="val">31%</div><div class="col" style="height:124px"></div></div>
+        <div class="bar hot"><div class="val">38%</div><div class="col" style="height:152px"></div></div>
+        <div class="bar"><div class="val">17%</div><div class="col" style="height:68px"></div></div>
+        <div class="bar"><div class="val">8%</div><div class="col" style="height:32px"></div></div>
+      </div>
+      <div class="xlabels">
+        <div>구간 A</div><div>구간 B</div><div>구간 C</div><div>구간 D</div><div>구간 E</div>
+      </div>
+    </div>
+
+    <div class="tablewrap">
+      <div class="badge">오른쪽 표 라벨 자리</div>
+      <table>
+        <tr><th>항목이 들어가는 자리</th><th>비율</th></tr>
+        <tr><td>보기 첫 번째 자리</td><td>12%</td></tr>
+        <tr class="hot"><td>강조할 보기 자리</td><td>41%</td></tr>
+        <tr class="hot"><td>강조할 보기 두 번째 자리</td><td>28%</td></tr>
+        <tr><td>보기 네 번째 자리</td><td>13%</td></tr>
+        <tr><td>보기 다섯 번째 자리</td><td>6%</td></tr>
+      </table>
+      <div class="bracket">총 69% — 브래킷 주석 자리</div>
+    </div>
+
+    <div class="notes">
+      <p><b>첫 문단은 차트가 말하는 사실 요약.</b> 강조 구간 두 개를 합치면
+      <span class="hl">응답의 69%가 여기에 몰린다는 식의 결론 문장에 형광펜</span>을 긋는다.
+      나머지 문장은 담백하게, 마커는 문단당 한두 곳만.</p>
+      <p>둘째 문단은 해석과 시사점. 숫자를 다시 부르며
+      <span class="hl">독자가 가져갈 행동 한 줄</span>로 닫는다.
+      본문 배경은 크림, 데이터는 오렌지와 검정 두 색만 쓴다.</p>
+    </div>
+
+    <div class="footer">
+      <div>발행 주체 로고 락업 자리</div>
+      <div>출처 표기 자리</div>
+    </div>
+  </div>
+</body>
+</html>

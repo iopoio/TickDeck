@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>vermilion_torn_benchmark — 표지 견본</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#DDE1E7; display:flex; align-items:center; justify-content:center;
+    min-height:100vh;
+    font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  }
+  .stage {
+    width:1280px; height:720px; position:relative; overflow:hidden;
+    background:#EB5428;
+  }
+  /* 종이 질감 — 미묘한 명도 얼룩 */
+  .grain {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(520px 340px at 18% 22%, rgba(255,255,255,0.10), transparent 70%),
+      radial-gradient(680px 420px at 82% 68%, rgba(0,0,0,0.08), transparent 72%),
+      radial-gradient(420px 300px at 60% 12%, rgba(255,255,255,0.06), transparent 70%),
+      radial-gradient(380px 280px at 35% 88%, rgba(0,0,0,0.06), transparent 70%);
+  }
+  /* 상단 메타 */
+  .topbar {
+    position:absolute; top:44px; left:56px; right:56px;
+    display:flex; justify-content:space-between; align-items:center;
+    color:#141414;
+  }
+  .lockup { font-size:17px; font-weight:800; letter-spacing:-0.01em; }
+  .lockup .x { font-weight:400; opacity:0.55; margin:0 8px; }
+  .year { font-size:16px; font-weight:700; }
+  /* 찢은 종이 창 — 좌하단, 흑백 추상 패턴 노출 */
+  .torn {
+    position:absolute; left:-40px; bottom:-30px; width:520px; height:400px;
+    background:#EFE8DC; /* 찢긴 단면(크림) */
+    clip-path:polygon(0 18%, 9% 14%, 15% 19%, 24% 11%, 33% 16%, 41% 8%,
+      52% 14%, 63% 6%, 74% 13%, 85% 4%, 92% 12%, 100% 30%,
+      94% 44%, 99% 60%, 91% 74%, 97% 88%, 88% 100%, 0 100%);
+  }
+  .torn-inner {
+    position:absolute; inset:0;
+    background:repeating-linear-gradient(-32deg, #141414 0 22px, #F4F1EA 22px 40px);
+    clip-path:polygon(1% 24%, 10% 20%, 16% 25%, 25% 17%, 34% 22%, 42% 14%,
+      53% 20%, 64% 12%, 75% 19%, 86% 10%, 92% 18%, 98% 32%,
+      93% 46%, 97% 61%, 90% 75%, 95% 89%, 87% 99%, 1% 99%);
+    filter:grayscale(1) contrast(0.92);
+    opacity:0.92;
+  }
+  .torn::after { /* 찢긴 엣지 그림자 */
+    content:""; position:absolute; inset:0;
+    box-shadow:inset 0 14px 22px rgba(0,0,0,0.18);
+    clip-path:inherit;
+  }
+  /* 타이틀 블록 — 좌우 분할 대형 타이포 */
+  .title-l {
+    position:absolute; left:56px; top:168px;
+    font-size:66px; font-weight:900; letter-spacing:-0.03em; line-height:1.16;
+    color:#141414;
+  }
+  .badge {
+    display:inline-block; background:#141414; color:#EFE8DC;
+    padding:2px 16px 6px; letter-spacing:-0.02em;
+  }
+  .dash {
+    position:absolute; left:436px; top:214px; width:210px; height:3px; background:#141414; opacity:0.8;
+  }
+  .title-r {
+    position:absolute; right:56px; top:168px; text-align:right;
+    font-size:66px; font-weight:900; letter-spacing:-0.03em; line-height:1.24;
+    color:#141414;
+  }
+  .subtitle {
+    position:absolute; right:56px; top:520px; text-align:right;
+    font-size:24px; font-weight:700; color:#141414; opacity:0.92;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="grain"></div>
+    <div class="topbar">
+      <div class="lockup">발행 주체 로고 자리<span class="x">×</span>협력 주체 자리</div>
+      <div class="year">2026</div>
+    </div>
+
+    <div class="title-l">키워드가 <span class="badge">배지</span></div>
+    <div class="dash"></div>
+    <div class="title-r">핵심 주제를<br>담는 자리와<br>받는 사람들</div>
+
+    <div class="subtitle">몇 번째 무슨 리포트인지 쓰는 자리</div>
+
+    <div class="torn"><div class="torn-inner"></div></div>
+  </div>
+</body>
+</html>

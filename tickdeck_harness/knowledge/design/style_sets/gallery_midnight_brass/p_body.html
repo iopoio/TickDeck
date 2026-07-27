@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>gallery_midnight_brass — p_body (single KPI)</title>
+<style>
+  :root{--navy:#0B1E3D;--gold:#C9A86A;--teal:#4FB3A9;--paper:#E8ECEF;--muted:#8A9BB4;--line:#2A3F63}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#DDE1E7;display:flex;align-items:center;justify-content:center;min-height:100vh;
+       font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;}
+  .stage{position:relative;width:1280px;height:720px;overflow:hidden;background:var(--navy);color:var(--paper);
+         padding:64px 80px;display:flex;flex-direction:column;}
+  .eyebrow{font-size:13px;color:var(--gold);letter-spacing:.18em;font-weight:700;text-transform:uppercase;margin-bottom:14px;}
+  h2{font-size:40px;font-weight:700;letter-spacing:-.01em;line-height:1.15;}
+  .kpi-wrap{display:flex;flex-direction:column;justify-content:space-between;flex:1;}
+  .kpi-number{font-size:180px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+  .kpi-unit{font-size:48px;color:var(--gold);margin-left:8px;}
+  .kpi-delta{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(79,179,169,.15);
+             border:1px solid var(--teal);border-radius:20px;color:var(--teal);font-size:14px;font-weight:700;margin-left:20px;}
+  .kpi-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;border-top:1px solid var(--line);padding-top:28px;}
+  .kpi-stats div small{display:block;color:var(--muted);font-size:11px;letter-spacing:.1em;margin-bottom:6px;}
+  .kpi-stats div b{font-size:24px;font-weight:700;}
+  .footer-bar{position:absolute;bottom:24px;left:80px;font-size:11px;color:var(--muted);letter-spacing:.08em;}
+  .footer-bar strong{color:var(--paper)}
+  .page-num{position:absolute;bottom:24px;right:40px;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="kpi-wrap">
+    <div>
+      <div class="eyebrow">2024 Annual Revenue</div>
+      <h2>한 해를 관통한 한 줄의 성과</h2>
+    </div>
+    <div>
+      <span class="kpi-number">1,284<span class="kpi-unit">억</span></span>
+      <span class="kpi-delta">▲ 18.4% YoY</span>
+    </div>
+    <div class="kpi-stats">
+      <div><small>전년 매출</small><b>1,085억</b></div>
+      <div><small>목표 대비</small><b>104.3%</b></div>
+      <div><small>영업이익률</small><b>14.2%</b></div>
+      <div><small>신규 고객</small><b>23,400명</b></div>
+    </div>
+  </div>
+  <div class="footer-bar"><strong>REVENUE</strong> · 단일 핵심 지표</div>
+  <div class="page-num">05 / 30</div>
+</div>
+</body>
+</html>

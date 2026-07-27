@@ -1,0 +1,80 @@
+<meta charset="utf-8">
+<style>
+  html,body{margin:0;padding:0}
+  body{background:#DDE1E7;display:flex;align-items:center;justify-content:center;min-height:100vh;
+       font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
+  .stage{position:relative;width:1280px;height:720px;overflow:hidden;background:#FFFFFF;color:#1B1C20}
+  .brand{position:absolute;top:40px;right:56px;display:flex;align-items:center;gap:7px}
+  .brand .word{font-size:17px;font-weight:900;color:#E32F27;letter-spacing:.04em}
+  .brand .chip{background:#E32F27;color:#fff;font-size:11px;font-weight:800;padding:3px 8px;border-radius:5px 5px 5px 2px}
+  /* 좌측 레일 */
+  .rail{position:absolute;left:64px;top:64px;width:300px}
+  .kicker{font-size:13.5px;font-weight:700;color:#F5333F;margin:0 0 12px 0}
+  .rail h1{margin:0;font-size:28px;line-height:1.42;font-weight:800;letter-spacing:-0.02em}
+  /* 우상단 해설 띠 */
+  .comment{position:absolute;left:420px;top:64px;width:640px;font-size:14.5px;line-height:1.62;color:#6E7177}
+  /* 설문 카드 패널 */
+  .panel{position:absolute;left:420px;top:168px;width:796px;height:472px;background:#F6F6F8;border-radius:14px;padding:34px 40px;box-sizing:border-box}
+  .qchip{display:inline-block;background:linear-gradient(180deg,#F5333F 0%,#C41A22 100%);color:#fff;
+    font-size:14px;font-weight:800;padding:6px 16px;border-radius:999px}
+  .q{margin:16px 0 24px 0;font-size:21px;line-height:1.45;font-weight:800}
+  /* 패널 2단: 좌 질문+인사이트 / 우 바 차트 */
+  .pleft{position:absolute;left:40px;top:36px;width:270px}
+  .bars{position:absolute;right:40px;top:110px;width:420px}
+  .row{position:relative;display:flex;align-items:center;margin-bottom:12px}
+  .bar{height:40px;border-radius:6px;display:flex;align-items:center;padding:0 14px;box-sizing:border-box;
+    font-size:14px;font-weight:700;color:#fff;white-space:nowrap}
+  .val{margin-left:12px;font-size:16px;font-weight:800;color:#1B1C20}
+  .b1{width:288px;background:linear-gradient(180deg,#F5333F,#C41A22)}
+  .b2{width:238px;background:#F76A72}
+  .b3{width:180px;background:#FA9BA1;color:#8E1A20}
+  .b4{width:82px;background:#8B8E94}
+  .b5{width:50px;background:#C6C9CE;color:#4A4D54}
+  /* 말풍선 콜아웃 */
+  .bubble{position:absolute;left:210px;top:-52px;background:#17181A;color:#fff;font-size:13px;font-weight:700;
+    padding:9px 14px;border-radius:12px;white-space:nowrap}
+  .bubble:after{content:"";position:absolute;left:26px;bottom:-7px;border:8px solid transparent;border-top-color:#17181A;border-bottom:0}
+  /* 인사이트 */
+  .insight{margin-top:96px;font-size:13.5px;line-height:1.66;color:#3A3C42}
+  .insight b{color:#F5333F;font-weight:800}
+  .foot{position:absolute;right:56px;bottom:28px;font-size:12.5px;font-weight:700;color:#7C7F85}
+  .foot b{color:#1B1C20;margin-left:10px}
+</style>
+<div class="stage">
+  <div class="brand"><span class="word">SAMPLE</span><span class="chip">리서치</span></div>
+
+  <div class="rail">
+    <p class="kicker">세부 설문 결과 및 인사이트</p>
+    <h1>(1) 팀 내부의<br>협업 도구 도입 실태</h1>
+  </div>
+
+  <div class="comment">
+    도입 필요성에는 다수가 공감하지만, 실제 정착 단계에 이른 팀은 일부에 그치고 있습니다.<br>
+    팀이 지켜보는 사이 먼저 정착시킨 조직과의 운영 격차가 점점 벌어지고 있는 상황입니다.
+  </div>
+
+  <div class="panel">
+    <div class="pleft">
+      <span class="qchip">Q1.</span>
+      <p class="q">현재 팀의 협업 도구 활용은<br>어느 단계인가요?</p>
+      <div class="insight">
+        💡 도입 필요성 공감(<b>76.5%</b>)은 높은 수준이나,
+        이 인식이 실제 정착으로 이어지지 못하고
+        지체되는 양상을 보이고 있습니다.
+      </div>
+    </div>
+
+    <div class="bars">
+      <div class="row">
+        <div class="bubble">도입 공감 76.5%</div>
+        <div class="bar b1">매우 필요하다</div><span class="val">41.2%</span>
+      </div>
+      <div class="row"><div class="bar b2">어느 정도 필요하다</div><span class="val">35.3%</span></div>
+      <div class="row"><div class="bar b3">보통이다</div><span class="val">14.7%</span></div>
+      <div class="row"><div class="bar b4"></div><span class="val" style="font-size:14px">필요하지 않다&nbsp; 6.4%</span></div>
+      <div class="row"><div class="bar b5"></div><span class="val" style="font-size:14px">잘 모르겠다&nbsp; 2.4%</span></div>
+    </div>
+  </div>
+
+  <div class="foot">Chapter 1. 협업 도구, 이미 팀별 격차가 벌어지고 있다 <b>05</b></div>
+</div>

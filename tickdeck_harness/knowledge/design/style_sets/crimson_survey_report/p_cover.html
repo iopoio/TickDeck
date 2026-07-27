@@ -1,0 +1,41 @@
+<meta charset="utf-8">
+<style>
+  html,body{margin:0;padding:0}
+  body{background:#DDE1E7;display:flex;align-items:center;justify-content:center;min-height:100vh;
+       font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
+  .stage{position:relative;width:1280px;height:720px;overflow:hidden;
+    background:
+      radial-gradient(900px 640px at 6% 4%, rgba(255,255,255,.92) 0%, rgba(255,255,255,0) 46%),
+      radial-gradient(760px 620px at 30% 62%, rgba(245,96,90,.55) 0%, rgba(245,96,90,0) 62%),
+      radial-gradient(1050px 860px at 86% 82%, #8E0D10 0%, rgba(142,13,16,0) 58%),
+      radial-gradient(1500px 1050px at 58% 42%, #E32F27 0%, #D2261F 55%, #B01217 100%);
+    color:#fff}
+  /* 대형 소프트 서클 림 (간지 문법과 톤 통일) */
+  .rim{position:absolute;border-radius:50%;border:1.5px solid rgba(255,255,255,.10)}
+  .rim.a{width:860px;height:860px;right:-180px;top:-120px}
+  .rim.b{width:520px;height:520px;left:-140px;bottom:-200px}
+  .brand{position:absolute;top:44px;right:56px;display:flex;align-items:center;gap:8px}
+  .brand .word{font-size:21px;font-weight:900;letter-spacing:.04em}
+  .brand .chip{background:#fff;color:#D2261F;font-size:12.5px;font-weight:800;
+    padding:4px 10px;border-radius:6px 6px 6px 2px}
+  .head{position:absolute;left:96px;top:128px}
+  .sub{font-size:19px;font-weight:600;opacity:.95;margin:0 0 26px 0;letter-spacing:-0.01em}
+  h1{margin:0;font-size:54px;line-height:1.28;font-weight:800;letter-spacing:-0.02em}
+  .foot{position:absolute;left:96px;bottom:56px;font-size:14px;line-height:1.5}
+  .foot .team{font-weight:700;margin-bottom:10px}
+  .foot .mail{opacity:.92}.foot .mail b{font-weight:800;margin-right:10px}
+  .copy{position:absolute;right:56px;bottom:56px;font-size:13.5px;font-weight:600;opacity:.95}
+</style>
+<div class="stage">
+  <div class="rim a"></div><div class="rim b"></div>
+  <div class="brand"><span class="word">SAMPLE</span><span class="chip">리서치</span></div>
+  <div class="head">
+    <p class="sub">분산된 팀의 협업 리듬을 다시 설계하는 실무 관찰 기록</p>
+    <h1>2026 샘플<br>원격 협업 트렌드 리포트</h1>
+  </div>
+  <div class="foot">
+    <div class="team">샘플 리서치팀</div>
+    <div class="mail"><b>E</b>|&nbsp;&nbsp;hello@example.com</div>
+  </div>
+  <div class="copy">© 2026 Sample Research All rights reserved.</div>
+</div>

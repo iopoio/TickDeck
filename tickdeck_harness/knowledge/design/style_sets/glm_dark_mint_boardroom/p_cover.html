@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>glm_dark_mint_boardroom — p_cover</title>
+<style>
+  :root{--navy:#0A1626;--green:#3DD9B3;--gold:#F0C674;--muted:#7D92A8;--muted2:#5A6F86}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#DDE1E7;display:flex;align-items:center;justify-content:center;min-height:100vh;
+       font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;}
+  .stage{position:relative;width:1280px;height:720px;overflow:hidden;color:#EAF0F7;
+         background:radial-gradient(ellipse at 70% 30%,#15324A 0%,#0A1626 55%,#060E1A 100%);}
+  .bigyear{position:absolute;right:-40px;top:80px;font-size:520px;font-weight:900;line-height:.85;
+           letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px rgba(61,217,179,.18)}
+  .glow{position:absolute;right:140px;top:260px;width:520px;height:520px;border-radius:50%;
+        background:radial-gradient(circle,rgba(61,217,179,.18),transparent 65%);filter:blur(20px)}
+  .inner{position:absolute;left:80px;top:120px;right:80px;bottom:80px;display:flex;flex-direction:column;justify-content:space-between;z-index:2}
+  .eyebrow{display:flex;align-items:center;gap:14px;font-size:13px;letter-spacing:.3em;color:var(--green);font-weight:700}
+  .eyebrow .ln{width:48px;height:1px;background:var(--green)}
+  h1{font-size:88px;font-weight:800;line-height:1.02;letter-spacing:-.03em;margin-top:24px}
+  h1 .ac{color:var(--green)}
+  .sub{font-size:24px;font-weight:500;color:#C8D4E0;margin-top:28px;max-width:760px;line-height:1.5}
+  .tag{display:inline-block;margin-top:18px;padding:8px 16px;background:rgba(240,198,116,.1);
+       border:1px solid rgba(240,198,116,.3);color:var(--gold);font-size:14px;font-weight:600;border-radius:4px}
+  .foot{display:flex;justify-content:space-between;align-items:flex-end}
+  .foot .brand{font-size:18px;font-weight:800;letter-spacing:.02em}
+  .foot .brand span{color:var(--green)}
+  .foot .meta{font-size:12px;color:var(--muted2);letter-spacing:.2em}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="bigyear">2026</div>
+  <div class="glow"></div>
+  <div class="inner">
+    <div>
+      <div class="eyebrow"><span class="ln"></span>TICKDECK · MARKETING OUTLOOK</div>
+      <h1>2026<br><span class="ac">MARKETING</span> TREND</h1>
+      <div class="sub">AI는 기본값, 차별화는 증명된 인간다움.<br>누구나 AI를 쓰는 시대, 끝까지 남는 차별화는 '인간다움'이다.</div>
+      <span class="tag">THE PARADOX OF SCALE · HUMAN TRUST AS MOAT</span>
+    </div>
+    <div class="foot">
+      <div class="brand"><span>Tick</span>Deck</div>
+      <div class="meta">VOL.01 · 2026 EDITION</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
