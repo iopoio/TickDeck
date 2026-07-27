@@ -51,6 +51,7 @@ SUPPORTED_CONTENT_BLOCK_TYPES = frozenset(
         "metrics",
         "metric_grid",
         "stat_grid",
+        "image",
         "viz",
         "bullets",
         "list",

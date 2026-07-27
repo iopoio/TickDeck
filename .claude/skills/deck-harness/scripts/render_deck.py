@@ -9,8 +9,11 @@ registry.
 from __future__ import annotations
 
 import argparse
+import base64
+import copy
 import html
 import json
+import mimetypes
 import math
 import re
 import subprocess
@@ -334,12 +337,43 @@ PALETTES["minimal_typo"] = {
 }
 
 
+def _embed_local_images(deck_spec: dict[str, Any], asset_base: Path | None) -> dict[str, Any]:
+    spec = copy.deepcopy(deck_spec)
+    base = (asset_base or Path.cwd()).resolve()
+    for page in spec.get("pages", []):
+        if not isinstance(page, dict):
+            continue
+        layout = str(page.get("layout", "statement"))
+        for block in page.get("content", []):
+            if not isinstance(block, dict) or block.get("type") != "image":
+                continue
+            if layout not in {"cover", "divider"}:
+                raise ValueError(f"{page.get('page_id', '?')}: image blocks are only allowed on cover/divider")
+            raw_asset = str(block.get("asset", "")).strip()
+            if not raw_asset:
+                raise ValueError(f"{page.get('page_id', '?')}: image.asset is required")
+            asset = Path(raw_asset).expanduser()
+            if not asset.is_absolute():
+                asset = base / asset
+            asset = asset.resolve()
+            if not asset.is_file():
+                raise ValueError(f"{page.get('page_id', '?')}: image asset not found: {asset}")
+            mime = mimetypes.guess_type(asset.name)[0] or "application/octet-stream"
+            if not mime.startswith("image/"):
+                raise ValueError(f"{page.get('page_id', '?')}: image asset must be an image: {asset}")
+            encoded = base64.b64encode(asset.read_bytes()).decode("ascii")
+            block["_data_uri"] = f"data:{mime};base64,{encoded}"
+    return spec
+
+
 def render_deck(
     deck_spec: dict[str, Any],
     content_registry: dict[str, Any],
     title: str = "TickDeck",
     theme: str | None = None,
+    asset_base: Path | None = None,
 ) -> str:
+    deck_spec = _embed_local_images(deck_spec, asset_base)
     registry = normalize_registry(content_registry)
     pages = deck_spec.get("pages")
     if not isinstance(pages, list) or not pages:
@@ -724,6 +758,7 @@ def _render_cover_page(
     title = _clean_title_text(_first_block_text(content, {"headline", "title"}) or _non_cover_text(str(page.get("short_title", ""))))
     subtitle = _first_block_text(content, {"summary", "body", "text", "note"})
     eyebrow = _non_cover_text(_first_block_text(content, {"eyebrow"}))
+    image_html = "".join(_render_local_image(block) for block in content if _block_type(block) == "image")
     decor_html = _cover_decor_html(palette, part_count)
     eyebrow_html = f'<p class="cover-eyebrow">{_escape(eyebrow)}</p>' if eyebrow else ""
     subtitle_html = f'<p class="cover-subtitle">{_escape(subtitle)}</p>' if subtitle else ""
@@ -763,6 +798,7 @@ def _render_cover_page(
 <section class="slide theme-{_class_name(palette["theme"])} layout-cover cover-slide{variant}{skeleton}" data-page-id="{_escape(page_id)}">
   {sheen_html}
   {shape_html}
+  {image_html}
   {credit_html}
   {spine_html}
   <main class="cover-body">
@@ -1813,6 +1849,8 @@ def _render_block(
         if block_type == "note":
             cls += " note-row"
         return f'<aside class="{cls}">{_rich_with_metrics(str(block.get("text", "")), page_id, registry)}</aside>', []
+    if block_type == "image":
+        return _render_local_image(block), []
     if block_type in {"citation", "source"}:
         src_id = str(block.get("src_id", block.get("source_id", ""))).strip()
         if src_id:
@@ -1976,6 +2014,14 @@ def _render_viz(
     svg = renderer(series, svg_title, note, accent, page_id, render_block)
     hero_class = " visual-hero" if str(block.get("size", "")).strip() == "hero" else ""
     return f'<aside class="visual-card visual-{_class_name(chart)}{hero_class}">{title_html}{caption_html}{svg}</aside>'
+
+
+def _render_local_image(block: dict[str, Any]) -> str:
+    data_uri = str(block.get("_data_uri", "")).strip()
+    if not data_uri:
+        raise ValueError("image block was not resolved to a local data URI")
+    alt = str(block.get("alt", "")).strip()
+    return f'<img class="local-image" src="{_escape(data_uri)}" alt="{_escape(alt)}">'
 
 
 def _viz_series(
@@ -4282,6 +4328,19 @@ body {{
   flex-direction: column;
   background: var(--slide-bg);
   background-size: var(--slide-bg-size);
+}}
+.local-image {{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}}
+.cover-slide > :not(.local-image),
+.layout-divider > :not(.local-image) {{
+  position: relative;
+  z-index: 1;
 }}
 .slide-head {{ flex: 0 0 auto; }}
 /* 크롬 예약 공간은 테마 .slide padding shorthand에 지면 안 됨 — element+2class로 특이도 우위 (7/7 시연덱 세리프 실측: dek가 밴드 밑에 깔림) */
@@ -6619,7 +6678,13 @@ def main() -> None:
             except Exception:
                 pass
     registry = json.loads(args.registry.read_text(encoding="utf-8"))
-    rendered = render_deck(deck_spec, registry, title=args.title, theme=args.theme)
+    rendered = render_deck(
+        deck_spec,
+        registry,
+        title=args.title,
+        theme=args.theme,
+        asset_base=args.deck_spec.parent,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(rendered, encoding="utf-8")
     print(f"rendered {len(deck_spec.get('pages', []))} pages -> {args.output}")

@@ -3021,6 +3021,80 @@ class HarnessContractTests(unittest.TestCase):
         self.assertEqual(run.call_args.kwargs["timeout"], 180)
         self.assertIn("LAYOUT_DUMP_TIMEOUT: Chrome timed out after 180s", str(ctx.exception))
 
+    def test_pptx_export_maps_viz_to_native_bar_column_and_line_charts(self):
+        self.assertEqual(pptx_export_module.native_chart_kind("dumbbell"), "bar")
+        self.assertEqual(pptx_export_module.native_chart_kind("rising_columns"), "column")
+        self.assertEqual(pptx_export_module.native_chart_kind("multi_line"), "line")
+
+    def test_pptx_export_uses_qa_safe_font(self):
+        self.assertEqual(pptx_export_module.FONT_NAME, "Arial")
+
+    def test_pptx_export_builds_full_sources_note_from_page_allowlist(self):
+        page = {"allowed_source_ids": ["src_a"]}
+        registry = {
+            "source_registry": {
+                "src_a": {
+                    "publisher": "Pew Research Center",
+                    "title": "AI at Work",
+                    "url": "https://example.com/report",
+                    "conditions": "Survey evidence only.",
+                }
+            }
+        }
+        note = pptx_export_module.sources_note_text(page, registry)
+        self.assertTrue(note.startswith("[Sources]\n"))
+        self.assertIn("Pew Research Center — AI at Work", note)
+        self.assertIn("https://example.com/report", note)
+        self.assertIn("Survey evidence only.", note)
+
+    def test_render_deck_embeds_local_image_as_data_uri_on_cover(self):
+        spec = {
+            "pages": [
+                {
+                    "page_id": "p01",
+                    "short_title": "Cover",
+                    "layout": "cover",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": [],
+                    "content": [
+                        {"type": "headline", "text": "Image demo"},
+                        {"type": "image", "asset": "hero.png", "alt": "Abstract office"},
+                    ],
+                }
+            ]
+        }
+        with tempfile.TemporaryDirectory() as td:
+            asset = pathlib.Path(td) / "hero.png"
+            asset.write_bytes(b"\x89PNG\r\n\x1a\nfixture")
+            html = render_deck_module.render_deck(
+                spec,
+                VALID_CONTENT_REGISTRY,
+                asset_base=pathlib.Path(td),
+            )
+        self.assertIn('class="local-image"', html)
+        self.assertIn('src="data:image/png;base64,', html)
+        self.assertIn('alt="Abstract office"', html)
+
+    def test_render_deck_rejects_local_image_outside_cover_or_divider(self):
+        spec = {
+            "pages": [
+                {
+                    "page_id": "p02",
+                    "short_title": "Body",
+                    "layout": "statement",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": [],
+                    "content": [{"type": "image", "asset": "hero.png", "alt": "No"}],
+                }
+            ]
+        }
+        with self.assertRaisesRegex(ValueError, "image blocks are only allowed"):
+            render_deck_module.render_deck(
+                spec,
+                VALID_CONTENT_REGISTRY,
+                asset_base=pathlib.Path("."),
+            )
+
     def test_qa_lint_treats_text_table_rows_as_body_text(self):
         spec = {
             "archetype": "selfcheck",

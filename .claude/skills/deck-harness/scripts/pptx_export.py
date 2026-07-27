@@ -24,7 +24,7 @@ from pathlib import Path
 
 SLIDE_W_EMU = 12192000
 SLIDE_H_EMU = 6858000
-FONT_NAME = "맑은 고딕"
+FONT_NAME = "Arial"
 VERIFY_PHRASE = "흔들렸으나 무너지지 않았다"
 PX_TO_PT = 0.75
 FIT_MIN_RATIO = 0.70
@@ -50,8 +50,25 @@ LAYOUT_DUMP_SCRIPT = r"""
     var slideRect = slide.getBoundingClientRect();
     var pageId = slide.dataset.pageId || slide.id || ('p' + String(idx + 1).padStart(2, '0'));
     var boxes = [];
+    var vizBoxes = [];
+    slide.querySelectorAll('.visual-card').forEach(function(el) {
+      var rect = el.getBoundingClientRect();
+      var chartClass = Array.prototype.find.call(el.classList, function(name) {
+        return name.indexOf('visual-') === 0 && name !== 'visual-card' && name !== 'visual-hero';
+      }) || '';
+      vizBoxes.push({
+        chart: chartClass.replace(/^visual-/, '').replace(/-/g, '_'),
+        x: rect.left - slideRect.left,
+        y: rect.top - slideRect.top,
+        w: rect.width,
+        h: rect.height,
+        slide_w: slideRect.width,
+        slide_h: slideRect.height
+      });
+    });
     slide.querySelectorAll('*').forEach(function(el) {
       if (el.closest('svg')) return;
+      if (el.closest('.visual-card')) return;
       if (el.closest('[aria-hidden="true"]')) return;
       if (el.offsetParent === null) return;
       if (!hasDirectText(el)) return;
@@ -115,7 +132,7 @@ LAYOUT_DUMP_SCRIPT = r"""
         src_id: srcEl ? srcEl.dataset.srcId : null
       });
     });
-    slides.push({page_id: pageId, slide_w: slideRect.width, slide_h: slideRect.height, boxes: boxes});
+    slides.push({page_id: pageId, slide_w: slideRect.width, slide_h: slideRect.height, boxes: boxes, viz_boxes: vizBoxes});
   });
   var out = document.createElement('script');
   out.type = 'application/json';
@@ -138,6 +155,9 @@ HIDE_PICKED_TEXT_SCRIPT = r"""
       target.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
       target.style.setProperty('text-shadow', 'none', 'important');
     });
+  });
+  document.querySelectorAll('.visual-card').forEach(function(el) {
+    el.style.setProperty('visibility', 'hidden', 'important');
   });
 })();
 </script>
@@ -781,7 +801,126 @@ def apply_text_to_shape(shape, box: dict) -> None:
         set_run_character_spacing(run, letter_spacing_px)
 
 
-def build_pptx(layout: dict, background_pngs: list[Path], out: Path) -> int:
+def native_chart_kind(chart: str) -> str | None:
+    if chart == "multi_line":
+        return "line"
+    if chart in {"rising_columns", "quarterly_bars"}:
+        return "column"
+    if chart in {
+        "before_after",
+        "dumbbell",
+        "gap_map",
+        "mirror_bars",
+        "progress_bar",
+        "target_vs_actual",
+    }:
+        return "bar"
+    return None
+
+
+def _registry_entries(registry: dict, *keys: str) -> dict:
+    current = registry.get("content_registry", registry)
+    for key in keys:
+        value = current.get(key) if isinstance(current, dict) else None
+        if isinstance(value, dict):
+            return value
+    return {}
+
+
+def sources_note_text(page: dict, registry: dict) -> str:
+    sources = _registry_entries(registry, "source_registry", "sources")
+    lines = ["[Sources]"]
+    for source_id in page.get("allowed_source_ids", []):
+        source = sources.get(source_id)
+        if not isinstance(source, dict):
+            continue
+        label = " — ".join(
+            item for item in (str(source.get("publisher", "")).strip(), str(source.get("title", "")).strip()) if item
+        ) or str(source_id)
+        details = [label]
+        for key in ("url", "local_path", "conditions"):
+            value = str(source.get(key, "")).strip()
+            if value:
+                details.append(value)
+        lines.append("\n".join(details))
+    return "\n\n".join(lines)
+
+
+def _metric_number(metric: dict) -> float:
+    raw = str(metric.get("value", "")).replace(",", "").replace("−", "-")
+    values = [float(item) for item in re.findall(r"-?\d+(?:\.\d+)?", raw)]
+    if not values:
+        return 0.0
+    return sum(values[:2]) / min(2, len(values))
+
+
+def _page_viz_blocks(page: dict) -> list[dict]:
+    return [
+        block
+        for block in page.get("content", [])
+        if isinstance(block, dict) and block.get("type") == "viz" and native_chart_kind(str(block.get("chart", "")))
+    ]
+
+
+def _add_native_chart(slide, viz_box: dict, block: dict, registry: dict) -> None:
+    from pptx.chart.data import ChartData
+    from pptx.enum.chart import XL_CHART_TYPE
+    from pptx.util import Emu, Pt
+
+    kind = native_chart_kind(str(block.get("chart", "")))
+    chart_type = {
+        "bar": XL_CHART_TYPE.BAR_CLUSTERED,
+        "column": XL_CHART_TYPE.COLUMN_CLUSTERED,
+        "line": XL_CHART_TYPE.LINE_MARKERS,
+    }[kind]
+    metrics = _registry_entries(registry, "metric_registry", "metrics")
+    series = [item for item in block.get("series", []) if isinstance(item, dict) and item.get("metric_id")]
+    chart_data = ChartData()
+    chart_data.categories = [str(item.get("label") or item.get("metric_id")) for item in series]
+    chart_data.add_series(
+        str(block.get("title") or "Values"),
+        [_metric_number(metrics.get(str(item["metric_id"]), {})) for item in series],
+    )
+    geom = text_box_geometry_emu(viz_box)
+    chart = slide.shapes.add_chart(
+        chart_type,
+        Emu(geom["x"]),
+        Emu(geom["y"]),
+        Emu(geom["w"]),
+        Emu(geom["h"]),
+        chart_data,
+    ).chart
+    chart.has_legend = False
+    chart.has_title = bool(str(block.get("title", "")).strip())
+    if chart.has_title:
+        chart.chart_title.text_frame.text = str(block["title"])
+        for paragraph in chart.chart_title.text_frame.paragraphs:
+            for run in paragraph.runs:
+                run.font.name = FONT_NAME
+                run.font.size = Pt(12)
+    chart.value_axis.has_major_gridlines = False
+    chart.category_axis.tick_labels.font.name = FONT_NAME
+    chart.category_axis.tick_labels.font.size = Pt(9)
+    chart.value_axis.tick_labels.font.name = FONT_NAME
+    chart.value_axis.tick_labels.font.size = Pt(9)
+
+
+def _set_sources_note(slide, page: dict, registry: dict) -> None:
+    note = sources_note_text(page, registry)
+    frame = slide.notes_slide.notes_text_frame
+    frame.text = note
+    for paragraph in frame.paragraphs:
+        for run in paragraph.runs:
+            run.font.name = FONT_NAME
+
+
+def build_pptx(
+    layout: dict,
+    background_pngs: list[Path],
+    out: Path,
+    deck_spec: dict | None = None,
+    registry: dict | None = None,
+) -> int:
     from pptx import Presentation
     from pptx.util import Emu
 
@@ -794,7 +933,9 @@ def build_pptx(layout: dict, background_pngs: list[Path], out: Path) -> int:
     prs.slide_height = Emu(SLIDE_H_EMU)
     blank = prs.slide_layouts[6]
 
-    for slide_data, bg in zip(slides, background_pngs):
+    spec_pages = deck_spec.get("pages", []) if isinstance(deck_spec, dict) else []
+    registry = registry or {}
+    for index, (slide_data, bg) in enumerate(zip(slides, background_pngs)):
         slide = prs.slides.add_slide(blank)
         slide.shapes.add_picture(str(bg), 0, 0, width=Emu(SLIDE_W_EMU), height=Emu(SLIDE_H_EMU))
         for box in slide_data.get("boxes", []):
@@ -807,6 +948,11 @@ def build_pptx(layout: dict, background_pngs: list[Path], out: Path) -> int:
             )
             apply_text_to_shape(shape, box)
             set_shape_descr(shape, alt_text_for_box(box))
+        if index < len(spec_pages):
+            page = spec_pages[index]
+            for viz_box, block in zip(slide_data.get("viz_boxes", []), _page_viz_blocks(page)):
+                _add_native_chart(slide, viz_box, block, registry)
+            _set_sources_note(slide, page, registry)
 
     out.parent.mkdir(parents=True, exist_ok=True)
     prs.save(str(out))
@@ -839,6 +985,7 @@ def find_layout_box(layout: dict, page_id: str, phrase: str) -> dict | None:
 
 def verify_pptx(pptx_path: Path, layout: dict) -> dict:
     from pptx import Presentation
+    from pptx.enum.shapes import MSO_SHAPE_TYPE
 
     prs = Presentation(str(pptx_path))
     slides = layout.get("slides", [])
@@ -846,6 +993,7 @@ def verify_pptx(pptx_path: Path, layout: dict) -> dict:
         raise SystemExit(f"VERIFY_ERROR: pptx slides={len(prs.slides)} layout slides={len(slides)}")
 
     total_text_boxes = 0
+    total_charts = 0
     for idx, slide in enumerate(prs.slides):
         pictures, text_boxes = shape_counts(slide)
         if pictures != 1:
@@ -853,6 +1001,7 @@ def verify_pptx(pptx_path: Path, layout: dict) -> dict:
         if text_boxes < 1:
             raise SystemExit(f"VERIFY_ERROR: slide {idx + 1} text boxes={text_boxes}, expected >=1")
         total_text_boxes += text_boxes
+        total_charts += sum(1 for shape in slide.shapes if shape.shape_type == MSO_SHAPE_TYPE.CHART)
 
     phrase_box = find_layout_box(layout, "p03", VERIFY_PHRASE)
     phrase_checked = False
@@ -883,12 +1032,19 @@ def verify_pptx(pptx_path: Path, layout: dict) -> dict:
     return {
         "slides": len(prs.slides),
         "text_boxes": total_text_boxes,
+        "charts": total_charts,
         "phrase_checked": phrase_checked,
         "max_delta_px": max_delta_px,
     }
 
 
-def export_deck(deck_html: Path, out: Path, verify: bool) -> tuple[int, Path | None, dict | None]:
+def export_deck(
+    deck_html: Path,
+    out: Path,
+    verify: bool,
+    deck_spec: dict | None = None,
+    registry: dict | None = None,
+) -> tuple[int, Path | None, dict | None]:
     chrome = find_chrome()
     temp_files = []
     try:
@@ -901,7 +1057,7 @@ def export_deck(deck_html: Path, out: Path, verify: bool) -> tuple[int, Path | N
             temp_files.append(hidden_html)
             p03_png = out.with_name(f"{out.stem}.p03_hidden.png")
             background_pngs, kept_p03 = render_pdf_pages(hidden_pdf, layout, tmp / "png", p03_png)
-            count = build_pptx(layout, background_pngs, out)
+            count = build_pptx(layout, background_pngs, out, deck_spec, registry)
             verification = verify_pptx(out, layout) if verify else None
         return count, kept_p03, verification
     finally:
@@ -917,8 +1073,8 @@ def cleanup_paths(paths: list[Path]) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Export TickDeck deck.html to editable PPTX")
-    parser.add_argument("deck_html", type=Path)
+    parser = argparse.ArgumentParser(description="Export a TickDeck run directory or deck.html to editable PPTX")
+    parser.add_argument("input", type=Path)
     parser.add_argument("-o", "--output", type=Path, default=None)
     parser.add_argument("--verify", action="store_true", help="read back the PPTX and verify structure/geometry")
     return parser.parse_args()
@@ -926,13 +1082,19 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    deck_html = args.deck_html.expanduser().resolve()
+    source = args.input.expanduser().resolve()
+    deck_html = source / "deck.html" if source.is_dir() else source
     if not deck_html.exists():
         raise SystemExit(f"NO_DECK: {deck_html}")
     out = (args.output.expanduser().resolve() if args.output else deck_html.with_name("deck.pptx"))
+    run_dir = deck_html.parent
+    spec_path = run_dir / "06_deck_spec.json"
+    registry_path = run_dir / "02_verified.json"
+    deck_spec = json.loads(spec_path.read_text(encoding="utf-8")) if spec_path.exists() else None
+    registry = json.loads(registry_path.read_text(encoding="utf-8")) if registry_path.exists() else None
 
     ensure_runtime()
-    count, kept_p03, verification = export_deck(deck_html, out, args.verify)
+    count, kept_p03, verification = export_deck(deck_html, out, args.verify, deck_spec, registry)
     size_mb = out.stat().st_size / 1024 / 1024
     print(f"PPTX_OK: {count} slides -> {out} ({size_mb:.1f}MB)")
     if kept_p03:
@@ -947,6 +1109,7 @@ def main() -> None:
             "VERIFY_OK: "
             f"slides={verification['slides']} "
             f"text_boxes={verification['text_boxes']} "
+            f"charts={verification['charts']} "
             f"p03_phrase={phrase} "
             f"max_delta={delta_text}"
         )
