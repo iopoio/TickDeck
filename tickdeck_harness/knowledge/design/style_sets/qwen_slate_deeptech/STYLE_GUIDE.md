@@ -17,7 +17,7 @@
 - body: `background:#DDE1E7; display:flex; align-items:center; justify-content:center;` 가운데 스테이지 1개
 - 폰트 스택: `"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif`
 
-## 디자인 토큰
+## 디자인 토큰 (기본 예시)
 
 ```
 기본 팔레트 Deep Tech: Base #0F172A (Slate 900) · Surface #1E293B (Slate 800)
@@ -33,6 +33,20 @@
 차트: 축 #CBD5E1 1px · 그리드 점선 opacity .3 · 막대 테두리 없음 (data-ink 원칙)
 정직 각주 카드: rgba(56,189,248,.07) 배경 · 보더 rgba(56,189,248,.3)
 ```
+
+## 색 체계 (교체 가능 — 브랜드·주제에 맞게 갈아 끼운다)
+
+**패턴명**: 다크 베이스 + Primary(강조 10%) / Accent(보조 시맨틱) 이중 액센트 · 60/30/10+1 면적 배분
+
+**유지할 것** (색을 바꿔도 이 관계는 그대로):
+- 면적 배분 60% Surface · 30% Base/Text · 10% Primary · +1% Semantic Alert — Primary는 강조 10%만 (레버 4)
+- 액센트 2개 역할 분리 — Primary = 하이라이트·`==키워드==` 변환색, Accent = 보조 시맨틱. 의미 없는 색 사용 금지
+- Base/Surface 2단 톤스케일 — Surface가 Base보다 한 단 밝음
+- 정직 각주 카드 = Primary 틴트 (rgba 배경 .07 · 보더 .3) — Primary를 바꾸면 각주 틴트도 따라간다
+- 차트 저대비 규율 — 축 1px · 그리드 점선 opacity .3 · 막대 테두리 없음 (data-ink 원칙)
+
+**위 "디자인 토큰"의 hex는 예시 기본값** — 브랜드 팔레트로 교체 가능. 대체 후보 = 토큰 블록의 교체 팔레트 2종(Warm Human·High-Contrast Data) + 추가 1종:
+- Violet Research — Base #13111C · Surface #1D1930 · Primary #A78BFA · Accent #F472B6 (리서치·아카데믹 브리핑)
 
 ## DNA 8레버 (필수 문법)
 

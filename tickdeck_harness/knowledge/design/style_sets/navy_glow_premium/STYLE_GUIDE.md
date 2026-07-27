@@ -15,7 +15,7 @@
 - body: `background:#DDE1E7; display:flex; align-items:center; justify-content:center;` 가운데 스테이지 1개
 - 폰트 스택: `"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif`
 
-## 디자인 토큰
+## 디자인 토큰 (기본 예시 — 아래 "색 체계" 참고)
 
 ```
 --accent:#6E8BFF (페리윙클)  --accent2:#B49BF2 (라벤더)
@@ -28,6 +28,21 @@
 간지(divider): 액센트 12% radial 글로우 + c60 파생 다크 — 골드류 하드코딩 금지
 페이지 푸터: 중앙 "© 2026 Peppinch · All rights reserved" · 우상단 "NN / NN"
 ```
+
+## 색 체계 (교체 가능 — 브랜드·주제에 맞게 갈아 끼운다)
+
+**패턴명**: 다크 베이스 + 인접 2색 액센트 글로우 (비교군 = 지면 파생 저채도)
+
+**유지할 것** (색을 바꿔도 지켜야 하는 관계):
+- 액센트는 **인접색(analogous) 2색 페어** — 주 액센트 + 한 단계 옆 hue의 밝은 보조. 보색 충돌 페어 금지 (그건 pop_electric_dark 문법)
+- 톤스케일 5단 구조 유지: 주 액센트 → 보조 액센트 → 지면 파생 저채도 2단 → 잉크. **비교군은 항상 지면 파생 저채도** — 유채 액센트를 비교군에 쓰지 않는다
+- 지면 = 다크 (거의 검정에 액센트 hue 틴트). 순백 카드·밝은 지면 금지 — 카드는 흰 저투명 유리 (필 5%·보더 8%)
+- 글로우 = 액센트 저투명(10~26%)으로만·페이지당 최대 2곳. 지면 글로우도 액센트 hue에서 파생
+- 액센트 자리 = 강조어(hl)·킥커 칩·대형 수치·데이터·검증 칩. 빨강·초록은 semantic delta 전용 (#B42318·#13795B 유지)
+
+**아래 hex는 예시 기본값** — 다른 브랜드/주제 덱에선 위 관계를 지키고 실제 색상만 브랜드 팔레트로 교체:
+- 브랜드가 골드/앰버 프리미엄이면: --accent #E8B04B + --accent2 #F0D48A · 지면 #14100A 계열 · 비교군 #4A4230·#2C2718
+- 브랜드가 틸이면: --accent #3ECFB2 + --accent2 #7FE3D0 · 지면 #0A1614 계열 · 비교군 #2E4A44·#1B2E2A
 
 ## DNA 8레버 (필수 문법 — exemplar 2장이 정본, 반드시 먼저 열어볼 것: exemplar_cover.html · exemplar_body.html)
 
