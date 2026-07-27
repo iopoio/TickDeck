@@ -1,0 +1,1671 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>pop_electric_dark — pricing</title>
+<style>:root {
+  --c60: #131118;
+  --c30: #1C1922;
+  --accent: #FF5A1F;
+  --accent2: #2B3BE8;
+  --divider-accent: #FF5A1F;
+  --divider-accent-fg: color-mix(in srgb, #F5F2EC 92%, black);
+  --ink: #F5F2EC;
+  --ghost: rgba(245,242,236,0.12);
+  --muted: #A7A2AE;
+  --line: rgba(245,242,236,.16);
+  --grid-line: transparent;
+  --slide-bg: #131118;
+  --slide-bg-size: auto;
+  --body-bg: #0D0B11;
+  --card: rgba(255,255,255,.06);
+  --radius: 22px;
+  --mono-font: ui-monospace, "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", monospace;
+  --font-body: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-head: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+  --t1: #FF5A1F;
+  --t2: #2B3BE8;
+  --t3: #E8347C;
+  --t4: #8A2BE8;
+  --t5: #F5F2EC;
+}
+@page { size: 1280px 720px; margin: 0; }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--body-bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  word-break: keep-all;  /* 한국어 단어가 음절로 쪼개지지 않게 전역 기본(상속)·후추님 7/1 */
+}
+.slide {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  page-break-after: always;
+  padding: 56px 72px 36px;
+  display: flex;
+  flex-direction: column;
+  background: var(--slide-bg);
+  background-size: var(--slide-bg-size);
+}
+.slide-head { flex: 0 0 auto; }
+/* 배경 코너 노드 모티프(후추님 #4) — 최소 강도. 콘텐츠보다 뒤·가독성 비방해. */
+.slide-motif {
+  position: absolute;
+  width: 420px;
+  height: 256px;
+  color: var(--accent);
+  opacity: .07;
+  pointer-events: none;
+  z-index: 0;
+}
+.slide-motif.motif-tr { top: -28px; right: -24px; }
+.slide-motif.motif-bl { bottom: 56px; left: -30px; transform: scaleY(-1); }
+.slide-motif.motif-br { bottom: 56px; right: -24px; }
+.slide-head, .body, .slide-foot { position: relative; z-index: 1; }
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .28em;
+}
+.eyebrow::before { content: ""; width: 24px; height: 2px; background: var(--accent); }
+/* 카테고리 칩 변형(CB 흡수 1번·page.eyebrow_chip=true) — 배경색 칩으로 강조. 덱 간 변주 레버. */
+.eyebrow.eyebrow-chip {
+  display: inline-flex;
+  align-self: flex-start;
+  background: var(--accent);
+  color: #FFFFFF;
+  padding: 6px 14px;
+  border-radius: 999px;
+  letter-spacing: .18em;
+}
+.eyebrow.eyebrow-chip::before { display: none; }
+/* 다크 표지 변형(cover_variant:"dark") — 간지와 같은 잉크 파생 문법. 덱 간 차별화 레버(후추님 7/2). */
+.cover-slide.cover-dark {
+  background:
+    radial-gradient(circle at 82% 20%, color-mix(in srgb, var(--accent) 20%, transparent) 0, transparent 40%),
+    linear-gradient(150deg, color-mix(in srgb, var(--ink) 88%, white) 0%, var(--ink) 62%, color-mix(in srgb, var(--ink) 80%, black) 100%);
+  color: #F8FAFC;
+}
+.cover-slide.cover-dark h1 { color: #F8FAFC; }
+.cover-slide.cover-dark .cover-subtitle { color: rgba(248,250,252,.82); }
+.cover-slide.cover-dark .cover-credit,
+.cover-slide.cover-dark .presenter-email { color: rgba(248,250,252,.6); }
+/* 회사명·이름은 이메일만 밝게 바꾸고 누락돼 잉크색 그대로 다크 위에서 무독이던 구멍(후추님 7/3
+   outro 실측 — PEPPINCH·이름 안 보임). 그라디언트 배경이라 lowc 자동검출도 skip이던 사각. */
+.cover-slide.cover-dark .presenter-company,
+.cover-slide.cover-dark .presenter-name { color: #F8FAFC; }
+.block-eyebrow { align-self: flex-start; }
+h1 {
+  margin: 14px 0 0;
+  max-width: 980px;
+  font-size: 44px;
+  line-height: 1.18;
+  letter-spacing: 0;
+  word-break: keep-all;
+  font-family: var(--font-head);
+}
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 24px;
+  padding: 20px 0 8px;
+}
+/* statement/hero/stat 차트 슬라이드는 제목 바로 아래 상단 정렬(후추님 #4 — bottom-weighted 통일).
+   divider·index·matrix·closing·cover는 각자 -body에서 justify-content를 따로 잡아 영향 없음. */
+.body-grid { justify-content: center; }
+/* 저밀도 페이지(블록 ≤3) 세로 중앙 — 하단 공백이 의도된 여백으로 읽히게(7/2). */
+.body-center { justify-content: center; }
+/* headline 블록 = h1 아래의 단일 부제. h1(44px) 대비 크기 점프를 확실히(후추님 #9 위계 단순화). */
+.block-title {
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--muted);
+  margin: -8px 0 4px;
+  max-width: 960px;
+  word-break: keep-all;
+}
+.body-text { font-size: 18px; line-height: 1.56; max-width: 980px; word-break: keep-all; }
+/* callout = 박스 강조 takeaway. note(body-text 18px)와 위계: 굵기600+박스+약간 큼(20)·위 여백 (후추님 6/30).
+   크기를 너무 키우면 dense 슬라이드가 넘쳐 굵기로 위계를 준다. */
+.callout { font-size: 20px; font-weight: 600; line-height: 1.5; max-width: 1020px; word-break: keep-all;
+  border-left: 4px solid var(--accent);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px 24px;
+  margin-top: 14px;
+}
+/* 펀치라인 callout(emphasis) — 제언·맺음의 한 줄을 크게. 박스 톤은 유지, 글자만 키움. */
+.callout-lead { font-size: 30px; font-weight: 800; color: var(--ink); padding: 22px 26px; }
+/* split-note-row — note(단, ~ 캐비앗)를 좌우 칸에 끼워 넣지 않고 하단 전폭으로 뺀다(7/3 후추님
+   1차 지적: 우측 칸에 박스로 갇혀 어색함). 단, 박스 톤 자체는 유지 — 각주 같은 민무늬 한 줄로
+   벗기니 "안내문 같다"는 재지적(7/3 2차) — 원래 callout 박스 그대로, 폭만 전폭. */
+.split-note-row { margin-top: 18px; }
+.split-note-row .callout { max-width: none; }
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+.metric-card {
+  min-height: 170px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.metric-label {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+.metric-value {
+  color: var(--accent);
+  font-size: 64px;
+  line-height: 1;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.metric-source {
+  align-self: flex-end;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .02em;
+}
+/* 델타 3단 위계(차트캐논 A5) — 라벨→큰숫자→델타. 의미색 = 증가 녹 / 감소 적(3사 수렴). */
+.metric-delta { font-size: 14px; font-weight: 800; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.metric-delta.up { color: #2E9E6B; }
+.metric-delta.down { color: #C8553D; }
+/* 키워드 색전환(==키워드==·백로그 Phase 1) — 강조어만 accent. 슬라이드당 절제. */
+.kw { color: var(--accent); }
+.bullet-list {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+  list-style: none;
+  max-width: 980px;
+}
+.bullet-list li {
+  position: relative;
+  padding-left: 28px;
+  font-size: 20px;
+  line-height: 1.45;
+}
+.bullet-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .72em;
+  width: 16px;
+  height: 2px;
+  background: var(--accent);
+}
+.slide-foot {
+  position: relative;
+  z-index: 3;
+  flex: 0 0 auto;
+  margin-top: 6px;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: .08em;
+}
+/* 출처 = 푸터 선 위 한 줄(후추님 6/30). nowrap으로 한 줄 유지·선 아래로 안 내려감. */
+.source-row {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: .08em;
+  margin-bottom: 2px;
+}
+.source-link { color: var(--muted); text-decoration: none; white-space: nowrap; }
+.source-link::before { content: "["; color: var(--accent); }
+.source-link::after { content: "]"; color: var(--accent); }
+/* 용어 풀이 각주 = 출처행 위, 작게(일반 청중 배려). 줄바꿈 허용(한 줄 강제 X). */
+.footnote-row {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+.footnote-item { margin-right: 18px; }
+.footnote-item b { color: var(--ink); font-weight: 700; }
+.page-number { white-space: nowrap; }
+/* 푸터 선 아래 = [좌 spacer][중앙 카피라이트][우 페이지번호]. 중앙 절대중앙 고정. */
+.slide-foot .foot-side { flex: 1 1 0; }
+.slide-foot .page-number { flex: 1 1 0; text-align: right; }
+.copyright {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  text-align: center;
+  color: var(--muted);
+}
+.layout-closing .copyright,
+.layout-divider .copyright { color: inherit; opacity: .82; }
+.cover-slide { padding: 64px 72px 36px; position: relative; }
+/* 광택 대각 오버레이(엔바토 흡수 3라운드 7/3) — 순수 CSS 사선 하이라이트, 이미지 불필요. */
+.cover-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 38%, color-mix(in srgb, white 22%, transparent) 50%, transparent 62%);
+}
+/* 세로 책등 라벨 — 표지 우측 여백에 회전된 짧은 단어(브랜드북 스파인 문법). */
+.cover-spine {
+  position: absolute;
+  top: 50%;
+  right: 28px;
+  margin: 0;
+  z-index: 2;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  color: var(--muted);
+  opacity: .6;
+}
+.cover-dark .cover-spine { color: rgba(248,250,252,.5); }
+/* 표지 뼈대 "corner" — 텍스트 하단 앵커(에디토리얼/문서 느낌). center 뼈대와 나란한 대안. */
+.cover-corner .cover-body { justify-content: flex-end; gap: 28px; }
+.cover-corner .cover-lockup h1 { font-size: 54px; line-height: 1.14; }
+/* 커버 우상단 작성자 크레딧(후추님 #10) — 절제된 작은 글씨·우측 정렬·타이틀과 비충돌. */
+.cover-credit {
+  position: absolute;
+  bottom: 56px;
+  right: 72px;
+  margin: 0;
+  z-index: 2;
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--muted);
+}
+.theme-tech .cover-credit { right: 96px; }
+.cover-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 58px;
+}
+.cover-lockup { max-width: 980px; }
+.cover-eyebrow {
+  margin: 0 0 14px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+.cover-lockup h1 {
+  margin: 0;
+  font-size: 72px;
+  line-height: 1.06;
+  letter-spacing: 0;
+}
+.cover-subtitle {
+  margin: 24px 0 0;
+  color: var(--ink);
+  font-size: 30px;
+  line-height: 1.32;
+  word-break: keep-all;
+}
+.axis-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  max-width: 760px;
+}
+.axis-strip span {
+  border-top: 4px solid var(--band);
+  color: var(--muted);
+  padding-top: 12px;
+  font-size: 14px;
+}
+.axis-strip b { color: var(--band); margin-right: 8px; }
+.editorial-axis span { min-height: 20px; }
+.cover-circuit-corner {
+  position: absolute;
+  top: 48px;
+  left: 96px;
+  width: 40px;
+  height: 40px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+}
+.cover-health-curve {
+  width: min(760px, 70%);
+  height: 92px;
+  border: 2px solid var(--accent2);
+  border-left: 0;
+  border-bottom: 0;
+  border-radius: 0 64px 0 0;
+  opacity: .62;
+}
+.theme-tech.cover-slide { padding: 0 96px 40px; }
+.theme-tech .cover-body { gap: 0; }
+.theme-tech .cover-lockup { max-width: 1020px; }
+.theme-tech .cover-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 26px;
+  color: var(--accent);
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .34em;
+}
+.theme-tech .cover-eyebrow::before {
+  content: "";
+  width: 34px;
+  height: 2px;
+  background: var(--accent2);
+}
+.theme-tech .cover-lockup h1 {
+  font-size: 80px;
+  line-height: 1.06;
+  font-weight: 850;
+}
+.theme-tech .cover-subtitle {
+  margin-top: 26px;
+  color: var(--muted);
+  font-size: 26px;
+  font-weight: 600;
+}
+.outro-slide .cover-subtitle { max-width: 900px; }
+/* 마지막 장 상단 꺽쇠는 커버에만 어울려 outro에선 제거(후추님 #7). 커버는 유지. */
+.outro-slide .cover-circuit-corner { display: none; }
+.presenter-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--mono-font);
+  letter-spacing: .02em;
+}
+.presenter-contact .presenter-company { color: var(--ink); font-weight: 800; font-size: 18px; letter-spacing: .09em; }
+.presenter-contact .presenter-name { color: var(--ink); font-weight: 600; font-size: 15px; }
+.presenter-contact .presenter-email { color: var(--muted); font-size: 14px; }
+/* outro: eyebrow+감사 인사 한 묶음(상단~중상단) / 연락처 하단 (후추님 6/30) */
+.outro-slide { display: flex; flex-direction: column; justify-content: space-between; }
+.outro-main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 18px; }
+.outro-main .cover-eyebrow { margin: 0; }
+.outro-main h1 { margin: 0; font-size: 92px; line-height: 1.04; font-weight: 850; }
+.theme-tech .outro-main h1 { font-size: 96px; }
+.theme-tech .eyebrow,
+.theme-tech .slide-foot {
+  font-family: var(--mono-font);
+}
+.theme-tech .eyebrow::before { background: var(--accent2); }
+/* (구) marketing/health 카드·콜아웃 코랄/블루 그림자 제거(후추님 7/2) — 반투명 배경 + 그림자가
+   그라디언트 위에서 '뒤에 박스가 있는' 얼룩으로 보임. 톤다운 원칙: 깊이감은 보더·여백으로. */
+.callout { background: color-mix(in srgb, #FFFFFF 88%, var(--c30)); }
+.layout-body {
+  width: 100%;
+}
+/* 출처 appendix: 넘버·구분선 없이 "기관 — 리포트명" 한 줄 플랫 리스트(후추님 7/2). data-src-id로 C6 authorized. */
+.appendix-list { display: flex; flex-direction: column; gap: 10px; width: min(100%, 1090px); }
+.appendix-row {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* 다출처(>10행) 압축 모드 — 행 간격·폰트 축소로 한 장에 수용. */
+.appendix-compact.appendix-body .appendix-list { gap: 7px; }
+.appendix-compact .appendix-pub { font-size: 13.5px; }
+.appendix-compact .appendix-title { font-size: 13px; }
+.appendix-pub { flex: none; font-size: 15px; font-weight: 700; color: var(--ink); }
+.appendix-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: var(--muted); }
+/* split 외곽: 부제 전폭 + 그 아래 2단 그리드(후추님 7/2 — 부제는 제목 아래 일반 양식과 통일). */
+.split-outer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+.split-outer .block-title { margin: 0; }
+/* 부제가 전폭으로 올라간 만큼 칸 안 요소는 낮게 — 카드 축소·칸 내 간격 압축. */
+.split-pane .metric-card { min-height: 132px; padding: 18px; }
+.split-pane .metric-card .metric-value { font-size: 48px; }
+.split-pane { gap: 16px; }
+.split-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  /* 상단 정렬 — 키 다른 두 칸이 중앙 정렬로 어긋나 보이던 문제(후추님 7/2). 차트 제목 라인이 맞는다. */
+  align-items: start;
+}
+/* 비대칭 split(드리블 흡수 2라운드) — 주 비주얼 쪽을 넓게. */
+.split-body.split-wide-left { grid-template-columns: 1.7fr 1fr; }
+.split-body.split-wide-right { grid-template-columns: 1fr 1.7fr; }
+/* hero_metric — 숫자가 곧 비주얼인 전면장(드리블 초대형 타이포 문법의 수치 버전). */
+.hero-body { justify-content: center; gap: 10px; }
+.hero-stage { display: flex; flex-direction: column; gap: 8px; max-width: 980px; }
+.hero-stage .metric-card { border: 0; background: transparent; padding: 0; min-height: 0; }
+.hero-stage .metric-label { font-size: 26px; font-weight: 800; color: var(--ink); }
+.hero-stage .metric-value { font-size: 210px; line-height: .96; letter-spacing: -.02em; }
+.hero-stage .callout { max-width: 720px; }
+/* 보조 카드/note/citation 열 — hero-stage(초대형)와 분리, 정상 크기 유지(7/3 fix). */
+.hero-row { display: flex; align-items: flex-start; gap: 22px; flex-wrap: wrap; max-width: 980px; }
+.hero-row .metric-card { max-width: 320px; }
+.split-pane {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.split-primary {
+  padding-right: 46px;
+  border-right: 1px solid var(--line);
+}
+.split-secondary { padding-left: 2px; }
+.stepper-body { justify-content: center; }
+.stepper-track {
+  counter-reset: step;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 22px;
+  align-items: stretch;
+}
+/* 스텝퍼 카드 안 callout/metric = 카드 속 카드(이중 박스) 방지 — 박스 벗기고 내용만(후추님 7/2 p11 #04 · 7/3 테크 p15 #02). */
+.stepper-item .metric-card {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+  border-radius: 0;
+}
+/* matrix 셀 안 metric = 카드 속 카드 방지(스텝퍼와 동일 문법) — 셀의 스탯 행으로 평탄화. */
+.matrix-cell .metric-grid { margin-top: 14px; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.matrix-cell .metric-card {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+}
+.matrix-cell .metric-value { font-size: 44px; }
+.stepper-item .callout {
+  border-left: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin-top: 0;
+  font-weight: 800;
+  box-shadow: none !important;
+}
+.stepper-item {
+  counter-increment: step;
+  position: relative;
+  min-height: 180px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 58px 22px 22px;
+}
+.stepper-item::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  top: 20px;
+  left: 22px;
+  color: var(--accent);
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+/* 넘버 옆 가로선(::after) 제거 — 카드 테두리+선 4개 = 선 과다(후추님 7/3 테크 p15). */
+.node-body { justify-content: center; }
+.node-map {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(280px, .85fr) minmax(0, 1.4fr);
+  gap: 44px;
+  align-items: center;
+}
+.node-core,
+.node-branch {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 24px;
+}
+.node-core {
+  border-color: var(--accent);
+  border-left-width: 5px;
+}
+.node-branches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.node-branch::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  width: 18px;
+  border-top: 1px solid var(--line);
+}
+.matrix-body { justify-content: center; }
+.matrix-subhead { margin: 0 0 18px; }
+.matrix-subhead .block-title { margin: 0; font-size: 20px; }
+.matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card);
+}
+.matrix-cell {
+  min-height: 150px;
+  padding: 22px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.matrix-cell:nth-child(2n) { border-right: 0; }
+.matrix-cell:nth-last-child(-n+2) { border-bottom: 0; }
+.matrix-cell-label { font-size: 18px; font-weight: 800; color: var(--accent); margin: 0 0 8px; letter-spacing: .01em; }
+.matrix-cell-copy { font-size: 16px; line-height: 1.5; color: var(--ink); word-break: keep-all; }
+.index-body { justify-content: center; }
+.index-list {
+  counter-reset: index;
+  display: grid;
+  gap: 0;
+  width: min(100%, 980px);
+}
+.index-row {
+  counter-increment: index;
+  display: grid;
+  grid-template-columns: 128px minmax(112px, .35fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  min-height: 74px;
+  border-top: 1px solid var(--line);
+  padding: 15px 0;
+}
+.index-row:last-child { border-bottom: 1px solid var(--line); }
+.index-row::before {
+  content: counter(index, decimal-leading-zero);
+  color: var(--accent);
+  font-family: var(--mono-font);
+  /* 넘버링 오브제(드리블 흡수 2라운드) — 번호가 장식이 아니라 오브제. 크기 위계 과감하게. */
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+  opacity: .92;
+}
+.index-part {
+  color: var(--ink);
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.1;
+  word-break: keep-all;
+}
+.index-copy {
+  color: var(--muted);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.46;
+  word-break: keep-all;
+}
+.layout-closing.slide {
+  padding: 84px 96px 0;
+}
+.layout-closing .slide-head {
+  max-width: 1040px;
+}
+.layout-closing .eyebrow {
+  color: var(--accent);
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .3em;
+}
+.layout-closing .eyebrow::before {
+  width: 34px;
+  background: var(--accent2);
+}
+/* closing 전용 .eyebrow color 재정의가 칩(.eyebrow-chip)의 흰 글자색을 덮어써 배경(accent)과
+   같은 색이 되어 텍스트가 안 보이던 버그(7/3 실측 발견 — p14 "CLOSING" 칩 빈 도형으로 보임). */
+.layout-closing .eyebrow.eyebrow-chip { color: #FFFFFF; }
+.layout-closing .slide-head h1 {
+  margin-top: 18px;
+  max-width: 1040px;
+  font-size: 46px;
+  line-height: 1.18;
+  font-weight: 850;
+}
+.closing-body {
+  justify-content: flex-start;
+  gap: 0;
+  padding: 54px 0 92px;
+}
+.closing-points {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: min(100%, 1010px);
+}
+.closing-point {
+  display: grid;
+  grid-template-columns: 212px minmax(0, 1fr);
+  gap: 30px;
+  align-items: baseline;
+  margin-bottom: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+}
+.closing-point:last-child {
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+.closing-label {
+  color: var(--accent);
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.25;
+  word-break: keep-all;
+}
+.closing-copy {
+  color: var(--ink);
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+/* 펀치라인 = 마지막 임팩트. 크게·액센트·여백 확보(후추님 #3). 위 3행은 받침. */
+.closing-callout {
+  margin: 30px 0 0;
+  max-width: 1080px;
+  border-left: 6px solid var(--accent2);
+  padding-left: 28px;
+  color: var(--ink);
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  word-break: keep-all;
+}
+.layout-closing .slide-foot {
+  position: absolute;
+  left: 96px;
+  right: 96px;
+  bottom: 40px;
+  margin-top: 0;
+  font-family: var(--mono-font);
+}
+.layout-divider .slide-head { display: none; }
+/* 간지 배경 = 테마 잉크색 파생(글로우는 테마 액센트) — 네이비 하드코딩이 웜 테마 본문과
+   부조화하던 문제의 근본 풀이(후추님 7/2 마케팅 덱 지적). 테크 잉크는 기존 네이비와 근사. */
+.layout-divider.slide {
+  background:
+    radial-gradient(circle at 84% 28%, color-mix(in srgb, var(--accent) 22%, transparent) 0, transparent 36%),
+    linear-gradient(140deg, color-mix(in srgb, var(--ink) 90%, white) 0%, var(--ink) 62%, color-mix(in srgb, var(--ink) 82%, black) 100%);
+  color: #F8FAFC;
+}
+/* accent 풀블리드 간지(드리블 흡수 2라운드 — 컬러 블록 리듬): 잉크 파생 대신 테마색 전면.
+   4~6장마다 색 리듬 전환용 레버(divider_variant:"accent") — 기본값은 여전히 잉크 파생. */
+.layout-divider.slide.divider-accent {
+  background:
+    radial-gradient(circle at 84% 28%, color-mix(in srgb, white 16%, transparent) 0, transparent 38%),
+    linear-gradient(140deg, color-mix(in srgb, var(--divider-accent) 92%, white) 0%, var(--divider-accent) 58%, color-mix(in srgb, var(--divider-accent) 78%, black) 100%);
+  color: var(--divider-accent-fg);
+}
+.divider-accent .divider-title { color: var(--divider-accent-fg); }
+.divider-accent .divider-subtitle { color: color-mix(in srgb, var(--divider-accent-fg) 74%, transparent); }
+.divider-accent .divider-part { color: color-mix(in srgb, var(--divider-accent-fg) 82%, transparent); }
+.divider-accent .divider-progress span.is-active { background: var(--divider-accent-fg); }
+/* 초대형 타이포 오브제(드리블 흡수 2라운드): 제목이 화면 절반 — 이 장엔 차트·장식 금지.
+   레버 hero_title:true, 간지·전환 장에서 한 단어급 제목과 함께 쓴다. */
+.divider-hero .divider-title { font-size: 168px; line-height: .98; letter-spacing: -.02em; }
+.divider-hero .divider-subtitle { font-size: 24px; margin-top: 18px; }
+/* 펩핀치 다크 섹션 = 브랜드 히어로(차콜 #2A2F33) + 오렌지 #FF9B3D 글로우. 표지·맺음. */
+.theme-peppinch.cover-slide {
+  background:
+    radial-gradient(circle at 85% 24%, rgba(255, 155, 61, .17) 0, transparent 40%),
+    linear-gradient(150deg, #32373C 0%, #2A2F33 64%, #23272A 100%);
+  color: #F1ECE0;
+}
+/* 간지 = 깔끔한 회색(다크 표지·크림 본문 사이 중간 톤). 글로우·그리드 없이 단정하게(후추님 6/30 — 회색 위 글로우가 얼룩처럼). */
+.theme-peppinch.layout-divider.slide {
+  background: linear-gradient(165deg, #5A5E63 0%, #4E5257 100%);
+  color: #F4F1EA;
+}
+/* 테크풍 배경 모티프(간지 원·본문 별자리)는 따뜻한 에디토리얼 톤과 안 맞고 서로 안 어울림 → 제거(후추님 6/30). */
+.theme-peppinch .slide-motif,
+.theme-peppinch .divider-motif { display: none; }
+/* 다크 섹션 강조색 = 오렌지(크림 본문은 레드 유지). */
+.theme-peppinch.cover-slide h1 { color: #F1ECE0; }
+.theme-peppinch.cover-slide .cover-eyebrow,
+.theme-peppinch.cover-slide .presenter-company { color: #FF9B3D; }
+.theme-peppinch.cover-slide .cover-subtitle { color: rgba(241,236,224,.82); font-size: 22px; line-height: 1.45; margin-top: 20px; }
+/* 부제목은 한 단계 작게·가볍게 = 정제된 위계(후추님 7/1). */
+.theme-peppinch .block-title { font-size: 20px; font-weight: 600; }
+/* 간지 헤드라인은 본문 제목(44px)보다 작게 — 섹션 마커가 본문보다 크면 위계 뒤집힘(후추님 7/1). */
+.theme-peppinch .divider-title { font-size: 40px; }
+.theme-peppinch.cover-slide .cover-credit,
+.theme-peppinch.cover-slide .presenter-email { color: rgba(241,236,224,.6); }
+.theme-peppinch.cover-slide .presenter-name { color: #F1ECE0; }
+/* 회로망 그리드·레이더 링 = 테크 은유 — 테크 테마 전용으로 격리(7/2). 타 테마 간지는
+   잉크 다크 + 액센트 글로우만(주제 무관 은유 복붙 금지·visualization.md C). */
+.theme-tech.layout-divider::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(90deg, transparent 0%, black 16%, black 82%, transparent 100%);
+  pointer-events: none;
+}
+.slide:not(.theme-tech) .divider-motif { display: none; }
+.layout-divider .slide-foot {
+  z-index: 1;
+  border-top-color: rgba(255,255,255,.16);
+  color: rgba(248,250,252,.58);
+}
+.divider-body {
+  position: relative;
+  z-index: 1;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  min-height: 0;
+  padding: 24px 0 8px;
+}
+.divider-motif {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 240px;
+  height: 240px;
+  transform: translateY(-50%);
+  border: 1px solid rgba(248,250,252,.18);
+  border-radius: 50%;
+  opacity: .72;
+}
+.divider-motif::before,
+.divider-motif::after {
+  content: "";
+  position: absolute;
+  inset: 38px;
+  border: 1px solid rgba(248,250,252,.14);
+  border-radius: 50%;
+}
+.divider-motif::after { inset: 82px; }
+.divider-progress {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.divider-progress span {
+  width: 42px;
+  height: 4px;
+  background: rgba(248,250,252,.22);
+}
+.divider-progress .is-active { background: var(--accent2); }
+.divider-part {
+  margin: 0;
+  color: var(--accent2);
+  font-family: var(--mono-font);
+}
+.divider-part::before { background: var(--accent2); }
+.divider-eyebrow {
+  margin: 0;
+  color: rgba(248,250,252,.64);
+}
+.divider-eyebrow::before { background: rgba(248,250,252,.35); }
+.divider-title {
+  margin: 8px 0 0;
+  max-width: 900px;
+  color: #F8FAFC;
+  font-size: 72px;
+  line-height: 1.08;
+  letter-spacing: 0;
+  word-break: keep-all;
+  position: relative;
+  z-index: 1;
+}
+/* 조용한 간지 뼈대(엔바토 흡수 3라운드 7/3) — 진척바·PART접두어·불릿 없이 거대 숫자+라벨 한 줄. */
+.divider-quiet { justify-content: center; gap: 8px; }
+.divider-quiet .divider-part { margin: 0; }
+.divider-quiet-num {
+  font-family: var(--mono-font);
+  font-weight: 300;
+  font-size: 168px;
+  line-height: 1;
+  color: color-mix(in srgb, #F8FAFC 46%, transparent);
+  margin: 4px 0 0;
+}
+.divider-quiet .divider-title { font-size: 52px; margin-top: 4px; }
+/* 고스트 배경 타이포 — 파트 라벨을 초대형·투명하게 깔아 여백을 타이포로 채운다. */
+.divider-ghost {
+  position: absolute;
+  right: -4%;
+  bottom: 14%;
+  z-index: 0;
+  font-size: 240px;
+  font-weight: 900;
+  line-height: .8;
+  letter-spacing: -.03em;
+  color: color-mix(in srgb, white 8%, transparent);
+  white-space: nowrap;
+  pointer-events: none;
+  word-break: keep-all;
+}
+.divider-subtitle {
+  margin: 4px 0 0;
+  max-width: 820px;
+  color: rgba(248,250,252,.70);
+  font-size: 24px;
+  line-height: 1.42;
+  word-break: keep-all;
+}
+/* 간지 하위 목차 프리뷰(author-style §5) — "이 파트에서 볼 것" 짧은 리스트. */
+.divider-items {
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+.divider-items li {
+  position: relative;
+  padding-left: 24px;
+  color: rgba(248,250,252,.78);
+  font-size: 19px;
+  word-break: keep-all;
+}
+.divider-items li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .62em;
+  width: 12px;
+  height: 2px;
+  background: var(--accent2);
+}
+.visual-card {
+  width: min(100%, 1040px);
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  margin: 8px 0 6px;  /* 차트 위아래 약간의 숨 (후추님 6/30 — 조금씩·dense 슬라이드 안 넘치게) */
+}
+.visual-card svg { display: block; width: 100%; height: auto; overflow: visible; }
+/* statement(상하 전폭) flow — SVG가 전폭 비율로 부풀어 세로가 터지는 것 방지(7/3 p04·p05). */
+.body:not(.layout-body) > .visual-card { width: min(100%, 820px); }
+.body:not(.layout-body) > .metric-card { max-width: 460px; }
+/* stack 컴포지션 — 전폭 차트도 세로 비율이 안 터지게 상한. */
+.stack-outer > .visual-card { width: min(100%, 760px); }
+.stack-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+  align-items: stretch;
+  margin-top: 14px;
+}
+.stack-row .metric-card { min-height: 0; }
+.visual-card text {
+  font-family: var(--font-chart, "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif);
+  letter-spacing: 0;
+}
+/* editorial_serif — 차트도 팔레트 스와핑에 그치지 않게: 막대/필 모서리를 각지게(rx 0), 수치 조판을
+   세리프로 바꿔 "기술 대시보드 각바" 관례에서 이탈시킨다(후추님 7/3 "결국 컬러 변경된거고 구성은 그대로" 지적). */
+.theme-editorial-serif rect { rx: 0; ry: 0; }
+.theme-editorial-serif { --font-chart: var(--font-head); }
+/* 그리드/컴포지션 레벨 변주(후추님 7/3 "레이아웃 전체를 변경해서 다양해 보이는거") — 토큰(폰트·카드·
+   차트모서리)만으로는 "테두리만 없앤 버전"으로 읽힘. 제본선 여백·분할비율까지 바꿔 지면 골격 자체를 바꾼다. */
+.theme-editorial-serif.slide {
+  padding: 56px 80px 36px 104px;
+  border-left: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+}
+.theme-editorial-serif .split-body { grid-template-columns: 1.35fr 1fr; gap: 64px; align-items: center; }
+/* 세리프 split은 상단 정렬 대신 세로 중앙 — 키 차이 나는 두 칸에서 짧은 쪽 아래 구멍이
+   "중간 여백 어색"으로 읽히던 문제(후추님 7/4 p14). 차트 제목 라인 정합(7/2)은 카드형 테마 유지. */
+/* 그리드 리팩터 2차(7/3 "레이아웃 전체를 변경해서 다양해 보이는거" — 후추님 확인) — 토큰·분할비율까지
+   손댄 1차로도 "테두리만 없앤 버전"이라 재지적. 이번엔 제목 앵커·거대숫자 위치·콜아웃 문법 자체를 바꾼다. */
+/* (1) 제목 앵커 — 우측 마스트헤드로 뒤집었었으나(2차) 후추님 실물 판정(7/4 크리에이터 덱)
+   "우측 쏠림이 예쁘지 않음·좌측이 맞다" → 좌측 정렬 원복(정렬 축 폐기). 세리프 차별화는
+   서체·제본선·풀쿼트·블리드 간지 넘버가 담당. 크기 50px(7/3 "조금만 더")·상자 해제는 유지. */
+.theme-editorial-serif .slide-head h1 { max-width: none; font-size: 50px; }
+/* (2) 간지 거대숫자 — 인라인 흐름(제목 위 한 줄)에서 빼내 우하단에 블리드하는 배경 넘버로.
+   tech·기본 뼈대는 좌측 인라인 숫자라 "같은 자리"였던 것을 위치 자체로 이탈. */
+.theme-editorial-serif .divider-quiet { justify-content: flex-start; padding-top: 72px; }
+.theme-editorial-serif .divider-quiet-num {
+  position: absolute;
+  right: 64px;
+  bottom: 40px;
+  font-size: 320px;
+  font-weight: 200;
+  z-index: 0;
+}
+.theme-editorial-serif .divider-quiet .divider-part,
+.theme-editorial-serif .divider-quiet .divider-title,
+.theme-editorial-serif .divider-quiet .divider-subtitle { position: relative; z-index: 1; }
+/* (3) 콜아웃 — "테두리만 벗긴 카드"가 아니라 각주형 인용부호 없이 세로 룰선 하나로 본문에 녹인다
+   (러닝텍스트형 풀쿼트). metric-card 그리드는 이번 라운드 스코프 밖(별도 승인 필요 — 진입점 참고). */
+.theme-editorial-serif .callout {
+  border-left: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 4px 0 4px 28px;
+  position: relative;
+  font-style: italic;
+  font-family: var(--font-head);
+}
+.theme-editorial-serif .callout::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .15em;
+  bottom: .15em;
+  width: 2px;
+  background: var(--accent);
+}
+/* 그리드 리팩터 3차(7/3 "스코프 밖으로 남긴것들 진행") — 이전 라운드에 미룬 두 항목 처리. */
+/* (4) metric-card — .metric-grid/.split-pane 컨텍스트(다수 카드 나열)만 한정. hero-stage·
+   stepper-item은 이미 테마 무관 자체 오버라이드로 박스를 벗겨뒀으니 손대지 않는다(중복·충돌 방지).
+   "테두리만 벗긴 카드"가 되지 않게 카드 자체를 없애고 hairline 세로 구분선으로 잇는 러닝 스탯 문법. */
+.theme-editorial-serif .metric-grid .metric-card,
+.theme-editorial-serif .split-pane .metric-card {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  border-left: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  padding-left: 22px;
+}
+.theme-editorial-serif .metric-grid .metric-card:first-child,
+.theme-editorial-serif .split-pane .metric-card:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+.theme-editorial-serif .metric-value { font-family: var(--font-head); }
+.theme-editorial-serif .metric-label { font-style: italic; }
+/* 카드리스 러닝스탯 — 카드 시절 잔재(min-height 170px·padding 24px·accent 윗줄 3px)를 전부 벗긴다.
+   grid/split-pane 밖 맨몸 metric이 24px 인덴트+마룬 윗줄을 달고 나와 좌측 정렬이 어긋나던 문제
+   (후추님 7/4 크리에이터 p12 실측). hairline 구분선은 grid/split-pane 규칙이 다시 입힌다. */
+.theme-editorial-serif .metric-card {
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}
+/* 저밀도 페이지에서 마지막 행이 중간에 떠서 페이지마다 정렬이 달라 보이던 문제(후추님 7/4 p05 —
+   "다른 페이지는 하단에 붙는데 여긴 상단부터") — stack 마지막 행을 하단 앵커로 통일. */
+.theme-editorial-serif .stack-outer > .stack-row:last-child { margin-top: auto; }
+/* stack 차트 폭 상한은 기본 테마(760) 기준 — 세리프는 제본 여백만큼 콘텐츠 폭이 좁아 같은 SVG가
+   세로를 더 먹는다(7/3 p04 -20px 실측). 테마 상한 하향. */
+.theme-editorial-serif .stack-outer > .visual-card { width: min(100%, 680px); }
+/* (5) 커버 제목 앵커 — 본문 좌측 원복(7/4)에 맞춰 표지도 좌측 기본으로(마스트헤드 축 폐기). */
+.visual-title { fill: var(--ink); font-size: 23px; font-weight: 900; }
+.visual-note { fill: var(--muted); font-size: 17px; font-weight: 500; }
+/* 막대 설명 라벨은 받침 — 일반 굵기로 낮춰 헤더·값만 도드라지게(후추님 #6). */
+.visual-label { fill: var(--ink); font-size: 20px; font-weight: 500; }
+.visual-value { fill: var(--ink); font-size: 28px; font-weight: 900; }
+.visual-value-accent { fill: var(--accent); font-size: 35px; font-weight: 900; }
+/* 델타 주석(전·후 변화량·×N 브래킷) — 렌더러 계산값. accent2로 값과 위계 분리. */
+.visual-delta { fill: var(--accent2); font-size: 22px; font-weight: 900; }
+.visual-fo-label {
+  color: var(--ink);
+  font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.34;
+  word-break: keep-all;
+}
+/* split 좁은 칸 안의 차트는 SVG가 ~0.55배 축소되므로 텍스트를 보정해 키운다 */
+.split-pane .visual-title { font-size: 32px; }
+.split-pane .visual-note { font-size: 25px; }
+.split-pane .visual-label { font-size: 29px; }
+.split-pane .visual-value { font-size: 40px; }
+.split-pane .visual-value-accent { font-size: 48px; }
+
+/* ══ 파일럿 2: data_mono — 모노스페이스 데이터형(후추님 7/3 방향 승인) ══
+   editorial_serif에서 검증된 층 순서 재사용: 토큰(폰트·카드·차트) → 그리드(제목 앵커·간지
+   문법·콜아웃/메트릭 문법). 방안지 지면은 팔레트 slide_bg가 담당. */
+/* 토큰층: 각진 차트 + 모노 수치 조판 */
+.theme-data-mono rect { rx: 0; ry: 0; }
+.theme-data-mono { --font-chart: var(--font-head); }
+/* 그리드층 (1) 제목 앵커 = 스펙시트 헤더 — 전폭 룰선 아래 제목, eyebrow는 사각 마커.
+   기존(룰선 없는 좌상단)·세리프(우측 마스트헤드)와 다른 세 번째 문법. */
+.theme-data-mono .slide-head { border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+/* 40px는 outro 72px 대비 왜소(후추님 7/3) → 46px. 커진 +7px는 헤더 밑 패딩(16→8)에서
+   회수 — 빠듯한 페이지들(p02/p05/p15)이 3~7px씩 넘치던 것 실측·해소. 제목은 전 페이지 한 줄. */
+.theme-data-mono .slide-head h1 { font-size: 46px; font-weight: 700; letter-spacing: -.02em; max-width: none; }
+.theme-data-mono .eyebrow { font-family: var(--mono-font); letter-spacing: .3em; }
+.theme-data-mono .eyebrow::before { width: 10px; height: 10px; background: var(--accent); }
+/* 그리드층 (2) 간지 거대숫자 = 아웃라인(스트로크) 넘버 — 기본(채운 좌측 인라인)·세리프(우하단
+   블리드)와 다른 세 번째 자리/질감. 다크 간지 위 흰 윤곽선. */
+.theme-data-mono .divider-quiet-num {
+  font-weight: 700;
+  font-size: 220px;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(248,250,252,.55);
+}
+/* 다크 간지에도 방안지 정체성 유지 — 테크 회로그리드(마스크·72px)와 달리 24px 균일 눈금.
+   시스템 시그니처의 연속이지 테크 은유 복붙이 아님(7/2 격리 원칙과 구분). */
+.theme-data-mono.layout-divider::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(248,250,252,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(248,250,252,.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+/* 그리드층 (3) 콜아웃 = 전연 실선 박스(도면 주기·radius 0) — 기본(액센트 좌변 카드)·세리프
+   (박스 없는 이탤릭 풀쿼트)와 다른 세 번째 문법. */
+.theme-data-mono .callout {
+  border: 1px solid var(--ink);
+  border-left: 1px solid var(--ink);
+  background: transparent;
+  border-radius: 0;
+  padding: 16px 22px;
+}
+/* 메트릭 = 계기 판독값 — 모노 숫자·라벨 소형 모노 트래킹, 박스는 얇은 전연 1px. */
+.theme-data-mono .metric-card {
+  border: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  background: transparent;
+  border-radius: 0;
+}
+.theme-data-mono .metric-value { font-family: var(--font-head); font-weight: 700; }
+.theme-data-mono .metric-label { font-family: var(--mono-font); font-size: 12px; letter-spacing: .12em; }
+/* 불릿 마커 = 사각 틱(기본 가로선·세리프 상속과 구분) */
+.theme-data-mono .bullet-list li::before { width: 8px; height: 8px; top: .5em; }
+.theme-data-mono .stack-outer > .visual-card { width: min(100%, 656px); }
+.theme-data-mono .divider-items li::before { width: 8px; height: 8px; top: .5em; }
+/* 위 콜아웃/메트릭 박스 규칙이 전역 "카드 속 카드 방지" 리셋(.stepper-item·.hero-stage)을
+   소스 순서로 덮어써 이중박스 재발(후추님 7/3 p15 실측 — 스텝 02·04 박스 속 박스). 재리셋. */
+.theme-data-mono .stepper-item .callout,
+.theme-data-mono .stepper-item .metric-card,
+.theme-data-mono .hero-stage .metric-card {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+/* ══ 파일럿 3: dark_premium — 전면 다크(레퍼런스 흡수·_grammar/dark_premium.md 공통 문법만) ══ */
+/* 무독 1: 본문은 순백 아닌 눌린 회색 — 제목(밝음)과의 명도 대비가 위계. */
+.theme-dark-premium .body-text,
+.theme-dark-premium .bullet-list li,
+.theme-dark-premium .closing-copy { color: var(--muted); }
+.theme-dark-premium .block-title { color: color-mix(in srgb, var(--ink) 78%, transparent); }
+/* depth 레이어링: 카드 = 바탕+1단 밝은 면(팔레트 card)·라운드. 액센트 윗줄은 다색 유혹이라 제거. */
+.theme-dark-premium .metric-card {
+  border: 1px solid rgba(255,255,255,.08);
+  border-top: 1px solid rgba(255,255,255,.08);
+  background: var(--card);
+  min-height: 120px;
+  padding: 20px;
+}
+.theme-dark-premium .callout { background: var(--card); border-left-color: var(--accent); }
+/* 무독 3: 액센트(골드) 칩 위 글자는 밝은색 반전 금지 — 어두운 잉크로 스왑(navy-on-navy 동종 선제). */
+.theme-dark-premium .eyebrow.eyebrow-chip { color: #14130E; }
+/* 무독 2: 다크 차트 — 비교군 트랙/보조 요소의 명도 하한을 배경 대비로 확보(라이트 램프가 묻힘). */
+.theme-dark-premium .visual-card rect[fill="#E2E8F0"],
+.theme-dark-premium .visual-card rect[fill="#E7EBEF"] { fill: rgba(255,255,255,.16); }
+.theme-dark-premium .visual-note { fill: var(--muted); }
+.theme-dark-premium .visual-card { border-top-color: rgba(255,255,255,.14); }
+/* 간지: 잉크 파생 그라디언트가 밝은 ink에 오염되지 않게 명시 다크 + 골드 글로우. */
+.theme-dark-premium.layout-divider.slide {
+  background:
+    radial-gradient(circle at 84% 24%, rgba(198,161,91,.12) 0, transparent 40%),
+    linear-gradient(140deg, #1A1B1F 0%, #101114 60%, #0A0B0D 100%);
+}
+/* 표지·outro도 동일 다크(이 시스템은 전면 다크라 별도 dark variant 불필요). 부제는 눌린 회색. */
+.theme-dark-premium .cover-subtitle { color: var(--muted); }
+.theme-dark-premium .slide-foot { color: rgba(242,239,231,.45); }
+/* 제목: 헤비 + 넓은 트래킹(올캡 관례의 한글 번안 — 자간·무게로 프리미엄 스케일). */
+.theme-dark-premium .slide-head h1 { font-weight: 800; letter-spacing: .01em; }
+/* stack 차트 세로 예산(-7px 실측) — 폭 상한 하향. */
+.theme-dark-premium .stack-outer > .visual-card { width: min(100%, 680px); }
+
+/* ══ 파일럿 4: minimal_typo — 미니멀 타이포(레퍼런스 흡수·_grammar/minimal_typo.md B형 방언) ══ */
+/* 핵심 파라미터 = 서체가 아니라 위계비: 헤드 크게·얇게, 본문은 캡션급 초소형. */
+.theme-minimal-typo .slide-head h1 { font-size: 58px; font-weight: 350; letter-spacing: -.01em; max-width: none; line-height: 1.12; }
+.theme-minimal-typo .body-text { font-size: 15px; line-height: 1.7; max-width: 640px; }
+.theme-minimal-typo .bullet-list li { font-size: 15px; line-height: 1.6; }
+.theme-minimal-typo .block-title { font-size: 17px; font-weight: 600; color: var(--ink); }
+/* 키커 라벨: 초소형·자간 극대(공통 5/8). */
+.theme-minimal-typo .eyebrow { font-size: 10px; letter-spacing: .4em; font-weight: 700; }
+.theme-minimal-typo .eyebrow::before { width: 18px; height: 1px; }
+/* 무장식 원칙: 여백·룰이 장식. 마진을 전 테마 최대로. */
+.theme-minimal-typo.slide { padding: 56px 96px 40px; }
+.theme-minimal-typo .stack-outer > .visual-card { width: min(100%, 660px); }
+.theme-minimal-typo .slide-motif { display: none; }
+/* 빅넘버 스탯(공통 5/8) — 카드 벗기고 숫자 자체가 블록. 오프셋 컬러블록(B형 서명)을 뒤에 깐다. */
+.theme-minimal-typo .metric-card {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 14px 18px;
+  min-height: 0;
+  position: relative;
+  /* 오프셋 블록(-10px 우하)이 컨테이너를 삐져나가 가로 오버플로 나던 것 — 마진으로 자리 확보. */
+  margin: 0 10px 10px 0;
+}
+.theme-minimal-typo .metric-card::before {
+  content: "";
+  position: absolute;
+  inset: 10px -10px -10px 10px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  z-index: -1;
+}
+.theme-minimal-typo .metric-value { font-size: 76px; font-weight: 300; letter-spacing: -.02em; }
+.theme-minimal-typo .metric-label { font-size: 12px; letter-spacing: .12em; }
+/* 콜아웃: 박스·마커 전부 제거 — 큰 글자 한 줄이 곧 콜아웃(덜어냄이 정체성). */
+.theme-minimal-typo .callout {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+.theme-minimal-typo .callout-lead { font-size: 27px; font-weight: 700; }
+/* 스텝퍼·매트릭스 셀 오프셋 블록 중첩 방지 — 셀 안에선 오프셋 제거. */
+.theme-minimal-typo .stepper-item .metric-card::before,
+.theme-minimal-typo .matrix-cell .metric-card::before { display: none; }
+/* 차트: 단색 최소 — 보조·트랙 요소 명도 낮추고 각진 얇은 인상은 유지하지 않음(B형은 부드러움). */
+.theme-minimal-typo .visual-title { font-size: 19px; font-weight: 700; }
+/* 표지도 얇은 위계 일관 + 클로징 바는 1액센트 원칙(accent2 금지). */
+.theme-minimal-typo .cover-lockup h1 { font-weight: 350; letter-spacing: -.01em; }
+.theme-minimal-typo .closing-callout { border-left-color: var(--accent); }
+
+/* ══ 시그니처 페이지 골격(2026-07-04 페이지 아키텍처 파일럿) — 테마가 아니라 몸이 다르다 ══ */
+/* poster: 표준 head 없음(간지와 같은 방식) — 한 문장이 지면 전체. */
+.layout-poster .slide-head { display: none; }
+.poster-body { justify-content: center; gap: 26px; }
+.poster-kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .38em;
+}
+.poster-text {
+  margin: 0;
+  max-width: 980px;
+  font-size: 64px;
+  line-height: 1.22;
+  font-weight: 700;
+  word-break: keep-all;
+  font-family: var(--font-head);
+}
+.theme-minimal-typo .poster-text { font-weight: 320; font-size: 68px; }
+/* hero_bleed: 우측 절반이 블리드 숫자 — 숫자가 곧 페이지. */
+.layout-hero-bleed .slide-head { display: none; }
+.hero-bleed-body { flex-direction: row; align-items: center; gap: 40px; }
+.hero-bleed-copy { flex: 1 1 46%; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.hero-bleed-stage { flex: 1 1 54%; position: relative; align-self: stretch; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.hero-bleed-label { margin: 0 0 6px; color: var(--muted); font-size: 15px; letter-spacing: .08em; }
+.hero-bleed-num {
+  font-size: 190px;
+  line-height: .92;
+  font-weight: 850;
+  letter-spacing: -.03em;
+  color: var(--accent);
+  white-space: nowrap;
+  transform: translateX(36px);  /* 블리드 — transform은 레이아웃 오버플로를 안 만든다. 단위(%·억원)는 잘리면 안 됨 */
+  font-variant-numeric: tabular-nums;
+}
+.theme-dark-premium .hero-bleed-num { text-shadow: 0 0 90px color-mix(in srgb, var(--accent) 30%, transparent); }
+/* magazine_spread: 본문이 칼럼으로 흐르고 풀쿼트가 전폭으로 끊는다. */
+.magazine-body { gap: 20px; }
+.mag-columns { columns: 2; column-gap: 56px; max-width: none; }
+.mag-columns .body-text { max-width: none; margin: 0 0 14px; break-inside: avoid; }
+.theme-editorial-serif .mag-columns { column-rule: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); }
+.mag-quote-row { border-top: 1px solid var(--line); padding-top: 12px; }
+.mag-quote-row .callout { max-width: none; font-size: 23px; margin-top: 0; }
+.mag-tail { display: flex; gap: 40px; align-items: flex-start; }
+.mag-tail > * { flex: 1; min-width: 0; }
+/* dashboard: 페이지 전체가 위젯 타일 격자 — 각 블록이 계기판 한 칸. */
+.dash-body { gap: 14px; }
+.dash-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(120px, auto);
+  gap: 16px;
+}
+.dash-tile {
+  border: 1px solid var(--line);
+  padding: 16px 18px;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.dash-tile-wide { grid-column: span 2; grid-row: span 2; }
+.dash-tile .metric-card { border: 0; background: transparent; padding: 0; min-height: 0; }
+.dash-tile .callout { border: 0; background: transparent; padding: 0; margin: 0; font-size: 16px; }
+.dash-tile .visual-card { border-top: 0; padding-top: 0; margin: 0; width: 100%; }
+.theme-data-mono .dash-tile { background: color-mix(in srgb, #FFFFFF 44%, transparent); }
+/* mosaic_tiles: 사진 없이 색면 타일로 만드는 2:1:1 모자이크. */
+.mosaic-body { gap: 14px; }
+.mosaic-body .block-title { margin: 0; }
+.mosaic-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-auto-rows: minmax(88px, 1fr);
+  grid-auto-flow: dense;
+  gap: 14px;
+}
+.mosaic-tile {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--c60));
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.mosaic-tile:nth-child(odd) { background: var(--c30); }
+.mosaic-tile-large { grid-row: span 2; }
+.mosaic-tile-medium { grid-column: span 2; }
+.mosaic-tile-small { grid-column: span 1; }
+.mosaic-tile .body-text,
+.mosaic-tile .bullet-list li { font-size: 15px; line-height: 1.45; }
+.mosaic-tile .callout { margin: 0; padding: 0; border: 0; background: transparent; font-size: 17px; }
+.mosaic-tile .metric-grid { gap: 12px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.mosaic-tile .metric-card {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+}
+.mosaic-tile .metric-label { font-size: 12px; }
+/* 48px는 minmax(88px) 타일에서 하단 잘림(overflow:hidden이라 ovf 검출 사각) — 실측 34px */
+.mosaic-tile .metric-value { font-size: 34px; }
+.theme-editorial-serif .mosaic-tile {
+  border-color: color-mix(in srgb, var(--ink) 18%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #FFFFFF 72%, transparent);
+}
+/* split_status: 55/45 상태보고 문법 — 좌측 정성, 우측 정량 칩. */
+.split-status-body {
+  display: grid;
+  grid-template-columns: minmax(0, 55fr) minmax(260px, 45fr);
+  gap: 42px;
+  align-items: start;
+}
+.split-status-body > .block-title { grid-column: 1 / -1; margin: 0; }
+.status-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.status-chip-stack {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.status-chip {
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 4px);
+  background: color-mix(in srgb, var(--card) 76%, transparent);
+  padding: 14px 16px;
+}
+.status-chip .metric-grid { display: flex; flex-direction: column; gap: 12px; }
+.status-chip .metric-card {
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 18px;
+  align-items: baseline;
+}
+.status-chip .metric-label { font-size: 13px; line-height: 1.35; }
+.status-chip .metric-value { font-size: 30px; line-height: 1; }
+.status-chip .metric-delta { grid-column: 1 / -1; margin: 2px 0 0; }
+.theme-data-mono .status-chip .metric-label {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+/* scenario_cards: headline이 카드를 열고 후속 body/metric류가 카드 안에 착지한다. */
+.scenario-body { justify-content: center; }
+.scenario-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+.scenario-card {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 8px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.scenario-card .block-title { margin: 0; color: var(--ink); font-size: 20px; }
+.scenario-card-body {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.scenario-card .body-text,
+.scenario-card .bullet-list li { font-size: 15px; line-height: 1.45; }
+.scenario-card .callout { margin: 0; padding: 0; border: 0; background: transparent; font-size: 16px; }
+.scenario-card .metric-grid { display: flex; flex-direction: column; gap: 12px; }
+.scenario-card .metric-card {
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+}
+.scenario-card .metric-value { font-size: 46px; }
+.theme-dark-premium .scenario-card,
+.theme-pop-dark .scenario-card {
+  border-color: rgba(255,255,255,.1);
+  box-shadow: 0 18px 44px rgba(0,0,0,.24);
+}
+
+/* ══ 파일럿 5: pop_dark — 팝 다크(후추님 7/4 스샷 스타일·다색 팝 + 도형 오브제) ══ */
+/* 본문은 눌린 회색(다크 공통 문법) + 헤비 제목. */
+.theme-pop-dark .body-text,
+.theme-pop-dark .bullet-list li,
+.theme-pop-dark .closing-copy { color: var(--muted); }
+.theme-pop-dark .slide-head h1 { font-weight: 850; letter-spacing: -.01em; }
+/* 메트릭 = 컬러 필 블록(스샷의 라운드 블롭 카드) — 카드가 곧 팝 오브제. t램프 순환. */
+.theme-pop-dark .metric-card {
+  border: none;
+  background: var(--t2);
+  min-height: 128px;
+  padding: 20px 22px;
+}
+.theme-pop-dark .metric-grid .metric-card:nth-child(3n+1) { background: var(--t1); }
+.theme-pop-dark .metric-grid .metric-card:nth-child(3n) { background: var(--t3); }
+.theme-pop-dark .metric-card .metric-label,
+.theme-pop-dark .metric-card .metric-value,
+.theme-pop-dark .metric-card .metric-source { color: #FFFFFF; }
+.theme-pop-dark .metric-card .metric-delta.up,
+.theme-pop-dark .metric-card .metric-delta.down { color: rgba(255,255,255,.85); }
+/* 콜아웃 = 필 캡슐. 액센트 칩 위 글자는 어두운 잉크(무독). */
+.theme-pop-dark .callout { background: var(--card); border-left: 6px solid var(--t3); border-radius: 18px; }
+.theme-pop-dark .eyebrow.eyebrow-chip { color: #15120C; }
+/* 표지·간지 = 오렌지 풀블리드 북엔드(스샷 커버 문법) — 다크 본문과 강한 리듬 교차. */
+.theme-pop-dark.cover-slide,
+.theme-pop-dark.layout-divider.slide { background: #E8551A; color: #17120E; }
+.theme-pop-dark.cover-slide h1,
+.theme-pop-dark .divider-title { color: #17120E; }
+.theme-pop-dark.cover-slide .cover-eyebrow,
+.theme-pop-dark .divider-part { color: rgba(23,18,14,.72); }
+.theme-pop-dark.cover-slide .cover-subtitle { color: rgba(23,18,14,.78); }
+.theme-pop-dark.cover-slide .cover-credit,
+.theme-pop-dark.cover-slide .presenter-email { color: rgba(23,18,14,.6); }
+.theme-pop-dark.cover-slide .presenter-company,
+.theme-pop-dark.cover-slide .presenter-name { color: #17120E; }
+.theme-pop-dark .divider-quiet-num { color: rgba(23,18,14,.28); font-weight: 850; }
+.theme-pop-dark .divider-subtitle { color: rgba(23,18,14,.75); }
+.theme-pop-dark .divider-progress span { background: rgba(23,18,14,.25); }
+.theme-pop-dark .divider-progress .is-active { background: #17120E; }
+.theme-pop-dark .divider-items li { color: rgba(23,18,14,.8); }
+.theme-pop-dark .divider-items li::before { background: #17120E; }
+/* outro는 다크 유지(북엔드는 표지·간지만) — 연락처 밝게. */
+.theme-pop-dark .slide-foot { color: rgba(245,242,236,.45); }
+/* 다크 차트 보정: 라이트 전용 회색 트랙 명도 하한(dark_premium과 동일 클래스). */
+.theme-pop-dark .visual-card rect[fill="#E2E8F0"],
+.theme-pop-dark .visual-card rect[fill="#E7EBEF"] { fill: rgba(255,255,255,.18); }
+.theme-pop-dark .visual-note { fill: var(--muted); }
+.theme-pop-dark .visual-card { border-top-color: rgba(245,242,236,.16); }
+/* 오렌지 북엔드 위 ==키워드== 강조색(오렌지)이 배경과 동화되던 무독(자동검출 lowc 실검출) — 잉크로. */
+.theme-pop-dark.cover-slide .kw,
+.theme-pop-dark.layout-divider .kw { color: #17120E; text-decoration: underline; text-underline-offset: 6px; }
+.theme-pop-dark .stack-outer > .visual-card { width: min(100%, 680px); }
+
+/* ══ PG-pricing_cards(2026-07-04 승격): 2~4열 플랜/옵션 카드. emphasis_style 파라미터로
+   강조 방식 분기 — 단일 고정 금지("같은 템플릿" 천장 재발 방지가 요구사항). ══ */
+.pricing-body { justify-content: center; }
+.pricing-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+.pricing-card {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 8px);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pricing-card .block-title { margin: 0; color: var(--ink); font-size: 20px; }
+.pricing-card-body { min-height: 0; display: flex; flex-direction: column; gap: 14px; }
+.pricing-card .body-text,
+.pricing-card .bullet-list li { font-size: 15px; line-height: 1.45; }
+.pricing-card .metric-grid { display: flex; flex-direction: column; gap: 12px; }
+.pricing-card .metric-value { font-size: 40px; }
+/* emphasis_style: invert(기본) — 강조 카드만 액센트 배경 + 흰 글자. */
+.pricing-card-emphasis.pricing-emphasis-invert {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+.pricing-card-emphasis.pricing-emphasis-invert .block-title,
+.pricing-card-emphasis.pricing-emphasis-invert .metric-value,
+.pricing-card-emphasis.pricing-emphasis-invert .metric-label,
+.pricing-card-emphasis.pricing-emphasis-invert .body-text,
+.pricing-card-emphasis.pricing-emphasis-invert .bullet-list li { color: #FFFFFF; }
+/* emphasis_style: offset — 강조 카드만 위로 살짝 띄워 그림자로 튀어나오게. */
+.pricing-card-emphasis.pricing-emphasis-offset {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 44px color-mix(in srgb, var(--ink) 22%, transparent);
+  border-color: var(--accent);
+}
+/* emphasis_style: scale — 강조 카드만 살짝 확대. */
+.pricing-card-emphasis.pricing-emphasis-scale {
+  transform: scale(1.05);
+  border-color: var(--accent);
+  z-index: 1;
+}
+/* emphasis_style: border — 배경은 유지하고 두꺼운 액센트 테두리만. */
+.pricing-card-emphasis.pricing-emphasis-border {
+  border: 3px solid var(--accent);
+}
+
+/* ══ PG-running_head(2026-07-04 승격): 본문 페이지 상단 3점 크롬(kicker/브랜드/페이지분수) +
+   하단 PREV/NEXT. 기존 헤더 예산(56px 상단 패딩) 안에서 해결 — 새 높이 추가 금지. ══ */
+.running-head {
+  position: absolute;
+  top: 24px;
+  left: 72px;
+  right: 72px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.running-head-kicker { flex: 1 1 0; text-align: left; color: var(--accent); font-weight: 700; }
+.running-head-brand { flex: 1 1 0; text-align: center; color: var(--ink); font-weight: 700; }
+.running-head-frac { flex: 1 1 0; text-align: right; white-space: nowrap; }
+.chrome-running-head .slide-head { margin-top: 20px; }
+.running-foot {
+  position: absolute;
+  bottom: 14px;
+  left: 72px;
+  right: 72px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* ══ DC-side_wordmark(2026-07-04 승격): 좌/우 여백에 세로 회전 대형 워드마크(ghost 톤).
+   전용 여백 컬럼 확보 — 본문과 겹치지 않는다. ══ */
+.decor-side-wordmark { padding-right: 128px; }
+.decor-side-wordmark.decor-side-wordmark-right { padding-right: 72px; padding-left: 128px; }
+.side-wordmark {
+  position: absolute;
+  top: 50%;
+  right: 28px;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  /* var(--ghost)는 rgba() 고정값(Python에서 계산) — color-mix()는 Chrome이 color(srgb ... / a)로
+     직렬화해 capture_deck.sh의 rgb() 전제 저대비 체커가 알파를 못 읽고 오탐한다(7/4 pop_dark 실측). */
+  color: var(--ghost);
+  pointer-events: none;
+  z-index: 0;
+  white-space: nowrap;
+}
+.decor-side-wordmark-right .side-wordmark { right: auto; left: 28px; transform: translateY(-50%) rotate(0deg); }
+
+/* ══ CH-swot_quad(2026-07-04 승격): 2×2 정성 사분면. 강조 사분면(role:highlight)만
+   액센트 명도 램프, 나머지는 잉크 저명도 트랙. ══ */
+.visual-swot-quad .swot-label { fill: var(--ink); }
+.visual-swot-quad .swot-cell-highlight .swot-label { fill: var(--accent); }
+.visual-swot-quad .swot-item { fill: var(--muted); }
+
+/* ══ 최종 컨텍스트 평탄화 — 반드시 스타일시트 맨 끝 ══
+   스텝퍼·히어로·매트릭스 셀·대시 타일 안의 카드류는 테마 불문 박스를 벗긴다(카드 속 카드 방지).
+   테마 블록이 소스 순서로 이 리셋을 덮어써 이중박스가 재발하던 클래스(7/3 mono 스텝퍼·7/4 dark
+   매트릭스) 근절 — 새 테마를 추가해도 이 블록이 항상 마지막에 이긴다. 새 규칙은 이 블록 위에 둘 것. */
+.stepper-item .callout,
+.stepper-item .metric-card,
+.hero-stage .metric-card,
+.matrix-cell .metric-card,
+.dash-tile .metric-card,
+.dash-tile .callout,
+.mosaic-tile .metric-card,
+.mosaic-tile .callout,
+.status-chip .metric-card,
+.scenario-card .metric-card,
+.scenario-card .callout {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+  border-radius: 0;
+  margin: 0;
+}
+.stepper-item .metric-card::before,
+.matrix-cell .metric-card::before,
+.dash-tile .metric-card::before,
+.mosaic-tile .metric-card::before,
+.status-chip .metric-card::before,
+.scenario-card .metric-card::before,
+.stepper-item .callout::before,
+.dash-tile .callout::before,
+.mosaic-tile .callout::before,
+.scenario-card .callout::before { display: none; }
+.theme-minimal-typo .visual-note { font-size: 14px; }</style>
+<style>
+/* exemplar wrapper: 단독 1280x720 한 장 */
+body { display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; }
+.slide { page-break-after: auto; }
+</style>
+</head>
+<body>
+<section class="slide theme-pop-dark layout-pricing-cards chrome-running-head" data-page-id="d3_pricing">
+  <svg class="slide-motif motif-bl" viewBox="0 0 460 280" aria-hidden="true"><g stroke="currentColor" stroke-width="1.1"><line x1="40" y1="230" x2="160" y2="150"/><line x1="160" y1="150" x2="300" y2="210"/><line x1="160" y1="150" x2="120" y2="60"/><line x1="120" y1="60" x2="260" y2="60"/><line x1="300" y1="210" x2="380" y2="130"/><line x1="260" y1="60" x2="380" y2="130"/></g><circle cx="40" cy="230" r="3.5" fill="currentColor"/><circle cx="160" cy="150" r="5" fill="#FF5A1F"/><circle cx="300" cy="210" r="5" fill="#2B3BE8"/><circle cx="120" cy="60" r="3.5" fill="currentColor"/><circle cx="260" cy="60" r="3.5" fill="currentColor"/><circle cx="380" cy="130" r="3.5" fill="currentColor"/></svg>
+  
+  <div class="running-head" aria-hidden="true">
+  <span class="running-head-kicker"></span>
+  <span class="running-head-brand">AI 크리에이터 이코노미</span>
+  <span class="running-head-frac">01 / 03</span>
+</div>
+  <header class="slide-head">
+    <div class="eyebrow">PRICING_CARDS</div>
+    <h1>세 갈래 참여 모델을 비교한다</h1>
+  </header>
+  <main class="body layout-body pricing-body">
+  <section class="pricing-grid"><article class="pricing-card"><h2 class="block-title">개인 크리에이터</h2><div class="pricing-card-body"><ul class="bullet-list"><li>AI 멀티툴 1인 제작</li><li>구독자 기반 성장</li></ul><article class="metric-card" data-metric-id="metric_001">
+  <div class="metric-label" data-metric-id="metric_001">국내 개인 1인 크리에이터 사례</div>
+  <div class="metric-value" data-metric-id="metric_001">70 만 명</div>
+</article></div></article><article class="pricing-card pricing-card-emphasis pricing-emphasis-invert"><h2 class="block-title">AI 아티스트 매니지먼트</h2><div class="pricing-card-body"><ul class="bullet-list"><li>소속사 계약형</li><li>레이블 자원 결합</li></ul><article class="metric-card" data-metric-id="metric_002">
+  <div class="metric-label" data-metric-id="metric_002">AI 아티스트 매니지먼트 계약</div>
+  <div class="metric-value" data-metric-id="metric_002">300 만 달러</div>
+</article></div></article><article class="pricing-card"><h2 class="block-title">창작툴 스타트업</h2><div class="pricing-card-body"><ul class="bullet-list"><li>툴 인프라 제공</li><li>벤처 자금 유치형</li></ul><article class="metric-card" data-metric-id="metric_003">
+  <div class="metric-label" data-metric-id="metric_003">AI 창작툴 스타트업 밸류에이션</div>
+  <div class="metric-value" data-metric-id="metric_003">13 억 달러</div>
+</article></div></article></section>
+</main>
+  
+  <div class="source-row"><span class="source-link" data-src-id="src_001">삼정KPMG 경제연구원</span></div>
+  <footer class="slide-foot">
+    <span class="foot-side"></span>
+    <span class="copyright">© 2026 Peppinch · All rights reserved</span>
+    
+  </footer><div class="running-foot" aria-hidden="true"><span>PREV</span><span class="running-next">NEXT</span></div>
+</section>
+</body>
+</html>
