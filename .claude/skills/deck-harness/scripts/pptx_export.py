@@ -882,6 +882,19 @@ def _page_viz_blocks(page: dict) -> list[dict]:
     ]
 
 
+def _lane_display_name(role: str, lane: list, metrics: dict) -> str:
+    # 범례는 고객 가시 텍스트 — role명(highlight/negative)은 내부어라 metric label에서 파생.
+    # "Developer AI tool usage — 2024" 꼴에서 lane 공통 접두(뒤 " — <포인트 label>" 제거)를 쓴다.
+    names = set()
+    for item, _ in lane:
+        label = str(metrics.get(str(item.get("metric_id")), {}).get("label", "")).strip()
+        if not label:
+            return role
+        suffix = " — " + str(item.get("label", "")).strip()
+        names.add(label[: -len(suffix)].strip() if suffix != " — " and label.endswith(suffix) else label)
+    return names.pop() if len(names) == 1 else role
+
+
 def _native_chart_data(block: dict, registry: dict):
     from pptx.chart.data import ChartData
 
@@ -907,7 +920,7 @@ def _native_chart_data(block: dict, registry: dict):
         first_lane = next(iter(lanes.values()), [])
         chart_data.categories = [str(item.get("label") or item.get("metric_id")) for item, _ in first_lane]
         for role, lane in lanes.items():
-            chart_data.add_series(role, [number for _, number in lane])
+            chart_data.add_series(_lane_display_name(role, lane, metrics), [number for _, number in lane])
         return chart_data, len(lanes)
 
     chart_data.categories = [str(item.get("label") or item.get("metric_id")) for item, _ in metric_rows]
