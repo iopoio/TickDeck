@@ -144,7 +144,7 @@ LAYOUT_DUMP_SCRIPT = r"""
 """
 
 
-HIDE_PICKED_TEXT_SCRIPT = r"""
+_HIDE_PICKED_TEXT_SCRIPT_TEMPLATE = r"""
 <script>
 (function(){
   document.querySelectorAll('[data-pptx-picked="1"]').forEach(function(el) {
@@ -156,7 +156,7 @@ HIDE_PICKED_TEXT_SCRIPT = r"""
       target.style.setProperty('text-shadow', 'none', 'important');
     });
   });
-  document.querySelectorAll('.visual-card').forEach(function(el) {
+  document.querySelectorAll('__NATIVE_CHART_SELECTORS__').forEach(function(el) {
     el.style.setProperty('visibility', 'hidden', 'important');
   });
 })();
@@ -382,7 +382,7 @@ def dump_layout(deck_html: Path, chrome: str) -> tuple[dict, str, Path]:
 
 
 def print_hidden_pdf(deck_html: Path, dom: str, chrome: str, out_pdf: Path) -> Path:
-    hidden_html = sibling_temp_html(deck_html, ".hidden.html", insert_before_body(dom, HIDE_PICKED_TEXT_SCRIPT))
+    hidden_html = sibling_temp_html(deck_html, ".hidden.html", insert_before_body(dom, hide_picked_text_script()))
     try:
         run_chrome(
             chrome,
@@ -818,6 +818,22 @@ def native_chart_kind(chart: str) -> str | None:
     return None
 
 
+def hide_picked_text_script() -> str:
+    native_charts = (
+        "before_after",
+        "dumbbell",
+        "gap_map",
+        "mirror_bars",
+        "multi_line",
+        "progress_bar",
+        "quarterly_bars",
+        "rising_columns",
+        "target_vs_actual",
+    )
+    selectors = ", ".join(f".visual-{chart.replace('_', '-')}" for chart in native_charts)
+    return _HIDE_PICKED_TEXT_SCRIPT_TEMPLATE.replace("__NATIVE_CHART_SELECTORS__", selectors)
+
+
 def _registry_entries(registry: dict, *keys: str) -> dict:
     current = registry.get("content_registry", registry)
     for key in keys:
@@ -828,30 +844,34 @@ def _registry_entries(registry: dict, *keys: str) -> dict:
 
 
 def sources_note_text(page: dict, registry: dict) -> str:
+    source_ids = page.get("allowed_source_ids", [])
+    if not source_ids:
+        return ""
     sources = _registry_entries(registry, "source_registry", "sources")
     lines = ["[Sources]"]
-    for source_id in page.get("allowed_source_ids", []):
+    for source_id in source_ids:
         source = sources.get(source_id)
         if not isinstance(source, dict):
             continue
         label = " — ".join(
             item for item in (str(source.get("publisher", "")).strip(), str(source.get("title", "")).strip()) if item
-        ) or str(source_id)
+        )
+        if not label or re.search(r"\b(?:collector|verifier|registry|intake|pool|src_[a-z0-9_-]+)\b", label, re.I):
+            continue
         details = [label]
-        for key in ("url", "local_path", "conditions"):
-            value = str(source.get(key, "")).strip()
-            if value:
-                details.append(value)
+        url = str(source.get("url", "")).strip()
+        if re.match(r"^https?://", url, re.I):
+            details.append(url)
         lines.append("\n".join(details))
-    return "\n\n".join(lines)
+    return "\n\n".join(lines) if len(lines) > 1 else ""
 
 
-def _metric_number(metric: dict) -> float:
-    raw = str(metric.get("value", "")).replace(",", "").replace("−", "-")
-    values = [float(item) for item in re.findall(r"-?\d+(?:\.\d+)?", raw)]
-    if not values:
-        return 0.0
-    return sum(values[:2]) / min(2, len(values))
+def _metric_number(metric: dict, metric_id: str) -> float:
+    # render_deck.py::_metric_number와 동일하게 첫 번째 숫자 토큰만 사용한다.
+    match = re.search(r"-?\d+(?:,\d{3})*(?:\.\d+)?|-?\d+(?:\.\d+)?", str(metric.get("value", "")))
+    if not match:
+        raise SystemExit(f"METRIC_NOT_NUMERIC: {metric_id}")
+    return float(match.group(0).replace(",", ""))
 
 
 def _page_viz_blocks(page: dict) -> list[dict]:
@@ -862,8 +882,40 @@ def _page_viz_blocks(page: dict) -> list[dict]:
     ]
 
 
-def _add_native_chart(slide, viz_box: dict, block: dict, registry: dict) -> None:
+def _native_chart_data(block: dict, registry: dict):
     from pptx.chart.data import ChartData
+
+    metrics = _registry_entries(registry, "metric_registry", "metrics")
+    series = [item for item in block.get("series", []) if isinstance(item, dict) and item.get("metric_id")]
+    metric_rows = []
+    units = set()
+    for item in series:
+        metric_id = str(item["metric_id"])
+        metric = metrics.get(metric_id)
+        if not isinstance(metric, dict):
+            raise SystemExit(f"METRIC_NOT_NUMERIC: {metric_id}")
+        units.add(str(metric.get("unit", "")).strip())
+        metric_rows.append((item, _metric_number(metric, metric_id)))
+    if len(units) > 1:
+        raise SystemExit(f"METRIC_UNIT_MISMATCH: {', '.join(sorted(units))}")
+
+    chart_data = ChartData()
+    if str(block.get("chart", "")) == "multi_line":
+        lanes = {}
+        for item, number in metric_rows:
+            lanes.setdefault(str(item.get("role") or "highlight"), []).append((item, number))
+        first_lane = next(iter(lanes.values()), [])
+        chart_data.categories = [str(item.get("label") or item.get("metric_id")) for item, _ in first_lane]
+        for role, lane in lanes.items():
+            chart_data.add_series(role, [number for _, number in lane])
+        return chart_data, len(lanes)
+
+    chart_data.categories = [str(item.get("label") or item.get("metric_id")) for item, _ in metric_rows]
+    chart_data.add_series(str(block.get("title") or "Values"), [number for _, number in metric_rows])
+    return chart_data, 1
+
+
+def _add_native_chart(slide, viz_box: dict, block: dict, registry: dict) -> None:
     from pptx.enum.chart import XL_CHART_TYPE
     from pptx.util import Emu, Pt
 
@@ -873,14 +925,7 @@ def _add_native_chart(slide, viz_box: dict, block: dict, registry: dict) -> None
         "column": XL_CHART_TYPE.COLUMN_CLUSTERED,
         "line": XL_CHART_TYPE.LINE_MARKERS,
     }[kind]
-    metrics = _registry_entries(registry, "metric_registry", "metrics")
-    series = [item for item in block.get("series", []) if isinstance(item, dict) and item.get("metric_id")]
-    chart_data = ChartData()
-    chart_data.categories = [str(item.get("label") or item.get("metric_id")) for item in series]
-    chart_data.add_series(
-        str(block.get("title") or "Values"),
-        [_metric_number(metrics.get(str(item["metric_id"]), {})) for item in series],
-    )
+    chart_data, series_count = _native_chart_data(block, registry)
     geom = text_box_geometry_emu(viz_box)
     chart = slide.shapes.add_chart(
         chart_type,
@@ -890,7 +935,7 @@ def _add_native_chart(slide, viz_box: dict, block: dict, registry: dict) -> None
         Emu(geom["h"]),
         chart_data,
     ).chart
-    chart.has_legend = False
+    chart.has_legend = series_count > 1
     chart.has_title = bool(str(block.get("title", "")).strip())
     if chart.has_title:
         chart.chart_title.text_frame.text = str(block["title"])
@@ -907,6 +952,8 @@ def _add_native_chart(slide, viz_box: dict, block: dict, registry: dict) -> None
 
 def _set_sources_note(slide, page: dict, registry: dict) -> None:
     note = sources_note_text(page, registry)
+    if not note:
+        return
     frame = slide.notes_slide.notes_text_frame
     frame.text = note
     for paragraph in frame.paragraphs:
@@ -950,7 +997,12 @@ def build_pptx(
             set_shape_descr(shape, alt_text_for_box(box))
         if index < len(spec_pages):
             page = spec_pages[index]
-            for viz_box, block in zip(slide_data.get("viz_boxes", []), _page_viz_blocks(page)):
+            native_viz_boxes = [
+                box
+                for box in slide_data.get("viz_boxes", [])
+                if native_chart_kind(str(box.get("chart", "")))
+            ]
+            for viz_box, block in zip(native_viz_boxes, _page_viz_blocks(page)):
                 _add_native_chart(slide, viz_box, block, registry)
             _set_sources_note(slide, page, registry)
 
@@ -983,7 +1035,12 @@ def find_layout_box(layout: dict, page_id: str, phrase: str) -> dict | None:
     return None
 
 
-def verify_pptx(pptx_path: Path, layout: dict) -> dict:
+def verify_pptx(
+    pptx_path: Path,
+    layout: dict,
+    deck_spec: dict | None = None,
+    require_background_and_text: bool = True,
+) -> dict:
     from pptx import Presentation
     from pptx.enum.shapes import MSO_SHAPE_TYPE
 
@@ -994,14 +1051,33 @@ def verify_pptx(pptx_path: Path, layout: dict) -> dict:
 
     total_text_boxes = 0
     total_charts = 0
+    spec_pages = deck_spec.get("pages", []) if isinstance(deck_spec, dict) else []
     for idx, slide in enumerate(prs.slides):
         pictures, text_boxes = shape_counts(slide)
-        if pictures != 1:
+        if require_background_and_text and pictures != 1:
             raise SystemExit(f"VERIFY_ERROR: slide {idx + 1} background pictures={pictures}, expected 1")
-        if text_boxes < 1:
+        if require_background_and_text and text_boxes < 1:
             raise SystemExit(f"VERIFY_ERROR: slide {idx + 1} text boxes={text_boxes}, expected >=1")
         total_text_boxes += text_boxes
-        total_charts += sum(1 for shape in slide.shapes if shape.shape_type == MSO_SHAPE_TYPE.CHART)
+        chart_shapes = [shape for shape in slide.shapes if shape.shape_type == MSO_SHAPE_TYPE.CHART]
+        total_charts += len(chart_shapes)
+        if idx < len(spec_pages):
+            native_blocks = _page_viz_blocks(spec_pages[idx])
+            for block_index, block in enumerate(native_blocks):
+                if str(block.get("chart", "")) != "multi_line":
+                    continue
+                expected = len({str(item.get("role") or "highlight") for item in block.get("series", [])})
+                actual = len(chart_shapes[block_index].chart.series) if block_index < len(chart_shapes) else 0
+                if actual != expected:
+                    raise SystemExit(
+                        f"VERIFY_ERROR: slide {idx + 1} multi_line series={actual}, expected {expected}"
+                    )
+        if slide.has_notes_slide:
+            note = slide.notes_slide.notes_text_frame.text.strip()
+            if "_workspace/" in note:
+                raise SystemExit(f"VERIFY_ERROR: slide {idx + 1} notes contain _workspace/")
+            if note == "[Sources]":
+                raise SystemExit(f"VERIFY_ERROR: slide {idx + 1} notes contain header only")
 
     phrase_box = find_layout_box(layout, "p03", VERIFY_PHRASE)
     phrase_checked = False
@@ -1058,7 +1134,7 @@ def export_deck(
             p03_png = out.with_name(f"{out.stem}.p03_hidden.png")
             background_pngs, kept_p03 = render_pdf_pages(hidden_pdf, layout, tmp / "png", p03_png)
             count = build_pptx(layout, background_pngs, out, deck_spec, registry)
-            verification = verify_pptx(out, layout) if verify else None
+            verification = verify_pptx(out, layout, deck_spec) if verify else None
         return count, kept_p03, verification
     finally:
         cleanup_paths(temp_files)

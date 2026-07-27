@@ -3026,10 +3026,17 @@ class HarnessContractTests(unittest.TestCase):
         self.assertEqual(pptx_export_module.native_chart_kind("rising_columns"), "column")
         self.assertEqual(pptx_export_module.native_chart_kind("multi_line"), "line")
 
+    def test_pptx_export_hides_only_native_chart_cards_from_background(self):
+        script = pptx_export_module.hide_picked_text_script()
+        self.assertIn(".visual-multi-line", script)
+        self.assertIn(".visual-dumbbell", script)
+        self.assertNotIn("querySelectorAll('.visual-card')", script)
+        self.assertNotIn(".visual-donut", script)
+
     def test_pptx_export_uses_qa_safe_font(self):
         self.assertEqual(pptx_export_module.FONT_NAME, "Arial")
 
-    def test_pptx_export_builds_full_sources_note_from_page_allowlist(self):
+    def test_pptx_export_builds_customer_safe_sources_note_from_page_allowlist(self):
         page = {"allowed_source_ids": ["src_a"]}
         registry = {
             "source_registry": {
@@ -3037,6 +3044,7 @@ class HarnessContractTests(unittest.TestCase):
                     "publisher": "Pew Research Center",
                     "title": "AI at Work",
                     "url": "https://example.com/report",
+                    "local_path": "_workspace/run/collector/src_a.pdf",
                     "conditions": "Survey evidence only.",
                 }
             }
@@ -3045,7 +3053,125 @@ class HarnessContractTests(unittest.TestCase):
         self.assertTrue(note.startswith("[Sources]\n"))
         self.assertIn("Pew Research Center — AI at Work", note)
         self.assertIn("https://example.com/report", note)
-        self.assertIn("Survey evidence only.", note)
+        self.assertNotIn("_workspace/", note)
+        self.assertNotIn("Survey evidence only.", note)
+
+    def test_pptx_export_returns_no_sources_note_for_empty_allowlist(self):
+        self.assertEqual(pptx_export_module.sources_note_text({"allowed_source_ids": []}, {}), "")
+        internal_registry = {"source_registry": {"src_a": {"title": "verifier pool src_a"}}}
+        self.assertEqual(
+            pptx_export_module.sources_note_text({"allowed_source_ids": ["src_a"]}, internal_registry),
+            "",
+        )
+
+    def test_pptx_export_metric_number_uses_first_numeric_token_and_rejects_missing(self):
+        self.assertEqual(pptx_export_module._metric_number({"value": "2026-08-02"}, "metric_date"), 2026.0)
+        with self.assertRaises(SystemExit) as ctx:
+            pptx_export_module._metric_number({}, "metric_missing")
+        self.assertEqual(str(ctx.exception), "METRIC_NOT_NUMERIC: metric_missing")
+
+    def test_pptx_export_rejects_mixed_units_in_one_chart(self):
+        block = {
+            "chart": "multi_line",
+            "series": [
+                {"label": "A", "metric_id": "metric_a", "role": "highlight"},
+                {"label": "B", "metric_id": "metric_b", "role": "baseline"},
+            ],
+        }
+        registry = {
+            "metric_registry": {
+                "metric_a": {"value": "10%", "unit": "%"},
+                "metric_b": {"value": "20억원", "unit": "억원"},
+            }
+        }
+        with self.assertRaises(SystemExit) as ctx:
+            pptx_export_module._native_chart_data(block, registry)
+        self.assertIn("METRIC_UNIT_MISMATCH", str(ctx.exception))
+
+    def test_pptx_export_native_chart_data_splits_multi_line_by_role(self):
+        block = {
+            "chart": "multi_line",
+            "series": [
+                {"label": "2024", "metric_id": "metric_a", "role": "highlight"},
+                {"label": "2025", "metric_id": "metric_b", "role": "highlight"},
+                {"label": "2024", "metric_id": "metric_c", "role": "baseline"},
+                {"label": "2025", "metric_id": "metric_d", "role": "baseline"},
+            ],
+        }
+        registry = {
+            "metric_registry": {
+                key: {"value": str(value), "unit": "%"}
+                for key, value in {
+                    "metric_a": 10,
+                    "metric_b": 20,
+                    "metric_c": 30,
+                    "metric_d": 40,
+                }.items()
+            }
+        }
+        chart_data, series_count = pptx_export_module._native_chart_data(block, registry)
+        self.assertEqual([category.label for category in chart_data.categories], ["2024", "2025"])
+        self.assertEqual(series_count, 2)
+        self.assertEqual([series.name for series in chart_data], ["highlight", "baseline"])
+
+    def test_pptx_export_verify_rejects_wrong_multi_line_series_and_unsafe_notes(self):
+        from pptx import Presentation
+        from pptx.chart.data import ChartData
+        from pptx.enum.chart import XL_CHART_TYPE
+        from pptx.util import Inches
+
+        deck_spec = {
+            "pages": [
+                {
+                    "page_id": "p01",
+                    "allowed_source_ids": ["src_a"],
+                    "content": [
+                        {
+                            "type": "viz",
+                            "chart": "multi_line",
+                            "series": [
+                                {"metric_id": "metric_a", "role": "highlight"},
+                                {"metric_id": "metric_b", "role": "baseline"},
+                            ],
+                        }
+                    ],
+                }
+            ]
+        }
+        layout = {"slides": [{"page_id": "p01", "boxes": [], "viz_boxes": [{"chart": "multi_line"}]}]}
+        with tempfile.TemporaryDirectory() as td:
+            path = pathlib.Path(td) / "bad.pptx"
+            prs = Presentation()
+            slide = prs.slides.add_slide(prs.slide_layouts[6])
+            data = ChartData()
+            data.categories = ["A", "B"]
+            data.add_series("merged", [1, 2])
+            slide.shapes.add_chart(XL_CHART_TYPE.LINE, Inches(1), Inches(1), Inches(5), Inches(3), data)
+            slide.notes_slide.notes_text_frame.text = "[Sources]\n\n_workspace/run/src_a.pdf"
+            prs.save(path)
+
+            with self.assertRaises(SystemExit) as ctx:
+                pptx_export_module.verify_pptx(path, layout, deck_spec, require_background_and_text=False)
+        self.assertIn("multi_line series=1, expected 2", str(ctx.exception))
+
+    def test_pptx_export_verify_rejects_internal_path_and_header_only_notes(self):
+        from pptx import Presentation
+
+        layout = {"slides": [{"page_id": "p01", "boxes": [], "viz_boxes": []}]}
+        for note, expected in (
+            ("[Sources]\n\n_workspace/run/src_a.pdf", "notes contain _workspace/"),
+            ("[Sources]", "notes contain header only"),
+        ):
+            with self.subTest(note=note), tempfile.TemporaryDirectory() as td:
+                path = pathlib.Path(td) / "bad-notes.pptx"
+                prs = Presentation()
+                slide = prs.slides.add_slide(prs.slide_layouts[6])
+                slide.notes_slide.notes_text_frame.text = note
+                prs.save(path)
+
+                with self.assertRaises(SystemExit) as ctx:
+                    pptx_export_module.verify_pptx(path, layout, require_background_and_text=False)
+            self.assertIn(expected, str(ctx.exception))
 
     def test_render_deck_embeds_local_image_as_data_uri_on_cover(self):
         spec = {
