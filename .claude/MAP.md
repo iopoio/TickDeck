@@ -42,7 +42,7 @@ customer-zero 실독 리뷰에서 자동 게이트(C1~C9)가 못 잡는 렌더 �
 1. **`_render_stack`이 "첫 블록=hero 단독 + 나머지 전부 한 줄"이던 구조 결함** — body 문단이 차트/숫자 옆으로 밀려 split처럼 읽히던 재발 버그(p08·p15 실측). metric-card/metric-grid/viz(visual-card)만 한 행으로 묶고 body/callout/note는 각자 전폭 줄로 분리하게 근본수정.
 2. **`_svg_multi_line`이 음수 포함 시리즈에서 좌표가 viewBox 밖 수천 단위로 이탈** — `number/vmax` 단순나눗셈이 원인, min-max 정규화로 수정. 값 라벨이 x축 카테고리 라벨과 겹치던 문제도 clamp(`(y0+h)-24`)로 완화.
 3. **`{{metric_id}}` 인라인 토큰이 C6 검증은 통과하지만 페이지 하단 출처 인용 집계(`_iter_metric_ids`)에서 스캔 안 되던 버그** — 값은 맞게 나오는데 출처가 조용히 빠짐. 문자열 스캔 추가로 수정.
-4. **`closing` 레이아웃의 h1 직속 headline 블록에서 텍스트 내용과 무관하게 재현되는 렌더 글자깨짐** — 원인 미해결(헤드리스 Chrome 폰트 버그 추정). 처방 = 그 슬롯 자체를 쓰지 않는 것(headline 생략, 필요하면 body/note로).
+4. **PDF 한글 글자깨짐은 macOS Chrome/Skia가 로컬 CFF Pretendard를 수백 개 Type 3 glyph로 서브셋하며 잘못된 bbox를 만드는 문제** — HTML·ToUnicode 텍스트층은 정상인데 PDF 래스터에서만 다른 글자로 보였고 `pdftoppm`의 `Bad bounding box in Type 3 glyph`로 확인(8/10, 과거 closing h1도 같은 뿌리). 캡처는 공식 정적 TrueType-outline WOFF2를 data URI로 고정하고 `document.fonts.ready/check` 후 인쇄하며, 한글 Type 3 또는 bbox 경고가 남으면 PDF 생성을 실패시킨다.
 5. **source_appendix 페이지의 eyebrow 기본값이 h1과 똑같이 "출처"라 단어가 중복 표시되던 것 + 불필요한 "출처 N곳" 카운트 배지 + 2단 자동전환** — eyebrow 미지정 시 비움·배지 제거·1단 고정으로 수정.
 
 ## 7/22~23 실주행 — 글쓰기 규율 추가 (writing-standard.md 반영 완료, 여기는 인덱스만)
