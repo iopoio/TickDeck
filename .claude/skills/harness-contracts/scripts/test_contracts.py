@@ -3752,6 +3752,14 @@ class HarnessContractTests(unittest.TestCase):
         # page_plan 없음(빈 입력) → 비활성, 기존 워크스페이스 호환
         self.assertEqual(check_c14_viz_intent_preserved({}, deck_spec_no_viz), [])
 
+        # 2026-08-10 재설계: 부분 대체(의도 2장 중 viz 1개뿐, 나머지는 표)는 통과한다.
+        # 데이터가 적은 페이지는 표/큰 숫자 카드가 차트보다 더 정확할 수 있어, 개수 미달
+        # 자체를 위반으로 잡지 않는다 — 잡는 것은 전면 소실(0개)뿐이다.
+        deck_spec_partial_viz = {
+            "pages": [{"content": [{"type": "viz", "chart": "donut"}, {"type": "body", "text": "표로 대체"}]}]
+        }
+        self.assertEqual(check_c14_viz_intent_preserved(page_plan, deck_spec_partial_viz), [])
+
     def test_gate3_c15_flags_page_inflation_over_ceiling(self):
         # 게이트 3 — 어제 사고 수치 그대로: plan 28장 → spec 41장(상한 ceil(28*1.2)=34) 초과.
         page_plan = {"pages": [{"page_id": f"p{i}"} for i in range(28)]}

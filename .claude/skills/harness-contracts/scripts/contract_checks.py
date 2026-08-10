@@ -565,10 +565,17 @@ def check_c14_viz_intent_preserved(
     page_plan: dict[str, Any],
     deck_spec: dict[str, Any],
 ) -> list[ContractViolation]:
-    """C14 — page-plan이 예고한 차트 의도가 최종 spec에서 사라지지 않았는지 덱 수준 총량으로 본다.
+    """C14 — page-plan이 예고한 차트 의도가 완전히 소실되지 않았는지만 본다.
 
-    05_page_plan.json이 없으면(빈 입력) 비활성 — 기존 워크스페이스 호환. 페이지별 1:1 대응은
-    v2 몫(Loop B 분할로 page_id가 변형돼 대응이 깨짐) — 여기선 덱 전체 viz 총수만 본다.
+    2026-08-10 재설계: 원래 "viz 개수 < 의도 페이지 수 = FAIL"이었으나, 이는 잘못된 전제다.
+    데이터가 적은 페이지(2~3개 값 비교 등)는 표나 큰 숫자 카드가 막대그래프보다 오히려
+    더 정확하고 빠르게 읽힌다 — 차트 개수를 의도 개수와 맞추라는 요구는 저품질 차트를
+    억지로 끼워 넣게 만든다(후추님 8/10 지적). 이 게이트가 실제로 잡아야 하는 것은
+    "판단 없이 시각 요소가 통째로 사라진 것"(8/9 리에종 3번 덱: 41장 중 viz 0개)뿐이다.
+    부분적 대체(3개 의도 중 1~2개만 viz, 나머지는 표)는 정상적인 콘텐츠 판단으로 간주하고
+    통과시킨다. 페이지별 1:1 대응·부분 대체의 타당성 판정은 사람 검토 몫(v2 §E.6).
+
+    05_page_plan.json이 없으면(빈 입력) 비활성 — 기존 워크스페이스 호환.
     """
     plan_pages = page_plan.get("pages") if isinstance(page_plan, dict) else None
     if not isinstance(plan_pages, list) or not plan_pages:
@@ -591,12 +598,12 @@ def check_c14_viz_intent_preserved(
         for block in (page.get("content") or [])
         if isinstance(block, dict) and block.get("type") == "viz"
     )
-    if viz_count < len(intent_page_ids):
+    if viz_count == 0:
         return [
             ContractViolation(
                 "C14",
-                f"page-plan은 차트 의도 {len(intent_page_ids)}장을 예고했는데 최종 spec viz 블록은 "
-                f"{viz_count}개뿐 — 의도 페이지: {', '.join(intent_page_ids)}",
+                f"page-plan은 차트 의도 {len(intent_page_ids)}장을 예고했는데 최종 spec에 viz 블록이 "
+                f"하나도 없다 — 판단 없는 전면 소실 의심. 의도 페이지: {', '.join(intent_page_ids)}",
                 "06_deck_spec.pages[].content[].type=viz",
             )
         ]
