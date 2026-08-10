@@ -18,6 +18,7 @@ import math
 import re
 import subprocess
 import sys
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -26,7 +27,12 @@ CONTRACTS_SCRIPT_DIR = Path(__file__).resolve().parents[2] / "harness-contracts"
 if str(CONTRACTS_SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(CONTRACTS_SCRIPT_DIR))
 
-from contract_checks import SUPPORTED_CONTENT_BLOCK_TYPES, SUPPORTED_VIZ_CHART_TYPES, normalize_enclosed_numerals
+from contract_checks import (
+    SUPPORTED_CONTENT_BLOCK_TYPES,
+    SUPPORTED_LAYOUTS,
+    SUPPORTED_VIZ_CHART_TYPES,
+    normalize_enclosed_numerals,
+)
 
 SOURCE_ROW_VISIBLE_LIMIT = 4
 
@@ -401,23 +407,25 @@ def render_deck(
         if not isinstance(page, dict):
             continue
         body_ordinal = body_ordinals.get(index)
-        rendered_pages.append(
-            _render_page(
-                page,
-                index + 1,
-                len(pages),
-                registry,
-                palette,
-                deck_cited_source_ids,
-                part_count,
-                page_chrome,
-                deck_short_title,
-                body_ordinal,
-                len(body_ordinals),
-                section_nav,
-                section_items,
-            )
+        page_id = str(page.get("page_id", f"p{index + 1:02d}"))
+        page_html = _render_page(
+            page,
+            index + 1,
+            len(pages),
+            registry,
+            palette,
+            deck_cited_source_ids,
+            part_count,
+            page_chrome,
+            deck_short_title,
+            body_ordinal,
+            len(body_ordinals),
+            section_nav,
+            section_items,
         )
+        # 레이아웃별 재조판 함수가 원본 content를 다시 읽더라도 인라인 metric 토큰은 반드시
+        # 이 공통 출구를 지난다. HTML은 추적 span, SVG/속성은 유효한 평문으로 치환한다.
+        rendered_pages.append(_finalize_metric_tokens(page_html, page_id, registry))
     if len(rendered_pages) != len(pages):
         raise ValueError("every deck_spec page must be an object")
 
@@ -589,7 +597,10 @@ def _running_head_html(eyebrow_text: str, deck_short_title: str, body_page_numbe
 </div>""".strip()
 
 
-def _title_band_html(title_text: str) -> str:
+def _title_band_html(title_text: str | None) -> str:
+    title_text = str(title_text or "").strip()
+    if not title_text:
+        return ""
     return f'<div class="title-band" aria-hidden="true"><span class="title-band-text">{_escape(title_text)}</span></div>'
 
 
@@ -658,13 +669,12 @@ def _render_page(
         if bt == "viz":
             caption_source_ids.extend(_viz_caption_source_ids(block, page_id, registry))
 
-    for metric_id in _iter_metric_ids(content):
+    # content 밖(rows·축 등)의 토큰/metric_id까지 페이지 단위로 한 번에 집계한다.
+    for metric_id in _iter_metric_ids(page):
         cited_source_ids.extend(_metric_source_ids(metric_id, page_id, registry))
 
     if layout == "metric_commentary":
         body_html = _render_metric_commentary(page, page_id, registry, palette)
-        for metric_id in _iter_metric_ids(page.get("rows", [])):
-            cited_source_ids.extend(_metric_source_ids(metric_id, page_id, registry))
     else:
         body_html = _render_layout_body(
             layout,
@@ -706,7 +716,9 @@ def _render_page(
         running_foot_html = ""
         if running_head_enabled:
             next_html = '<span class="running-next">NEXT</span>' if body_page_number != body_page_count else ""
-            running_foot_html = f'<div class="running-foot" aria-hidden="true"><span>PREV</span>{next_html}</div>'
+            # PREV/NEXT는 화면에서 넘김을 암시하는 장식이다. 인쇄·PDF에는 남기지 않는다
+            # (2026-08 실측: 납품 PDF 하단에 그대로 찍혀 나왔다).
+            running_foot_html = f'<div class="running-foot no-print" aria-hidden="true"><span>PREV</span>{next_html}</div>'
         foot_html = f"""
   {footnote_row}
   {source_row}
@@ -726,7 +738,7 @@ def _render_page(
         section_classes.append("divider-hero")
     if running_head_enabled:
         section_classes.append("chrome-running-head")
-    if title_band_enabled:
+    if title_band_html:
         section_classes.append("page-title-band")
     if page.get("decor") == "side_wordmark":
         section_classes.append("decor-side-wordmark")
@@ -1005,6 +1017,13 @@ def _render_layout_body(
     page_id: str = "",
     registry: dict[str, dict[str, Any]] | None = None,
 ) -> str:
+    # 미지 layout 무음 폴백 제거(C-10) — 아래 마지막 generic branch는 statement·timeline·
+    # stat_grid·metric_grid·cards 등 "지원되는" layout도 처리하므로, raise는 반드시 그 앞
+    # 진입부에서 SUPPORTED_LAYOUTS 화이트리스트로만 걸러야 한다(단순 raise로 교체 금지).
+    if layout not in SUPPORTED_LAYOUTS:
+        raise ValueError(
+            f"{page_id or '?'}: unsupported layout '{layout}' — supported: {sorted(SUPPORTED_LAYOUTS)}"
+        )
     if layout == "split":
         return _render_split(body_parts, page)
     if layout == "stack":
@@ -1251,6 +1270,7 @@ def _render_hero_bleed(rendered_pairs: list[tuple[Any, str]] | None, content: li
     # 수치는 metric registry 주입값 그대로(C6) — 렌더된 metric-card에서 값을 뽑아 초대형 조판.
     hero_value, hero_label, hero_mid = "", "", ""
     left_parts: list[str] = []
+    head_html, note_html = "", ""
     for block, html_part in (rendered_pairs or []):
         bt = _block_type(block)
         if bt == "metric" and not hero_value:
@@ -1259,6 +1279,13 @@ def _render_hero_bleed(rendered_pairs: list[tuple[Any, str]] | None, content: li
             hero_value = m.group(1) if m else ""
             hero_label = lb.group(1) if lb else ""
             hero_mid = str(block.get("metric_id", "")).strip()
+            continue
+        # 7/28 후추님: 헤드라인은 전폭 한 줄 상단·note("그래서 무엇을")는 전폭 하단 — 좌우 대비가 어색하던 것 해소
+        if bt == "headline" and not head_html:
+            head_html = html_part
+            continue
+        if bt in {"note", "callout"} and not note_html:
+            note_html = html_part
             continue
         left_parts.append(html_part)
     # 주입값이지만 재조판하며 태그가 떨어지면 C6 파서가 무단 숫자로 본다 — metric_id 태그 유지 의무.
@@ -1274,9 +1301,13 @@ def _render_hero_bleed(rendered_pairs: list[tuple[Any, str]] | None, content: li
     else:
         num_html = _escape(hero_value)
     return f"""
-<main class="body layout-body hero-bleed-body">
-  <div class="hero-bleed-copy">{"".join(left_parts)}</div>
-  <div class="hero-bleed-stage">{label_html}<div class="{num_class}"{mid_attr}>{num_html}</div></div>
+<main class="body layout-body hero-bleed-wrap">
+  {head_html}
+  <div class="hero-bleed-body">
+    <div class="hero-bleed-copy">{"".join(left_parts)}</div>
+    <div class="hero-bleed-stage">{label_html}<div class="{num_class}"{mid_attr}>{num_html}</div></div>
+  </div>
+  {note_html}
 </main>""".strip()
 
 
@@ -1315,17 +1346,25 @@ def _render_dashboard(rendered_pairs: list[tuple[Any, str]] | None) -> str:
     # 시그니처(data_mono 권장): 페이지 전체가 위젯 타일 — 각 블록이 계기판의 한 칸.
     lead = ""
     tiles: list[str] = []
+    # 단서(note)는 계기판 칸이 아니다 — 타일 수를 세는 제목과 어긋나므로 격자 아래로 뺀다
+    # (2026-08 실측: "세 갈래"라는 제목 아래 note가 네 번째 칸으로 붙어 읽혔다).
+    trailing: list[str] = []
     for block, html_part in (rendered_pairs or []):
         bt = _block_type(block)
         if bt in {"headline", "title"} and not lead:
             lead = html_part
             continue
+        if bt in {"note", "footnote", "caveat"}:
+            trailing.append(html_part)
+            continue
         span = " dash-tile-wide" if bt == "viz" else ""
         tiles.append(f'<article class="dash-tile{span}">{html_part}</article>')
+    trailing_html = f'<div class="dash-trailing">{"".join(trailing)}</div>' if trailing else ""
     return f"""
 <main class="body layout-body dash-body">
   {lead}
   <section class="dash-grid">{"".join(tiles)}</section>
+  {trailing_html}
 </main>""".strip()
 
 
@@ -1518,7 +1557,7 @@ def _render_divider(
     if str(page.get("divider_style", "")).lower() == "anchor":
         return f"""
 <main class="body layout-body divider-body divider-anchor">
-  <p class="eyebrow divider-part">PART {part_index} · {_escape(part_label)}</p>
+  <p class="eyebrow divider-part">PART {_part_roman(part_index)} · {_escape(part_label)}</p>
   <h2 class="divider-title divider-title-anchor">{title_html}</h2>
   {subtitle_html}
 </main>""".strip()
@@ -1530,7 +1569,7 @@ def _render_divider(
   {section_nav_html}
   {ghost_html}
   <div class="divider-progress" aria-label="part progress">{progress}</div>
-  <p class="eyebrow divider-part{kicker_chip}">PART {part_index} · {_escape(part_label)}</p>
+  <p class="eyebrow divider-part{kicker_chip}">PART {_part_roman(part_index)} · {_escape(part_label)}</p>
   <h2 class="divider-title">{title_html}</h2>
   {subtitle_html}
   {items_html}
@@ -1720,6 +1759,14 @@ def _slide_motif_html(layout: str, page_number: int, palette: dict[str, str]) ->
     )
 
 
+def _part_roman(index) -> str:
+    # C6 강화(7/27) 후속: 렌더 텍스트의 파트 번호는 데이터 숫자와 분리 — 로마 숫자 표기
+    romans = {1: "\u2160", 2: "\u2161", 3: "\u2162", 4: "\u2163", 5: "\u2164"}
+    try:
+        return romans.get(int(index), str(index))
+    except (TypeError, ValueError):
+        return str(index)
+
 def _divider_part_meta(page: dict[str, Any], content: list[Any], page_number: int) -> tuple[int, str]:
     explicit = page.get("part_index", page.get("section_index"))
     try:
@@ -1889,6 +1936,9 @@ def _render_block(
                 rendered_items.append(f"<li>{_rich_with_metrics(str(item), page_id, registry)}</li>")
         for src_id in source_ids:
             _require_source(src_id, page_id, registry)
+        if block.get("numbered"):
+            # 7/28 후추님: 제언은 "1. 제목 — 부가설명" 번호 목록으로. 번호는 브라우저 마커(텍스트 노드 아님 → C6 안전)
+            return f'<ol class="numbered-rules">{"".join(rendered_items)}</ol>', source_ids
         return f'<ul class="bullet-list">{"".join(rendered_items)}</ul>', source_ids
 
     raise ValueError(f"{page_id}: unsupported content block type: {block_type}")
@@ -1983,6 +2033,21 @@ def _render_metric(
 </article>""".strip()
 
 
+class _MetricAwareText(str):
+    """Raw token text carrying the registry used only for layout measurement."""
+
+    def __new__(
+        cls,
+        value: str,
+        page_id: str,
+        registry: dict[str, dict[str, Any]],
+    ) -> "_MetricAwareText":
+        instance = super().__new__(cls, value)
+        instance.metric_page_id = page_id
+        instance.metric_registry = registry
+        return instance
+
+
 def _render_viz(
     block: dict[str, Any],
     page_id: str,
@@ -1994,7 +2059,9 @@ def _render_viz(
         raise ValueError(f"{page_id}: unsupported viz chart type: {chart}")
     series = _viz_series(block, page_id, registry)
     title = str(block.get("title", "")).strip()
-    note = _resolve_metric_tokens(str(block.get("note", "")).strip(), page_id, registry)
+    # SVG note도 title/axis/label과 같은 공통 page finalizer에서 치환해야 data-metric-id
+    # authority context가 보존된다. 여기서 평문으로 먼저 바꾸면 반올림 표시값이 C6에서 고아가 된다.
+    note = _MetricAwareText(str(block.get("note", "")).strip(), page_id, registry)
     accent = _viz_accent(block, palette)
     renderer = _CHART_RENDERERS.get(chart)
     if renderer is None:
@@ -2209,6 +2276,81 @@ def _source_row_ids_after_caption(source_ids: list[str], caption_source_ids: lis
 CHART_TITLE_GAP = 74
 
 
+def _svg_text_width(text: str, font_size: float) -> float:
+    """Conservative Pretendard width estimate in SVG user units."""
+    units = 0.0
+    for char in str(text):
+        if char.isspace():
+            units += 0.34
+        elif ord(char) < 128:
+            units += 0.58
+        else:
+            units += 1.0
+    return max(font_size * 0.6, units * font_size)
+
+
+def _svg_label_box(label: dict[str, Any]) -> tuple[float, float, float, float]:
+    width = _svg_text_width(str(label.get("text", "")), float(label.get("font_size", 16)))
+    x = float(label["x"])
+    y = float(label["y"])
+    anchor = str(label.get("anchor", "start"))
+    if anchor == "middle":
+        left, right = x - width / 2, x + width / 2
+    elif anchor == "end":
+        left, right = x - width, x
+    else:
+        left, right = x, x + width
+    font_size = float(label.get("font_size", 16))
+    return left, y - font_size, right, y + font_size * 0.28
+
+
+def _svg_boxes_overlap(
+    first: tuple[float, float, float, float],
+    second: tuple[float, float, float, float],
+    gap: float,
+) -> bool:
+    return not (
+        first[2] + gap <= second[0]
+        or second[2] + gap <= first[0]
+        or first[3] + gap <= second[1]
+        or second[3] + gap <= first[1]
+    )
+
+
+def _svg_value_font_size(value_class: str) -> float:
+    return 28.0 if value_class == "visual-value" else 35.0
+
+
+def _resolve_svg_label_boxes(
+    labels: list[dict[str, Any]],
+    *,
+    bounds: tuple[float, float, float, float],
+    obstacles: tuple[tuple[float, float, float, float], ...] = (),
+    gap: float = 6.0,
+) -> list[dict[str, Any]]:
+    """Use chart-provided fallback lanes only when the preferred text boxes collide."""
+    resolved: list[dict[str, Any]] = []
+    occupied = list(obstacles)
+    for label in labels:
+        options = [(label["x"], label["y"], label.get("anchor", "start"))]
+        options.extend(label.get("candidates", ()))
+        chosen = dict(label)
+        for x, y, anchor in options:
+            candidate = {**label, "x": float(x), "y": float(y), "anchor": str(anchor)}
+            box = _svg_label_box(candidate)
+            if box[0] < bounds[0] or box[1] < bounds[1] or box[2] > bounds[2] or box[3] > bounds[3]:
+                continue
+            if any(_svg_boxes_overlap(box, other, gap) for other in occupied):
+                continue
+            chosen = candidate
+            occupied.append(box)
+            break
+        else:
+            occupied.append(_svg_label_box(chosen))
+        resolved.append(chosen)
+    return resolved
+
+
 def _svg_before_after(
     series: list[dict[str, Any]],
     title: str,
@@ -2285,11 +2427,61 @@ def _svg_dumbbell(
     left, right = sorted((x1, x2))
     # 트랙 y = 값 텍스트(노드 y-36)가 CHART_TITLE_GAP에 오도록 → 소제목과 첫 요소 여백을 타 차트와 통일.
     ty = CHART_TITLE_GAP + 36
+    value_sizes = (23, 27)
+    value_labels = _resolve_svg_label_boxes(
+        [
+            {
+                "text": point["value"],
+                "x": x,
+                "y": ty - 34,
+                "anchor": "middle",
+                "font_size": value_sizes[index],
+                "candidates": ((x, ty - 76, "middle"), (x, ty + 84, "middle")),
+            }
+            for index, (point, x) in enumerate(zip(points, (x1, x2)))
+        ],
+        bounds=(0, 0, 1000, ty + 112),
+        gap=8,
+    )
+    category_labels = []
+    for point, x in zip(points, (x1, x2)):
+        label_len = len(_metric_display_text(str(point["label"]), page_id, (block or {}).get("_registry"))) * 16
+        if x - label_len / 2 < 8:
+            anchor, label_x = "start", max(8.0, x - 24)
+        elif x + label_len / 2 > 992:
+            anchor, label_x = "end", min(992.0, x + 24)
+        else:
+            anchor, label_x = "middle", x
+        category_labels.append(
+            {
+                "text": point["label"],
+                "x": label_x,
+                "y": ty + 48,
+                "anchor": anchor,
+                "font_size": 15,
+                "candidates": ((label_x, ty + 76, anchor), (label_x, ty + 20, anchor)),
+            }
+        )
+    category_labels = _resolve_svg_label_boxes(
+        category_labels,
+        bounds=(0, 0, 1000, ty + 112),
+        gap=6,
+    )
+    point_collision = abs(x1 - x2) < 40
+    point_ys = (ty - 10, ty + 10) if point_collision else (ty, ty)
+    point_radius = 16 if point_collision else 20
+    stems = ""
+    if point_collision:
+        stems = (
+            f'<line x1="{x1:.1f}" y1="{ty}" x2="{x1:.1f}" y2="{point_ys[0]}" stroke="#9CA3AF" stroke-width="2"/>'
+            f'<line x1="{x2:.1f}" y1="{ty}" x2="{x2:.1f}" y2="{point_ys[1]}" stroke="{accent}" stroke-width="2"/>'
+        )
     body = f"""
       <line x1="{gutter}" y1="{ty}" x2="{gutter + span}" y2="{ty}" stroke="#E5E7EB" stroke-width="12" stroke-linecap="round"/>
       <line x1="{left:.1f}" y1="{ty}" x2="{right:.1f}" y2="{ty}" stroke="{accent}" stroke-width="5" stroke-linecap="round"/>
-      {_svg_point(points[0], x1, ty, "#E5E7EB", "visual-value")}
-      {_svg_point(points[1], x2, ty, accent, "visual-value-accent")}
+      {stems}
+      {_svg_point(points[0], x1, point_ys[0], "#E5E7EB", "visual-value", value_labels[0], category_labels[0], point_radius)}
+      {_svg_point(points[1], x2, point_ys[1], accent, "visual-value-accent", value_labels[1], category_labels[1], point_radius)}
     """
     return _svg_shell("dumbbell", title, note, ty + 118, body, page_id)
 
@@ -2509,7 +2701,9 @@ def _svg_donut(
               <line x1="420" y1="{y + 18}" x2="960" y2="{y + 18}" stroke="#E5E7EB" stroke-width="1"/>
             </g>"""
         )
-    center_label_lines = _wrap_text(item["label"], 12)[:2]
+    center_label_lines = _wrap_text(
+        item["label"], 12, page_id=page_id, registry=(block or {}).get("_registry")
+    )[:2]
     label_tspans = "".join(
         f'<tspan x="{cx}" dy="{0 if i == 0 else 19}">{_escape(line)}</tspan>' for i, line in enumerate(center_label_lines)
     )
@@ -2690,6 +2884,7 @@ def _svg_rising_columns(
     tops: list[tuple[float, float]] = []
     points: list[dict[str, Any]] = []
     key_positions: dict[str, tuple[float, float, float]] = {}
+    columns: list[dict[str, Any]] = []
     for index, item in enumerate(rows):
         n = signed[index]
         h = max(10.0, abs(n) * scale) if scale else 10.0
@@ -2709,17 +2904,82 @@ def _svg_rising_columns(
         fill = _series_color(item, index, rows, accent)
         value_class = _value_class(item, is_last)
         value_y = (tip_y + 30) if n < 0 else (tip_y - 12)
-        value_text = (
-            f'<text x="{x + col_w / 2:.1f}" y="{value_y:.1f}" text-anchor="middle" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>'
-            if item["metric_id"] not in _endpoint_suppressed_metric_ids(block, rows)
-            else ""
+        columns.append(
+            {
+                "item": item,
+                "x": x,
+                "y": y,
+                "h": h,
+                "cx": cx,
+                "fill": fill,
+                "opacity": opacity,
+                "value_class": value_class,
+                "value_y": value_y,
+            }
         )
+    endpoint_owned = _endpoint_suppressed_metric_ids(block, rows)
+    value_specs = [
+        {
+            "metric_id": column["item"]["metric_id"],
+            "text": column["item"]["value"],
+            "x": column["cx"],
+            "y": column["value_y"],
+            "anchor": "middle",
+            "font_size": _svg_value_font_size(column["value_class"]),
+            "candidates": (
+                (column["cx"], column["value_y"] - 48, "middle"),
+                (column["cx"], column["value_y"] + 48, "middle"),
+                (column["cx"], column["value_y"] - 96, "middle"),
+                (column["cx"], column["value_y"] + 96, "middle"),
+            ),
+        }
+        for column in columns
+        if column["item"]["metric_id"] not in endpoint_owned
+    ]
+    chart_width = 1400 if hero else 1000
+    value_layouts = _resolve_svg_label_boxes(
+        value_specs,
+        bounds=(0, 0, chart_width, base_y + 120),
+        gap=6,
+    )
+    value_by_metric = {label["metric_id"]: label for label in value_layouts}
+    category_layouts = _resolve_svg_label_boxes(
+        [
+            {
+                "metric_id": column["item"]["metric_id"],
+                "text": column["item"]["label"],
+                "x": column["cx"],
+                "y": label_y,
+                "anchor": "middle",
+                "font_size": 20,
+                "candidates": (
+                    (column["cx"], label_y + 32, "middle"),
+                    (column["cx"], label_y - 32, "middle"),
+                    (column["cx"], label_y + 64, "middle"),
+                ),
+            }
+            for column in columns
+        ],
+        bounds=(0, 0, chart_width, base_y + 128),
+        gap=6,
+    )
+    category_by_metric = {label["metric_id"]: label for label in category_layouts}
+    for column in columns:
+        item = column["item"]
+        value_label = value_by_metric.get(item["metric_id"])
+        value_text = ""
+        if value_label:
+            value_text = (
+                f'<text x="{value_label["x"]:.1f}" y="{value_label["y"]:.1f}" text-anchor="{value_label["anchor"]}" '
+                f'class="{column["value_class"]}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>'
+            )
+        category_label = category_by_metric[item["metric_id"]]
         body.append(
             f"""
             <g data-metric-id="{_escape(item["metric_id"])}">
-              <rect x="{x:.1f}" y="{y:.1f}" width="{col_w:.1f}" height="{h:.1f}" rx="6" fill="{fill}" fill-opacity="{opacity:.2f}"/>
+              <rect x="{column["x"]:.1f}" y="{column["y"]:.1f}" width="{col_w:.1f}" height="{column["h"]:.1f}" rx="6" fill="{column["fill"]}" fill-opacity="{column["opacity"]:.2f}"/>
               {value_text}
-              <text x="{x + col_w / 2:.1f}" y="{label_y}" text-anchor="middle" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+              <text x="{category_label["x"]:.1f}" y="{category_label["y"]:.1f}" text-anchor="{category_label["anchor"]}" class="visual-label" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
             </g>"""
         )
     # 분기형에선 ×N 멀티플라이어 브래킷 억제 — 위/아래로 갈린 막대에 브래킷을 걸면 방향 서사가 다시 섞인다.
@@ -2738,7 +2998,9 @@ def _svg_rising_columns(
         )
     body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, CHART_TITLE_GAP - 12, base_y))
     shell_h = (base_y + 74 if has_neg else base_y + 44) + (28 if note else 0)
-    return _svg_shell("rising-columns", title, note, shell_h, "".join(body), page_id, width=(1400 if hero else 1000))
+    if category_layouts:
+        shell_h = max(shell_h, int(max(label["y"] for label in category_layouts) + 18 + (28 if note else 0)))
+    return _svg_shell("rising-columns", title, note, shell_h, "".join(body), page_id, width=chart_width)
 
 
 def _svg_quarterly_bars(
@@ -2783,6 +3045,7 @@ def _svg_quarterly_bars(
         body.append(f'<text x="{x0 - 24}" y="{base_y - 42}" class="visual-note" font-size="28">≈</text>')
     if unit_label:
         body.append(f'<text x="{x0}" y="{CHART_TITLE_GAP + 4}" class="visual-note" font-size="14">단위: {_escape(unit_label)}</text>')
+    bars: list[dict[str, Any]] = []
     for index, item in enumerate(rows):
         number = item["number"] if isinstance(item.get("number"), (int, float)) else 0.0
         h = max(14.0, abs(number) / max_value * max_h) if max_value else 14.0
@@ -2798,16 +3061,79 @@ def _svg_quarterly_bars(
         anchor_y = y if number >= 0 else y + h
         points.append({"x": cx, "y": anchor_y, "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
         key_positions[item["label"]] = (cx, x, x + col_w)
+        bars.append(
+            {
+                "item": item,
+                "x": x,
+                "y": y,
+                "h": h,
+                "cx": cx,
+                "fill": fill,
+                "value_y": value_y,
+                "value_fill": value_fill,
+                "label_y": label_y,
+            }
+        )
+    chart_width = 1400 if hero else 1000
+    value_layouts = _resolve_svg_label_boxes(
+        [
+            {
+                "metric_id": bar["item"]["metric_id"],
+                "text": bar["item"]["value"],
+                "x": bar["cx"],
+                "y": bar["value_y"],
+                "anchor": "middle",
+                "font_size": 17,
+                "candidates": (
+                    (bar["cx"], bar["value_y"] - 32, "middle"),
+                    (bar["cx"], bar["value_y"] + 32, "middle"),
+                    (bar["cx"], bar["value_y"] - 64, "middle"),
+                ),
+            }
+            for bar in bars
+        ],
+        bounds=(0, 0, chart_width, base_y + 92),
+        gap=5,
+    )
+    category_layouts = _resolve_svg_label_boxes(
+        [
+            {
+                "metric_id": bar["item"]["metric_id"],
+                "text": bar["item"]["label"],
+                "x": bar["cx"],
+                "y": bar["label_y"],
+                "anchor": "middle",
+                "font_size": 15,
+                "candidates": (
+                    (bar["cx"], bar["label_y"] + 28, "middle"),
+                    (bar["cx"], bar["label_y"] - 28, "middle"),
+                    (bar["cx"], bar["label_y"] + 56, "middle"),
+                ),
+            }
+            for bar in bars
+        ],
+        bounds=(0, 0, chart_width, base_y + 116),
+        gap=5,
+    )
+    value_by_metric = {label["metric_id"]: label for label in value_layouts}
+    category_by_metric = {label["metric_id"]: label for label in category_layouts}
+    for bar in bars:
+        item = bar["item"]
+        value_label = value_by_metric[item["metric_id"]]
+        category_label = category_by_metric[item["metric_id"]]
         body.append(
             f"""
             <g data-metric-id="{_escape(item["metric_id"])}">
-              <rect x="{x:.1f}" y="{y:.1f}" width="{col_w:.1f}" height="{h:.1f}" rx="6" fill="{fill}"/>
-              <text x="{x + col_w / 2:.1f}" y="{value_y:.1f}" text-anchor="middle" class="quarter-value-onbar" fill="{value_fill}" font-size="17" font-weight="900" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
-              <text x="{x + col_w / 2:.1f}" y="{label_y}" text-anchor="middle" class="visual-label" font-size="15" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+              <rect x="{bar["x"]:.1f}" y="{bar["y"]:.1f}" width="{col_w:.1f}" height="{bar["h"]:.1f}" rx="6" fill="{bar["fill"]}"/>
+              <text x="{value_label["x"]:.1f}" y="{value_label["y"]:.1f}" text-anchor="{value_label["anchor"]}" class="quarter-value-onbar" fill="{bar["value_fill"]}" font-size="17" font-weight="900" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+              <text x="{category_label["x"]:.1f}" y="{category_label["y"]:.1f}" text-anchor="{category_label["anchor"]}" class="visual-label" font-size="15" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
             </g>"""
         )
     body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, CHART_TITLE_GAP - 12, base_y))
-    return _svg_shell("quarterly-bars", title, note, base_y + 52 + (28 if note else 0), "".join(body), page_id, width=(1400 if hero else 1000))
+    shell_h = base_y + 52 + (28 if note else 0)
+    if category_layouts:
+        shell_h = max(shell_h, int(max(label["y"] for label in category_layouts) + 18 + (28 if note else 0)))
+    return _svg_shell("quarterly-bars", title, note, shell_h, "".join(body), page_id, width=chart_width)
 
 
 # chart enum(계약 SoT)과 렌더러 1:1 — 빠지면 테스트가 잡는다(test_contracts 커버리지).
@@ -3119,6 +3445,10 @@ def _svg_multi_line(
     # hero = 와이드 viewBox(1400): 가로 잉크 전폭 + 세로 스케일 복원, 렌더 높이는 안 부풂 (7/7 2R 테마 폭 상한 충돌 근본 풀이)
     # 7/23 후추님 지정: 차트 세로를 키워 점 사이 간격 자체를 벌린다 (150→210 / hero 225→270)
     y0, h, x0, w = CHART_TITLE_GAP, (270 if hero else 210), (70 if hero else 80), (1260 if hero else 860)
+    # 7/27 후추님 검수: 다계열 선은 위치 서술 노트 대신 선 끝 색상 직접 라벨 — lane_labels={"highlight": "총액", ...}
+    lane_labels = (block or {}).get("lane_labels") or {}
+    if lane_labels:
+        w -= 130  # 오른쪽 이름 라벨 자리
     numbers = [i["number"] for lane in lanes.values() for i in lane if i["number"] is not None]
     # 7/23 수정: 이전엔 number/vmax만 써서 음수(예: -30%)가 프레임 밖으로 좌표가 튐(y가 수천 단위로 이탈).
     # min-max 정규화로 교체 — 부호와 무관하게 0~1 범위 안에 항상 들어오게 한다.
@@ -3146,6 +3476,7 @@ def _svg_multi_line(
         lane_coords[lane_name] = coords
     endpoint_owned = _endpoint_suppressed_metric_ids(block, series)
     pending_labels: list[dict[str, Any]] = []
+    pending_categories: list[dict[str, Any]] = []
     for lane_name, coords in lane_coords.items():
         color = _series_color(lanes[lane_name][0], 0, lanes[lane_name], accent) if lane_name != "baseline" else "var(--muted)"
         # 기준선은 점선+옅게 — 색만으로는 팔레트에 따라 강조선과 명도가 비슷해질 수 있음(forest 실측·후추님 7/23).
@@ -3162,37 +3493,63 @@ def _svg_multi_line(
                 others = [oy for ln, ocs in lane_coords.items() if ln != lane_name for ox, oy, _o in ocs if abs(ox - x) < 1.0]
                 nearest = min(others, key=lambda oy: abs(oy - y)) if others else None
                 label_y = y - 14 if (nearest is None or nearest >= y) else y + 30
-                label_x = min(max(x, 90.0), (w + x0) - 30.0)  # 첫/끝점 라벨 좌우단 잘림 방지
-                pending_labels.append({"x": label_x, "y": label_y, "item": item})
+                right_clamp = 80.0 if lane_labels.get(lane_name) else 30.0
+                left_clamp = 90.0 + max(0, (len(str(item["value"])) - 6)) * 10.0  # 7/28 조 단위 등 긴 라벨의 좌단 잘림 방지 — 글자수 비례 가산
+                label_x = min(max(x, left_clamp), (w + x0) - right_clamp)  # 첫/끝점 라벨 좌우단 잘림 방지 (+이름 라벨 자리)
+                pending_labels.append(
+                    {
+                        "text": item["value"],
+                        "x": label_x,
+                        "y": label_y,
+                        "anchor": "middle",
+                        "font_size": 19,
+                        "item": item,
+                        "candidates": (
+                            (label_x, label_y - 32, "middle"),
+                            (label_x, label_y + 32, "middle"),
+                            (label_x, label_y - 64, "middle"),
+                            (label_x, label_y + 64, "middle"),
+                        ),
+                    }
+                )
             # 축 카테고리 라벨을 baseline에서 더 떨어뜨려(24→40) 값 라벨과의 여유를 고정적으로 확보.
-            body.append(f'<text x="{x:.0f}" y="{y0 + h + 40:.0f}" text-anchor="middle" class="visual-label" font-size="15">{_escape(item["label"])}</text>')
-    # 같은 x 클러스터(±44px) 안 라벨 최소 세로 간격 22px 강제 — 위에서부터 그리디로 밀어냄
-    clusters: dict[int, list[dict[str, Any]]] = {}
-    for lab in pending_labels:
-        clusters.setdefault(int(lab["x"] // 88), []).append(lab)
-    for group in clusters.values():
-        # 같은 클러스터에 같은 값 텍스트 중복(공통 기준점 100 등) = 1개만 (7/7 — 3계열 시작점 3연타 실측)
-        seen_values: set = set()
-        for lab in list(group):
-            v = str(lab["item"]["value"]).strip()
-            if v in seen_values:
-                group.remove(lab)
-                pending_labels.remove(lab)
-            else:
-                seen_values.add(v)
-        group.sort(key=lambda l: l["y"])
-        for i in range(1, len(group)):
-            if group[i]["y"] - group[i - 1]["y"] < 30:
-                group[i]["y"] = group[i - 1]["y"] + 30
-        # 7/23 최종: 연도 라벨이 y0+h+40으로 내려갔고 최저점도 baseline에서 띄웠으므로,
-        # 아래쪽 값 라벨은 baseline+14까지 허용 — "아래 선 값은 점 아래" 배치가 살게 한다.
-        overflow = group[-1]["y"] - ((y0 + h) + 14)
-        if overflow > 0:  # 축 라벨 침범 시 클러스터 전체를 위로
-            for lab in group:
-                lab["y"] -= overflow
+            category_y = y0 + h + 40
+            pending_categories.append(
+                {
+                    "text": item["label"],
+                    "x": x,
+                    "y": category_y,
+                    "anchor": "middle",
+                    "font_size": 15,
+                    "item": item,
+                    "candidates": (
+                        (x, category_y + 26, "middle"),
+                        (x, category_y - 26, "middle"),
+                        (x, category_y + 52, "middle"),
+                    ),
+                }
+            )
+        lane_name_label = lane_labels.get(lane_name)
+        if lane_name_label and coords:
+            lx, ly, _li = coords[-1]
+            body.append(f'<text x="{lx + 18:.0f}" y="{ly + 6:.0f}" text-anchor="start" class="visual-label" font-size="17" font-weight="700" fill="{color}">{_escape(str(lane_name_label))}</text>')
+    chart_width = 1400 if hero else 1000
+    pending_labels = _resolve_svg_label_boxes(
+        pending_labels,
+        bounds=(0, y0 - 12, chart_width, y0 + h + 18),
+        gap=6,
+    )
+    pending_categories = _resolve_svg_label_boxes(
+        pending_categories,
+        bounds=(0, y0 + h + 10, chart_width, y0 + h + 96),
+        gap=5,
+    )
     for lab in pending_labels:
         item = lab["item"]
-        body.append(f'<text x="{lab["x"]:.0f}" y="{lab["y"]:.0f}" text-anchor="middle" class="visual-value" font-size="19" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+        body.append(f'<text x="{lab["x"]:.0f}" y="{lab["y"]:.0f}" text-anchor="{lab["anchor"]}" class="visual-value" font-size="19" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>')
+    for lab in pending_categories:
+        item = lab["item"]
+        body.append(f'<text x="{lab["x"]:.0f}" y="{lab["y"]:.0f}" text-anchor="{lab["anchor"]}" class="visual-label" font-size="15" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>')
     points = []
     for item in series:
         coord = coord_by_metric_id.get(item["metric_id"])
@@ -3201,7 +3558,10 @@ def _svg_multi_line(
         points.append({"x": coord[0], "y": coord[1], "metric_id": item["metric_id"], "value": item["value"], "label": item["label"]})
     body.append(_viz_annotation_layer(block, points, key_positions, page_id, accent, y0 - 12, y0 + h))
     # x축 라벨(y0+h+24)과 shell note(height-10)가 겹치지 않게 높이 여유(+70) — 스모크 실측.
-    return _svg_shell("multi_line", title, note, y0 + h + 86, "".join(body), page_id, width=(1400 if hero else 1000))
+    shell_h = y0 + h + 86
+    if pending_categories:
+        shell_h = max(shell_h, int(max(label["y"] for label in pending_categories) + 18))
+    return _svg_shell("multi_line", title, note, shell_h, "".join(body), page_id, width=chart_width)
 
 
 def _svg_progress_bar(
@@ -3413,7 +3773,12 @@ def _svg_pyramid(
             f"{cx - top_w / 2:.1f},{y_top:.1f} {cx + top_w / 2:.1f},{y_top:.1f} "
             f"{cx + bottom_w / 2:.1f},{y_bottom:.1f} {cx - bottom_w / 2:.1f},{y_bottom:.1f}"
         )
-        lines = _wrap_text(str(item["label"]), max(10, int(bottom_w / 13)))[:2]
+        lines = _wrap_text(
+            str(item["label"]),
+            max(10, int(bottom_w / 13)),
+            page_id=page_id,
+            registry=(block or {}).get("_registry"),
+        )[:2]
         label_y = y_top + 36 if item["value"] else (y_top + row_h / 2 + 6)
         label_html = "".join(
             f'<tspan x="{cx}" dy="{0 if li == 0 else 22}">{_escape(line)}</tspan>' for li, line in enumerate(lines)
@@ -3478,7 +3843,12 @@ def _svg_causal_chain(
         )
         if caption:
             mid_x = (x1 + x2) / 2
-            lines = _wrap_text(caption, max(8, int((step - 24) / 13)))[:2]
+            lines = _wrap_text(
+                caption,
+                max(8, int((step - 24) / 13)),
+                page_id=page_id,
+                registry=(block or {}).get("_registry"),
+            )[:2]
             max_caption_lines = max(max_caption_lines, len(lines))
             caption_html = "".join(
                 f'<tspan x="{mid_x:.1f}" dy="{0 if li == 0 else 18}">{_escape(line)}</tspan>' for li, line in enumerate(lines)
@@ -3488,7 +3858,12 @@ def _svg_causal_chain(
         x = x0 + step * index
         fill = accent if _is_highlight(item, index, nodes) else f"color-mix(in srgb, {accent} 14%, transparent)"
         text_fill = "#FFFFFF" if fill == accent else "#1F2733"
-        label_lines = _wrap_text(str(item["label"]), max_label_chars)[:2]
+        label_lines = _wrap_text(
+            str(item["label"]),
+            max_label_chars,
+            page_id=page_id,
+            registry=(block or {}).get("_registry"),
+        )[:2]
         block_rows = len(label_lines) + (1 if item["value"] else 0)
         node_h = max(node_h_min, block_rows * row_line_h + 34)
         first_y = node_cy - (block_rows - 1) * row_line_h / 2 + 5
@@ -3636,7 +4011,12 @@ def _svg_tradeoff(
             has_value = bool(item["value"])
             chip_w = min(150.0, max(64.0, 16 + 11 * len(str(item["value"])))) if has_value else 0.0
             label_max_px = col_w - pad_x * 2 - 18 - (chip_w + 14 if has_value else 0)
-            lines = _wrap_text(str(item["label"]), max(8, int(label_max_px / 10.2)))[:2]
+            lines = _wrap_text(
+                str(item["label"]),
+                max(8, int(label_max_px / 10.2)),
+                page_id=page_id,
+                registry=(block or {}).get("_registry"),
+            )[:2]
             text_x = col_x + pad_x + 16
             first_y = row_center - (len(lines) - 1) * 10 + 5
             text_html = "".join(
@@ -3874,16 +4254,40 @@ _CHART_RENDERERS = {
 }
 
 
-def _wrap_text(text: str, max_chars: int) -> list[str]:
+def _metric_display_text(
+    text: str,
+    page_id: str,
+    registry: dict[str, dict[str, Any]] | None,
+) -> str:
+    if not registry or not _METRIC_TOKEN_PATTERN.search(text):
+        return text
+
+    def substitute(match: re.Match[str]) -> str:
+        metric = _require_metric(match.group(1), page_id, registry)
+        return _format_metric_value(metric)
+
+    return _METRIC_TOKEN_PATTERN.sub(substitute, text)
+
+
+def _wrap_text(
+    text: str,
+    max_chars: int,
+    *,
+    page_id: str = "",
+    registry: dict[str, dict[str, Any]] | None = None,
+) -> list[str]:
     """공백 기준 그리디 줄바꿈. SVG <text>는 자동 wrap이 없어 직접 접는다."""
+    metric_page_id = page_id or getattr(text, "metric_page_id", "")
+    metric_registry = registry or getattr(text, "metric_registry", None)
     lines: list[str] = []
     cur = ""
     for word in text.split(" "):
-        if cur and len(cur) + 1 + len(word) > max_chars:
+        candidate = f"{cur} {word}".strip()
+        if cur and len(_metric_display_text(candidate, metric_page_id, metric_registry)) > max_chars:
             lines.append(cur)
             cur = word
         else:
-            cur = f"{cur} {word}".strip()
+            cur = candidate
     if cur:
         lines.append(cur)
     return lines or [text]
@@ -3912,23 +4316,24 @@ def _svg_shell(kind: str, title: str, note: str, height: int, body: str, page_id
 </svg>""".strip()
 
 
-def _svg_point(item: dict[str, Any], x: float, y: int, fill: str, value_class: str) -> str:
+def _svg_point(
+    item: dict[str, Any],
+    x: float,
+    y: float,
+    fill: str,
+    value_class: str,
+    value_label: dict[str, Any],
+    category_label: dict[str, Any],
+    radius: float,
+) -> str:
     # font-size를 SVG user 단위(attribute)로 박는다 — CSS px는 viewBox 스케일과 안 맞아
     # 값이 노드 중앙에서 좌우로 밀려 보임(후추님 #3 정렬 어긋남 근본). attr 크기는 viewBox와 함께 스케일.
-    value_size = 27 if value_class.endswith("accent") else 23  # 그래프 안 텍스트 축소(후추님 6/30 — 위계)
-    # 라벨이 viewBox 밖으로 잘리지 않게 가장자리에서 anchor 전환(7/2 — 좌측 노드 라벨 잘림 fix).
-    label_len = len(str(item["label"])) * 16  # 한글 15px 근사폭
-    if x - label_len / 2 < 8:
-        label_anchor, label_x = "start", max(8.0, x - 24)
-    elif x + label_len / 2 > 992:
-        label_anchor, label_x = "end", min(992.0, x + 24)
-    else:
-        label_anchor, label_x = "middle", x
+    value_size = value_label["font_size"]
     return f"""
       <g data-metric-id="{_escape(item["metric_id"])}">
-        <circle cx="{x:.1f}" cy="{y}" r="20" fill="{fill}" stroke="#CBD5E1" stroke-width="2"/>
-        <text x="{x:.1f}" y="{y - 34}" text-anchor="middle" font-size="{value_size}" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
-        <text x="{label_x:.1f}" y="{y + 48}" text-anchor="{label_anchor}" font-size="15" class="visual-note" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
+        <circle cx="{x:.1f}" cy="{y:.1f}" r="{radius}" fill="{fill}" stroke="#CBD5E1" stroke-width="2"/>
+        <text x="{value_label["x"]:.1f}" y="{value_label["y"]:.1f}" text-anchor="{value_label["anchor"]}" font-size="{value_size}" class="{value_class}" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["value"])}</text>
+        <text x="{category_label["x"]:.1f}" y="{category_label["y"]:.1f}" text-anchor="{category_label["anchor"]}" font-size="15" class="visual-note" data-metric-id="{_escape(item["metric_id"])}">{_escape(item["label"])}</text>
       </g>"""
 
 
@@ -4042,16 +4447,11 @@ def _deck_cited_source_ids(pages: list[Any], registry: dict[str, dict[str, Any]]
     for page in pages:
         if not isinstance(page, dict) or str(page.get("layout", "")) == "source_appendix":
             continue
-        content = page.get("content", [])
-        for src_id in _iter_source_ids(content):
+        for src_id in _iter_source_ids(page):
             add(src_id)
-        for metric_id in _iter_metric_ids(content):
+        for metric_id in _iter_metric_ids(page):
             for src_id in _metric_source_ids(metric_id, "deck", registry):
                 add(src_id)
-        if str(page.get("layout", "")) == "metric_commentary":
-            for metric_id in _iter_metric_ids(page.get("rows", [])):
-                for src_id in _metric_source_ids(metric_id, "deck", registry):
-                    add(src_id)
     return cited
 
 
@@ -4067,9 +4467,10 @@ def _metric_source_ids(
     seen.add(metric_id)
     metric = _require_metric(metric_id, page_id, registry)
     source_ids: list[str] = []
-    for src_id in _as_list(metric.get("source_ids")):
-        if src_id not in source_ids:
-            source_ids.append(src_id)
+    for field in ("source_ids", "source_id", "src_ids", "src_id"):
+        for src_id in _as_list(metric.get(field)):
+            if src_id not in source_ids:
+                source_ids.append(src_id)
     for ref_id in _as_list(metric.get("derived_from")):
         for src_id in _metric_source_ids(ref_id, page_id, registry, seen):
             if src_id not in source_ids:
@@ -4078,10 +4479,33 @@ def _metric_source_ids(
 
 
 def _format_metric_value(metric: dict[str, Any]) -> str:
-    value = _group_thousands(str(metric.get("value", "")).strip())
+    raw_value = str(metric.get("value", "")).strip()
     unit = str(metric.get("unit", "")).strip()
+    # 조 단위 표시값은 소수 둘째 자리까지만. registry 원값과 차트 계산값은 건드리지 않는다.
+    trillion_match = re.fullmatch(r"-?\d+(?:\.(\d+))?", raw_value)
+    if unit in {"조", "조원", "조 원"} and trillion_match and len(trillion_match.group(1) or "") > 2:
+        try:
+            with localcontext() as context:
+                context.prec = max(28, len(raw_value.replace("-", "").replace(".", "")) + 2)
+                rounded = Decimal(raw_value).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            if rounded.is_zero():
+                rounded = abs(rounded)
+            raw_value = format(rounded, "f").rstrip("0").rstrip(".")
+            # 소수 원값이 반올림으로 정수가 돼도 표시 정밀도가 사라지지 않게 최소 1자리는 둔다.
+            if "." not in raw_value:
+                raw_value += ".0"
+        except InvalidOperation:
+            pass
+    value = _group_thousands(raw_value)
     if not value:
         raise ValueError("metric value is required")
+    # 7/28 독자 패널 교차 지적: "172,717 억 원"은 자릿수 읽기 어려움 — 1만억 이상은 조 단위 병기
+    if unit in {"억 원", "억원", "억"}:
+        digits = value.replace(",", "")
+        if digits.isdigit() and int(digits) >= 10000:
+            jo, eok = divmod(int(digits), 10000)
+            tail = "원" if "원" in unit else ""
+            return f"{jo}조 {eok:,}억 {tail}".strip() if eok else f"{jo}조 {tail}".strip()
     if not unit or value.endswith(unit):
         return value
     if unit.startswith("%") or unit in {"pp", "p", "x", "X", "조", "억", "만", "명", "개", "건", "원", "달러"}:
@@ -4240,16 +4664,63 @@ def _rich_with_metrics(value: str, page_id: str, registry: dict[str, dict[str, A
     return _BOLD_PATTERN.sub(r'<strong>\1</strong>', "".join(parts))
 
 
-def _resolve_metric_tokens(value: str, page_id: str, registry: dict[str, dict[str, Any]]) -> str:
-    # 7/23: viz(SVG) title/note는 _svg_shell이 plain text로 escape·줄바꿈해 data-metric-id
-    # span을 못 심는다(HTML _rich_with_metrics와 다른 렌더 경로) — {{m088}} 같은 토큰이 SVG에서
-    # 그대로 미치환 노출되던 버그(customer-zero 실측). 값만 평문 치환하고, C6 authority는
-    # registry 전체값 집합(backed_numbers)이 이 숫자를 이미 알고 있으므로 통과한다.
-    def _sub(match: re.Match[str]) -> str:
-        metric = _require_metric(match.group(1), page_id, registry)
-        return _format_metric_value(metric)
+def _finalize_metric_tokens(
+    rendered_html: str,
+    page_id: str,
+    registry: dict[str, dict[str, Any]],
+) -> str:
+    """Resolve every remaining inline metric token at the page render boundary.
 
-    return _METRIC_TOKEN_PATTERN.sub(_sub, value)
+    Most blocks resolve tokens while producing semantic HTML. A few layouts intentionally
+    re-read raw content to build a different skeleton, and SVG text cannot contain HTML
+    spans. This boundary keeps both paths exhaustive without making each layout remember
+    a separate token rule.
+    """
+    if not _METRIC_TOKEN_PATTERN.search(rendered_html):
+        return rendered_html
+
+    def plain_sub(match: re.Match[str]) -> str:
+        metric_id = match.group(1)
+        metric = _require_metric(metric_id, page_id, registry)
+        return _escape(_format_metric_value(metric))
+
+    def html_sub(match: re.Match[str]) -> str:
+        metric_id = match.group(1)
+        metric = _require_metric(metric_id, page_id, registry)
+        return (
+            f'<span data-metric-id="{_escape(metric_id)}">'
+            f'{_escape(_format_metric_value(metric))}</span>'
+        )
+
+    def svg_sub(match: re.Match[str]) -> str:
+        metric_id = match.group(1)
+        metric = _require_metric(metric_id, page_id, registry)
+        return (
+            f'<tspan data-metric-id="{_escape(metric_id)}">'
+            f'{_escape(_format_metric_value(metric))}</tspan>'
+        )
+
+    parts = re.split(r"(<[^>]+>)", rendered_html)
+    svg_depth = 0
+    resolved: list[str] = []
+    for part in parts:
+        if not part:
+            continue
+        if part.startswith("<"):
+            # Attribute values must stay plain text; a span inside a tag would corrupt HTML.
+            resolved.append(_METRIC_TOKEN_PATTERN.sub(plain_sub, part))
+            if re.match(r"<svg\b", part, flags=re.IGNORECASE):
+                svg_depth += 1
+            elif re.match(r"</svg\b", part, flags=re.IGNORECASE):
+                svg_depth = max(0, svg_depth - 1)
+            continue
+        resolver = svg_sub if svg_depth else html_sub
+        resolved.append(_METRIC_TOKEN_PATTERN.sub(resolver, part))
+
+    output = "".join(resolved)
+    if _METRIC_TOKEN_PATTERN.search(output):
+        raise ValueError(f"{page_id}: unresolved metric token remained after rendering")
+    return output
 
 
 def _hex_luminance(color: str) -> float:
@@ -4529,6 +5000,7 @@ h1 {{
   opacity: .16;
   pointer-events: none;
 }}
+.theme-dark-premium .metric-card {{ overflow: hidden; }} /* 7/28: 광택을 카드 안에만 가둠 — 바깥 번짐(유령 도형) 차단 */
 .metric-card > * {{ position: relative; z-index: 1; }}
 .metric-label {{
   color: var(--muted);
@@ -4560,6 +5032,14 @@ h1 {{
 .metric-card.metric-tone-positive .metric-value {{ color: var(--semantic-positive); }}
 /* 키워드 색전환(==키워드==·백로그 Phase 1) — 강조어만 accent. 슬라이드당 절제. */
 .kw {{ color: var(--accent); }}
+.numbered-rules {{
+  margin: 8px 0 0; padding-left: 34px; display: flex; flex-direction: column; gap: 22px;
+}}
+.numbered-rules li {{
+  font-size: 19px; line-height: 1.55; color: var(--ink); padding-left: 6px;
+}}
+.numbered-rules li::marker {{ color: var(--accent); font-weight: 800; font-size: 19px; }}
+.numbered-rules li b {{ font-weight: 750; }}
 .bullet-list {{
   margin: 0;
   padding: 0;
@@ -5847,9 +6327,7 @@ h1 {{
 /* 간지: 잉크 파생 그라디언트가 밝은 ink에 오염되지 않게 명시 다크 + 골드 글로우. */
 .theme-dark-premium.layout-divider.slide {{
   /* 골드 하드코딩 → accent 파생(7/23 navy_glow 별칭 추가로 팔레트 무관하게). 지면 다크도 c60 파생. */
-  background:
-    radial-gradient(circle at 84% 24%, color-mix(in srgb, var(--accent) 12%, transparent) 0, transparent 40%),
-    linear-gradient(140deg, color-mix(in srgb, var(--c60) 88%, white) 0%, var(--c60) 60%, color-mix(in srgb, var(--c60) 80%, black) 100%);
+  background: radial-gradient(circle at 84% 24%, color-mix(in srgb, var(--accent) 12%, transparent) 0, transparent 40%), linear-gradient(140deg, color-mix(in srgb, var(--c60) 88%, white) 0%, var(--c60) 60%, color-mix(in srgb, var(--c60) 92%, black) 100%); /* 7/28 복원 — 유령 도형 진범은 그림자 타일·카드 광택 번짐이었음 */
 }}
 /* 표지·outro도 동일 다크(이 시스템은 전면 다크라 별도 dark variant 불필요). 부제는 눌린 회색. */
 .theme-dark-premium .cover-subtitle {{ color: var(--muted); }}
@@ -5934,8 +6412,10 @@ h1 {{
 }}
 .theme-minimal-typo .poster-text {{ font-weight: 320; font-size: 68px; }}
 /* hero_bleed: 우측 절반이 블리드 숫자 — 숫자가 곧 페이지. */
-.layout-hero-bleed .slide-head {{ display: none; }}
+.layout-hero-bleed .slide-head h1 {{ display: none; }} /* 7/28 독자 지적: h1만 숨기고 배지는 노출 — "셋째" 실종 fix */
 .hero-bleed-body {{ flex-direction: row; align-items: center; gap: 40px; }}
+.hero-bleed-wrap {{ display: flex; flex-direction: column; gap: 24px; min-height: 0; }}
+.hero-bleed-wrap .hero-bleed-body {{ display: flex; flex: 1 1 auto; min-height: 0; }}
 .hero-bleed-copy {{ flex: 1 1 46%; display: flex; flex-direction: column; gap: 18px; min-width: 0; }}
 .hero-bleed-stage {{ flex: 1 1 54%; position: relative; align-self: stretch; display: flex; flex-direction: column; justify-content: center; min-width: 0; }}
 .hero-bleed-label {{ margin: 0 0 6px; color: var(--muted); font-size: 15px; letter-spacing: .08em; }}
@@ -5949,9 +6429,9 @@ h1 {{
   transform: translateX(36px);  /* 블리드 — transform은 레이아웃 오버플로를 안 만든다. 단위(%·억원)는 잘리면 안 됨 */
   font-variant-numeric: tabular-nums;
 }}
-.hero-bleed-num.with-unit {{ font-size: 132px; transform: none; }}
-.hero-bleed-unit {{ font-size: 48px; font-weight: 700; letter-spacing: -.01em; margin-left: 10px; }}
-.theme-dark-premium .hero-bleed-num {{ text-shadow: 0 0 90px color-mix(in srgb, var(--accent) 30%, transparent); }}
+.hero-bleed-num.with-unit {{ font-size: 184px; transform: none; }} /* 7/28 후추님: 숫자가 지면을 채우게 */
+.hero-bleed-unit {{ font-size: 68px; font-weight: 700; letter-spacing: -.01em; margin-left: 12px; }}
+.theme-dark-premium .hero-bleed-num {{ text-shadow: 0 0 32px color-mix(in srgb, var(--accent) 26%, transparent); }} /* 7/28: 90px 타일 아티팩트 → 32px 소반경 복원 */
 /* magazine_spread: 본문이 칼럼으로 흐르고 풀쿼트가 전폭으로 끊는다. */
 .magazine-body {{ gap: 20px; }}
 .mag-columns {{ columns: 2; column-gap: 56px; max-width: none; }}
@@ -6266,6 +6746,8 @@ h1 {{
 .running-head-brand {{ flex: 1 1 0; text-align: center; color: var(--ink); font-weight: 700; }}
 .running-head-frac {{ flex: 1 1 0; text-align: right; white-space: nowrap; }}
 .chrome-running-head .slide-head {{ margin-top: 20px; }}
+/* 화면 넘김 장식(PREV/NEXT)은 인쇄·PDF에 남기지 않는다 (2026-08 실측: 납품 PDF 하단에 찍혔다) */
+@media print {{ .no-print {{ display: none !important; }} }}
 .running-foot {{
   position: absolute;
   bottom: 14px;
@@ -6690,11 +7172,26 @@ def main() -> None:
     print(f"rendered {len(deck_spec.get('pages', []))} pages -> {args.output}")
 
     # 시각 QA 산출물을 렌더 과정에 박는다 — HTML을 쓰면 PDF도 자동 생성(규율 아닌 코드 강제).
-    # 이 PDF가 4층 시각 QA의 필수 입력. capture 실패(Chrome 없음 등)는 경고로 표면화한다.
+    # PDF가 4층 시각 QA의 필수 입력이므로 capture 실패를 렌더 성공으로 삼키지 않는다.
     cap = Path(__file__).parent / "capture_deck.sh"
-    if cap.exists():
-        r = subprocess.run(["bash", str(cap), str(args.output)], capture_output=True, text=True)
-        print((r.stdout or r.stderr).strip())
+    output_text = str(args.output)
+    pdf_output = Path(f"{output_text[:-5]}.pdf" if output_text.endswith(".html") else f"{output_text}.pdf")
+    if not cap.exists():
+        pdf_output.unlink(missing_ok=True)
+        raise FileNotFoundError(f"PDF capture script is required: {cap}")
+    r = subprocess.run(["bash", str(cap), str(args.output)], capture_output=True, text=True)
+    if r.stdout.strip():
+        print(r.stdout.strip())
+    if r.stderr.strip():
+        print(r.stderr.strip(), file=sys.stderr)
+    if r.returncode == 2:
+        # capture_deck.sh exit 2 = FIT_OVERFLOW 전용 신호. PDF는 디버깅용으로 남기고
+        # (다른 capture 실패처럼 지우지 않는다) 파이프라인에는 실패로 전파한다.
+        print("FIT_OVERFLOW — 산출물은 디버깅용, 납품 금지", file=sys.stderr)
+        raise SystemExit(r.returncode)
+    if r.returncode:
+        pdf_output.unlink(missing_ok=True)
+        raise SystemExit(r.returncode)
 
 
 if __name__ == "__main__":

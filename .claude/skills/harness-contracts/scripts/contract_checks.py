@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 import unicodedata
 from dataclasses import dataclass
@@ -555,6 +556,80 @@ def check_c8_genre_artifacts(
     return violations
 
 
+# 어제(20260810 liaison_proposals) 사고: page-plan은 chart 3개(p05·p09·p10)를 예고했는데
+# 최종 spec은 viz=0으로 전부 body/text_table로 강등됐다 — 시각 의도가 조용히 손실됐다.
+VIZ_INTENT_PATTERN = re.compile(r"차트|chart|viz|그래프|막대|추이", re.IGNORECASE)
+
+
+def check_c14_viz_intent_preserved(
+    page_plan: dict[str, Any],
+    deck_spec: dict[str, Any],
+) -> list[ContractViolation]:
+    """C14 — page-plan이 예고한 차트 의도가 최종 spec에서 사라지지 않았는지 덱 수준 총량으로 본다.
+
+    05_page_plan.json이 없으면(빈 입력) 비활성 — 기존 워크스페이스 호환. 페이지별 1:1 대응은
+    v2 몫(Loop B 분할로 page_id가 변형돼 대응이 깨짐) — 여기선 덱 전체 viz 총수만 본다.
+    """
+    plan_pages = page_plan.get("pages") if isinstance(page_plan, dict) else None
+    if not isinstance(plan_pages, list) or not plan_pages:
+        return []
+
+    intent_page_ids = [
+        str(page.get("page_id", "?"))
+        for page in plan_pages
+        if isinstance(page, dict)
+        and VIZ_INTENT_PATTERN.search(f"{page.get('layout_hint', '')} {page.get('content_notes', '')}")
+    ]
+    if not intent_page_ids:
+        return []
+
+    spec_pages = deck_spec.get("pages") if isinstance(deck_spec, dict) else None
+    viz_count = sum(
+        1
+        for page in (spec_pages if isinstance(spec_pages, list) else [])
+        if isinstance(page, dict)
+        for block in (page.get("content") or [])
+        if isinstance(block, dict) and block.get("type") == "viz"
+    )
+    if viz_count < len(intent_page_ids):
+        return [
+            ContractViolation(
+                "C14",
+                f"page-plan은 차트 의도 {len(intent_page_ids)}장을 예고했는데 최종 spec viz 블록은 "
+                f"{viz_count}개뿐 — 의도 페이지: {', '.join(intent_page_ids)}",
+                "06_deck_spec.pages[].content[].type=viz",
+            )
+        ]
+    return []
+
+
+def check_c15_page_count_ceiling(
+    page_plan: dict[str, Any],
+    deck_spec: dict[str, Any],
+) -> list[ContractViolation]:
+    """C15 — plan 대비 최종 page 수 팽창 상한(1.2배). page_plan 없으면 비활성.
+
+    어제 사고: page-plan 28장 → 최종 41장(46% 팽창), Loop B 기계적 반분이 원인이었다.
+    """
+    plan_pages = page_plan.get("pages") if isinstance(page_plan, dict) else None
+    if not isinstance(plan_pages, list) or not plan_pages:
+        return []
+    plan_count = len(plan_pages)
+    spec_pages = deck_spec.get("pages") if isinstance(deck_spec, dict) else None
+    spec_count = len(spec_pages) if isinstance(spec_pages, list) else 0
+    ceiling = math.ceil(plan_count * 1.2)
+    if spec_count > ceiling:
+        return [
+            ContractViolation(
+                "C15",
+                f"page-plan {plan_count}장 → 최종 spec {spec_count}장 (상한 {ceiling}장 = "
+                f"ceil({plan_count}×1.2) 초과)",
+                "06_deck_spec.pages",
+            )
+        ]
+    return []
+
+
 C11_REQUIRED_AXES = ("kpmg", "pwc", "deloitte", "government_stats", "academic")
 
 
@@ -953,6 +1028,17 @@ def _string_set(value: Any) -> set[str]:
     return set()
 
 
+def _metric_direct_source_ids(metric: dict[str, Any]) -> set[str]:
+    source_ids: set[str] = set()
+    for field in ("source_ids", "source_id", "src_ids", "src_id"):
+        value = metric.get(field)
+        if isinstance(value, (list, tuple)):
+            source_ids |= {str(item) for item in value if str(item).strip()}
+        elif value is not None and str(value).strip():
+            source_ids.add(str(value))
+    return source_ids
+
+
 def _metric_source_ids(metric_id: str, metric_registry: dict[str, Any], seen: set[str] | None = None) -> set[str]:
     seen = set(seen or set())
     if metric_id in seen:
@@ -962,7 +1048,10 @@ def _metric_source_ids(metric_id: str, metric_registry: dict[str, Any], seen: se
     if not isinstance(metric, dict):
         return set()
 
-    source_ids = _string_set(metric.get("source_ids"))
+    # Renderer accepts the historical singular/src aliases as well as the canonical list.
+    # Keep authority validation on the same registry contract so a cited metric cannot lose
+    # its source merely because the producer emitted `source_id` instead of `source_ids`.
+    source_ids = _metric_direct_source_ids(metric)
     derived_from = metric.get("derived_from")
     if isinstance(derived_from, list):
         for ref_id in derived_from:
@@ -1448,7 +1537,7 @@ def _validate_registry_fields(
                             f"content_registry.metrics.{metric_id}.derived_from[{ref_index}]",
                         )
                     )
-        if _string_set(metric.get("source_ids")):
+        if _metric_direct_source_ids(metric):
             violations.append(
                 ContractViolation("C6", "derived metric source_ids must be empty", f"content_registry.metrics.{metric_id}.source_ids")
             )

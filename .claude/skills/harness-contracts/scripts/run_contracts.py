@@ -17,7 +17,14 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from contract_checks import check_c10_collection_evidence, check_c11_source_coverage, check_c9_final_review, validate_all_contracts
+from contract_checks import (
+    check_c9_final_review,
+    check_c10_collection_evidence,
+    check_c11_source_coverage,
+    check_c14_viz_intent_preserved,
+    check_c15_page_count_ceiling,
+    validate_all_contracts,
+)
 
 
 def _load(run_dir: Path, *names: str):
@@ -207,6 +214,10 @@ def main() -> int:
     if c10_applied:
         violations.extend(check_c10_collection_evidence(run_dir))
     violations.extend(check_c11_source_coverage(run_dir))
+    # C14/C15 — 05_page_plan.json 있을 때만 활성(내부에서 자체 guard). 어제 사고(viz 소실·28→41장)
+    # 재발 검출.
+    violations.extend(check_c14_viz_intent_preserved(page_plan, deck_spec))
+    violations.extend(check_c15_page_count_ceiling(page_plan, deck_spec))
     contract_range = "C1~C11" if c10_applied else ("C1~C9+C11" if c9_applied else "C1~C8")
     print(f"run: {run_dir.name} · html: {html_path.name if html_path else '-'}")
     if violations:

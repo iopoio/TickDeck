@@ -1,9 +1,12 @@
+import hashlib
 import importlib.util
 import json
 import os
 import pathlib
+import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -19,6 +22,8 @@ from contract_checks import (
     validate_c6_content_authority,
     check_c8_genre_artifacts,
     check_c9_final_review,
+    check_c14_viz_intent_preserved,
+    check_c15_page_count_ceiling,
     validate_all_contracts,
 )
 
@@ -46,6 +51,11 @@ QA_LINT_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "s
 QA_LINT_SPEC = importlib.util.spec_from_file_location("qa_lint", QA_LINT_PATH)
 qa_lint_module = importlib.util.module_from_spec(QA_LINT_SPEC)
 QA_LINT_SPEC.loader.exec_module(qa_lint_module)
+
+QA_INK_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "qa_ink.py"
+QA_INK_SPEC = importlib.util.spec_from_file_location("qa_ink", QA_INK_PATH)
+qa_ink_module = importlib.util.module_from_spec(QA_INK_SPEC)
+QA_INK_SPEC.loader.exec_module(qa_ink_module)
 
 RUN_CONTRACTS_PATH = pathlib.Path(__file__).resolve().parent / "run_contracts.py"
 RUN_CONTRACTS_SPEC = importlib.util.spec_from_file_location("run_contracts", RUN_CONTRACTS_PATH)
@@ -334,6 +344,34 @@ class HarnessContractTests(unittest.TestCase):
         }
         self.assertEqual(validate_c6_content_authority(spec, VALID_CONTENT_REGISTRY, ""), [])
 
+    def test_c6_accepts_singular_metric_source_alias_without_page_source_allowlist(self):
+        registry = {
+            "sources": VALID_CONTENT_REGISTRY["sources"],
+            "metrics": {
+                **VALID_CONTENT_REGISTRY["metrics"],
+                "metric_click_drop": {
+                    **VALID_CONTENT_REGISTRY["metrics"]["metric_click_drop"],
+                    "source_ids": [],
+                    "source_id": "src_a",
+                },
+            },
+        }
+        spec = {
+            "pages": [
+                dict(
+                    VALID_DECK_SPEC["pages"][0],
+                    allowed_source_ids=[],
+                    allowed_metric_ids=["metric_click_drop"],
+                    content=[
+                        {"type": "metric", "metric_id": "metric_click_drop"},
+                        {"type": "citation", "src_id": "src_a"},
+                    ],
+                )
+            ]
+        }
+
+        self.assertEqual(validate_c6_content_authority(spec, registry, ""), [])
+
     def test_c6_still_rejects_disallowed_metric_unknown_source_and_untagged_number(self):
         cases = {
             "disallowed_metric": (
@@ -570,6 +608,19 @@ class HarnessContractTests(unittest.TestCase):
                         "derivation": "cagr",
                         "derived_from": ["metric_click_drop", "metric_measurement"],
                         "source_ids": ["src_a"],
+                        "status": "derived",
+                    }
+                },
+                "derived metric source_ids must be empty",
+            ),
+            "non_empty_singular_source": (
+                {
+                    "metric_bad": {
+                        "value": "260",
+                        "unit": "%",
+                        "derivation": "cagr",
+                        "derived_from": ["metric_click_drop", "metric_measurement"],
+                        "source_id": "src_a",
                         "status": "derived",
                     }
                 },
@@ -2019,6 +2070,232 @@ class HarnessContractTests(unittest.TestCase):
         self.assertNotIn("모든 수치 출처 연결 검증", appendix_html)
         self.assertEqual(validate_c6_content_authority(appendix_spec, appendix_registry, appendix_html), [])
 
+    def test_render_deck_resolves_inline_metric_tokens_across_text_paths(self):
+        registry = {
+            "sources": {
+                "src_inline": {"publisher": "Inline Source", "url": "https://example.com/inline"},
+            },
+            "metrics": {
+                # verified registry 실물은 source_id 단수형을 쓴다. 인라인 토큰만으로도 출처가 잡혀야 한다.
+                "metric_inline": {
+                    "value": "47",
+                    "unit": "%",
+                    "source_ids": [],
+                    "source_id": "src_inline",
+                },
+            },
+        }
+        token = "{{metric_inline}}"
+        spec = {
+            "pages": [
+                {
+                    "page_id": "matrix_inline",
+                    "short_title": "Matrix",
+                    "layout": "matrix",
+                    "allowed_source_ids": ["src_inline"],
+                    "allowed_metric_ids": ["metric_inline"],
+                    "content": [
+                        {"type": "headline", "text": f"기준 {token}"},
+                        {"type": "body", "text": f"왼쪽 — 점유 {token}"},
+                        {"type": "body", "text": f"오른쪽 {token}"},
+                    ],
+                },
+                {
+                    "page_id": "poster_inline",
+                    "short_title": "Poster",
+                    "layout": "poster",
+                    "allowed_source_ids": ["src_inline"],
+                    "allowed_metric_ids": ["metric_inline"],
+                    "content": [{"type": "body", "text": f"포스터 {token}"}],
+                },
+                {
+                    "page_id": "index_inline",
+                    "short_title": "Index",
+                    "layout": "index",
+                    "allowed_source_ids": ["src_inline"],
+                    "allowed_metric_ids": ["metric_inline"],
+                    "content": [{"type": "bullets", "items": [f"Part — 설명 {token}"]}],
+                },
+                {
+                    "page_id": "divider_inline",
+                    "short_title": "Divider",
+                    "layout": "divider",
+                    "allowed_source_ids": ["src_inline"],
+                    "allowed_metric_ids": ["metric_inline"],
+                    "content": [{"type": "headline", "text": f"간지 {token}"}],
+                },
+                {
+                    "page_id": "cover_inline",
+                    "short_title": "Cover",
+                    "layout": "cover",
+                    "allowed_source_ids": ["src_inline"],
+                    "allowed_metric_ids": ["metric_inline"],
+                    "content": [
+                        {"type": "headline", "text": f"표지 {token}"},
+                        {"type": "body", "text": f"부제 {token}"},
+                    ],
+                },
+                {
+                    "page_id": "svg_inline",
+                    "short_title": "Two By Two",
+                    "layout": "statement",
+                    "allowed_source_ids": ["src_inline"],
+                    "allowed_metric_ids": ["metric_inline"],
+                    "content": [
+                        {
+                            "type": "viz",
+                            "chart": "two_by_two",
+                            "title": f"지도 {token}",
+                            "x_axis": {"low": f"낮음 {token}", "high": f"높음 {token}"},
+                            "y_axis": {"low": "낮음", "high": "높음"},
+                            "series": [
+                                {"label": f"A {token}", "x": 0.2, "y": 0.2},
+                                {"label": "B", "x": 0.5, "y": 0.5},
+                                {"label": "C", "x": 0.8, "y": 0.8},
+                            ],
+                        },
+                        {"type": "footnote", "definition": f"각주 {token}"},
+                    ],
+                },
+                {
+                    "page_id": "dashboard_inline",
+                    "short_title": "Dashboard",
+                    "layout": "dashboard",
+                    "allowed_source_ids": ["src_inline"],
+                    "allowed_metric_ids": ["metric_inline"],
+                    "content": [{"type": "body", "text": f"대시보드 {token}"}],
+                },
+                {
+                    "page_id": "stepper_inline",
+                    "short_title": "Stepper",
+                    "layout": "stepper",
+                    "allowed_source_ids": ["src_inline"],
+                    "allowed_metric_ids": ["metric_inline"],
+                    "content": [{"type": "body", "text": f"단계 {token}"}],
+                },
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="Inline Metric Fixture")
+
+        self.assertNotIn(token, html)
+        self.assertGreaterEqual(html.count("47%"), 14)
+        matrix_page_match = re.search(
+            r'data-page-id="matrix_inline"(?P<body>.*?)(?=<section class="slide|</body>)',
+            html,
+            flags=re.DOTALL,
+        )
+        self.assertIsNotNone(matrix_page_match)
+        matrix_page = matrix_page_match.group("body")
+        self.assertIn('data-metric-id="metric_inline"', matrix_page)
+        self.assertIn('data-src-id="src_inline"', matrix_page)
+
+    def test_format_metric_value_rounds_trillion_display_without_mutating_registry(self):
+        cases = (
+            ({"value": "33.3425", "unit": "조원"}, "33.34 조원"),
+            ({"value": "33.3000", "unit": "조 원"}, "33.3 조 원"),
+            ({"value": "33.999", "unit": "조원"}, "34.0 조원"),
+            ({"value": "-0.004", "unit": "조원"}, "0.0 조원"),
+            ({"value": "4.0", "unit": "조원"}, "4.0 조원"),
+            ({"value": "0.20", "unit": "조원"}, "0.20 조원"),
+            ({"value": "33", "unit": "조"}, "33조"),
+            ({"value": "102961", "unit": "억원"}, "10조 2,961억 원"),
+        )
+        for metric, expected in cases:
+            with self.subTest(metric=metric):
+                original = dict(metric)
+                self.assertEqual(render_deck_module._format_metric_value(metric), expected)
+                self.assertEqual(metric, original)
+
+    def test_svg_inline_metric_keeps_authority_context_after_display_rounding(self):
+        registry = {
+            "sources": {"src_inline": {"publisher": "Inline", "url": "https://example.com/inline"}},
+            "metrics": {
+                "metric_inline": {
+                    "value": "33.3425",
+                    "unit": "조원",
+                    "source_id": "src_inline",
+                }
+            },
+        }
+        token = "{{metric_inline}}"
+        spec = {
+            "pages": [
+                {
+                    "page_id": "svg_rounded_inline",
+                    "short_title": "SVG metric",
+                    "layout": "statement",
+                    "allowed_source_ids": ["src_inline"],
+                    "allowed_metric_ids": ["metric_inline"],
+                    "content": [
+                        {
+                            "type": "viz",
+                            "chart": "two_by_two",
+                            "title": f"시장 {token}",
+                            "note": f"주석 {token}",
+                            "x_axis": {"low": f"낮음 {token}", "high": "높음"},
+                            "y_axis": {"low": "낮음", "high": "높음"},
+                            "series": [
+                                {"label": f"A {token}", "x": 0.2, "y": 0.2},
+                                {"label": "B", "x": 0.5, "y": 0.5},
+                                {"label": "C", "x": 0.8, "y": 0.8},
+                            ],
+                        }
+                    ],
+                }
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="SVG Metric")
+
+        self.assertNotIn(token, html)
+        self.assertIn('<tspan data-metric-id="metric_inline">33.34 조원</tspan>', html)
+        self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
+
+    def test_svg_wrapping_measures_metric_display_value_without_dropping_token(self):
+        registry = {
+            "sources": {
+                "src_main": {"publisher": "Main", "url": "https://example.com/main"},
+                "src_inline": {"publisher": "Inline", "url": "https://example.com/inline"},
+            },
+            "metrics": {
+                "metric_main": {"value": "60", "unit": "%", "source_id": "src_main"},
+                "metric_inline": {"value": "47", "unit": "%", "source_id": "src_inline"},
+            },
+        }
+        token = "{{metric_inline}}"
+        spec = {
+            "pages": [
+                {
+                    "page_id": "svg_wrap_inline",
+                    "short_title": "SVG wrap",
+                    "layout": "statement",
+                    "allowed_source_ids": ["src_main", "src_inline"],
+                    "allowed_metric_ids": ["metric_main", "metric_inline"],
+                    "content": [
+                        {
+                            "type": "viz",
+                            "chart": "donut",
+                            "series": [
+                                {
+                                    "metric_id": "metric_main",
+                                    "label": f"AAAA BBBB CCCC {token}",
+                                    "role": "highlight",
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ]
+        }
+
+        html = render_deck_module.render_deck(spec, registry, title="SVG Wrap")
+
+        self.assertNotIn(token, html)
+        self.assertIn('<tspan data-metric-id="metric_inline">47%</tspan>', html)
+        self.assertIn('data-src-id="src_inline"', html)
+        self.assertEqual(validate_c6_content_authority(spec, registry, html), [])
+
     def test_render_deck_telemetry_absent_by_default(self):
         # R6 — meta.telemetry 없으면 gtag 문자열 0회 (기본 OFF·출력 바이트 불변 보호)
         html = render_deck_module.render_deck(VALID_DECK_SPEC, VALID_CONTENT_REGISTRY, title="No Telemetry Fixture")
@@ -2166,6 +2443,118 @@ class HarnessContractTests(unittest.TestCase):
 
         self.assertIn("FIT_SOURCE_CLIP", script)
         self.assertIn("sourceClips", script)
+
+    def test_capture_deck_uses_true_type_webfont_and_waits_before_pdf_print(self):
+        script = CAPTURE_DECK_SH.read_text(encoding="utf-8")
+
+        self.assertIn("Pretendard-Regular.woff2", script)
+        self.assertIn("format('woff2')", script)
+        self.assertIn("document.fonts.ready", script)
+        self.assertIn("document.fonts.check", script)
+        self.assertIn("--virtual-time-budget=", script)
+        self.assertIn("PDF_FONT_TYPE3", script)
+        self.assertIn("PDF_FONT_READY_ERROR", script)
+        self.assertIn("Bad bounding box in Type 3 glyph", script)
+        self.assertIn("Promise.resolve(window.__tickdeckFontsReady).then", script)
+        self.assertRegex(script, r'--virtual-time-budget=\d+\s+--dump-dom')
+        self.assertIn("FIT_FONT_ERROR", script)
+        self.assertIn("FIT_CHECK_ERROR", script)
+        self.assertRegex(script, r"FITREPORT\(_ERROR\)\?\\\|")
+        self.assertLess(script.index('rm -f "$OUT"'), script.index('FONT_VERSION='))
+        self.assertLess(script.index("FIT_CHECK_ERROR"), script.index('mv "$PDF_TMP" "$OUT"'))
+
+        injector = script.split("<<'PY'\n", 1)[1].split("\nPY\n", 1)[0]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            source = root / "deck.html"
+            capture = root / "capture.html"
+            source.write_text(
+                '<html><head><style>:root{--font-body:"Pretendard", "Apple SD Gothic Neo", sans-serif;'
+                '--font-head:ui-monospace,"Pretendard","Apple SD Gothic Neo",monospace;}</style></head>'
+                '<body>본문에서 "Pretendard"를 인용한다.</body></html>',
+                encoding="utf-8",
+            )
+            for name in (
+                "Thin",
+                "ExtraLight",
+                "Light",
+                "Regular",
+                "Medium",
+                "SemiBold",
+                "Bold",
+                "ExtraBold",
+                "Black",
+            ):
+                (root / f"Pretendard-{name}.woff2").write_bytes(f"fake-{name}".encode())
+            original_argv = sys.argv
+            try:
+                sys.argv = ["capture-font-inject", str(source), str(capture), str(root)]
+                exec(compile(injector, "capture-font-inject", "exec"), {})
+            finally:
+                sys.argv = original_argv
+
+            captured = capture.read_text(encoding="utf-8")
+            font_style = re.search(r'<style id="tickdeck-pdf-font">(.*?)</style>', captured, re.DOTALL)
+            self.assertIsNotNone(font_style)
+            self.assertEqual(font_style.group(1).count("@font-face"), 9)
+            self.assertIn("font-weight:100", font_style.group(1))
+            self.assertIn("font-weight:300", font_style.group(1))
+            source_style = re.search(r'<head><style>(.*?)</style>', captured, re.DOTALL)
+            self.assertIsNotNone(source_style)
+            self.assertNotIn('"Pretendard"', source_style.group(1))
+            self.assertNotIn('"Apple SD Gothic Neo"', source_style.group(1))
+            self.assertIn('--font-head:ui-monospace,"TickDeck PDF Pretendard"', captured)
+            self.assertIn('본문에서 "Pretendard"를 인용한다.', captured)
+
+    def test_render_main_fails_when_pdf_capture_fails(self):
+        capture_failure = subprocess.CompletedProcess(
+            args=["bash", str(CAPTURE_DECK_SH)],
+            returncode=7,
+            stdout="",
+            stderr="PDF_FONT_EMBED_ERROR: fixture",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            spec = root / "06_deck_spec.json"
+            registry = root / "02_verified.json"
+            output = root / "deck.html"
+            stale_pdf = root / "deck.pdf"
+            spec.write_text('{"pages": []}', encoding="utf-8")
+            registry.write_text('{"sources": {}, "metrics": {}}', encoding="utf-8")
+            stale_pdf.write_bytes(b"stale")
+            argv = ["render_deck.py", str(spec), str(registry), "-o", str(output)]
+            with (
+                mock.patch.object(render_deck_module, "render_deck", return_value="<html></html>"),
+                mock.patch.object(render_deck_module.subprocess, "run", return_value=capture_failure),
+                mock.patch.object(sys, "argv", argv),
+            ):
+                with self.assertRaises(SystemExit) as raised:
+                    render_deck_module.main()
+
+            self.assertFalse(stale_pdf.exists())
+
+        self.assertEqual(raised.exception.code, 7)
+
+    def test_render_main_fails_when_capture_script_is_missing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            spec = root / "06_deck_spec.json"
+            registry = root / "02_verified.json"
+            output = root / "deck.html"
+            stale_pdf = root / "deck.pdf"
+            spec.write_text('{"pages": []}', encoding="utf-8")
+            registry.write_text('{"sources": {}, "metrics": {}}', encoding="utf-8")
+            stale_pdf.write_bytes(b"stale")
+            argv = ["render_deck.py", str(spec), str(registry), "-o", str(output)]
+            with (
+                mock.patch.object(render_deck_module, "render_deck", return_value="<html></html>"),
+                mock.patch.object(render_deck_module.Path, "exists", return_value=False),
+                mock.patch.object(sys, "argv", argv),
+            ):
+                with self.assertRaises(FileNotFoundError):
+                    render_deck_module.main()
+
+            self.assertFalse(stale_pdf.exists())
 
     def test_render_deck_outputs_closing_layout(self):
         html = render_deck_module.render_deck(VALID_CLOSING_DECK_SPEC, VALID_CONTENT_REGISTRY, title="Closing Fixture")
@@ -2551,10 +2940,16 @@ class HarnessContractTests(unittest.TestCase):
 
         self.assertIn("title-band", body_a)
         self.assertIn("Signal One", body_a)
-        self.assertIn('title-band-text"></span>', divider_a)
+        divider_section = re.search(r'<section class="([^"]*)" data-page-id="divider_a">', html)
+        self.assertIsNotNone(divider_section)
+        self.assertNotIn("page-title-band", divider_section.group(1))
+        self.assertNotIn("title-band", divider_a)
         self.assertIn("중앙 스테이트먼트", divider_a)
         self.assertNotIn("title-band", cover)
         self.assertNotIn("title-band", closing)
+        self.assertEqual(render_deck_module._title_band_html(""), "")
+        self.assertEqual(render_deck_module._title_band_html(" \t\n"), "")
+        self.assertEqual(render_deck_module._title_band_html(None), "")
 
     def test_render_deck_source_caption_is_opt_in_and_uses_registry_short_name(self):
         registry = {
@@ -3286,6 +3681,180 @@ class HarnessContractTests(unittest.TestCase):
         broken = dict(VALID_DECK, rendered_pages=[{"title": "신뢰도 강등", "body": "본문"}])
         with self.assertRaises(ContractViolation):
             validate_all_contracts(broken, raise_on_error=True)
+
+    # ── 20260810 소형 게이트 6종 (codex_gates_task.md) ──────────────────────
+
+    def test_gate1_qa_ink_distribution_fails_and_exempts_non_body_layouts(self):
+        # 게이트 1 — 어제 사고 재현: cover/closing은 잉크가 적어도 정상이라 본문 판정에서 뺀다.
+        # 본문(statement) 3장은 전부 저밀도(1%)라 분포 기준·중앙값 기준 둘 다 FAIL이어야 한다.
+        with tempfile.TemporaryDirectory() as td:
+            run_dir = pathlib.Path(td)
+            pdf_path = run_dir / "deck.pdf"
+            pdf_path.write_bytes(b"%PDF-fake")
+            spec = {
+                "pages": [
+                    {"layout": "cover"},
+                    {"layout": "statement"},
+                    {"layout": "statement"},
+                    {"layout": "statement"},
+                    {"layout": "closing"},
+                ]
+            }
+            (run_dir / "06_deck_spec.json").write_text(json.dumps(spec), encoding="utf-8")
+
+            fake_ratios = {1: 0.50, 2: 0.01, 3: 0.01, 4: 0.01, 5: 0.50}
+
+            def fake_run(cmd, capture_output=True, text=True):
+                prefix = pathlib.Path(cmd[-1])
+                for idx in fake_ratios:
+                    (prefix.parent / f"{prefix.name}-{idx}.png").write_bytes(b"fake")
+                return subprocess.CompletedProcess(cmd, 0, "", "")
+
+            def fake_ink_ratio(path):
+                return fake_ratios[int(re.search(r"-(\d+)\.png$", path.name).group(1))]
+
+            with (
+                mock.patch.object(qa_ink_module.subprocess, "run", side_effect=fake_run),
+                mock.patch.object(qa_ink_module, "ink_ratio", side_effect=fake_ink_ratio),
+            ):
+                lines, is_fail = qa_ink_module.check_pdf(pdf_path)
+
+        self.assertTrue(is_fail)
+        joined = "\n".join(lines)
+        self.assertIn("INK_SPARSE_FAIL", joined)
+        self.assertIn("p2", joined)
+        self.assertIn("p3", joined)
+        self.assertIn("p4", joined)
+        # cover(p1)/closing(p5)는 본문이 아니므로 걸린 페이지 목록에 없어야 한다.
+        self.assertNotIn("p1(", joined)
+        self.assertNotIn("p5(", joined)
+
+    def test_gate2_c14_flags_lost_chart_intent_deck_level(self):
+        # 게이트 2 — page-plan이 예고한 차트 의도(p05·p09) 대비 spec viz=0이면 C14.
+        page_plan = {
+            "pages": [
+                {"page_id": "p05", "layout_hint": "split", "content_notes": "차트는 한 개만"},
+                {"page_id": "p09", "layout_hint": "statement", "content_notes": "매출 3분할 chart"},
+                {"page_id": "p20", "layout_hint": "cover", "content_notes": "표지. 수치·출처 없음."},
+            ]
+        }
+        deck_spec_no_viz = {"pages": [{"content": [{"type": "body", "text": "x"}]}]}
+        violations = check_c14_viz_intent_preserved(page_plan, deck_spec_no_viz)
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C14")
+        self.assertIn("p05", violations[0].message)
+        self.assertIn("p09", violations[0].message)
+
+        deck_spec_with_viz = {
+            "pages": [{"content": [{"type": "viz", "chart": "donut"}, {"type": "viz", "chart": "bar"}]}]
+        }
+        self.assertEqual(check_c14_viz_intent_preserved(page_plan, deck_spec_with_viz), [])
+        # page_plan 없음(빈 입력) → 비활성, 기존 워크스페이스 호환
+        self.assertEqual(check_c14_viz_intent_preserved({}, deck_spec_no_viz), [])
+
+    def test_gate3_c15_flags_page_inflation_over_ceiling(self):
+        # 게이트 3 — 어제 사고 수치 그대로: plan 28장 → spec 41장(상한 ceil(28*1.2)=34) 초과.
+        page_plan = {"pages": [{"page_id": f"p{i}"} for i in range(28)]}
+        deck_spec_41 = {"pages": [{"page_id": f"p{i}"} for i in range(41)]}
+        violations = check_c15_page_count_ceiling(page_plan, deck_spec_41)
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].contract_id, "C15")
+        self.assertIn("28", violations[0].message)
+        self.assertIn("41", violations[0].message)
+        self.assertIn("34", violations[0].message)
+
+        deck_spec_ok = {"pages": [{"page_id": f"p{i}"} for i in range(30)]}
+        self.assertEqual(check_c15_page_count_ceiling(page_plan, deck_spec_ok), [])
+        self.assertEqual(check_c15_page_count_ceiling({}, deck_spec_41), [])
+
+    def test_gate4_capture_deck_exits_2_on_fit_overflow_and_render_main_keeps_debug_pdf(self):
+        # 게이트 4 — capture_deck.sh는 FIT_OVERFLOW를 잡으면 PDF를 만든 채로 exit 2해야 하고,
+        # render_deck.py main()은 그 exit 2를 받으면 (다른 실패와 달리) PDF를 지우지 않고 전파해야 한다.
+        script = CAPTURE_DECK_SH.read_text(encoding="utf-8")
+        self.assertIn("FIT_OVERFLOW_HIT=1", script)
+        self.assertIn('if [ "${FIT_OVERFLOW_HIT:-0}" = "1" ] || [ "${INK_FAIL_HIT:-0}" = "1" ]; then', script)
+        self.assertLess(script.index('mv "$PDF_TMP" "$OUT"'), script.index("FIT_OVERFLOW_HIT:-0"))
+
+        capture_overflow = subprocess.CompletedProcess(
+            args=["bash", str(CAPTURE_DECK_SH)],
+            returncode=2,
+            stdout="FIT_OVERFLOW: p01 — 본문이 세로 공간을 초과해 잘림.",
+            stderr="",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            spec = root / "06_deck_spec.json"
+            registry = root / "02_verified.json"
+            output = root / "deck.html"
+            debug_pdf = root / "deck.pdf"
+            spec.write_text('{"pages": []}', encoding="utf-8")
+            registry.write_text('{"sources": {}, "metrics": {}}', encoding="utf-8")
+            debug_pdf.write_bytes(b"debug-artifact")
+            argv = ["render_deck.py", str(spec), str(registry), "-o", str(output)]
+            with (
+                mock.patch.object(render_deck_module, "render_deck", return_value="<html></html>"),
+                mock.patch.object(render_deck_module.subprocess, "run", return_value=capture_overflow),
+                mock.patch.object(sys, "argv", argv),
+            ):
+                with self.assertRaises(SystemExit) as raised:
+                    render_deck_module.main()
+
+            self.assertTrue(debug_pdf.exists())
+            self.assertEqual(debug_pdf.read_bytes(), b"debug-artifact")
+
+        self.assertEqual(raised.exception.code, 2)
+
+    def test_gate5_capture_deck_font_fetch_prefers_local_repo_assets_before_cdn(self):
+        # 게이트 5 — fetch_font는 CDN보다 저장소 내장 assets/fonts를 먼저 확인해야 하고,
+        # 그 자산이 실제로 존재 + 해시가 일치해야 오프라인 폴백이 성립한다.
+        script = CAPTURE_DECK_SH.read_text(encoding="utf-8")
+        self.assertIn('LOCAL_FONT_DIR="$SCRIPT_DIR/../assets/fonts"', script)
+        fetch_font_body = script.split("fetch_font() {", 1)[1].split("\ncurl -fsSL", 1)[0]
+        self.assertIn("LOCAL_FONT_DIR", fetch_font_body)
+
+        assets_dir = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "assets" / "fonts"
+        expected_sha = {
+            "Pretendard-Regular.woff2": "fad853f7f47c6c8b103171e7193fa095708cdcd70850a71d93aa5379e8a61d63",
+            "Pretendard-Bold.woff2": "4609c3356e536fafe38f4add0daeceb3d8595d3057bce13c428c33ddbd43d362",
+        }
+        for name, sha in expected_sha.items():
+            font_path = assets_dir / name
+            self.assertTrue(font_path.exists(), f"missing vendored font: {name}")
+            self.assertEqual(hashlib.sha256(font_path.read_bytes()).hexdigest(), sha)
+
+    def test_gate6_render_layout_body_rejects_unknown_layout_but_keeps_supported_generic(self):
+        # 게이트 6 — SUPPORTED_LAYOUTS 화이트리스트 밖은 즉시 raise. statement/timeline처럼
+        # 마지막 generic branch로 떨어지는 "지원되는" layout은 그대로 렌더돼야 한다(C-10 경고).
+        registry = {
+            "sources": {"src_a": {"publisher": "Test", "url": "https://example.com"}},
+            "metrics": {"metric_a": {"value": "1", "unit": "%", "source_ids": ["src_a"]}},
+        }
+        bad_spec = {
+            "pages": [
+                {
+                    "page_id": "p01",
+                    "short_title": "Bad",
+                    "layout": "totally_unknown_layout",
+                    "allowed_source_ids": [],
+                    "allowed_metric_ids": [],
+                    "content": [{"type": "headline", "text": "x"}],
+                }
+            ]
+        }
+        with self.assertRaises(ValueError) as ctx:
+            render_deck_module.render_deck(bad_spec, registry, title="Bad Layout Fixture")
+        self.assertIn("unsupported layout", str(ctx.exception))
+        self.assertIn("totally_unknown_layout", str(ctx.exception))
+
+        good_spec = {
+            "pages": [
+                dict(bad_spec["pages"][0], layout="statement", short_title="S", content=[{"type": "headline", "text": "ok-statement"}]),
+                dict(bad_spec["pages"][0], page_id="p02", layout="timeline", short_title="T", content=[{"type": "headline", "text": "ok-timeline"}]),
+            ]
+        }
+        html = render_deck_module.render_deck(good_spec, registry, title="Good Layout Fixture")
+        self.assertIn("ok-statement", html)
+        self.assertIn("ok-timeline", html)
 
 
 if __name__ == "__main__":
