@@ -396,12 +396,27 @@ def render_deck(
         body_classes.append(archetype_class)
     body_ordinals = _body_page_ordinals(pages)
     deck_cited_source_ids = _deck_cited_source_ids(pages, registry)
-    section_items = _section_items(pages) if section_nav else []
-    # 표지 밴드 수 = 실제 파트 수. 간지 수로 세되, 페이지에 명시된 part_count가 있으면 그게 정답
-    # (간지 없는 1부가 있는 덱에서 표지 2밴드 vs 간지 티커 3의 불일치 방지·7/2).
-    divider_n = sum(1 for page in pages if isinstance(page, dict) and str(page.get("layout")) == "divider")
-    explicit_counts = [int(page.get("part_count")) for page in pages if isinstance(page, dict) and str(page.get("part_count", "")).isdigit()]
+    divider_ordinals = {
+        index: ordinal
+        for ordinal, index in enumerate(
+            (
+                index
+                for index, page in enumerate(pages)
+                if isinstance(page, dict) and str(page.get("layout")) == "divider"
+            ),
+            start=1,
+        )
+    }
+    divider_n = len(divider_ordinals)
+    explicit_counts = []
+    for page in pages:
+        if not isinstance(page, dict):
+            continue
+        explicit_count = _first_positive_int(page.get("part_count"), page.get("section_count"))
+        if explicit_count is not None:
+            explicit_counts.append(explicit_count)
     part_count = max([divider_n] + explicit_counts) if (divider_n or explicit_counts) else 0
+    section_items = _section_items(pages, divider_ordinals) if section_nav else []
     rendered_pages = []
     for index, page in enumerate(pages):
         if not isinstance(page, dict):
@@ -422,6 +437,8 @@ def render_deck(
             len(body_ordinals),
             section_nav,
             section_items,
+            divider_ordinals.get(index),
+            part_count,
         )
         # 레이아웃별 재조판 함수가 원본 content를 다시 읽더라도 인라인 metric 토큰은 반드시
         # 이 공통 출구를 지난다. HTML은 추적 span, SVG/속성은 유효한 평문으로 치환한다.
@@ -626,6 +643,8 @@ def _render_page(
     body_page_count: int = 0,
     section_nav: str = "",
     section_items: list[dict[str, Any]] | None = None,
+    divider_ordinal: int | None = None,
+    divider_count: int | None = None,
 ) -> str:
     page_id = str(page.get("page_id", f"p{page_number:02d}"))
     layout = str(page.get("layout", "statement"))
@@ -687,6 +706,8 @@ def _render_page(
             section_items or [],
             page_id,
             registry,
+            divider_ordinal,
+            divider_count,
         )
     motif_html = _slide_motif_html(layout, page_number, palette)
     running_head_enabled = (
@@ -1016,6 +1037,8 @@ def _render_layout_body(
     section_items: list[dict[str, Any]] | None = None,
     page_id: str = "",
     registry: dict[str, dict[str, Any]] | None = None,
+    divider_ordinal: int | None = None,
+    divider_count: int | None = None,
 ) -> str:
     # 미지 layout 무음 폴백 제거(C-10) — 아래 마지막 generic branch는 statement·timeline·
     # stat_grid·metric_grid·cards 등 "지원되는" layout도 처리하므로, raise는 반드시 그 앞
@@ -1057,7 +1080,9 @@ def _render_layout_body(
     if layout == "index":
         return _render_index(body_parts, content)
     if layout == "divider":
-        return _render_divider(page, content, page_number, section_nav, section_items or [])
+        return _render_divider(
+            page, content, page_number, section_nav, section_items or [], divider_ordinal, divider_count
+        )
     if layout == "closing":
         return _render_closing(content, page_id, registry or {})
     body_class = "body body-grid" if layout in {"stat_grid", "metric_grid", "cards"} else "body"
@@ -1081,6 +1106,16 @@ def _extract_note_row(body_parts: list[str]) -> tuple[str, list[str]]:
     return note_row, rest
 
 
+def _is_primary_visual(html_part: str) -> bool:
+    stripped = html_part.lstrip()
+    if stripped.startswith('<aside class="visual-card') or stripped.startswith('<div class="metric-grid'):
+        return True
+    if not stripped.startswith('<div class="text-table') or "<tbody>" not in stripped:
+        return False
+    table_body = stripped.split("<tbody>", 1)[1].split("</tbody>", 1)[0]
+    return table_body.count("<tr") <= 4
+
+
 def _render_split(body_parts: list[str], page: dict[str, Any] | None = None) -> str:
     # 거버닝 부제(block-title)는 왼쪽 칸에 가두지 않고 전폭으로 끌어올린다 —
     # 제목 아래 부제가 오는 일반 양식과 통일·좌우 밸런스 회복(후추님 7/2 p05·p07).
@@ -1090,10 +1125,14 @@ def _render_split(body_parts: list[str], page: dict[str, Any] | None = None) -> 
     # note(단, ~ 캐비앗)는 좌우 칸에 섞지 않고 하단 전폭 한 줄로 뺀다(7/3 후추님 p07·p10 지적
     # — 오른쪽 칸에 박스로 갇혀 있던 게 어색했다). split/stack 공통 규칙.
     note_row, body_parts = _extract_note_row(body_parts)
-    # 홀수 블록이면 나머지는 우측(보조 칸)으로 — 좌측은 주 비주얼 하나가 원칙(7/2 p06 좌측 과적 fix).
-    midpoint = max(1, len(body_parts) // 2)
-    left = "".join(body_parts[:midpoint])
-    right = "".join(body_parts[midpoint:])
+    visual_index = next((index for index, part in enumerate(body_parts) if _is_primary_visual(part)), None)
+    if visual_index is not None:
+        left = body_parts[visual_index]
+        right = "".join(part for index, part in enumerate(body_parts) if index != visual_index)
+    else:
+        midpoint = max(1, len(body_parts) // 2)
+        left = "".join(body_parts[:midpoint])
+        right = "".join(body_parts[midpoint:])
     note_html = f'<div class="split-note-row">{note_row}</div>' if note_row else ""
     # 우측 칸이 비면 세로 구분선 있는 2단이 어색하다(후추님 7/4 p05 "우측 내용 없는데 세로선").
     # 단일 비주얼이면 구분선 없는 1단으로 — 가짜 2단 방지.
@@ -1147,7 +1186,15 @@ def _render_stack(body_parts: list[str]) -> str:
     # note(캐비앗)는 하단 전폭 한 줄 — _extract_note_row 주석의 "split/stack 공통"이 stack에선
     # 배선이 빠져 note가 행 안에 끼어 세로를 밀던 결함(7/5 레버1 e2e p05 실측).
     note_row, body_parts = _extract_note_row(body_parts)
-    top, rest = body_parts[0], body_parts[1:]
+    if not body_parts:
+        return f'<main class="body layout-body stack-outer">{lead}{note_row}</main>'
+    visual_index = next((index for index, part in enumerate(body_parts) if _is_primary_visual(part)), None)
+    top = body_parts[visual_index] if visual_index is not None else ""
+    rest = (
+        [part for index, part in enumerate(body_parts) if index != visual_index]
+        if visual_index is not None
+        else body_parts
+    )
     # 7/23 근본수정 (customer-zero p08·p15 실측 — 본문 문단이 차트/숫자 옆으로 붙어 split처럼
     # 읽히던 재발 버그): rest를 통째로 한 줄에 몰아넣지 않는다. metric-card/metric-grid류(나란히
     # 둬도 자연스러운 숫자 카드)만 한 행으로 묶고, body/viz/callout 등 그 외 블록은 각자 전폭
@@ -1502,15 +1549,17 @@ def _render_divider(
     page_number: int,
     section_nav: str = "",
     section_items: list[dict[str, Any]] | None = None,
+    divider_ordinal: int | None = None,
+    divider_count: int | None = None,
 ) -> str:
     title = _clean_title_text(_first_block_text(content, {"headline", "title"}) or str(page.get("short_title", "")).strip())
     subtitle = _first_block_text(content, {"summary", "body", "text", "note"})
-    part_index, part_label = _divider_part_meta(page, content, page_number)
+    part_index, part_label = _divider_part_meta(page, content, page_number, divider_ordinal)
     section_nav_html = _section_nav_html(section_nav, section_items or [], part_index)
     # 헤드라인이 파트명("설정 —"·"증거·")으로 시작하면 제거 — 바로 위 "PART n · 설정"과 중복(후추님 6/30).
     if part_label:
         title = re.sub(rf"^\s*{re.escape(part_label)}\s*[—·\-:]\s*", "", title).strip() or title
-    part_count = _divider_part_count(page, part_index)
+    part_count = _divider_part_count(page, part_index, divider_count)
     progress = "".join(
         f'<span class="{"is-active" if index == part_index else ""}" aria-hidden="true"></span>'
         for index in range(1, part_count + 1)
@@ -1767,11 +1816,23 @@ def _part_roman(index) -> str:
     except (TypeError, ValueError):
         return str(index)
 
-def _divider_part_meta(page: dict[str, Any], content: list[Any], page_number: int) -> tuple[int, str]:
-    explicit = page.get("part_index", page.get("section_index"))
-    try:
-        part_index = int(explicit)
-    except (TypeError, ValueError):
+
+def _first_positive_int(*values: Any) -> int | None:
+    for value in values:
+        try:
+            parsed = int(value)
+        except (TypeError, ValueError):
+            continue
+        if parsed >= 1:
+            return parsed
+    return None
+
+
+def _divider_part_meta(
+    page: dict[str, Any], content: list[Any], page_number: int, divider_ordinal: int | None = None
+) -> tuple[int, str]:
+    part_index = _first_positive_int(page.get("part_index"), page.get("section_index"), divider_ordinal)
+    if part_index is None:
         text = " ".join(
             [
                 str(page.get("short_title", "")),
@@ -1787,22 +1848,18 @@ def _divider_part_meta(page: dict[str, Any], content: list[Any], page_number: in
         else:
             part_index = max(1, min(3, page_number))
 
-    part_index = max(1, part_index)
     label = str(page.get("part_label", page.get("section_label", ""))).strip()
     if not label:
         label = {1: "설정", 2: "증거", 3: "행동"}.get(part_index, f"Part {part_index}")
     return part_index, label
 
 
-def _divider_part_count(page: dict[str, Any], part_index: int) -> int:
-    try:
-        count = int(page.get("part_count", page.get("section_count", 3)))
-    except (TypeError, ValueError):
-        count = 3
+def _divider_part_count(page: dict[str, Any], part_index: int, divider_count: int | None = None) -> int:
+    count = _first_positive_int(page.get("part_count"), page.get("section_count"), divider_count, 3) or 3
     return max(part_index, count, 1)
 
 
-def _section_items(pages: list[Any]) -> list[dict[str, Any]]:
+def _section_items(pages: list[Any], divider_ordinals: dict[int, int] | None = None) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     for page_number, page in enumerate(pages, start=1):
         if not isinstance(page, dict) or str(page.get("layout", "")) != "divider":
@@ -1810,7 +1867,9 @@ def _section_items(pages: list[Any]) -> list[dict[str, Any]]:
         content = page.get("content", [])
         if not isinstance(content, list):
             content = []
-        section_index, label = _divider_part_meta(page, content, page_number)
+        section_index, label = _divider_part_meta(
+            page, content, page_number, (divider_ordinals or {}).get(page_number - 1)
+        )
         if label:
             items.append({"index": section_index, "label": label})
     items.sort(key=lambda item: int(item.get("index", 0)))
