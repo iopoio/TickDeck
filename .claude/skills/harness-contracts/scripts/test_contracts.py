@@ -2535,6 +2535,25 @@ class HarnessContractTests(unittest.TestCase):
 
         self.assertEqual(raised.exception.code, 7)
 
+    def test_render_main_html_only_writes_html_without_capture(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            spec = root / "probe_spec.json"
+            registry = root / "probe_registry.json"
+            output = root / "probe.html"
+            spec.write_text('{"pages": []}', encoding="utf-8")
+            registry.write_text('{"sources": {}, "metrics": {}}', encoding="utf-8")
+            argv = ["render_deck.py", str(spec), str(registry), "-o", str(output), "--html-only"]
+            with (
+                mock.patch.object(render_deck_module, "render_deck", return_value="<html>probe</html>"),
+                mock.patch.object(render_deck_module.subprocess, "run") as capture,
+                mock.patch.object(sys, "argv", argv),
+            ):
+                render_deck_module.main()
+
+            self.assertEqual(output.read_text(encoding="utf-8"), "<html>probe</html>")
+            capture.assert_not_called()
+
     def test_render_main_fails_when_capture_script_is_missing(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = pathlib.Path(tmp)

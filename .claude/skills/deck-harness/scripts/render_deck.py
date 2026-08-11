@@ -7146,6 +7146,7 @@ def main() -> None:
     parser.add_argument("-o", "--output", type=Path, required=True)
     parser.add_argument("--title", default="TickDeck")
     parser.add_argument("--theme", default=None, choices=sorted(PALETTES))
+    parser.add_argument("--html-only", action="store_true", help="Write HTML without PDF capture (calibration probes).")
     args = parser.parse_args()
 
     deck_spec = json.loads(args.deck_spec.read_text(encoding="utf-8"))
@@ -7170,6 +7171,9 @@ def main() -> None:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(rendered, encoding="utf-8")
     print(f"rendered {len(deck_spec.get('pages', []))} pages -> {args.output}")
+
+    if args.html_only:
+        return
 
     # 시각 QA 산출물을 렌더 과정에 박는다 — HTML을 쓰면 PDF도 자동 생성(규율 아닌 코드 강제).
     # PDF가 4층 시각 QA의 필수 입력이므로 capture 실패를 렌더 성공으로 삼키지 않는다.

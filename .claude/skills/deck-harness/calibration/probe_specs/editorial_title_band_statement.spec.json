@@ -1,0 +1,45 @@
+{
+  "theme": "editorial",
+  "meta": {
+    "page_chrome": "title_band",
+    "calibration_probe": {
+      "capacity_page_id": "p_capacity"
+    }
+  },
+  "pages": [
+    {
+      "page_id": "p_capacity",
+      "short_title": "페이지 용량 프로브",
+      "layout": "statement",
+      "content": []
+    },
+    {
+      "page_id": "p_donut",
+      "short_title": "비주얼 폭과 높이 프로브",
+      "layout": "statement",
+      "allowed_source_ids": [],
+      "allowed_metric_ids": [
+        "metric_probe_a",
+        "metric_probe_b"
+      ],
+      "content": [
+        {
+          "type": "viz",
+          "chart": "donut",
+          "series": [
+            {
+              "label": "기준",
+              "metric_id": "metric_probe_a",
+              "role": "baseline"
+            },
+            {
+              "label": "강조",
+              "metric_id": "metric_probe_b",
+              "role": "highlight"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

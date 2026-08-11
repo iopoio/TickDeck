@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+.claude/skills/deck-harness/calibration/__pycache__/
 *.py[cod]
 *.pyo
 *.pyd

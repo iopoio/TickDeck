@@ -1,0 +1,22 @@
+{
+  "sources": {
+    "src_probe": {
+      "publisher": "TickDeck Calibration Probe",
+      "url": "https://example.com/calibration-probe"
+    }
+  },
+  "metrics": {
+    "metric_probe_a": {
+      "value": "40",
+      "unit": "%",
+      "label": "기준",
+      "source_ids": []
+    },
+    "metric_probe_b": {
+      "value": "60",
+      "unit": "%",
+      "label": "강조",
+      "source_ids": []
+    }
+  }
+}
