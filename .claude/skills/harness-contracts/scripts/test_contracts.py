@@ -27,6 +27,17 @@ from contract_checks import (
     validate_all_contracts,
 )
 
+
+def _missing_contract_check(*_args, **_kwargs):
+    raise AssertionError("contract check is not implemented")
+
+
+check_c13_role_duplication = getattr(contract_checks_module, "check_c13_role_duplication", _missing_contract_check)
+check_deck_spec_gates = getattr(contract_checks_module, "check_deck_spec_gates", _missing_contract_check)
+check_page_visual_intent_preserved = getattr(
+    contract_checks_module, "check_page_visual_intent_preserved", _missing_contract_check
+)
+
 RENDER_DECK_PATH = pathlib.Path(__file__).resolve().parents[2] / "deck-harness" / "scripts" / "render_deck.py"
 RENDER_DECK_SPEC = importlib.util.spec_from_file_location("render_deck", RENDER_DECK_PATH)
 render_deck_module = importlib.util.module_from_spec(RENDER_DECK_SPEC)
@@ -2522,7 +2533,7 @@ class HarnessContractTests(unittest.TestCase):
             spec.write_text('{"pages": []}', encoding="utf-8")
             registry.write_text('{"sources": {}, "metrics": {}}', encoding="utf-8")
             stale_pdf.write_bytes(b"stale")
-            argv = ["render_deck.py", str(spec), str(registry), "-o", str(output)]
+            argv = ["render_deck.py", str(spec), str(registry), "-o", str(output), "--unattested"]
             with (
                 mock.patch.object(render_deck_module, "render_deck", return_value="<html></html>"),
                 mock.patch.object(render_deck_module.subprocess, "run", return_value=capture_failure),
@@ -2543,7 +2554,10 @@ class HarnessContractTests(unittest.TestCase):
             output = root / "probe.html"
             spec.write_text('{"pages": []}', encoding="utf-8")
             registry.write_text('{"sources": {}, "metrics": {}}', encoding="utf-8")
-            argv = ["render_deck.py", str(spec), str(registry), "-o", str(output), "--html-only"]
+            argv = [
+                "render_deck.py", str(spec), str(registry), "-o", str(output),
+                "--html-only", "--unattested",
+            ]
             with (
                 mock.patch.object(render_deck_module, "render_deck", return_value="<html>probe</html>"),
                 mock.patch.object(render_deck_module.subprocess, "run") as capture,
@@ -2564,7 +2578,7 @@ class HarnessContractTests(unittest.TestCase):
             spec.write_text('{"pages": []}', encoding="utf-8")
             registry.write_text('{"sources": {}, "metrics": {}}', encoding="utf-8")
             stale_pdf.write_bytes(b"stale")
-            argv = ["render_deck.py", str(spec), str(registry), "-o", str(output)]
+            argv = ["render_deck.py", str(spec), str(registry), "-o", str(output), "--unattested"]
             with (
                 mock.patch.object(render_deck_module, "render_deck", return_value="<html></html>"),
                 mock.patch.object(render_deck_module.Path, "exists", return_value=False),
@@ -3675,6 +3689,29 @@ class HarnessContractTests(unittest.TestCase):
 
         self.assertEqual(selected, deck_html)
 
+    def test_run_contracts_applies_c9_to_explicit_html(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = pathlib.Path(tmp)
+            custom_html = run_dir / "custom.html"
+            custom_html.write_text("<section>custom</section>", encoding="utf-8")
+            with (
+                mock.patch.object(sys, "argv", ["run_contracts.py", str(run_dir), str(custom_html)]),
+                mock.patch.object(run_contracts_module, "validate_all_contracts", return_value=[]),
+                mock.patch.object(run_contracts_module, "check_c9_final_review", return_value=[]) as check_c9,
+                mock.patch.object(run_contracts_module, "check_c11_source_coverage", return_value=[]),
+                mock.patch.object(run_contracts_module, "check_c14_viz_intent_preserved", return_value=[]),
+                mock.patch.object(run_contracts_module, "check_c15_page_count_ceiling", return_value=[]),
+                mock.patch("builtins.print") as output,
+            ):
+                result = run_contracts_module.main()
+
+        self.assertEqual(result, 0)
+        check_c9.assert_called_once_with(run_dir)
+        self.assertNotIn(
+            "N/A C9 final_review 검사",
+            "\n".join(" ".join(map(str, call.args)) for call in output.call_args_list),
+        )
+
     def test_run_deck_parses_run_id_from_claude_result_before_workspace_fallback(self):
         command = (
             f'TICKDECK_RUN_DECK_TEST=1 source "{RUN_DECK_SH}"; '
@@ -3790,9 +3827,253 @@ class HarnessContractTests(unittest.TestCase):
         self.assertIn("41", violations[0].message)
         self.assertIn("34", violations[0].message)
 
-        deck_spec_ok = {"pages": [{"page_id": f"p{i}"} for i in range(30)]}
+        deck_spec_ok = {"pages": [{"page_id": f"p{i}"} for i in range(34)]}
         self.assertEqual(check_c15_page_count_ceiling(page_plan, deck_spec_ok), [])
         self.assertEqual(check_c15_page_count_ceiling({}, deck_spec_41), [])
+
+    def test_c13_role_duplication_passes_distinct_slots_and_rejects_v1_duplicates(self):
+        passing = {
+            "pages": [{
+                "page_id": "p01",
+                "short_title": "시장 전환",
+                "content": [
+                    {"type": "headline", "text": "구매 기준이 가격에서 증거로 이동한다"},
+                    {"type": "body", "text": "후기와 검증 자료가 선택을 뒷받침한다."},
+                    {"type": "callout", "text": "증거 자산을 먼저 쌓아야 한다"},
+                    {"type": "text_table", "title": "채널별 실행 우선순위", "columns": ["채널", "순위"], "rows": []},
+                ],
+            }]
+        }
+        self.assertEqual(check_c13_role_duplication(passing), [])
+
+        failing = {
+            "pages": [{
+                "page_id": "p01",
+                "short_title": "시장 전환",
+                "content": [
+                    {"type": "headline", "text": "시장 전환"},
+                    {"type": "body", "text": "후기를 먼저 확보한다. 채널을 넓힌다."},
+                    {"type": "callout", "text": "후기를 먼저 확보한다"},
+                    {"type": "text_table", "title": "시장 전환", "columns": ["채널", "순위"], "rows": []},
+                ],
+            }]
+        }
+        violations = check_c13_role_duplication(failing)
+        self.assertEqual(len(violations), 3)
+        self.assertTrue(all(v.contract_id == "C13" for v in violations))
+
+        long_headline = {
+            "pages": [{
+                "page_id": "p01",
+                "short_title": "개요",
+                "content": [{"type": "headline", "text": "사업 개요 및 향후 비전과 전략 로드맵 전반"}],
+            }]
+        }
+        self.assertEqual(check_c13_role_duplication(long_headline, threshold=0.95), [])
+
+    def test_page_visual_intent_groups_split_children_and_rejects_self_approval(self):
+        plan = {"pages": [{"page_id": "plan-1", "visual_intent": {"intent": "chart", "desc": "추이"}}]}
+        split_spec = {
+            "meta": {"spec_author": "designer-agent"},
+            "pages": [
+                {"page_id": "p01", "plan_id": "plan-1", "split_seq": 1, "split_total": 2, "content": [{"type": "body", "text": "설명"}]},
+                {"page_id": "p02", "plan_id": "plan-1", "split_seq": 2, "split_total": 2, "content": [{"type": "viz", "chart": "donut"}]},
+            ],
+        }
+        self.assertEqual(check_page_visual_intent_preserved(plan, split_spec), [])
+
+        self_approved = {
+            "meta": {"spec_author": "designer-agent"},
+            "pages": [{
+                "page_id": "p01",
+                "plan_id": "plan-1",
+                "content": [{"type": "body", "text": "표로 강등"}],
+                "visual_downgrade": {"reason": "값이 적음", "approved_by": "designer-agent", "date": "2026-08-11"},
+            }],
+        }
+        violations = check_page_visual_intent_preserved(plan, self_approved)
+        self.assertEqual(len(violations), 1)
+        self.assertIn("자기 승인", violations[0].message)
+
+        self_approved["pages"][0]["visual_downgrade"]["approved_by"] = "본부"
+        self.assertEqual(check_page_visual_intent_preserved(plan, self_approved), [])
+        del self_approved["meta"]["spec_author"]
+        violations = check_page_visual_intent_preserved(plan, self_approved)
+        self.assertEqual(len(violations), 1)
+        self.assertIn("[미규명]", violations[0].message)
+
+        unknown_authors = [None, "", "   ", 7, ["designer-agent"], {"name": "designer-agent"}]
+        for unknown_author in unknown_authors:
+            with self.subTest(spec_author=unknown_author):
+                self_approved["meta"]["spec_author"] = unknown_author
+                violations = check_page_visual_intent_preserved(plan, self_approved)
+                self.assertEqual(len(violations), 1)
+                self.assertIn("[미규명]", violations[0].message)
+
+        split_downgrade = {
+            "meta": {"spec_author": "designer-agent"},
+            "pages": [
+                {
+                    "page_id": "p01", "plan_id": "plan-1", "split_seq": 1, "split_total": 2,
+                    "content": [{"type": "body", "text": "설명"}],
+                    "visual_downgrade": {"reason": "값이 적음", "approved_by": "본부", "date": "2026-08-11"},
+                },
+                {
+                    "page_id": "p02", "plan_id": "plan-1", "split_seq": 2, "split_total": 2,
+                    "content": [{"type": "body", "text": "결론"}],
+                },
+            ],
+        }
+        violations = check_page_visual_intent_preserved(plan, split_downgrade)
+        self.assertEqual(len(violations), 1)
+        self.assertIn("승인이 없음", violations[0].message)
+        split_downgrade["pages"][1]["visual_downgrade"] = {
+            "reason": "값이 적음", "approved_by": "본부", "date": "2026-08-11",
+        }
+        self.assertEqual(check_page_visual_intent_preserved(plan, split_downgrade), [])
+        split_downgrade["pages"][1]["content"].append({"type": "viz", "chart": "donut"})
+        del split_downgrade["pages"][0]["visual_downgrade"]
+        del split_downgrade["pages"][1]["visual_downgrade"]
+        self.assertEqual(check_page_visual_intent_preserved(plan, split_downgrade), [])
+
+        malformed_plan = {"pages": [{"page_id": "plan-1", "visual_intent": {"intent": "graph", "desc": "오타"}}]}
+        self.assertTrue(check_page_visual_intent_preserved(malformed_plan, split_spec))
+        self.assertTrue(check_page_visual_intent_preserved({}, split_spec))
+
+        invalid_date = {
+            "meta": {"spec_author": "본부"},
+            "pages": [{
+                "page_id": "p01",
+                "plan_id": "plan-1",
+                "content": [{"type": "body", "text": "강등"}],
+                "visual_downgrade": {"reason": "값이 적음", "approved_by": "headquarters", "date": "2026-99-99"},
+            }],
+        }
+        violations = check_page_visual_intent_preserved(plan, invalid_date)
+        self.assertTrue(any("date" in v.message or "자기 승인" in v.message for v in violations))
+
+    def test_deck_gates_each_have_pass_and_fail_cases(self):
+        def page(page_id, *, visual=True, chars=100, layout="stack"):
+            content = [{"type": "body", "text": "가" * chars}]
+            if visual:
+                content.append({"type": "metric", "metric_id": "m1"})
+            return {"page_id": page_id, "layout": layout, "content": content}
+
+        plan = {"pages": [{"page_id": f"plan-{i}"} for i in range(10)]}
+        intake = {}
+        registry = {
+            "sources": {"s1": {"title": "근거", "url": "https://example.com"}},
+            "metrics": {"m1": {"value": 1, "unit": "개", "source_ids": ["s1"]}},
+        }
+        passing_pages = [page(f"p{i}", visual=i % 3 != 0, chars=100 + i) for i in range(1, 11)]
+        passing_budgets = [
+            {"page_id": f"p{i}", "verdict": "FIT", "height_px": 400, "capacity_px": 600}
+            for i in range(1, 11)
+        ]
+        passing = check_deck_spec_gates(
+            plan, {"pages": passing_pages}, intake, registry, calibration={}, layout_results=passing_budgets
+        )
+        self.assertEqual(passing.violations, [])
+        self.assertEqual(passing.warnings, [])
+
+        boundary_pages = [page(f"p{i}", visual=i <= 5) for i in range(1, 11)]
+        boundary_budgets = [
+            {
+                "page_id": f"p{i}",
+                "verdict": "SPARSE" if i <= 2 else "FIT",
+                "height_px": 360,
+                "capacity_px": 600,
+            }
+            for i in range(1, 11)
+        ]
+        boundary = check_deck_spec_gates(
+            plan, {"pages": boundary_pages}, intake, registry, {}, layout_results=boundary_budgets
+        )
+        self.assertFalse(any("SPARSE 비율" in v.message for v in boundary.violations))
+        self.assertFalse(any("밀도 중앙값" in v.message for v in boundary.violations))
+        self.assertFalse(any("시각 포함 비율" in v.message for v in boundary.violations))
+
+        inflated = check_deck_spec_gates(
+            plan,
+            {"pages": passing_pages + [page("p11"), page("p12"), page("p13")]},
+            intake,
+            registry,
+            calibration={},
+            layout_results=passing_budgets + [
+                {"page_id": f"p{i}", "verdict": "FIT", "height_px": 400, "capacity_px": 600}
+                for i in range(11, 14)
+            ],
+        )
+        self.assertTrue(any(v.contract_id == "C15" for v in inflated.violations))
+
+        sparse_budgets = [dict(row) for row in passing_budgets]
+        for row in sparse_budgets[:3]:
+            row.update(verdict="FIT", height_px=300)
+        sparse = check_deck_spec_gates(plan, {"pages": passing_pages}, intake, registry, {}, layout_results=sparse_budgets)
+        self.assertTrue(any("SPARSE 비율" in v.message for v in sparse.violations))
+
+        low_median_budgets = [dict(row, height_px=350) for row in passing_budgets]
+        low_median = check_deck_spec_gates(plan, {"pages": passing_pages}, intake, registry, {}, layout_results=low_median_budgets)
+        self.assertTrue(any("밀도 중앙값" in v.message for v in low_median.violations))
+
+        text_only_pages = [page(f"p{i}", visual=False) for i in range(1, 5)] + [page("p5")]
+        text_budgets = [
+            {"page_id": f"p{i}", "verdict": "FIT", "height_px": 400, "capacity_px": 600}
+            for i in range(1, 6)
+        ]
+        text_only = check_deck_spec_gates(plan, {"pages": text_only_pages}, intake, registry, {}, layout_results=text_budgets)
+        self.assertTrue(any("연속 텍스트-온리" in v.message for v in text_only.violations))
+        self.assertTrue(any("시각 포함 비율" in v.message for v in text_only.violations))
+
+        varied_pages = [page("p1", chars=1), page("p2", chars=1000), page("p3", chars=1)]
+        varied_budgets = [
+            {"page_id": f"p{i}", "verdict": "FIT", "height_px": 400, "capacity_px": 600}
+            for i in range(1, 4)
+        ]
+        varied = check_deck_spec_gates(plan, {"pages": varied_pages}, intake, registry, {}, layout_results=varied_budgets)
+        self.assertEqual(len(varied.warnings), 1)
+        self.assertIn("정보량 편차", varied.warnings[0].message)
+
+        exempt = check_deck_spec_gates(
+            plan,
+            {"pages": text_only_pages},
+            {"intentional_text_deck": True},
+            registry,
+            {},
+            layout_results=text_budgets,
+        )
+        self.assertFalse(any("시각 포함 비율" in v.message for v in exempt.violations))
+        self.assertTrue(any("연속 텍스트-온리" in v.message for v in exempt.violations))
+
+        not_exempt = check_deck_spec_gates(
+            plan,
+            {"pages": text_only_pages},
+            {"intentional_text_deck": "false"},
+            registry,
+            {},
+            layout_results=text_budgets,
+        )
+        self.assertTrue(any("시각 포함 비율" in v.message for v in not_exempt.violations))
+
+        alias_only_pages = [
+            {"page_id": f"p{i}", "layout": "stack", "content": [{"type": "metrics", "metric_ids": ["m1"]}]}
+            for i in range(1, 5)
+        ]
+        alias_only = check_deck_spec_gates(
+            plan, {"pages": alias_only_pages}, intake, registry, {}, layout_results=text_budgets[:4]
+        )
+        self.assertTrue(any("시각 포함 비율" in v.message for v in alias_only.violations))
+        self.assertTrue(any("연속 텍스트-온리" in v.message for v in alias_only.violations))
+
+        no_body = check_deck_spec_gates(
+            plan,
+            {"pages": [{"page_id": "p1", "layout": "cover", "content": []}]},
+            intake,
+            registry,
+            {},
+            layout_results=[{"page_id": "p1", "verdict": "FIT", "height_px": 400, "capacity_px": 600}],
+        )
+        self.assertTrue(any("본문 페이지가 없음" in v.message for v in no_body.violations))
 
     def test_gate4_capture_deck_exits_2_on_fit_overflow_and_render_main_keeps_debug_pdf(self):
         # 게이트 4 — capture_deck.sh는 FIT_OVERFLOW를 잡으면 PDF를 만든 채로 exit 2해야 하고,
@@ -3882,6 +4163,41 @@ class HarnessContractTests(unittest.TestCase):
         html = render_deck_module.render_deck(good_spec, registry, title="Good Layout Fixture")
         self.assertIn("ok-statement", html)
         self.assertIn("ok-timeline", html)
+
+    def test_schema_check_fails_after_source_of_truth_changes(self):
+        scripts_dir = pathlib.Path(__file__).resolve().parent
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = pathlib.Path(temp_dir)
+            shutil.copy2(scripts_dir / "contract_checks.py", temp_path / "contract_checks.py")
+            shutil.copy2(scripts_dir / "generate_deck_spec_schema.py", temp_path / "generate_deck_spec_schema.py")
+            schema_path = temp_path / "deck_spec.schema.json"
+
+            generated = subprocess.run(
+                [sys.executable, str(temp_path / "generate_deck_spec_schema.py"), "--output", str(schema_path)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(generated.returncode, 0, generated.stderr)
+
+            source_path = temp_path / "contract_checks.py"
+            source = source_path.read_text(encoding="utf-8")
+            source_path.write_text(source.replace('        "text_table",', '        "text_table",\n        "future_block",'), encoding="utf-8")
+
+            checked = subprocess.run(
+                [
+                    sys.executable,
+                    str(temp_path / "generate_deck_spec_schema.py"),
+                    "--check",
+                    "--output",
+                    str(schema_path),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(checked.returncode, 0)
+            self.assertIn("out of date", checked.stderr)
 
 
 if __name__ == "__main__":

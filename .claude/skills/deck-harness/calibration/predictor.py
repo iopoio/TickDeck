@@ -88,6 +88,14 @@ def renderer_struct_hash(path: Path = RENDERER_PATH) -> str:
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
 
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    return sha256_bytes(path.read_bytes())
+
+
 def css_hash(theme: str) -> str:
     renderer = _renderer_module()
     if theme not in renderer.PALETTES:
@@ -187,5 +195,7 @@ __all__ = [
     "font_build_hash",
     "renderer_struct_hash",
     "resolve_entry",
+    "sha256_bytes",
+    "sha256_file",
     "validate_key",
 ]

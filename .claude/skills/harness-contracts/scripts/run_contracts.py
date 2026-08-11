@@ -4,7 +4,7 @@
 수동 조립 누락 사고(20260630 run "C5 stage_log dict 누락")의 배선 풀이:
 사람이 deck_json을 손으로 만들지 않고, run 디렉토리 산출물에서 그대로 조립한다.
 
-usage: run_contracts.py <run_dir> [deck.html]
+usage: run_contracts.py <run_dir> [deck.html] [--spec PATH] [--plan PATH]
 - html 인자를 생략하면 run_dir/deck.html만 쓴다.
 - rendered_pages(C2)는 deck_spec.pages를 프록시로 스캔한다(렌더 문자열의 원천).
 - deck.html이 있으면 08_external_review.json(C9)을 검증한다.
@@ -12,6 +12,7 @@ usage: run_contracts.py <run_dir> [deck.html]
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -79,18 +80,37 @@ def select_html_path(run_dir: Path, explicit_html: str | None) -> Path | None:
     return deck_html if deck_html.exists() else None
 
 
-def main() -> int:
-    if len(sys.argv) < 2:
-        print("usage: run_contracts.py <run_dir> [deck.html]")
-        return 2
-    run_dir = Path(sys.argv[1])
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("run_dir", type=Path)
+    parser.add_argument("html", nargs="?")
+    parser.add_argument("--spec", type=Path)
+    parser.add_argument("--plan", type=Path)
+    parser.add_argument(
+        "--skip-spec-gates",
+        action="store_true",
+        help="skip C14/C15 when an outer spec gate already ran those checks",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _parse_args(argv)
+    run_dir = args.run_dir
     if not run_dir.is_dir():
         print(f"NO_RUN_DIR: {run_dir}")
         return 2
+    for label, path in (("SPEC", args.spec), ("PLAN", args.plan)):
+        if path is not None and not path.is_file():
+            print(f"NO_{label}: {path}")
+            return 2
+
+    plan_path = args.plan or run_dir / "05_page_plan.json"
+    spec_path = args.spec or run_dir / "06_deck_spec.json"
 
     has_c8_inputs = all(
-        (run_dir / name).exists()
-        for name in ("00_intake.json", "01_evidence_pool.json", "05_page_plan.json")
+        path.exists()
+        for path in (run_dir / "00_intake.json", run_dir / "01_evidence_pool.json", plan_path)
     )
     has_c10_inputs = all(
         (run_dir / name).exists()
@@ -100,11 +120,11 @@ def main() -> int:
     evidence_pool = _load(run_dir, "01_evidence_pool.json") or {}
     insights = (_load(run_dir, "03_insights.json") or {}).get("insights", [])
     dag = _load(run_dir, "04_proposition_dag.json", "04_dag.json") or {}
-    page_plan = _load(run_dir, "05_page_plan.json") or {}
+    page_plan = json.loads(plan_path.read_text(encoding="utf-8")) if plan_path.exists() else {}
     verified = _load(run_dir, "02_verified.json") or {}
-    deck_spec = _load(run_dir, "06_deck_spec.json") or {}
+    deck_spec = json.loads(spec_path.read_text(encoding="utf-8")) if spec_path.exists() else {}
 
-    html_path = select_html_path(run_dir, sys.argv[2] if len(sys.argv) > 2 else None)
+    html_path = select_html_path(run_dir, args.html)
     rendered_html = html_path.read_text(encoding="utf-8") if html_path and html_path.exists() else ""
 
     deck = {
@@ -142,7 +162,7 @@ def main() -> int:
     if missing:
         print(f"WARN 누락 산출물(해당 계약은 빈 입력으로 평가됨): {', '.join(missing)}")
     if not rendered_html:
-        print("WARN 렌더 HTML 없음 — C6 rendered_html 검사 생략")
+        print("N/A C6 rendered_html 검사 — 렌더 HTML 없음")
     _warn_archetype_leak(page_plan, deck_spec)
 
     # 레지스트리 위생 lint(7/2 사고: unit 오염 36/60·영어 라벨) — 경고(비차단), verifier 반송 근거.
@@ -207,18 +227,28 @@ def main() -> int:
             print(f"  - {line}")
 
     violations = validate_all_contracts(deck)
-    c9_applied = (run_dir / "deck.html").exists()
+    applied_contracts = {1, 2, 3, 4, 5, 6, 11}
+    if not args.skip_spec_gates:
+        applied_contracts.update({14, 15})
+    if has_c8_inputs:
+        applied_contracts.update({8, 12})
+    c9_applied = bool(html_path and html_path.exists())
     if c9_applied:
+        applied_contracts.add(9)
         violations.extend(check_c9_final_review(run_dir))
+    else:
+        print(f"N/A C9 final_review 검사 — {html_path or run_dir / 'deck.html'} 없음")
     c10_applied = has_c10_inputs
     if c10_applied:
+        applied_contracts.add(10)
         violations.extend(check_c10_collection_evidence(run_dir))
     violations.extend(check_c11_source_coverage(run_dir))
     # C14/C15 — 05_page_plan.json 있을 때만 활성(내부에서 자체 guard). 어제 사고(viz 소실·28→41장)
     # 재발 검출.
-    violations.extend(check_c14_viz_intent_preserved(page_plan, deck_spec))
-    violations.extend(check_c15_page_count_ceiling(page_plan, deck_spec))
-    contract_range = "C1~C11" if c10_applied else ("C1~C9+C11" if c9_applied else "C1~C8")
+    if not args.skip_spec_gates:
+        violations.extend(check_c14_viz_intent_preserved(page_plan, deck_spec))
+        violations.extend(check_c15_page_count_ceiling(page_plan, deck_spec))
+    contract_range = "+".join(f"C{contract_id}" for contract_id in sorted(applied_contracts))
     print(f"run: {run_dir.name} · html: {html_path.name if html_path else '-'}")
     if violations:
         for violation in violations:

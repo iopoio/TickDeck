@@ -4,14 +4,24 @@ import hashlib
 import json
 import math
 import re
+import statistics
+import sys
 import unicodedata
 from dataclasses import dataclass
+from datetime import date as calendar_date
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
 
+DECK_HARNESS_SCRIPTS = Path(__file__).resolve().parents[2] / "deck-harness" / "scripts"
+if str(DECK_HARNESS_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(DECK_HARNESS_SCRIPTS))
+
 DEFAULT_MAX_SOURCE_OVERLAP_SCORE = 0.85
+C13_BIGRAM_JACCARD_THRESHOLD = 0.7
+NON_BODY_LAYOUTS = frozenset({"cover", "divider", "closing", "outro", "index", "source_appendix"})
+DECK_VISUAL_BLOCK_TYPES = frozenset({"viz", "metric", "metric_grid", "text_table"})
 VALIDATION_METADATA_TERMS = (
     "단일출처",
     "단일 출처",
@@ -635,6 +645,281 @@ def check_c15_page_count_ceiling(
             )
         ]
     return []
+
+
+@dataclass(frozen=True)
+class DeckGateResult:
+    violations: list[ContractViolation]
+    warnings: list[ContractViolation]
+    metrics: dict[str, Any]
+
+
+def _normalize_role_text(value: Any) -> str:
+    return "".join(character.lower() for character in unicodedata.normalize("NFKC", _normalized_string(value)) if character.isalnum())
+
+
+def _normalized_string(value: Any) -> str:
+    return value.strip() if isinstance(value, str) else ""
+
+
+def _bigram_jaccard(left: str, right: str) -> float:
+    left_pairs = {left[index:index + 2] for index in range(max(0, len(left) - 1))}
+    right_pairs = {right[index:index + 2] for index in range(max(0, len(right) - 1))}
+    union = left_pairs | right_pairs
+    return len(left_pairs & right_pairs) / len(union) if union else 0.0
+
+
+def _role_texts_duplicate(left: Any, right: Any, threshold: float) -> bool:
+    normalized_left = _normalize_role_text(left)
+    normalized_right = _normalize_role_text(right)
+    if not normalized_left or not normalized_right:
+        return False
+    if normalized_left == normalized_right:
+        return True
+    shorter, longer = sorted((normalized_left, normalized_right), key=len)
+    controlled_substring = shorter in longer and len(shorter) / len(longer) >= threshold
+    return controlled_substring or _bigram_jaccard(normalized_left, normalized_right) >= threshold
+
+
+def check_c13_role_duplication(
+    deck_spec: dict[str, Any],
+    threshold: float = C13_BIGRAM_JACCARD_THRESHOLD,
+) -> list[ContractViolation]:
+    """C13 v1 범위: 제목·리드, callout·body 문장, 표 제목·제목만 비교한다."""
+    pages = deck_spec.get("pages") if isinstance(deck_spec, dict) else None
+    if not isinstance(pages, list):
+        return []
+    violations: list[ContractViolation] = []
+    for page_index, page in enumerate(pages):
+        if not isinstance(page, dict):
+            continue
+        content = page.get("content") if isinstance(page.get("content"), list) else []
+        short_title = page.get("short_title", "")
+        headlines = [block.get("text", "") for block in content if isinstance(block, dict) and block.get("type") == "headline"]
+        bodies = [block.get("text", "") for block in content if isinstance(block, dict) and block.get("type") in {"body", "text", "summary"}]
+        callouts = [block.get("text", "") for block in content if isinstance(block, dict) and block.get("type") == "callout"]
+        table_titles = [block.get("title", "") for block in content if isinstance(block, dict) and block.get("type") == "text_table"]
+        page_path = f"deck_spec.pages[{page_index}]"
+
+        for headline in headlines:
+            if _role_texts_duplicate(short_title, headline, threshold):
+                violations.append(ContractViolation("C13", "short_title과 headline 역할 중복", page_path))
+                break
+
+        body_sentences = {
+            _normalize_role_text(sentence)
+            for body in bodies
+            for sentence in re.split(r"[.!?。！？]+", str(body))
+            if _normalize_role_text(sentence)
+        }
+        for callout in callouts:
+            if _normalize_role_text(callout) in body_sentences:
+                violations.append(ContractViolation("C13", "callout이 body 문장을 그대로 재사용", page_path))
+                break
+
+        for table_title in table_titles:
+            if _role_texts_duplicate(short_title, table_title, threshold):
+                violations.append(ContractViolation("C13", "text_table.title과 short_title 역할 중복", page_path))
+                break
+    return violations
+
+
+def _validate_visual_downgrade(downgrade: Any, spec_author: str, path: str) -> list[ContractViolation]:
+    if not isinstance(downgrade, dict):
+        return [ContractViolation("E6-PAGE", "시각 의도 강등에 visual_downgrade 승인이 없음", path)]
+    reason = _normalized_string(downgrade.get("reason"))
+    approved_by = _normalized_string(downgrade.get("approved_by"))
+    date = _normalized_string(downgrade.get("date"))
+    try:
+        calendar_date.fromisoformat(date)
+    except ValueError:
+        date = ""
+    if not reason or not approved_by or not date:
+        return [ContractViolation("E6-PAGE", "visual_downgrade의 reason·approved_by·YYYY-MM-DD date가 모두 필요", path)]
+    if not spec_author:
+        return [ContractViolation("E6-PAGE", "[미규명] spec 작성자를 확인할 수 없어 강등 승인자를 검증할 수 없음", path)]
+    authority_aliases = {"후추님": "후추님", "본부": "본부", "headquarters": "본부"}
+    author_identity = authority_aliases.get(spec_author.casefold(), spec_author.casefold())
+    approver_identity = authority_aliases.get(approved_by.casefold())
+    if (approver_identity or approved_by.casefold()) == author_identity:
+        return [ContractViolation("E6-PAGE", "spec 작성자의 자기 승인 강등은 허용되지 않음", path)]
+    if approver_identity is None:
+        return [ContractViolation("E6-PAGE", "[미규명] 승인 권한을 확인할 수 없는 approved_by", path)]
+    return []
+
+
+def check_page_visual_intent_preserved(
+    page_plan: dict[str, Any],
+    deck_spec: dict[str, Any],
+) -> list[ContractViolation]:
+    plan_pages = page_plan.get("pages") if isinstance(page_plan, dict) else None
+    spec_pages = deck_spec.get("pages") if isinstance(deck_spec, dict) else None
+    if not isinstance(plan_pages, list) or not plan_pages:
+        return [ContractViolation("E6-PAGE", "page_plan.pages가 비어 있거나 배열이 아님", "page_plan.pages")]
+    if not isinstance(spec_pages, list) or not spec_pages:
+        return [ContractViolation("E6-PAGE", "deck_spec.pages가 비어 있거나 배열이 아님", "deck_spec.pages")]
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for page in spec_pages:
+        plan_id = _normalized_string(page.get("plan_id")) if isinstance(page, dict) else ""
+        if plan_id:
+            grouped.setdefault(plan_id, []).append(page)
+    meta = deck_spec.get("meta") if isinstance(deck_spec.get("meta"), dict) else {}
+    spec_author = _normalized_string(meta.get("spec_author"))
+    violations: list[ContractViolation] = []
+    required_type = {"chart": "viz", "table": "text_table"}
+    for index, plan_page in enumerate(plan_pages):
+        if not isinstance(plan_page, dict):
+            violations.append(ContractViolation("E6-PAGE", "page_plan page는 객체여야 함", f"page_plan.pages[{index}]"))
+            continue
+        intent = plan_page.get("visual_intent")
+        path = f"page_plan.pages[{index}].visual_intent"
+        if (
+            not isinstance(intent, dict)
+            or intent.get("intent") not in {"chart", "table", "none"}
+            or not isinstance(intent.get("desc"), str)
+        ):
+            violations.append(ContractViolation("E6-PAGE", "visual_intent는 intent(chart|table|none)와 desc 문자열이 필요", path))
+            continue
+        if intent.get("intent") == "none":
+            continue
+        plan_id = _normalized_string(plan_page.get("page_id"))
+        children = grouped.get(plan_id, [])
+        if not children:
+            violations.append(ContractViolation("E6-PAGE", f"plan_id={plan_id or '?'} 대응 spec 페이지가 없음", path))
+            continue
+        expected = required_type[str(intent["intent"])]
+        if any(
+            isinstance(block, dict) and block.get("type") == expected
+            for child in children
+            for block in (child.get("content") if isinstance(child.get("content"), list) else [])
+        ):
+            continue
+        for child in children:
+            child_id = _normalized_string(child.get("page_id")) or "?"
+            violations.extend(_validate_visual_downgrade(
+                child.get("visual_downgrade"), spec_author, f"{path} (spec page_id={child_id})"
+            ))
+    return violations
+
+
+def _body_pages(deck_spec: dict[str, Any]) -> list[dict[str, Any]]:
+    pages = deck_spec.get("pages") if isinstance(deck_spec, dict) else None
+    return [
+        page for page in (pages if isinstance(pages, list) else [])
+        if isinstance(page, dict) and str(page.get("layout", "")).strip() not in NON_BODY_LAYOUTS
+    ]
+
+
+def _budget_value(result: Any, key: str) -> Any:
+    return result.get(key) if isinstance(result, dict) else getattr(result, key, None)
+
+
+def _resolved_page_text(page: dict[str, Any], registry: dict[str, Any]) -> str:
+    import layout_budget
+
+    strings: list[str] = []
+
+    def collect(value: Any, key: str = "") -> None:
+        if isinstance(value, str):
+            if key not in {
+                "type", "metric_id", "src_id", "series_id", "series_key", "chart",
+                "role", "row_role", "kind", "shape", "size", "title_style", "source_caption",
+            }:
+                strings.append(value)
+        elif isinstance(value, dict):
+            for child_key, child in value.items():
+                collect(child, str(child_key))
+        elif isinstance(value, list):
+            for child in value:
+                collect(child, key)
+
+    collect(page.get("content", []))
+    return "".join(layout_budget.substitute_metric_tokens(text, registry) for text in strings)
+
+
+def check_deck_spec_gates(
+    page_plan: dict[str, Any],
+    deck_spec: dict[str, Any],
+    intake: dict[str, Any],
+    registry: dict[str, Any],
+    calibration: dict[str, Any],
+    *,
+    layout_results: list[Any] | tuple[Any, ...] | None = None,
+) -> DeckGateResult:
+    """§C.5 spec 시점 6종. PDF 잉크는 기존 qa_ink의 책임이라 여기서 재계산하지 않는다."""
+    import layout_budget
+
+    violations = list(check_c15_page_count_ceiling(page_plan, deck_spec))
+    warnings: list[ContractViolation] = []
+    body_pages = _body_pages(deck_spec)
+    body_ids = {str(page.get("page_id", "")) for page in body_pages}
+    results = list(layout_results) if layout_results is not None else list(layout_budget.evaluate_layout(deck_spec, registry, calibration))
+    body_results = [result for result in results if str(_budget_value(result, "page_id")) in body_ids]
+    unresolved = [result for result in body_results if str(_budget_value(result, "verdict")) in {"BudgetVerdict.RENDER_MEASURE_REQUIRED", "RENDER_MEASURE_REQUIRED"}]
+    metrics: dict[str, Any] = {
+        "page_expansion": {
+            "plan_pages": len(page_plan.get("pages", [])) if isinstance(page_plan.get("pages"), list) else 0,
+            "final_pages": len(deck_spec.get("pages", [])) if isinstance(deck_spec.get("pages"), list) else 0,
+        },
+        "body_pages": len(body_pages),
+        "layout_unresolved_pages": len(unresolved),
+        "ink": "PDF_ONLY_REUSE_QA_INK",
+    }
+    if not body_pages:
+        violations.append(ContractViolation("C5-DECK", "본문 페이지가 없음 — 덱 단위 게이트를 계산할 수 없음", "deck_spec.pages"))
+    if len(body_results) != len(body_pages) or unresolved:
+        violations.append(ContractViolation("C5-DECK", "layout_budget가 모든 본문 페이지 높이를 확정하지 못해 밀도 게이트를 fail-closed 처리", "deck_spec.pages"))
+        metrics.update({"sparse_ratio": None, "height_median_px": None, "sparse_cutoff_median_px": None})
+    elif body_results:
+        try:
+            heights = [float(_budget_value(result, "height_px")) for result in body_results]
+            cutoffs = [float(_budget_value(result, "capacity_px")) - 240.0 for result in body_results]
+        except (TypeError, ValueError):
+            violations.append(ContractViolation("C5-DECK", "layout_budget 높이·용량 원시값이 없어 밀도 게이트를 fail-closed 처리", "deck_spec.pages"))
+            metrics.update({"sparse_ratio": None, "height_median_px": None, "sparse_cutoff_median_px": None})
+            heights = []
+            cutoffs = []
+        sparse_count = sum(height < cutoff for height, cutoff in zip(heights, cutoffs))
+        sparse_ratio = sparse_count / len(body_results) if heights else None
+        if sparse_ratio is None:
+            height_median = cutoff_median = None
+        else:
+            height_median = statistics.median(heights)
+            cutoff_median = statistics.median(cutoffs)
+        metrics.update({"sparse_pages": sparse_count, "sparse_ratio": sparse_ratio, "height_median_px": height_median, "sparse_cutoff_median_px": cutoff_median})
+        if sparse_ratio is not None and sparse_ratio > 0.20:
+            violations.append(ContractViolation("C5-DECK", f"SPARSE 비율 {sparse_count}/{len(body_results)}={sparse_ratio:.3f} > 0.20", "deck_spec.pages"))
+        if height_median is not None and cutoff_median is not None and height_median < cutoff_median:
+            violations.append(ContractViolation("C5-DECK", f"밀도 중앙값 {height_median:.1f}px < C-240 중앙값 {cutoff_median:.1f}px", "deck_spec.pages"))
+
+    visual_flags = [
+        any(isinstance(block, dict) and block.get("type") in DECK_VISUAL_BLOCK_TYPES for block in page.get("content", []))
+        for page in body_pages
+    ]
+    longest_text_run = current_run = 0
+    for has_visual in visual_flags:
+        current_run = 0 if has_visual else current_run + 1
+        longest_text_run = max(longest_text_run, current_run)
+    visual_count = sum(visual_flags)
+    visual_ratio = visual_count / len(body_pages) if body_pages else 0.0
+    metrics.update({"longest_text_only_run": longest_text_run, "visual_pages": visual_count, "visual_ratio": visual_ratio})
+    if longest_text_run >= 4:
+        violations.append(ContractViolation("C5-DECK", f"연속 텍스트-온리 본문 페이지 최대 {longest_text_run}장 >= 4", "deck_spec.pages"))
+    if intake.get("intentional_text_deck") is not True and body_pages and visual_ratio < 0.50:
+        violations.append(ContractViolation("C5-DECK", f"시각 포함 비율 {visual_count}/{len(body_pages)}={visual_ratio:.3f} < 0.50", "deck_spec.pages"))
+
+    try:
+        character_counts = [len(_resolved_page_text(page, registry)) for page in body_pages]
+        mean_chars = statistics.fmean(character_counts) if character_counts else 0.0
+        stddev_chars = statistics.pstdev(character_counts) if character_counts else 0.0
+        coefficient = stddev_chars / mean_chars if mean_chars else 0.0
+        metrics.update({"character_counts": character_counts, "character_mean": mean_chars, "character_stddev": stddev_chars, "character_cv": coefficient})
+        if coefficient > 0.65:
+            warnings.append(ContractViolation("C5-DECK-WARN", f"정보량 편차 CV {coefficient:.3f} > 0.65", "deck_spec.pages"))
+    except layout_budget.LayoutBudgetInputError as exc:
+        violations.append(ContractViolation("C5-DECK", f"metric 토큰 치환 실패로 정보량 편차를 계산할 수 없음: {exc}", "deck_spec.pages"))
+        metrics["character_cv"] = None
+    return DeckGateResult(violations, warnings, metrics)
 
 
 C11_REQUIRED_AXES = ("kpmg", "pwc", "deloitte", "government_stats", "academic")

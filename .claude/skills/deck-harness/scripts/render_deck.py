@@ -7147,9 +7147,35 @@ def main() -> None:
     parser.add_argument("--title", default="TickDeck")
     parser.add_argument("--theme", default=None, choices=sorted(PALETTES))
     parser.add_argument("--html-only", action="store_true", help="Write HTML without PDF capture (calibration probes).")
+    parser.add_argument("--unattested", action="store_true", help="Render without a gate receipt and mark the HTML UNATTESTED.")
     args = parser.parse_args()
 
     deck_spec = json.loads(args.deck_spec.read_text(encoding="utf-8"))
+    if not args.unattested:
+        calibration_dir = Path(__file__).resolve().parent.parent / "calibration"
+        if str(calibration_dir) not in sys.path:
+            sys.path.insert(0, str(calibration_dir))
+        from predictor import css_hash, renderer_struct_hash, sha256_file
+
+        receipt_path = args.deck_spec.with_suffix(".receipt.json")
+        if not receipt_path.is_file():
+            parser.error(f"gate receipt not found: {receipt_path}")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        effective_theme = args.theme or str(deck_spec.get("theme") or "editorial")
+        actual_hashes = {
+            "spec_sha256": sha256_file(args.deck_spec),
+            "registry_sha256": sha256_file(args.registry),
+            "renderer_struct_hash": renderer_struct_hash(),
+            "css_hash": css_hash(effective_theme),
+        }
+        mismatches = [
+            name for name, actual in actual_hashes.items()
+            if receipt.get(name) != actual
+        ]
+        if receipt.get("verdict") != "PASS":
+            mismatches.append("verdict")
+        if mismatches:
+            parser.error(f"gate receipt mismatch: {', '.join(mismatches)}")
     # archetype이 deck_spec에 아예 없으면(designer 누락) 형제 page_plan에서 주입 — arch-* 시각효과 누수 마감(7/5).
     if not _deck_archetype_class(deck_spec):
         pp = args.deck_spec.parent / "05_page_plan.json"
@@ -7168,6 +7194,12 @@ def main() -> None:
         theme=args.theme,
         asset_base=args.deck_spec.parent,
     )
+    if args.unattested:
+        rendered = rendered.replace(
+            '<meta charset="utf-8">',
+            '<meta charset="utf-8">\n<meta name="tickdeck-attestation" content="UNATTESTED">',
+            1,
+        )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(rendered, encoding="utf-8")
     print(f"rendered {len(deck_spec.get('pages', []))} pages -> {args.output}")

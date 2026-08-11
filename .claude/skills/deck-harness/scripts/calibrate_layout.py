@@ -445,6 +445,7 @@ def _run_probe(
         "-o",
         str(rendered_path),
         "--html-only",
+        "--unattested",
     ]
     rendered = subprocess.run(render_command, capture_output=True, text=True)
     if rendered.returncode:
