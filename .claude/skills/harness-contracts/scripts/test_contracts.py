@@ -3966,6 +3966,7 @@ class HarnessContractTests(unittest.TestCase):
             "metrics": {"m1": {"value": 1, "unit": "개", "source_ids": ["s1"]}},
         }
         passing_pages = [page(f"p{i}", visual=i % 3 != 0, chars=100 + i) for i in range(1, 11)]
+        passing_pages[0]["content"].append({"type": "metric_grid"})
         passing_budgets = [
             {"page_id": f"p{i}", "verdict": "FIT", "height_px": 400, "capacity_px": 600}
             for i in range(1, 11)

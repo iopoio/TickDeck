@@ -22,6 +22,7 @@ DEFAULT_MAX_SOURCE_OVERLAP_SCORE = 0.85
 C13_BIGRAM_JACCARD_THRESHOLD = 0.7
 NON_BODY_LAYOUTS = frozenset({"cover", "divider", "closing", "outro", "index", "source_appendix"})
 DECK_VISUAL_BLOCK_TYPES = frozenset({"viz", "metric", "metric_grid", "text_table"})
+DECK_CHART_BLOCK_TYPES = frozenset({"viz", "metric_grid"})
 VALIDATION_METADATA_TERMS = (
     "단일출처",
     "단일 출처",
@@ -896,6 +897,12 @@ def check_deck_spec_gates(
         any(isinstance(block, dict) and block.get("type") in DECK_VISUAL_BLOCK_TYPES for block in page.get("content", []))
         for page in body_pages
     ]
+    chart_flags = [
+        any(isinstance(block, dict) and block.get("type") in DECK_CHART_BLOCK_TYPES for block in page.get("content", []))
+        for page in body_pages
+    ]
+    if body_pages and not any(chart_flags):
+        violations.append(ContractViolation("C5-DECK", "본문 페이지에 차트류(viz·metric_grid)가 0장", "deck_spec.pages"))
     longest_text_run = current_run = 0
     for has_visual in visual_flags:
         current_run = 0 if has_visual else current_run + 1

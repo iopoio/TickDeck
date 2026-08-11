@@ -59,6 +59,7 @@ KST = ZoneInfo("Asia/Seoul")
 
 class Verdict(str, Enum):
     PASS = "PASS"
+    SKIPPED = "SKIPPED"
     REJECTED = "REJECTED"
     BLOCKED_ON_MEASUREMENT = "BLOCKED_ON_MEASUREMENT"
     BLOCKED_ON_UPSTREAM = "BLOCKED_ON_UPSTREAM"
@@ -403,8 +404,8 @@ def run_gate(
             rejected, rejected_receipt = isolate_rejected(run_dir, checked_data, payload)
             return layout_verdict, results, f"isolated={rejected.name} receipt={rejected_receipt.name}"
 
-        c13 = [str(item) for item in check_c13_role_duplication(spec)]
-        results.append(_result(4, "c13_role_duplication", Verdict.REJECTED if c13 else Verdict.PASS, c13))
+        # 사고 6건/정상 6건으로 변별력 0 (Round 3 실측). negative set 확대 또는 판정 방식 변경 시 재활성화.
+        results.append(_result(4, "c13_role_duplication", Verdict.SKIPPED, []))
 
         intent_verdict, intent_details = classify_visual_intent(page_plan, spec)
         results.append(_result(5, "visual_intent", intent_verdict, intent_details))
