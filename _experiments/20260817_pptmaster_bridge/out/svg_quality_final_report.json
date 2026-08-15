@@ -1,0 +1,700 @@
+{
+  "schema": "ppt-master.svg-quality-report.v1",
+  "stage": "final",
+  "target": "/Users/hwa/Projects/Automation/TickDeck/_experiments/20260817_pptmaster_bridge/project",
+  "source_fingerprint": {
+    "algorithm": "sha256",
+    "digest": "f6b517c93f90a608e73eecb35858c8442639b9e7bdc2370c504ec06e897aa360",
+    "file_count": 16,
+    "files": [
+      {
+        "file": "P01.svg",
+        "sha256": "a9211ddb58a5aec2c963c592b88fd6380af32efa1cdd63e9db0e1350961da2c5"
+      },
+      {
+        "file": "P02.svg",
+        "sha256": "21b8817e1c34d1781dea215338009f1155502692aaa4c78b3d6d3b96dfa0f4e5"
+      },
+      {
+        "file": "P03.svg",
+        "sha256": "913ceaa8af3612973ad5a9d0d8cf4f320f5779257c99ee378d172d4b69a3101b"
+      },
+      {
+        "file": "P04.svg",
+        "sha256": "028be66b7730d6f30818f587d19cd218c1295d542897d3b36cf64aef1e454d10"
+      },
+      {
+        "file": "P05.svg",
+        "sha256": "40e38524662d919bcfa27c39f8de33128e09d3b10e6f5129a6ce1cffccf5c48f"
+      },
+      {
+        "file": "P06.svg",
+        "sha256": "da8c220a2b956a3226424a8d1d434faaa5c02ff3152dc0e20f952f6df11b10b0"
+      },
+      {
+        "file": "P07.svg",
+        "sha256": "dae988babc5ca065abe4c8ce71ae7beea103b12ba5fe9395b31969c181e60164"
+      },
+      {
+        "file": "P08.svg",
+        "sha256": "21b15dade0e936388c4a91e9076cfa2e43312890fa444482cfde9930b5a17881"
+      },
+      {
+        "file": "P09.svg",
+        "sha256": "471714ccaba0cb83d786a18fce9c46a955f9d0867db75f21267fb24d881e49d0"
+      },
+      {
+        "file": "P10.svg",
+        "sha256": "50b705812574fdd4ca8707282f10d2caab21a0a13c6bbe4922012242f8b48b9d"
+      },
+      {
+        "file": "P11.svg",
+        "sha256": "748519404a8fbb9345815bfb59e1928b5c081ac6d23123b99cc85f6453b96969"
+      },
+      {
+        "file": "P12.svg",
+        "sha256": "0d8bd96842694ba5de32e24229c4de06650580f1eb2e72f1b05eabc6c9266709"
+      },
+      {
+        "file": "P13.svg",
+        "sha256": "80026e0bc6075af5b83466976cce99964b97ceb73752af87e1677b828201a7c8"
+      },
+      {
+        "file": "P14.svg",
+        "sha256": "054a64d4008796da979b7436c8655a714a049535593301d01a0d5dac448023be"
+      },
+      {
+        "file": "P15.svg",
+        "sha256": "20d79e25285a64bef96629e3dcf5b444dc912d62a37703e10559850c8c5cb289"
+      },
+      {
+        "file": "P16.svg",
+        "sha256": "0b72768946f253211cc2a3038df1373472091e1efb63b13c9f1ad5d676b5bc04"
+      }
+    ]
+  },
+  "summary": {
+    "total": 16,
+    "passed": 0,
+    "warnings": 16,
+    "errors": 0
+  },
+  "issue_types": {},
+  "categories": {
+    "blocking": {
+      "count": 0,
+      "issues": []
+    },
+    "introduced": {
+      "count": 16,
+      "issues": [
+        {
+          "file": "P01.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard, ea=Noto Sans KR): Pretendard, Apple SD Gothic Neo, Noto Sans KR, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P02.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P03.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P04.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P05.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P06.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P07.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P08.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P09.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P10.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P11.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P12.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P13.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P14.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P15.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        },
+        {
+          "file": "P16.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+        }
+      ]
+    },
+    "inherited": {
+      "count": 0,
+      "issues": []
+    },
+    "source-import": {
+      "count": 0,
+      "summary": {
+        "warning_count": 0,
+        "by_code": {}
+      }
+    }
+  },
+  "drift": {
+    "colors": {
+      "#2C3352": [
+        "P10.svg"
+      ],
+      "#98A2C0": [
+        "P01.svg",
+        "P02.svg",
+        "P03.svg",
+        "P04.svg",
+        "P05.svg",
+        "P06.svg",
+        "P07.svg",
+        "P08.svg",
+        "P09.svg",
+        "P10.svg",
+        "P11.svg",
+        "P12.svg",
+        "P13.svg",
+        "P14.svg",
+        "P15.svg",
+        "P16.svg"
+      ],
+      "#B42318": [
+        "P07.svg",
+        "P13.svg"
+      ],
+      "#FFFFFF": [
+        "P02.svg",
+        "P03.svg",
+        "P04.svg",
+        "P06.svg",
+        "P07.svg",
+        "P08.svg",
+        "P09.svg",
+        "P11.svg",
+        "P13.svg",
+        "P14.svg",
+        "P15.svg"
+      ]
+    },
+    "fonts": {
+      "Consolas, monospace": [
+        "P03.svg",
+        "P05.svg",
+        "P10.svg",
+        "P12.svg",
+        "P14.svg"
+      ],
+      "Pretendard, Malgun Gothic, sans-serif": [
+        "P02.svg",
+        "P03.svg",
+        "P04.svg",
+        "P05.svg",
+        "P06.svg",
+        "P07.svg",
+        "P08.svg",
+        "P09.svg",
+        "P10.svg",
+        "P11.svg",
+        "P12.svg",
+        "P13.svg",
+        "P14.svg",
+        "P15.svg",
+        "P16.svg"
+      ]
+    },
+    "sizes": {}
+  },
+  "project_issues": {
+    "template": [],
+    "animation": [],
+    "illustration": [],
+    "communication_trace": [],
+    "pptx_structure": []
+  },
+  "files": [
+    {
+      "file": "P01.svg",
+      "path": "project/svg_output/P01.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard, ea=Noto Sans KR): Pretendard, Apple SD Gothic Neo, Noto Sans KR, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Apple SD Gothic Neo, Noto Sans KR, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 7,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "a9211ddb58a5aec2c963c592b88fd6380af32efa1cdd63e9db0e1350961da2c5"
+    },
+    {
+      "file": "P02.svg",
+      "path": "project/svg_output/P02.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 15,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "21b8817e1c34d1781dea215338009f1155502692aaa4c78b3d6d3b96dfa0f4e5"
+    },
+    {
+      "file": "P03.svg",
+      "path": "project/svg_output/P03.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, monospace",
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 9,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Consolas, monospace",
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "913ceaa8af3612973ad5a9d0d8cf4f320f5779257c99ee378d172d4b69a3101b"
+    },
+    {
+      "file": "P04.svg",
+      "path": "project/svg_output/P04.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 15,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "028be66b7730d6f30818f587d19cd218c1295d542897d3b36cf64aef1e454d10"
+    },
+    {
+      "file": "P05.svg",
+      "path": "project/svg_output/P05.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, monospace",
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 5,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0"
+          ],
+          "font_families": [
+            "Consolas, monospace",
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "40e38524662d919bcfa27c39f8de33128e09d3b10e6f5129a6ce1cffccf5c48f"
+    },
+    {
+      "file": "P06.svg",
+      "path": "project/svg_output/P06.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 12,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "da8c220a2b956a3226424a8d1d434faaa5c02ff3152dc0e20f952f6df11b10b0"
+    },
+    {
+      "file": "P07.svg",
+      "path": "project/svg_output/P07.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 14,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#B42318",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "dae988babc5ca065abe4c8ce71ae7beea103b12ba5fe9395b31969c181e60164"
+    },
+    {
+      "file": "P08.svg",
+      "path": "project/svg_output/P08.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 15,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "21b15dade0e936388c4a91e9076cfa2e43312890fa444482cfde9930b5a17881"
+    },
+    {
+      "file": "P09.svg",
+      "path": "project/svg_output/P09.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 12,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "471714ccaba0cb83d786a18fce9c46a955f9d0867db75f21267fb24d881e49d0"
+    },
+    {
+      "file": "P10.svg",
+      "path": "project/svg_output/P10.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, monospace",
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 5,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#2C3352",
+            "#98A2C0"
+          ],
+          "font_families": [
+            "Consolas, monospace",
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "50b705812574fdd4ca8707282f10d2caab21a0a13c6bbe4922012242f8b48b9d"
+    },
+    {
+      "file": "P11.svg",
+      "path": "project/svg_output/P11.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 28,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "748519404a8fbb9345815bfb59e1928b5c081ac6d23123b99cc85f6453b96969"
+    },
+    {
+      "file": "P12.svg",
+      "path": "project/svg_output/P12.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, monospace",
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 6,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0"
+          ],
+          "font_families": [
+            "Consolas, monospace",
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "0d8bd96842694ba5de32e24229c4de06650580f1eb2e72f1b05eabc6c9266709"
+    },
+    {
+      "file": "P13.svg",
+      "path": "project/svg_output/P13.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 15,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#B42318",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "80026e0bc6075af5b83466976cce99964b97ceb73752af87e1677b828201a7c8"
+    },
+    {
+      "file": "P14.svg",
+      "path": "project/svg_output/P14.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, monospace",
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 14,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Consolas, monospace",
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "054a64d4008796da979b7436c8655a714a049535593301d01a0d5dac448023be"
+    },
+    {
+      "file": "P15.svg",
+      "path": "project/svg_output/P15.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 14,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0",
+            "#FFFFFF"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "20d79e25285a64bef96629e3dcf5b444dc912d62a37703e10559850c8c5cb289"
+    },
+    {
+      "file": "P16.svg",
+      "path": "project/svg_output/P16.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=Pretendard): Pretendard, Malgun Gothic, sans-serif"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Pretendard, Malgun Gothic, sans-serif"
+        ],
+        "text_elements": 5,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#98A2C0"
+          ],
+          "font_families": [
+            "Pretendard, Malgun Gothic, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "0b72768946f253211cc2a3038df1373472091e1efb63b13c9f1ad5d676b5bc04"
+    }
+  ]
+}

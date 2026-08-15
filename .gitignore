@@ -53,3 +53,4 @@ tickdeck_harness/runs/
 corpus/
 .gstack/
 PRD_STATUS.html
+_experiments/
