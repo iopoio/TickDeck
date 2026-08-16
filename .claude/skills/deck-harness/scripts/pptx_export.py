@@ -45,12 +45,33 @@ LAYOUT_DUMP_SCRIPT = r"""
     var n = parseFloat(value);
     return Number.isFinite(n) ? n : fallback;
   }
+  function colorAlpha(value) {
+    if (!value || value === 'transparent') return 0;
+    var slash = value.lastIndexOf('/');
+    if (slash >= 0) {
+      var alpha = value.slice(slash + 1).replace(/\)\s*$/, '').trim();
+      return alpha.endsWith('%') ? px(alpha, 100) / 100 : px(alpha, 1);
+    }
+    var match = value.match(/rgba?\((.*)\)/i);
+    if (!match) return 1;
+    var body = match[1].replace('/', ',').split(',').map(function(part) { return part.trim(); });
+    return body.length > 3 ? px(body[3], 1) : 1;
+  }
+  function hasClippedChild(el, rect, cs) {
+    if (!/(hidden|clip)/.test(cs.overflow + ' ' + cs.overflowX + ' ' + cs.overflowY)) return false;
+    return Array.prototype.some.call(el.querySelectorAll('*'), function(child) {
+      var r = child.getBoundingClientRect();
+      return r.left < rect.left - 0.5 || r.top < rect.top - 0.5 ||
+        r.right > rect.right + 0.5 || r.bottom > rect.bottom + 0.5;
+    });
+  }
   var slides = [];
   document.querySelectorAll('.slide').forEach(function(slide, idx) {
     var slideRect = slide.getBoundingClientRect();
     var pageId = slide.dataset.pageId || slide.id || ('p' + String(idx + 1).padStart(2, '0'));
     var boxes = [];
     var vizBoxes = [];
+    var rectBoxes = [];
     slide.querySelectorAll('.visual-card').forEach(function(el) {
       var rect = el.getBoundingClientRect();
       var chartClass = Array.prototype.find.call(el.classList, function(name) {
@@ -64,6 +85,41 @@ LAYOUT_DUMP_SCRIPT = r"""
         h: rect.height,
         slide_w: slideRect.width,
         slide_h: slideRect.height
+      });
+    });
+    slide.querySelectorAll('*').forEach(function(el, rectIndex) {
+      if (el.closest('svg')) return;
+      if (el.offsetParent === null) return;
+      var rect = el.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      var cs = getComputedStyle(el);
+      var alpha = colorAlpha(cs.backgroundColor);
+      if (alpha <= 0 && cs.backgroundImage === 'none' && cs.boxShadow === 'none' &&
+          cs.filter === 'none' && cs.backdropFilter === 'none') return;
+      var rectId = pageId + '-' + rectIndex;
+      el.setAttribute('data-pptx-rect-id', rectId);
+      rectBoxes.push({
+        id: rectId,
+        page_id: pageId,
+        x: rect.left - slideRect.left,
+        y: rect.top - slideRect.top,
+        w: rect.width,
+        h: rect.height,
+        slide_w: slideRect.width,
+        slide_h: slideRect.height,
+        area_ratio: rect.width * rect.height / (slideRect.width * slideRect.height),
+        background_color: cs.backgroundColor,
+        background_alpha: alpha,
+        background_image: cs.backgroundImage,
+        transform: cs.transform,
+        clipped_child: hasClippedChild(el, rect, cs),
+        filter: cs.filter,
+        backdrop_filter: cs.backdropFilter,
+        box_shadow: cs.boxShadow,
+        border_radius: cs.borderRadius,
+        border_width: cs.borderTopWidth,
+        border_color: cs.borderTopColor,
+        border_style: cs.borderTopStyle
       });
     });
     slide.querySelectorAll('*').forEach(function(el) {
@@ -132,7 +188,29 @@ LAYOUT_DUMP_SCRIPT = r"""
         src_id: srcEl ? srcEl.dataset.srcId : null
       });
     });
-    slides.push({page_id: pageId, slide_w: slideRect.width, slide_h: slideRect.height, boxes: boxes, viz_boxes: vizBoxes});
+    // 텍스트 선별이 끝난 뒤에야 "이 사각형 안에 배경 그림으로 구워질 글자가 있나"를 알 수 있다.
+    // 구워진 글자 위에 불투명 도형을 얹으면 글자가 덮인다(8/16 p11 표 줄무늬 행 실측 — 두 행이 통째로 사라짐).
+    var rectById = {};
+    rectBoxes.forEach(function(r) { rectById[r.id] = r; });
+    slide.querySelectorAll('[data-pptx-rect-id]').forEach(function(el) {
+      var r = rectById[el.getAttribute('data-pptx-rect-id')];
+      if (!r) return;
+      var baked = hasDirectText(el) && !el.closest('[data-pptx-picked]');
+      if (!baked) {
+        var nodes = el.querySelectorAll('*');
+        for (var i = 0; i < nodes.length; i++) {
+          var n = nodes[i];
+          if (n.closest('svg')) continue;
+          if (n.offsetParent === null) continue;
+          if (!hasDirectText(n)) continue;
+          if (n.closest('[data-pptx-picked]')) continue;
+          baked = true;
+          break;
+        }
+      }
+      r.baked_text_child = baked;
+    });
+    slides.push({page_id: pageId, slide_w: slideRect.width, slide_h: slideRect.height, boxes: boxes, viz_boxes: vizBoxes, rect_boxes: rectBoxes});
   });
   var out = document.createElement('script');
   out.type = 'application/json';
@@ -158,6 +236,11 @@ _HIDE_PICKED_TEXT_SCRIPT_TEMPLATE = r"""
   });
   document.querySelectorAll('__NATIVE_CHART_SELECTORS__').forEach(function(el) {
     el.style.setProperty('visibility', 'hidden', 'important');
+  });
+  document.querySelectorAll('__NATIVE_RECT_SELECTORS__').forEach(function(el) {
+    el.style.setProperty('background', 'transparent', 'important');
+    el.style.setProperty('border', 'none', 'important');
+    el.style.setProperty('box-shadow', 'none', 'important');
   });
 })();
 </script>
@@ -381,8 +464,12 @@ def dump_layout(deck_html: Path, chrome: str) -> tuple[dict, str, Path]:
         raise
 
 
-def print_hidden_pdf(deck_html: Path, dom: str, chrome: str, out_pdf: Path) -> Path:
-    hidden_html = sibling_temp_html(deck_html, ".hidden.html", insert_before_body(dom, hide_picked_text_script()))
+def print_hidden_pdf(deck_html: Path, dom: str, chrome: str, out_pdf: Path, layout: dict | None = None) -> Path:
+    hidden_html = sibling_temp_html(
+        deck_html,
+        ".hidden.html",
+        insert_before_body(dom, hide_picked_text_script(layout)),
+    )
     try:
         run_chrome(
             chrome,
@@ -451,6 +538,38 @@ def parse_css_color(value: str) -> tuple[int, int, int]:
         not nums[i].endswith("%") and abs(float(nums[i])) <= 1 for i in range(3)
     )
     return tuple(component(nums[i], srgb_unit) for i in range(3))  # type: ignore[return-value]
+
+
+def rect_promotion_rejection_reason(candidate: dict) -> str | None:
+    if float(candidate.get("background_alpha") or 0) < 0.95:
+        return "background_alpha"
+    if str(candidate.get("background_image") or "none").strip().lower() != "none":
+        return "background_image"
+    transform = str(candidate.get("transform") or "none").strip().lower()
+    if transform != "none":
+        match = re.fullmatch(r"matrix\(([^)]+)\)", transform)
+        values = [float(value) for value in match.group(1).split(",")] if match else []
+        if len(values) != 6 or abs(values[1]) > 1e-6 or abs(values[2]) > 1e-6 or values[0] <= 0 or values[3] <= 0:
+            return "transform"
+    if float(candidate.get("area_ratio") or 0) < 0.0015:
+        return "area_too_small"
+    if candidate.get("clipped_child"):
+        return "clipped_child"
+    # 배경 그림에 구워질 글자를 품고 있으면 불투명 도형이 그 글자를 덮는다 (8/16 p11 표 실측).
+    if candidate.get("baked_text_child"):
+        return "baked_text_child"
+    for key in ("filter", "backdrop_filter", "box_shadow"):
+        if str(candidate.get(key) or "none").strip().lower() != "none":
+            return key
+    return None
+
+
+def promoted_rect_boxes(slide_data: dict) -> list[dict]:
+    return [
+        candidate
+        for candidate in slide_data.get("rect_boxes", [])
+        if rect_promotion_rejection_reason(candidate) is None
+    ]
 
 
 def font_weight_number(value: object) -> int:
@@ -818,7 +937,7 @@ def native_chart_kind(chart: str) -> str | None:
     return None
 
 
-def hide_picked_text_script() -> str:
+def hide_picked_text_script(layout: dict | None = None) -> str:
     native_charts = (
         "before_after",
         "dumbbell",
@@ -831,7 +950,18 @@ def hide_picked_text_script() -> str:
         "target_vs_actual",
     )
     selectors = ", ".join(f".visual-{chart.replace('_', '-')}" for chart in native_charts)
-    return _HIDE_PICKED_TEXT_SCRIPT_TEMPLATE.replace("__NATIVE_CHART_SELECTORS__", selectors)
+    rect_selectors = ", ".join(
+        f'[data-pptx-rect-id="{candidate["id"]}"]'
+        for slide_data in (layout or {}).get("slides", [])
+        for candidate in promoted_rect_boxes(slide_data)
+    )
+    if not rect_selectors:
+        rect_selectors = "[data-pptx-no-native-rect]"
+    return (
+        _HIDE_PICKED_TEXT_SCRIPT_TEMPLATE
+        .replace("__NATIVE_CHART_SELECTORS__", selectors)
+        .replace("__NATIVE_RECT_SELECTORS__", rect_selectors)
+    )
 
 
 def _registry_entries(registry: dict, *keys: str) -> dict:
@@ -974,6 +1104,43 @@ def _set_sources_note(slide, page: dict, registry: dict) -> None:
             run.font.name = FONT_NAME
 
 
+def _add_native_rect(slide, candidate: dict) -> None:
+    from pptx.dml.color import RGBColor
+    from pptx.enum.dml import MSO_LINE_DASH_STYLE
+    from pptx.enum.shapes import MSO_SHAPE
+    from pptx.util import Emu, Pt
+
+    slide_w = float(candidate.get("slide_w") or 1280)
+    width_px = float(candidate.get("w") or 0)
+    height_px = float(candidate.get("h") or 0)
+    radius_px = float(re.match(r"[-+]?\d*\.?\d+", str(candidate.get("border_radius") or "0")).group(0))
+    shape_type = MSO_SHAPE.RECTANGLE if radius_px <= 0 else MSO_SHAPE.ROUNDED_RECTANGLE
+    shape = slide.shapes.add_shape(
+        shape_type,
+        Emu(px_to_emu(float(candidate.get("x") or 0), slide_w)),
+        Emu(px_to_emu(float(candidate.get("y") or 0), slide_w)),
+        Emu(max(1, px_to_emu(width_px, slide_w))),
+        Emu(max(1, px_to_emu(height_px, slide_w))),
+    )
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = RGBColor(*parse_css_color(str(candidate.get("background_color") or "")))
+    if radius_px > 0 and shape.adjustments:
+        shape.adjustments[0] = min(0.5, radius_px / min(width_px, height_px))
+    border_width = float(re.match(r"[-+]?\d*\.?\d+", str(candidate.get("border_width") or "0")).group(0))
+    border_style = str(candidate.get("border_style") or "none").lower()
+    if border_width <= 0 or border_style in {"none", "hidden"}:
+        shape.line.fill.background()
+    else:
+        shape.line.color.rgb = RGBColor(*parse_css_color(str(candidate.get("border_color") or "")))
+        shape.line.width = Pt(border_width * PX_TO_PT)
+        shape.line.dash_style = {
+            "dashed": MSO_LINE_DASH_STYLE.DASH,
+            "dotted": MSO_LINE_DASH_STYLE.ROUND_DOT,
+        }.get(border_style, MSO_LINE_DASH_STYLE.SOLID)
+    shape.text_frame.clear()
+    set_shape_descr(shape, f"native_rect={candidate.get('id', '')}")
+
+
 def build_pptx(
     layout: dict,
     background_pngs: list[Path],
@@ -998,6 +1165,8 @@ def build_pptx(
     for index, (slide_data, bg) in enumerate(zip(slides, background_pngs)):
         slide = prs.slides.add_slide(blank)
         slide.shapes.add_picture(str(bg), 0, 0, width=Emu(SLIDE_W_EMU), height=Emu(SLIDE_H_EMU))
+        for candidate in promoted_rect_boxes(slide_data):
+            _add_native_rect(slide, candidate)
         for box in slide_data.get("boxes", []):
             geom = text_box_geometry_emu(box)
             shape = slide.shapes.add_textbox(
@@ -1064,6 +1233,7 @@ def verify_pptx(
 
     total_text_boxes = 0
     total_charts = 0
+    total_native_rects = 0
     spec_pages = deck_spec.get("pages", []) if isinstance(deck_spec, dict) else []
     for idx, slide in enumerate(prs.slides):
         pictures, text_boxes = shape_counts(slide)
@@ -1072,6 +1242,12 @@ def verify_pptx(
         if require_background_and_text and text_boxes < 1:
             raise SystemExit(f"VERIFY_ERROR: slide {idx + 1} text boxes={text_boxes}, expected >=1")
         total_text_boxes += text_boxes
+        total_native_rects += sum(
+            1
+            for shape in slide.shapes
+            if shape.shape_type == MSO_SHAPE_TYPE.AUTO_SHAPE
+            and shape._element.nvSpPr.cNvPr.get("descr", "").startswith("native_rect=")
+        )
         chart_shapes = [shape for shape in slide.shapes if shape.shape_type == MSO_SHAPE_TYPE.CHART]
         total_charts += len(chart_shapes)
         if idx < len(spec_pages):
@@ -1118,10 +1294,29 @@ def verify_pptx(
             raise SystemExit(f"VERIFY_ERROR: p03 phrase geometry delta >1px: {deltas}")
         phrase_checked = True
 
+    rect_pages = []
+    for slide_data in slides:
+        from collections import Counter
+
+        rejected = Counter(
+            reason
+            for candidate in slide_data.get("rect_boxes", [])
+            if (reason := rect_promotion_rejection_reason(candidate)) is not None
+        )
+        rect_pages.append(
+            {
+                "page_id": slide_data.get("page_id", "?"),
+                "promoted": len(promoted_rect_boxes(slide_data)),
+                "rejected": dict(sorted(rejected.items())),
+            }
+        )
+
     return {
         "slides": len(prs.slides),
         "text_boxes": total_text_boxes,
         "charts": total_charts,
+        "native_rects": total_native_rects,
+        "rect_pages": rect_pages,
         "phrase_checked": phrase_checked,
         "max_delta_px": max_delta_px,
     }
@@ -1142,7 +1337,7 @@ def export_deck(
             layout, dumped_dom, injected_html = dump_layout(deck_html, chrome)
             temp_files.append(injected_html)
             hidden_pdf = tmp / "text_hidden.pdf"
-            hidden_html = print_hidden_pdf(deck_html, dumped_dom, chrome, hidden_pdf)
+            hidden_html = print_hidden_pdf(deck_html, dumped_dom, chrome, hidden_pdf, layout)
             temp_files.append(hidden_html)
             p03_png = out.with_name(f"{out.stem}.p03_hidden.png")
             background_pngs, kept_p03 = render_pdf_pages(hidden_pdf, layout, tmp / "png", p03_png)
@@ -1191,6 +1386,14 @@ def main() -> None:
     else:
         print("HIDDEN_P03_PNG_SKIP: p03 not found")
     if verification:
+        for rect_page in verification["rect_pages"]:
+            rejected_text = ",".join(
+                f"{reason}:{count}" for reason, count in rect_page["rejected"].items()
+            ) or "none:0"
+            print(
+                f"RECT_PAGE: {rect_page['page_id']} "
+                f"promoted={rect_page['promoted']} rejected={rejected_text}"
+            )
         phrase = "yes" if verification["phrase_checked"] else "skip"
         delta = verification["max_delta_px"]
         delta_text = "n/a" if delta is None else f"{delta:.3f}px"
@@ -1199,6 +1402,7 @@ def main() -> None:
             f"slides={verification['slides']} "
             f"text_boxes={verification['text_boxes']} "
             f"charts={verification['charts']} "
+            f"native_rects={verification['native_rects']} "
             f"p03_phrase={phrase} "
             f"max_delta={delta_text}"
         )

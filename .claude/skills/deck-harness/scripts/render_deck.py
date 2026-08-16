@@ -51,7 +51,7 @@ PALETTES = {
         "slide_bg": "#FFFFFF",
         "slide_bg_size": "auto",
         "body_bg": "#F7F8FA",
-        "card": "rgba(255, 255, 255, .7)",
+        "card": "#FFFFFF",  # rgba(255, 255, 255, .7) over #FFFFFF (2026-08-16 반투명 제거)
         "radius": "0px",
         "t1": "#8A6F3D",
         "t2": "#A8664F",
@@ -72,7 +72,7 @@ PALETTES = {
         "slide_bg": "#EEF1F4",
         "slide_bg_size": "auto",
         "body_bg": "#E7EBEF",
-        "card": "rgba(255, 255, 255, .72)",
+        "card": "#FAFBFC",  # rgba(255, 255, 255, .72) over #EEF1F4 (2026-08-16 반투명 제거)
         "radius": "0px",
         "t1": "#1F4E79",
         "t2": "#C56A3A",
@@ -93,7 +93,7 @@ PALETTES = {
         "slide_bg": "#F1ECE0",
         "slide_bg_size": "auto",
         "body_bg": "#EAE3D3",
-        "card": "rgba(255, 253, 248, .66)",
+        "card": "#FAF7F0",  # rgba(255, 253, 248, .66) over #F1ECE0 (2026-08-16 반투명 제거)
         "radius": "0px",
         "t1": "#FF9B3D",
         "t2": "#C0863C",
@@ -114,7 +114,7 @@ PALETTES = {
         "slide_bg": "radial-gradient(circle at 12% 18%, rgba(240,95,75,.13) 0, transparent 34%), radial-gradient(circle at 88% 82%, rgba(255,178,74,.14) 0, transparent 38%), #FFFCF7",
         "slide_bg_size": "auto",
         "body_bg": "#FFF2E8",
-        "card": "rgba(255, 255, 255, .78)",
+        "card": "#FFFEFD",  # rgba(255, 255, 255, .78) over #FFFCF7 (2026-08-16 반투명 제거)
         "radius": "24px",
         "t1": "#8A6F3D",
         "t2": "#A8664F",
@@ -135,7 +135,7 @@ PALETTES = {
         "slide_bg": "radial-gradient(ellipse at 82% 18%, rgba(45,125,210,.12) 0, transparent 42%), linear-gradient(135deg, transparent 0 68%, rgba(44,196,167,.10) 68% 100%), #F7FAFC",
         "slide_bg_size": "auto",
         "body_bg": "#EDF5F8",
-        "card": "rgba(255, 255, 255, .82)",
+        "card": "#FEFEFE",  # rgba(255, 255, 255, .82) over #F7FAFC (2026-08-16 반투명 제거)
         "radius": "14px",
         "t1": "#2D7DD2",
         "t2": "#2CC4A7",
@@ -158,7 +158,7 @@ PALETTES["forest"] = {
     "slide_bg": "#F4F3EE",
     "slide_bg_size": "auto",
     "body_bg": "#EBE9E0",
-    "card": "rgba(255, 255, 255, .72)",
+    "card": "#FCFCFA",  # rgba(255, 255, 255, .72) over #F4F3EE (2026-08-16 반투명 제거)
     "radius": "12px",
     "t1": "#1E4033",
     "t2": "#A6C34C",
@@ -180,7 +180,7 @@ PALETTES["violet"] = {
     "slide_bg": "#F8F7FC",
     "slide_bg_size": "auto",
     "body_bg": "#EFEDF8",
-    "card": "rgba(255, 255, 255, .8)",
+    "card": "#FEFDFE",  # rgba(255, 255, 255, .8) over #F8F7FC (2026-08-16 반투명 제거)
     "radius": "14px",
     "t1": "#7C4DE8",
     "t2": "#B49BF2",
@@ -261,7 +261,7 @@ PALETTES["dark_premium"] = {
     "slide_bg": "radial-gradient(circle at 88% 12%, rgba(198,161,91,.07) 0, transparent 42%), #0E0F11",
     "slide_bg_size": "auto",
     "body_bg": "#0A0B0C",
-    "card": "rgba(255,255,255,.055)",
+    "card": "#1B1C1E",  # rgba(255,255,255,.055) over #0E0F11 (2026-08-16 반투명 제거)
     "radius": "14px",
     "t1": "#C6A15B",
     "t2": "#8C8577",
@@ -285,7 +285,7 @@ PALETTES["pop_dark"] = {
     "slide_bg": "#131118",
     "slide_bg_size": "auto",
     "body_bg": "#0D0B11",
-    "card": "rgba(255,255,255,.06)",
+    "card": "#211F26",  # rgba(255,255,255,.06) over #131118 (2026-08-16 반투명 제거)
     "radius": "22px",
     "t1": "#FF5A1F",
     "t2": "#2B3BE8",
@@ -309,7 +309,7 @@ PALETTES["navy_glow"] = {
     "slide_bg": "radial-gradient(circle at 85% 15%, rgba(110,139,255,.10) 0, transparent 45%), #0D1220",
     "slide_bg_size": "auto",
     "body_bg": "#090D18",
-    "card": "rgba(255,255,255,.05)",
+    "card": "#191E2B",  # rgba(255,255,255,.05) over #0D1220 (2026-08-16 반투명 제거)
     "radius": "14px",
     "t1": "#6E8BFF",
     "t2": "#B49BF2",
