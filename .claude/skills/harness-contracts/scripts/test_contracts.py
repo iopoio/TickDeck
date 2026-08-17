@@ -4076,6 +4076,70 @@ class HarnessContractTests(unittest.TestCase):
         )
         self.assertTrue(any("본문 페이지가 없음" in v.message for v in no_body.violations))
 
+    def test_deck_gates_reject_viz_metric_note_but_only_warn_for_viz_metric_and_missing_subtitle(self):
+        def run(content):
+            deck_spec = {"pages": [{
+                "page_id": "p1", "layout": "stack",
+                "content": [{"type": "headline", "text": "결론"}, *content],
+            }]}
+            return check_deck_spec_gates(
+                {"pages": [{"page_id": "plan-1"}]}, deck_spec, {}, {}, {},
+                layout_results=[{"page_id": "p1", "verdict": "FIT", "height_px": 400, "capacity_px": 600}],
+            )
+
+        b1 = run([{"type": "viz", "subtitle": "응답자 비율, %"}, {"type": "metric"}, {"type": "note"}])
+        self.assertTrue(any("차트와 숫자 카드를 나누거나, note를 다음 장으로 옮기세요" in item.message for item in b1.violations))
+
+        for evidence_type, metric_type in (("viz", "metric"), ("viz", "metric_grid"), ("text_table", "metric")):
+            with self.subTest(evidence_type=evidence_type, metric_type=metric_type):
+                evidence = {"type": evidence_type}
+                if evidence_type == "viz":
+                    evidence["subtitle"] = "응답자 비율, %"
+                result = run([evidence, {"type": metric_type}])
+                self.assertFalse(any("차트와 숫자 카드를" in item.message for item in result.violations))
+                self.assertTrue(any("시각물 2종" in item.message for item in result.warnings))
+
+        aliases = run([{"type": "viz", "subtitle": "응답자 비율, %"}, {"type": "metrics"}, {"type": "stat_grid"}])
+        self.assertFalse(any("시각물 2종" in item.message for item in aliases.warnings))
+
+        c = run([{"type": "viz"}])
+        self.assertFalse(any("subtitle" in item.message for item in c.violations))
+        self.assertTrue(any("subtitle" in item.message for item in c.warnings))
+
+    def test_render_viz_three_level_title_and_preserves_legacy_html_bytes(self):
+        legacy_html = render_deck_module.render_deck(
+            VALID_DECK_SPEC_WITH_VIZ, VALID_CONTENT_REGISTRY, title="Legacy Viz"
+        )
+        self.assertEqual(
+            hashlib.sha256(legacy_html.encode("utf-8")).hexdigest(),
+            "fb1db570c87ba331ec93081f812bd997fcbb89b845bfa734d28498dd403bc854",
+        )
+
+        viz = dict(
+            VALID_DECK_SPEC_WITH_VIZ["pages"][0]["content"][1],
+            exhibit="Exhibit 3",
+            title="AI를 쓰는 조직은 늘었지만 수익까지 간 곳은 적다.",
+            subtitle="AI 도입 단계별 비율, % of respondents",
+        )
+        spec = {"pages": [dict(VALID_DECK_SPEC_WITH_VIZ["pages"][0], content=[viz])]}
+        html = render_deck_module.render_deck(spec, VALID_CONTENT_REGISTRY, title="Three Level Viz")
+        self.assertRegex(html, r'class="visual-title-eyebrow"[^>]*>Exhibit 3</div>')
+        self.assertRegex(html, r'class="visual-title-conclusion"[^>]*>AI를 쓰는 조직은 늘었지만 수익까지 간 곳은 적다\.</div>')
+        self.assertRegex(html, r'class="visual-title-subtitle"[^>]*>AI 도입 단계별 비율, % of respondents</div>')
+
+    def test_generated_schema_declares_optional_viz_title_fields_as_strings(self):
+        schema_module_path = pathlib.Path(__file__).with_name("generate_deck_spec_schema.py")
+        module_spec = importlib.util.spec_from_file_location("generate_deck_spec_schema_for_test", schema_module_path)
+        schema_module = importlib.util.module_from_spec(module_spec)
+        module_spec.loader.exec_module(schema_module)
+        schema = json.loads(schema_module.schema_bytes())
+        block_schema = schema["properties"]["pages"]["items"]["properties"]["content"]["items"]
+        self.assertEqual(block_schema["properties"]["exhibit"], {"type": "string"})
+        self.assertEqual(block_schema["properties"]["title"], {"type": "string"})
+        self.assertEqual(block_schema["properties"]["subtitle"], {"type": "string"})
+        self.assertNotIn("exhibit", block_schema.get("required", []))
+        self.assertNotIn("subtitle", block_schema.get("required", []))
+
     def test_gate4_capture_deck_exits_2_on_fit_overflow_and_render_main_keeps_debug_pdf(self):
         # 게이트 4 — capture_deck.sh는 FIT_OVERFLOW를 잡으면 PDF를 만든 채로 exit 2해야 하고,
         # render_deck.py main()은 그 exit 2를 받으면 (다른 실패와 달리) PDF를 지우지 않고 전파해야 한다.

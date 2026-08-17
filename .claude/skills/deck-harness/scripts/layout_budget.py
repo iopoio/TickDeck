@@ -190,8 +190,7 @@ def viz_signature(block: Mapping[str, Any]) -> str:
     except (TypeError, ValueError) as exc:
         raise LayoutBudgetInputError(f"viz block is not canonical JSON: {exc}") from exc
     block_hash = hashlib.sha256(canonical_block.encode("utf-8")).hexdigest()
-    return "|".join(
-        (
+    signature_parts = [
             chart,
             f"series={len(series)}",
             f"size={str(block.get('size', '')).strip() or 'default'}",
@@ -199,9 +198,11 @@ def viz_signature(block: Mapping[str, Any]) -> str:
             f"note={int(bool(str(block.get('note', '')).strip()))}",
             f"title_style={str(block.get('title_style', '')).strip() or 'default'}",
             f"source_caption={str(block.get('source_caption', '')).strip() or 'off'}",
-            f"block_sha256={block_hash}",
-        )
-    )
+    ]
+    if all(str(block.get(field, "")).strip() for field in ("exhibit", "title", "subtitle")):
+        signature_parts.append("title_layers=3")
+    signature_parts.append(f"block_sha256={block_hash}")
+    return "|".join(signature_parts)
 
 
 def split_viz_height(raw_viz_height: float) -> float:

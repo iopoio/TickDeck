@@ -221,6 +221,33 @@ class LayoutBudgetArithmeticTests(unittest.TestCase):
         }
         self.assertNotEqual(viz_signature(pictograph_10), viz_signature(pictograph_50))
 
+    def test_three_level_viz_title_has_distinct_unmeasured_signature(self):
+        legacy = VIZ_BLOCKS["donut"]
+        titled = {
+            **legacy,
+            "exhibit": "Exhibit 3",
+            "title": "도입은 늘었지만 수익 전환은 드물다.",
+            "subtitle": "AI 도입 단계별 응답 비율, %",
+        }
+        self.assertNotIn("title_layers=3", viz_signature(legacy))
+        self.assertIn("title_layers=3", viz_signature(titled))
+        self.assertNotEqual(viz_signature(legacy), viz_signature(titled))
+
+        spec = {
+            "theme": KEY["theme"],
+            "meta": {
+                "page_chrome": KEY["page_chrome"],
+                "calibration_runtime": {
+                    "width_class": KEY["width_class"],
+                    "browser_major": KEY["browser_major"],
+                },
+            },
+            "pages": [{"page_id": "p01", "layout": "statement", "content": [headline(1), titled]}],
+        }
+        result = evaluate_layout(spec, REGISTRY, CALIBRATION_ENTRY)[0]
+        self.assertEqual(result.verdict, BudgetVerdict.RENDER_MEASURE_REQUIRED)
+        self.assertIn("unmeasured viz combination", result.reasons[0])
+
 
 class LayoutBudgetFailClosedTests(unittest.TestCase):
     def _spec(self, content: list[dict], **overrides) -> dict:

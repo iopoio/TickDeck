@@ -25,6 +25,9 @@ def schema_bytes() -> bytes:
                             "items": {
                                 "additionalProperties": True,
                                 "properties": {
+                                    "exhibit": {"type": "string"},
+                                    "subtitle": {"type": "string"},
+                                    "title": {"type": "string"},
                                     "type": {
                                         "enum": sorted(SUPPORTED_CONTENT_BLOCK_TYPES),
                                         "type": "string",

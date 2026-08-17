@@ -23,6 +23,8 @@ C13_BIGRAM_JACCARD_THRESHOLD = 0.7
 NON_BODY_LAYOUTS = frozenset({"cover", "divider", "closing", "outro", "index", "source_appendix"})
 DECK_VISUAL_BLOCK_TYPES = frozenset({"viz", "metric", "metric_grid", "text_table"})
 DECK_CHART_BLOCK_TYPES = frozenset({"viz", "metric_grid"})
+SINGLE_VISUAL_EVIDENCE_TYPES = frozenset({"viz", "text_table"})
+SINGLE_VISUAL_METRIC_TYPES = frozenset({"metric", "metric_grid"})
 VALIDATION_METADATA_TERMS = (
     "단일출처",
     "단일 출처",
@@ -866,6 +868,45 @@ def check_deck_spec_gates(
         "layout_unresolved_pages": len(unresolved),
         "ink": "PDF_ONLY_REUSE_QA_INK",
     }
+    b1_pages = b2_pages = c_viz = 0
+    pages = deck_spec.get("pages") if isinstance(deck_spec.get("pages"), list) else []
+    candidate_pages = [
+        (page_index, page)
+        for page_index, page in enumerate(pages)
+        if isinstance(page, dict)
+        and any(
+            isinstance(block, dict) and block.get("type") == "headline"
+            for block in (page.get("content") if isinstance(page.get("content"), list) else [])
+        )
+    ]
+    for page_index, page in candidate_pages:
+        content = page.get("content") if isinstance(page.get("content"), list) else []
+        block_types = {
+            block.get("type") for block in content if isinstance(block, dict)
+        }
+        has_evidence = bool(block_types & SINGLE_VISUAL_EVIDENCE_TYPES)
+        has_metric = bool(block_types & SINGLE_VISUAL_METRIC_TYPES)
+        if has_evidence and has_metric:
+            b2_pages += 1
+            path = f"deck_spec.pages[{page_index}].content"
+            warnings.append(ContractViolation("B-2-WARN", "시각물 2종이 한 페이지에 동거함", path))
+            if "note" in block_types:
+                b1_pages += 1
+                violations.append(ContractViolation(
+                    "B-1",
+                    "시각물·숫자 카드·note가 한 페이지에 동거함 — 차트와 숫자 카드를 나누거나, note를 다음 장으로 옮기세요",
+                    path,
+                ))
+        for block_index, block in enumerate(content):
+            if isinstance(block, dict) and block.get("type") == "viz":
+                c_viz += 1
+                if not _normalized_string(block.get("subtitle")):
+                    warnings.append(ContractViolation(
+                        "C-WARN",
+                        "viz subtitle이 없음 — 측정 대상과 단위를 부제에서 1회 선언하세요",
+                        f"deck_spec.pages[{page_index}].content[{block_index}].subtitle",
+                    ))
+    metrics.update({"b1_pages": b1_pages, "b2_pages": b2_pages, "c_viz": c_viz})
     if not body_pages:
         violations.append(ContractViolation("C5-DECK", "본문 페이지가 없음 — 덱 단위 게이트를 계산할 수 없음", "deck_spec.pages"))
     if len(body_results) != len(body_pages) or unresolved:

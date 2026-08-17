@@ -2162,7 +2162,18 @@ def _render_viz(
     caption_html = _render_viz_source_caption(block, page_id, registry)
     title_html = ""
     svg_title = title
-    if title_style == "band":
+    exhibit = str(block.get("exhibit", "")).strip()
+    subtitle = str(block.get("subtitle", "")).strip()
+    if exhibit and title and subtitle:
+        title_html = (
+            '<div class="visual-title-stack" style="margin-bottom:12px">'
+            f'<div class="visual-title-eyebrow" style="color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.12em">{_escape(exhibit)}</div>'
+            f'<div class="visual-title-conclusion" style="margin-top:5px;color:var(--ink);font-size:20px;font-weight:800;line-height:1.3">{_escape(title)}</div>'
+            f'<div class="visual-title-subtitle" style="margin-top:4px;color:var(--muted);font-size:13px;line-height:1.35">{_escape(subtitle)}</div>'
+            '</div>'
+        )
+        svg_title = ""
+    elif title_style == "band":
         title_html = f'<div class="visual-title-band">{_escape(title)}</div>' if title else ""
         svg_title = ""
     elif caption_html and title:
