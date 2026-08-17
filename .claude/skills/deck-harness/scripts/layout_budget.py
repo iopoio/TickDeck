@@ -48,6 +48,10 @@ from render_deck import (  # noqa: E402
 
 
 GAP_PX = 24.0
+SPLIT_OUTER_GAP_PX = 14.0
+SPLIT_NOTE_MARGIN_PX = 18.0
+SPLIT_PANE_GAP_PX = 22.0
+SPLIT_METRIC_HEIGHT_PX = 132.0
 OVERFLOW_MARGIN_PX = 50.0
 SPARSE_MARGIN_PX = 240.0
 NO_CHROME_EYEBROW_DEDUCTION_PX = 14.0
@@ -276,6 +280,74 @@ def page_height(block_heights: Sequence[float]) -> float:
     return sum(heights) + GAP_PX * max(0, len(heights) - 1)
 
 
+def split_page_height(
+    lead_height: float,
+    left_height: float,
+    right_height: float,
+    note_height: float = 0.0,
+) -> float:
+    rows = [float(lead_height), max(float(left_height), float(right_height))]
+    if note_height:
+        rows.append(float(note_height) + SPLIT_NOTE_MARGIN_PX)
+    return sum(rows) + SPLIT_OUTER_GAP_PX * max(0, len(rows) - 1)
+
+
+def sibling_vertical_overlaps(
+    ranges: Sequence[tuple[str, float, float]],
+) -> tuple[tuple[str, str, float], ...]:
+    overlaps: list[tuple[str, str, float]] = []
+    for index, (name, top, bottom) in enumerate(ranges):
+        for other_name, other_top, other_bottom in ranges[index + 1 :]:
+            depth = min(float(bottom), float(other_bottom)) - max(float(top), float(other_top))
+            if depth > 0:
+                overlaps.append((str(name), str(other_name), depth))
+    return tuple(overlaps)
+
+
+def _split_layout_height(
+    blocks: Sequence[Mapping[str, Any]],
+    registry: Mapping[str, Any],
+    calibration: Mapping[str, Any],
+) -> float:
+    remaining = list(blocks)
+    lead = remaining.pop(0) if remaining and _block_type(remaining[0]) in {"headline", "title"} else None
+    note = next((block for block in remaining if _block_type(block) == "note"), None)
+    if note is not None:
+        remaining.remove(note)
+
+    visual_index = next(
+        (
+            index
+            for index, block in enumerate(remaining)
+            if _block_type(block) in {"viz", "metric_grid", "metrics", "stat_grid"}
+            or (_block_type(block) == "text_table" and len(block.get("rows", [])) <= 4)
+        ),
+        None,
+    )
+    if visual_index is None:
+        midpoint = max(1, len(remaining) // 2)
+        left, right = remaining[:midpoint], remaining[midpoint:]
+    else:
+        left = [remaining[visual_index]]
+        right = [block for index, block in enumerate(remaining) if index != visual_index]
+
+    def pane_height(pane: Sequence[Mapping[str, Any]]) -> float:
+        heights = [
+            SPLIT_METRIC_HEIGHT_PX
+            if _block_type(block) == "metric"
+            else block_height(block, registry, calibration)
+            for block in pane
+        ]
+        return sum(heights) + SPLIT_PANE_GAP_PX * max(0, len(heights) - 1)
+
+    return split_page_height(
+        block_height(lead, registry, calibration) if lead is not None else 0.0,
+        pane_height(left),
+        pane_height(right),
+        block_height(note, registry, calibration) if note is not None else 0.0,
+    )
+
+
 def classify_height(height: float, capacity: float) -> BudgetVerdict:
     if height > capacity - OVERFLOW_MARGIN_PX:
         return BudgetVerdict.OVERFLOW
@@ -483,7 +555,11 @@ def evaluate_layout(
                 if isinstance(block, Mapping)
                 and str(block.get("type", "")).strip() not in {"eyebrow", "citation", "source", "footnote"}
             ]
-            height = page_height([block_height(block, registry, calibration) for block in flow_blocks])
+            height = (
+                _split_layout_height(flow_blocks, registry, calibration)
+                if layout == "split"
+                else page_height([block_height(block, registry, calibration) for block in flow_blocks])
+            )
             verdict = classify_height(height, page_capacity)
             results.append(
                 PageBudget(
@@ -512,7 +588,9 @@ __all__ = [
     "linear_partition_impossible",
     "metric_grid_height",
     "page_height",
+    "sibling_vertical_overlaps",
     "split_fits",
+    "split_page_height",
     "split_viz_height",
     "substitute_metric_tokens",
     "text_table_height",

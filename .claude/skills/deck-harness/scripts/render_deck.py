@@ -447,7 +447,7 @@ def render_deck(
         raise ValueError("every deck_spec page must be an object")
 
     telemetry_html = _render_telemetry(deck_spec, meta)
-    body_tail = [telemetry_html, "</body>"] if telemetry_html else ["</body>"]
+    body_tail = [telemetry_html, _sibling_overlap_warning_script(), "</body>"]
     return "\n".join(
         [
             "<!doctype html>",
@@ -464,6 +464,39 @@ def render_deck(
             "</html>",
         ]
     )
+
+
+def _sibling_overlap_warning_script() -> str:
+    # 조판 결함 자동 검출 (8/17 신설). 8/16 p09 겹침은 사람 눈으로 우연히 발견됐다 —
+    # 같은 게 또 나면 또 우연에 기대야 하므로 렌더 때마다 스스로 알리게 한다.
+    #
+    # 직계 형제만 보면 못 잡는다: 넘치는 건 .split-body 박스가 아니라 그 안 카드다
+    # (박스는 min-height:0 으로 압축되고 자식만 밖으로 흘러나온다). 그래서 그려지는
+    # 블록끼리 비교하되 조상-후손 쌍은 뺀다. 좌우 2단에서 나란한 블록이 전부 걸리지
+    # 않도록 세로와 가로가 동시에 겹칠 때만 경고한다.
+    return """<script>
+(function () {
+  var SELECTOR = '.metric-card, .callout, .visual-card, .body-text, .block-title,' +
+                 ' .text-table, .metric-grid, .hero-stage, .footnote-row';
+  document.querySelectorAll('.slide').forEach(function (slide) {
+    var blocks = Array.prototype.slice.call(slide.querySelectorAll(SELECTOR))
+      .filter(function (el) { return el.offsetParent !== null; });
+    blocks.forEach(function (a, index) {
+      blocks.slice(index + 1).forEach(function (b) {
+        if (a.contains(b) || b.contains(a)) { return; }
+        var ra = a.getBoundingClientRect();
+        var rb = b.getBoundingClientRect();
+        var down = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+        var across = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
+        if (down > 0.5 && across > 0.5) {
+          console.warn('TICKDECK_SIBLING_OVERLAP', slide.dataset.pageId,
+            a.className, b.className, Math.round(down * 10) / 10);
+        }
+      });
+    });
+  });
+})();
+</script>"""
 
 
 def _render_telemetry(deck_spec: dict[str, Any], meta: dict[str, Any]) -> str:

@@ -1,0 +1,172 @@
+{
+  "status": "measured",
+  "measured_at": "2026-08-17T13:20:08+09:00",
+  "probe_spec": "probe_specs/editorial_title_band_statement.spec.json",
+  "probe_registry": "probe_specs/editorial_title_band_statement.registry.json",
+  "renderer_command": [
+    "/Users/hwa/Projects/Automation/Think/.venv/bin/python3",
+    "/Users/hwa/Projects/Automation/TickDeck/.claude/skills/deck-harness/scripts/render_deck.py",
+    "/Users/hwa/Projects/Automation/TickDeck/.claude/skills/deck-harness/calibration/probe_specs/editorial_title_band_statement.spec.json",
+    "/Users/hwa/Projects/Automation/TickDeck/.claude/skills/deck-harness/calibration/probe_specs/editorial_title_band_statement.registry.json",
+    "-o",
+    "/Users/hwa/Projects/Automation/TickDeck/.claude/skills/deck-harness/calibration/raw/20260817T132008+0900/editorial_title_band_statement.html",
+    "--html-only",
+    "--unattested"
+  ],
+  "renderer_stdout": "rendered 2 pages -> /Users/hwa/Projects/Automation/TickDeck/.claude/skills/deck-harness/calibration/raw/20260817T132008+0900/editorial_title_band_statement.html\n",
+  "renderer_stderr": "",
+  "chrome_command": [
+    "/Users/hwa/Library/Caches/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+    "--headless=new",
+    "--no-sandbox",
+    "--single-process",
+    "--disable-gpu",
+    "--allow-file-access-from-files",
+    "--run-all-compositor-stages-before-draw",
+    "--virtual-time-budget=8000",
+    "--dump-dom",
+    "file:///Users/hwa/Projects/Automation/TickDeck/.claude/skills/deck-harness/calibration/raw/20260817T132008%2B0900/editorial_title_band_statement.measurement.html"
+  ],
+  "chrome_version": "Google Chrome for Testing 148.0.7778.96",
+  "key": {
+    "renderer_struct_hash": "dbfb97454555364145d66f747ef874fe144865a0a2d0a9f5b0d3bd9e8dc4f99f",
+    "css_hash": "baaa4d3269c12bd317c1cbcd1a0796deff8158103b59a8d45e51f574ab1b8eb2",
+    "theme": "editorial",
+    "page_chrome": "title_band",
+    "layout": "statement",
+    "width_class": "820px",
+    "font_build": "pretendard-v1.3.9-468d0ff6db3f8108645ea0068089d7538fb228396fa572f1fb1970f06c57917f",
+    "browser_major": "148"
+  },
+  "measurement": {
+    "font_ready": true,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+    "device_pixel_ratio": 1,
+    "viewport": {
+      "width_px": 800,
+      "height_px": 600
+    },
+    "pages": [
+      {
+        "page_id": "p_capacity",
+        "slide": {
+          "x_px": 0,
+          "y_px": 0,
+          "width_px": 1280,
+          "height_px": 720
+        },
+        "body": {
+          "rect": {
+            "x_px": 72,
+            "y_px": 124,
+            "width_px": 1136,
+            "height_px": 529
+          },
+          "client_height_px": 529,
+          "client_width_px": 1136,
+          "scroll_height_px": 529,
+          "scroll_width_px": 1136,
+          "row_gap_px": 24,
+          "padding_top_px": 0,
+          "padding_bottom_px": 8
+        },
+        "slide_head": {
+          "x_px": 0,
+          "y_px": 0,
+          "width_px": 0,
+          "height_px": 0
+        },
+        "title_band": {
+          "x_px": 0,
+          "y_px": 0,
+          "width_px": 1280,
+          "height_px": 86
+        },
+        "source_row": {
+          "x_px": 72,
+          "y_px": 653,
+          "width_px": 1136,
+          "height_px": 0
+        },
+        "footnote_row": null,
+        "slide_foot": {
+          "x_px": 72,
+          "y_px": 661,
+          "width_px": 1136,
+          "height_px": 23
+        },
+        "visuals": []
+      },
+      {
+        "page_id": "p_donut",
+        "slide": {
+          "x_px": 0,
+          "y_px": 720,
+          "width_px": 1280,
+          "height_px": 720
+        },
+        "body": {
+          "rect": {
+            "x_px": 72,
+            "y_px": 844,
+            "width_px": 1136,
+            "height_px": 529
+          },
+          "client_height_px": 529,
+          "client_width_px": 1136,
+          "scroll_height_px": 529,
+          "scroll_width_px": 1136,
+          "row_gap_px": 24,
+          "padding_top_px": 0,
+          "padding_bottom_px": 8
+        },
+        "slide_head": {
+          "x_px": 0,
+          "y_px": 0,
+          "width_px": 0,
+          "height_px": 0
+        },
+        "title_band": {
+          "x_px": 0,
+          "y_px": 720,
+          "width_px": 1280,
+          "height_px": 86
+        },
+        "source_row": {
+          "x_px": 72,
+          "y_px": 1373,
+          "width_px": 1136,
+          "height_px": 0
+        },
+        "footnote_row": null,
+        "slide_foot": {
+          "x_px": 72,
+          "y_px": 1381,
+          "width_px": 1136,
+          "height_px": 23
+        },
+        "visuals": [
+          {
+            "card": {
+              "x_px": 72,
+              "y_px": 955.141,
+              "width_px": 820,
+              "height_px": 300.719
+            },
+            "width_px": 820,
+            "svg": {
+              "x_px": 72,
+              "y_px": 972.141,
+              "width_px": 820,
+              "height_px": 283.719
+            },
+            "svg_height_px": 283.719,
+            "margin_top_px": 8,
+            "margin_bottom_px": 6,
+            "padding_top_px": 16
+          }
+        ]
+      }
+    ]
+  }
+}

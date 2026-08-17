@@ -23,7 +23,9 @@ from layout_budget import (  # noqa: E402
     linear_partition_impossible,
     metric_grid_height,
     page_height,
+    sibling_vertical_overlaps,
     split_fits,
+    split_page_height,
     split_viz_height,
     substitute_metric_tokens,
     text_table_height,
@@ -121,6 +123,20 @@ def table(rows: int, *, titled: bool) -> dict:
 
 
 class LayoutBudgetArithmeticTests(unittest.TestCase):
+    def test_split_page_height_adds_note_as_a_full_width_row(self):
+        self.assertEqual(
+            split_page_height(34.0, 216.0, 360.0, 80.0),
+            520.0,
+        )
+
+    def test_sibling_vertical_overlaps_reports_only_intersections(self):
+        self.assertEqual(
+            sibling_vertical_overlaps(
+                [("split-body", 100.0, 460.0), ("split-note-row", 440.0, 520.0), ("footer", 540.0, 560.0)]
+            ),
+            (("split-body", "split-note-row", 20.0),),
+        )
+
     def test_appendix_a_numeric_checks_match_all_21_values(self):
         h = lambda block: block_height(block, REGISTRY, CALIBRATION_ENTRY)
         cases = {
@@ -368,6 +384,19 @@ class LayoutBudgetFailClosedTests(unittest.TestCase):
             block_height(VIZ_BLOCKS["donut"], REGISTRY, split_entry),
             measured_height + 14,
         )
+
+    def test_split_budget_places_note_below_the_taller_pane(self):
+        split_entry = copy.deepcopy(CALIBRATION_ENTRY)
+        split_entry["key"]["layout"] = "split"
+        spec = self._spec(
+            [headline(1), VIZ_BLOCKS["donut"], body(1), {"type": "metric", "metric_id": "m"}, {"type": "metric", "metric_id": "m"}, note(1)],
+            layout="split",
+        )
+
+        result = evaluate_layout(spec, REGISTRY, split_entry)[0]
+
+        self.assertEqual(result.height_px, 527.5)
+        self.assertEqual(result.verdict, BudgetVerdict.OVERFLOW)
 
     def test_generated_calibration_resolves_into_budget_without_height_drift(self):
         calibration_root = SCRIPT_DIR.parent / "calibration"
