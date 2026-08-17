@@ -370,6 +370,16 @@ FIT_OVERFLOW_OK는 "세로 넘침 없음" 한 가지 사실이다. 납품 판정
 
 **이미지 PDF 정책 (결정 4 후속·확정)**: 정식 납품물 = native PDF 단일. **이미지(래스터) PDF는 납품 금지.** 내부 검토용 폴백으로만 존재 가능하며 4조건 전부 충족해야 한다: ①파일명 `*.raster.pdf` 강제 ②manifest(승인자·사유·만료일) 동봉 - 승인자는 후추님 ③납품 폴더 반입 금지(위 6번이 기계 차단) ④만료일 경과 시 삭제. 검색 불가 산출물은 덱이 아니라 그림 묶음이다.
 
+구현 위치는 `.claude/skills/deck-harness/scripts/delivery_gate.py`다. 런 폴더의 기존 산출물을 대상으로 아래처럼 실행하며, 일곱 결과를 기본값 `08_delivery_report.json`에 기록한다. 일곱 항목 중 하나라도 실패하면 exit 1이다. `capture_deck.sh`·`qa_ink.py`·`pdffonts`가 실제 PDF를 다시 검사하므로 이 명령은 화면 계열 도구를 실행할 수 있는 본부 환경에서 사용한다.
+
+```bash
+python3 .claude/skills/deck-harness/scripts/delivery_gate.py _workspace/<run_id>
+# 출력 경로를 바꿀 때
+python3 .claude/skills/deck-harness/scripts/delivery_gate.py _workspace/<run_id> --output /path/to/delivery_report.json
+```
+
+`07_qa_report.json`의 전 장 검토 기록은 `visual_review` 객체 안에 `reviewer`, `reviewed_at`, `montage_path`, `scope: "all_pages"`를 두고, `montage_path`가 가리키는 파일을 런 폴더에 보존한다. 몽타주 생성은 이 판정 명령의 책임이 아니다.
+
 ### H. 검증 산출물 보존·재현 (신설 · R-01·R-02)
 
 - **보존 위치 = `deck-harness/calibration/`** (커밋 대상): `probe_specs/`(프로브 spec 전체)·`raw/`(원시 측정값: page id·측정 px·조건 키)·`layout_calibration.json`·`predictor.py`(판정 원형). v1의 검증 산출물(74장 프로브·13지점 스윕·predictor)은 리포 밖이라 10/10 주장이 재현 불가였다.
